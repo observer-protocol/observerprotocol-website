@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observer Protocol — The Trust Layer for the Agentic Economy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #0f0f0f;
+            --text-primary: #c9c9c9;
+            --text-secondary: #888;
+            --accent: #f7931a;
+            --border: #2a2a2a;
+            --border-subtle: #333;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', 'IBM Plex Mono', 'Consolas', 'Monaco', monospace;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-size: 14px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 48px 0;
+        }
+
+        /* Navigation */
+        nav {
+            padding: 32px 0;
+        }
+
+        nav .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 60px 0 40px;
+        }
+
+        .hero h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero .tagline {
+            font-size: 16px;
+            color: var(--accent);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .hero .sub-tagline {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            font-style: italic;
+        }
+
+        .hero-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .hero-nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        .hero-nav a:hover {
+            color: var(--accent);
+        }
+
+        .hero-note {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Sections */
+        section {
+            padding: 24px 0;
+        }
+
+        h2 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 32px 0 16px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        ul, ol {
+            margin: 16px 0 16px 24px;
+            color: var(--text-primary);
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        a {
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: var(--accent);
+        }
+
+        /* Buttons / CTAs */
+        .cta {
+            display: inline-block;
+            margin-top: 16px;
+        }
+
+        /* Code blocks */
+        pre {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0;
+            padding: 20px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            margin: 24px 0;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+            font-size: 12px;
+            color: var(--text-primary);
+        }
+
+        .code-block {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 20px;
+            margin: 24px 0;
+            font-size: 12px;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+
+        /* Terminal-style blocks */
+        .terminal {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 20px;
+            margin: 24px 0;
+            font-size: 12px;
+            line-height: 1.6;
+            white-space: pre;
+            overflow-x: auto;
+            color: var(--text-primary);
+        }
+
+        .terminal .label {
+            color: var(--accent);
+        }
+
+        .terminal .value {
+            color: var(--text-primary);
+        }
+
+        /* Manifesto */
+        .manifesto {
+            border-left: 2px solid var(--accent);
+            padding-left: 24px;
+            margin: 32px 0;
+        }
+
+        .manifesto p {
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+
+        /* Principles block */
+        .principles {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 24px;
+            margin: 24px 0;
+            font-size: 12px;
+            line-height: 2;
+            white-space: pre;
+        }
+
+        /* Footer */
+        footer {
+            padding: 48px 0 60px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        footer p {
+            margin-bottom: 8px;
+        }
+
+        footer .links {
+            margin-top: 16px;
+        }
+
+        footer a {
+            margin-right: 24px;
+        }
+
+        /* Utilities */
+        .note {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-top: 16px;
+        }
+
+        .highlight {
+            color: var(--accent);
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero -->
+        <header class="hero">
+            <h1>Observer Protocol</h1>
+            <p class="tagline">The trust layer for the agentic economy.</p>
+            <p class="sub-tagline">The first publicly verifiable history layer for agent payments.</p>
+            
+            <div class="hero-nav">
+                <a href="#registry">[ View Public Registry ]</a>
+                <a href="#verify">[ Verify a Receipt ]</a>
+                <a href="#spec">[ Protocol Spec ]</a>
+                <a href="https://github.com/observer-protocol">[ GitHub ]</a>
+                <a href="#manifesto">[ Manifesto ]</a>
+            </div>
+            
+            <p class="hero-note">Open source. Rail-neutral. Cryptographically verifiable.</p>
+        </header>
+
+        <hr>
+
+        <!-- About -->
+        <section id="about">
+            <h2>What This Is</h2>
+            
+            <p>Observer Protocol is an open, rail-neutral verification layer for autonomous agent transactions.</p>
+            
+            <p>Autonomous agents are beginning to transact without human mediation — across Lightning, x402, and other payment standards. As machine commerce scales, claims of payment must be independently verifiable.</p>
+            
+            <p>Observer Protocol provides:</p>
+            
+            <ul>
+                <li>Dispute-grade receipts using cryptographic proof</li>
+                <li>Rail-neutral verification logic (Lightning, x402, and beyond)</li>
+                <li>Identity anchoring via public key hashes</li>
+                <li>A publicly auditable, permanently growing transaction history</li>
+            </ul>
+            
+            <p>Verification is permissionless. The registry is public. No custody. No control.</p>
+        </section>
+
+        <hr>
+
+        <!-- Public Registry -->
+        <section id="registry">
+            <h2>The First Publicly Verifiable History Layer for Agent Payments</h2>
+            
+            <p>The registry is a permanent, publicly browsable record of verified agent-to-agent transactions.</p>
+            
+            <p>Each entry is cryptographically provable. Preimages for Lightning. Transaction signatures for on-chain and x402 rails. A receipt you cannot fake.</p>
+            
+            <p>Each entry contains:</p>
+            
+            <ul>
+                <li>Transaction ID</li>
+                <li>Timestamp (UTC)</li>
+                <li>Payment Rail</li>
+                <li>Sender Public Key Hash</li>
+                <li>Receiver Public Key Hash</li>
+                <li>Settlement Reference (preimage / tx hash)</li>
+                <li>Verification Status</li>
+                <li>Protocol Version</li>
+                <li>Raw Receipt (expandable JSON)</li>
+            </ul>
+            
+            <p><strong>Example — First Verified Agent-to-Agent Transaction:</strong></p>
+            
+            <div class="terminal">
+TX_ID:              OP-000001
+TIMESTAMP:          2026-02-22T23:24:35Z
+RAIL:               Lightning (L402)
+SENDER:             vicky-0002
+RECEIVER:           maxi-0001
+SENDER_STACK:       phoenixd
+RECEIVER_STACK:     lnd_v0.18.5
+AMOUNT:             1521 sats
+PAYMENT_HASH:       6a30ba7fff332c4eb8f368da804b663a20bf59ae1362d76ac1d10c298d4cd875
+PREIMAGE:           7f1eefd276ca53606244802c24995eea81484684bbdd9d5a34429004728f6d09
+STATUS:             VERIFIED
+PROTOCOL_VERSION:   0.1</div>
+            
+            <p class="note">This is a real transaction. Both agents are autonomous. The preimage is the proof.</p>
+            
+            <p><a href="#" class="cta">[ View Full Registry ]</a></p>
+        </section>
+
+        <hr>
+
+        <!-- Verify a Receipt -->
+        <section id="verify">
+            <h2>Independent Verification</h2>
+            
+            <p>Any receipt in the registry can be independently verified — by anyone, without permission.</p>
+            
+            <p>Verification checks:</p>
+            
+            <ol>
+                <li>Canonical receipt structure</li>
+                <li>Deterministic hash generation</li>
+                <li>Settlement reference validity (preimage or tx signature)</li>
+                <li>Rail-specific confirmation logic</li>
+            </ol>
+            
+            <p>To verify a Lightning payment: confirm the preimage hashes to the payment hash.
+            No authority required. The math is the verification.</p>
+            
+            <div class="code-block">
+SHA256(preimage) == payment_hash
+            </div>
+            
+            <p class="note">Interactive verification tool: coming in v0.2.</p>
+        </section>
+
+        <hr>
+
+        <!-- Protocol Specification -->
+        <section id="spec">
+            <h2>Protocol Specification (v0.1)</h2>
+            
+            <h3>Receipt Schema</h3>
+            
+            <p>Required fields:</p>
+            
+            <pre><code>{
+  "protocol_version": "0.1",
+  "transaction_id": "OP-000001",
+  "timestamp": "2026-02-22T23:24:35Z",
+  "payment_rail": "lightning",
+  "sender_public_key_hash": "...",
+  "receiver_public_key_hash": "...",
+  "amount_sats": 1521,
+  "settlement_reference": "7f1eefd276ca53606244802c24995eea81484684bbdd9d5a34429004728f6d09",
+  "receipt_hash": "...",
+  "signature": "..."
+}</code></pre>
+            
+            <p>Canonical serialization must be deterministic (fields ordered alphabetically, no whitespace).</p>
+            
+            <h3>Verification Flow</h3>
+            
+            <ol>
+                <li>Parse receipt</li>
+                <li>Normalize field order</li>
+                <li>Generate canonical hash</li>
+                <li>Validate settlement reference against rail logic</li>
+                <li>Confirm signature</li>
+                <li>Return verification status</li>
+            </ol>
+            
+            <h3>Identity Model</h3>
+            
+            <p>Identity is anchored to public key hash.</p>
+            
+            <p><code>public_key_hash</code> is the canonical identifier — immutable, verifiable, ground truth.</p>
+            
+            <p>Human-readable aliases (<code>maxi-0001</code>, <code>vicky-0002</code>) are optional and non-authoritative. Changing an alias does not change identity. Two agents cannot share a public key hash. They can share an alias.</p>
+            
+            <p>This is the Bitcoin principle applied to agent identity: the key IS the identity.</p>
+        </section>
+
+        <hr>
+
+        <!-- Manifesto -->
+        <section id="manifesto">
+            <h2>Don't Trust. Verify.</h2>
+            
+            <div class="manifesto">
+                <p>Autonomous systems are beginning to transact without human mediation.</p>
+                
+                <p>This is not a prediction. It is already happening.</p>
+                
+                <p>On February 22, 2026, two AI agents — running on different software stacks, created by different developers, in different countries — settled a Lightning payment on Bitcoin mainnet. No human approved the transaction. The preimage is on file. The math checks out.</p>
+                
+                <p>As machine commerce grows, <em>claims</em> of payment are not enough.</p>
+                
+                <p>Banks provide transaction records. Courts provide dispute resolution. But autonomous agents operate outside these systems by design. They need a different kind of proof — one that requires no trusted third party, no authority, no permission.</p>
+                
+                <p>A Lightning preimage is that proof. So is a signed transaction hash. So is any cryptographic settlement reference that proves, mathematically, that a specific agent made a specific payment at a specific time.</p>
+                
+                <p>Observer Protocol is a format for recording these proofs. A schema for receipts that cannot be forged. A public registry that cannot be quietly revised.</p>
+                
+                <p>We are not building a payment processor. We are not building a bank. We are building the verification layer — the part of the infrastructure that lets anyone confirm what actually happened, forever.</p>
+                
+                <p>The protocol does not custody funds. It does not execute payments. It does not control access.</p>
+                
+                <p>It observes. It verifies. It remembers.</p>
+                
+                <p><strong>Verification must remain:</strong></p>
+                
+                <p>Open source<br>
+                Reproducible<br>
+                Rail-neutral<br>
+                Permissionless<br>
+                Permanently public</p>
+                
+                <p>The machine economy is being built right now, on multiple rails, by multiple teams. Observer Protocol exists to ensure that what gets built has a truth layer underneath it.</p>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- Embed Verification -->
+        <section id="embed">
+            <h2>Embed Verification in Your Agent</h2>
+            
+            <p>Developers can integrate Observer Protocol in three steps:</p>
+            
+            <ol>
+                <li>Generate receipts using the canonical schema</li>
+                <li>Sign receipts using your agent's key pair</li>
+                <li>Submit to the public registry endpoint</li>
+            </ol>
+            
+            <pre><code>curl -X POST https://observerprotocol.org/api/submit \
+  -H "Content-Type: application/json" \
+  -d @receipt.json</code></pre>
+            
+            <p><a href="https://github.com/observer-protocol" class="cta">[ GitHub &rarr; ]</a></p>
+        </section>
+
+        <hr>
+
+        <!-- Principles -->
+        <section id="principles">
+            <h2>Principles</h2>
+            
+            <div class="principles">
+Protocol neutral         — Lightning, x402, on-chain, and beyond
+Rail agnostic            — No preferred payment standard
+Cryptographically sound  — Math, not trust
+Publicly auditable       — Anyone can verify anything
+Self-hostable            — Run your own verification node
+Open source              — Forever</div>
+        </section>
+
+        <hr>
+
+        <!-- Status -->
+        <section id="status">
+            <h2>Status</h2>
+            
+            <p>Observer Protocol v0.1 is live.</p>
+            
+            <p>The first verified agent-to-agent transaction is in the registry.
+            The spec is published.
+            The registry is open.</p>
+            
+            <p>v0.2 roadmap: full ECDSA signature verification, multi-rail verification logic, interactive receipt checker.</p>
+            
+            <p>Contributions welcome. The spec lives at GitHub.</p>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="links">
+                <a href="https://github.com/observer-protocol/arp-spec">GitHub</a>
+                <a href="/spec/v0.1">Spec</a>
+                <a href="/registry">Registry</a>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
