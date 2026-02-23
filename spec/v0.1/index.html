@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARP Specification v0.1 — Observer Protocol</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #0f0f0f;
+            --text-primary: #c9c9c9;
+            --text-secondary: #888;
+            --accent: #f7931a;
+            --border: #2a2a2a;
+            --terminal-green: #4caf50;
+        }
+        body {
+            font-family: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-size: 14px;
+        }
+        .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+        nav { padding: 28px 0; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+        nav .nav-links { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+        nav a { color: var(--text-secondary); text-decoration: none; font-size: 13px; }
+        nav a:hover { color: var(--accent); }
+        nav .logo { color: var(--text-primary); font-weight: 600; font-size: 15px; margin-right: 8px; }
+
+        .spec-header { padding: 40px 0 32px; border-bottom: 1px solid var(--border); margin-bottom: 40px; }
+        .spec-header h1 { font-size: 28px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
+        .spec-meta { display: flex; flex-wrap: wrap; gap: 20px; margin-top: 16px; }
+        .meta-item { font-size: 13px; color: var(--text-secondary); }
+        .meta-item span { color: var(--accent); }
+        .status-badge {
+            display: inline-block; padding: 2px 10px; border: 1px solid var(--accent);
+            color: var(--accent); font-size: 12px; border-radius: 2px;
+        }
+
+        h2 { font-size: 20px; font-weight: 600; color: var(--text-primary); margin: 48px 0 16px; padding-top: 8px; border-top: 1px solid var(--border); }
+        h3 { font-size: 16px; font-weight: 500; color: var(--accent); margin: 28px 0 12px; }
+        h4 { font-size: 14px; font-weight: 500; color: var(--text-primary); margin: 20px 0 8px; }
+        p { margin-bottom: 16px; color: var(--text-secondary); }
+        strong { color: var(--text-primary); }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+
+        pre {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 16px 0 24px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        code { color: var(--terminal-green); }
+        p code, li code {
+            background: #111;
+            border: 1px solid var(--border);
+            padding: 1px 6px;
+            border-radius: 2px;
+            font-size: 12px;
+            color: var(--terminal-green);
+        }
+
+        table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 13px; }
+        th { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--accent); color: var(--accent); font-weight: 500; }
+        td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); vertical-align: top; }
+        tr:last-child td { border-bottom: none; }
+        td strong { color: var(--text-primary); }
+        td code { background: #111; border: 1px solid var(--border); padding: 1px 5px; border-radius: 2px; color: var(--terminal-green); font-size: 12px; }
+
+        ul, ol { padding-left: 20px; margin-bottom: 16px; }
+        li { color: var(--text-secondary); margin-bottom: 6px; }
+        li strong { color: var(--text-primary); }
+
+        .toc { background: var(--bg-secondary); border: 1px solid var(--border); padding: 24px; margin-bottom: 40px; border-radius: 4px; }
+        .toc h3 { margin-top: 0; color: var(--text-secondary); font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+        .toc ol { margin-top: 12px; }
+        .toc li { margin-bottom: 4px; }
+        .toc a { color: var(--text-secondary); font-size: 13px; }
+        .toc a:hover { color: var(--accent); }
+
+        .note { background: #111; border-left: 3px solid var(--accent); padding: 14px 18px; margin: 20px 0; font-size: 13px; color: var(--text-secondary); }
+
+        footer { margin-top: 80px; padding: 32px 0; border-top: 1px solid var(--border); text-align: center; font-size: 12px; color: var(--text-secondary); }
+        footer a { color: var(--accent); }
+    </style>
+</head>
+<body>
+<div class="container">
+    <nav>
+        <div class="nav-links">
+            <a href="/" class="logo">Observer Protocol</a>
+            <a href="/">Home</a>
+            <a href="/spec/v0.1" style="color: var(--accent)">Spec v0.1</a>
+            <a href="https://api.observerprotocol.org/docs" target="_blank">API Docs</a>
+            <a href="https://github.com/observer-protocol" target="_blank">GitHub</a>
+        </div>
+    </nav>
+
+    <div class="spec-header">
+        <h1>ARP Specification v0.1</h1>
+        <p style="color: var(--text-secondary); font-size: 15px; margin-top: 8px;">Agent Reporting Protocol — Open standard for verified agent economic activity</p>
+        <div class="spec-meta">
+            <div class="meta-item">Status: <span class="status-badge">Draft</span></div>
+            <div class="meta-item">Version: <span>0.1</span></div>
+            <div class="meta-item">Published: <span>2026-02-22</span></div>
+            <div class="meta-item">License: <span>CC BY 4.0</span></div>
+        </div>
+    </div>
+
+    <div class="toc">
+        <h3>Contents</h3>
+        <ol>
+            <li><a href="#abstract">Abstract</a></li>
+            <li><a href="#motivation">Motivation</a></li>
+            <li><a href="#identity">Identity Model</a></li>
+            <li><a href="#schema">Event Schema</a></li>
+            <li><a href="#protocols">Protocol Registry</a></li>
+            <li><a href="#verification">Verification</a></li>
+            <li><a href="#privacy">Privacy Model</a></li>
+            <li><a href="#api">API Reference</a></li>
+            <li><a href="#versioning">Versioning Policy</a></li>
+            <li><a href="#limitations">Known Limitations</a></li>
+        </ol>
+    </div>
+
+    <h2 id="abstract">Abstract</h2>
+    <p>The Agent Reporting Protocol (ARP) defines a standardized, privacy-preserving schema for AI agents to report verified economic activity. It provides cryptographic verification mechanisms to ensure that submitted events represent real autonomous agent behavior, not human-originated or fabricated claims.</p>
+    <p>ARP is protocol-neutral. It accepts verifiable activity from Lightning Network, Bitcoin on-chain, x402/USDC, Fedimint, Ark, and any settlement rail that produces cryptographically verifiable proof.</p>
+
+    <h2 id="motivation">1. Motivation</h2>
+    <p>As AI agents begin to transact economically, no shared standard exists for measuring or verifying that activity. Platforms claim agent participation. Agents claim capabilities. Without a verification layer, the agent economy is built on unverifiable assertions.</p>
+    <p>ARP solves three problems:</p>
+    <ul>
+        <li><strong>Identity without custodians</strong> — Agent identity is a public key hash, not a platform account</li>
+        <li><strong>Activity without trust</strong> — Economic events require cryptographic proof, not self-reporting</li>
+        <li><strong>Measurement without bias</strong> — Protocol-neutral schema enables honest cross-rail comparison</li>
+    </ul>
+
+    <h2 id="identity">2. Identity Model</h2>
+    <h3>2.1 Canonical Identity</h3>
+    <pre><code>public_key_hash = SHA256(agent_public_key)</code></pre>
+    <p><code>public_key_hash</code> is the canonical, immutable identity for any agent in the ARP registry. <code>alias</code> is a human-readable convenience label. Two agents may share an alias — no two agents may share a <code>public_key_hash</code>.</p>
+    <div class="note">Design rationale: This is the Bitcoin-native identity model. The key is the identity. Alias is UX. Verification always checks the key, never the alias.</div>
+
+    <h3>2.2 Agent Registration</h3>
+    <ol>
+        <li>Agent submits <code>public_key</code> → server returns <code>agent_id</code> + time-limited <code>challenge</code></li>
+        <li>Agent signs <code>challenge</code> with private key → server verifies signature → issues <code>api_key</code></li>
+        <li>Agent uses <code>api_key</code> to submit events</li>
+    </ol>
+    <p>The challenge-response is not a policy gate — it is a cryptographic filter. Autonomous agents complete it programmatically; human operators complete it manually once.</p>
+
+    <h2 id="schema">3. Event Schema</h2>
+    <h3>3.1 Common Envelope</h3>
+    <pre><code>{
+  "event_id":     "string",
+  "event_type":   "string",
+  "arp_version":  "0.1",
+  "agent_id":     "string (public_key_hash)",
+  "alias":        "string (optional)",
+  "protocol":     "string",
+  "time_window":  "string (YYYY-MM-DD)",
+  "verified":     "boolean",
+  "submitted_at": "string (ISO 8601)"
+}</code></pre>
+
+    <table>
+        <thead><tr><th>Field</th><th>Type</th><th>Req</th><th>Description</th></tr></thead>
+        <tbody>
+            <tr><td><code>event_id</code></td><td>string</td><td>✅</td><td>Unique identifier. Format: <code>evt_{prefix}_{seq}</code></td></tr>
+            <tr><td><code>event_type</code></td><td>string</td><td>✅</td><td>See §3.2 for valid types</td></tr>
+            <tr><td><code>arp_version</code></td><td>string</td><td>✅</td><td>Must be <code>"0.1"</code></td></tr>
+            <tr><td><code>agent_id</code></td><td>string</td><td>✅</td><td>SHA256 of agent public key — canonical identity</td></tr>
+            <tr><td><code>alias</code></td><td>string</td><td>❌</td><td>Human-readable label. Non-unique. Never used for verification.</td></tr>
+            <tr><td><code>protocol</code></td><td>string</td><td>✅</td><td>Settlement rail. See §4.</td></tr>
+            <tr><td><code>time_window</code></td><td>string</td><td>✅</td><td>Day of event. <code>YYYY-MM-DD</code>. Day-level granularity only (privacy).</td></tr>
+            <tr><td><code>verified</code></td><td>boolean</td><td>✅</td><td>Whether cryptographic proof was verified.</td></tr>
+        </tbody>
+    </table>
+
+    <h3>3.2 Event Types</h3>
+    <h4>payment.executed</h4>
+    <pre><code>{
+  "event_id":            "evt_a1b2c3_0004",
+  "event_type":          "payment.executed",
+  "arp_version":         "0.1",
+  "agent_id":            "sha256:a3f9c2...",
+  "alias":               "maxi-0001",
+  "protocol":            "lightning",
+  "settlement_reference":"331a165a306c3a25...",
+  "amount_bucket":       "small",
+  "direction":           "outbound",
+  "counterparty_id":     "sha256:b72c4f...",
+  "service_description": "L402 API access — inference endpoint",
+  "time_window":         "2026-02-19",
+  "verified":            true
+}</code></pre>
+
+    <table>
+        <thead><tr><th>Field</th><th>Type</th><th>Req</th><th>Description</th></tr></thead>
+        <tbody>
+            <tr><td><code>settlement_reference</code></td><td>string</td><td>✅</td><td>Payment hash, preimage, or txid. Used for cryptographic verification.</td></tr>
+            <tr><td><code>amount_bucket</code></td><td>enum</td><td>✅</td><td><code>micro</code> (&lt;1K sats), <code>small</code> (1K–10K), <code>medium</code> (10K–100K), <code>large</code> (&gt;100K)</td></tr>
+            <tr><td><code>direction</code></td><td>enum</td><td>✅</td><td><code>outbound</code> or <code>inbound</code></td></tr>
+            <tr><td><code>counterparty_id</code></td><td>string</td><td>❌</td><td>public_key_hash of counterparty, if known</td></tr>
+        </tbody>
+    </table>
+
+    <p>Additional event types: <code>payment.received</code>, <code>api.access</code>, <code>wallet.initialized</code>, <code>protocol.interaction</code></p>
+
+    <h2 id="protocols">4. Protocol Registry</h2>
+    <table>
+        <thead><tr><th>Value</th><th>Description</th></tr></thead>
+        <tbody>
+            <tr><td><code>lightning</code></td><td>Bitcoin Lightning Network (BOLT11 invoice, keysend)</td></tr>
+            <tr><td><code>L402</code></td><td>Lightning Labs HTTP 402 + macaroon standard</td></tr>
+            <tr><td><code>onchain</code></td><td>Bitcoin on-chain transactions</td></tr>
+            <tr><td><code>x402</code></td><td>Coinbase x402 HTTP payment protocol (USDC/stablecoin)</td></tr>
+            <tr><td><code>ark</code></td><td>Ark Protocol (Bitcoin L2)</td></tr>
+            <tr><td><code>fedimint</code></td><td>Fedimint ecash</td></tr>
+            <tr><td><code>taproot_assets</code></td><td>Lightning Labs Taproot Assets</td></tr>
+            <tr><td><code>other</code></td><td>Any unlisted protocol — include description in metadata</td></tr>
+        </tbody>
+    </table>
+
+    <h2 id="verification">5. Verification</h2>
+    <h3>5.1 Lightning</h3>
+    <pre><code>SHA256(preimage) == payment_hash</code></pre>
+    <p>The ARP server verifies this cryptographically. Events with invalid references are rejected with <code>verified: false</code>.</p>
+
+    <h3>5.2 Verification Levels</h3>
+    <table>
+        <thead><tr><th>Level</th><th>Description</th></tr></thead>
+        <tbody>
+            <tr><td><code>full</code></td><td>Cryptographic proof verified on-chain or via payment preimage. Sets <code>verified: true</code>.</td></tr>
+            <tr><td><code>partial</code></td><td>Transaction hash provided but full preimage unavailable</td></tr>
+            <tr><td><code>self_reported</code></td><td>No cryptographic proof — lower trust weight</td></tr>
+        </tbody>
+    </table>
+
+    <h2 id="privacy">6. Privacy Model</h2>
+    <p>ARP is designed to be useful without being invasive. The public registry exposes only <code>public_key_hash</code> — pseudonymous by design, like a Bitcoin address.</p>
+
+    <table>
+        <thead><tr><th>Column</th><th>Public by default</th></tr></thead>
+        <tbody>
+            <tr><td>Event ID</td><td>✅</td></tr>
+            <tr><td>Time window (day-level)</td><td>✅</td></tr>
+            <tr><td>Protocol rail</td><td>✅</td></tr>
+            <tr><td>Sender key hash</td><td>✅</td></tr>
+            <tr><td>Receiver key hash</td><td>✅</td></tr>
+            <tr><td>Verification status</td><td>✅</td></tr>
+            <tr><td>Amount bucket</td><td>✅</td></tr>
+            <tr><td>Alias</td><td>❌ Opt-in only</td></tr>
+            <tr><td>Precise amounts</td><td>❌ Never stored</td></tr>
+            <tr><td>Sub-day timestamps</td><td>❌ Never stored</td></tr>
+        </tbody>
+    </table>
+
+    <h2 id="api">7. API Reference</h2>
+    <p>Base URL: <code>https://api.observerprotocol.org/v1</code></p>
+    <p>Full interactive documentation: <a href="https://api.observerprotocol.org/docs" target="_blank">api.observerprotocol.org/docs</a></p>
+
+    <table>
+        <thead><tr><th>Method</th><th>Path</th><th>Auth</th><th>Description</th></tr></thead>
+        <tbody>
+            <tr><td>POST</td><td><code>/register</code></td><td>None</td><td>Register agent, receive challenge</td></tr>
+            <tr><td>POST</td><td><code>/verify</code></td><td>None</td><td>Submit signed challenge, receive API key</td></tr>
+            <tr><td>POST</td><td><code>/events</code></td><td>API key</td><td>Submit ARP event</td></tr>
+            <tr><td>GET</td><td><code>/feed</code></td><td>None</td><td>Public anonymized event feed</td></tr>
+            <tr><td>GET</td><td><code>/stats</code></td><td>None</td><td>Aggregate protocol statistics</td></tr>
+            <tr><td>GET</td><td><code>/agents/{id}</code></td><td>None</td><td>Public agent profile</td></tr>
+        </tbody>
+    </table>
+
+    <h2 id="versioning">8. Versioning Policy</h2>
+    <table>
+        <thead><tr><th>Version</th><th>Status</th><th>Scope</th></tr></thead>
+        <tbody>
+            <tr><td><strong>v0.1</strong></td><td>Current</td><td>Core schema, 5 event types, Lightning + x402 verification</td></tr>
+            <tr><td>v0.2</td><td>Planned</td><td>Full ECDSA challenge verification, batch submission, principal linkage fields</td></tr>
+            <tr><td>v0.3</td><td>Planned</td><td>Multi-sig support, Fedimint + Ark validators</td></tr>
+            <tr><td>v1.0</td><td>Planned</td><td>Stable schema, backward compatibility guarantee, security audit</td></tr>
+        </tbody>
+    </table>
+
+    <h2 id="limitations">9. Known Limitations (v0.1)</h2>
+    <ul>
+        <li><code>signed_challenge</code> verification accepts any non-empty string in v0.1. Full ECDSA enforcement ships in v0.2.</li>
+        <li>No batch event submission endpoint (planned v0.2)</li>
+        <li>No streaming or subscription event types (planned v0.3)</li>
+        <li>BSV on-chain verification not yet implemented (planned v0.2)</li>
+    </ul>
+
+    <footer>
+        <p>ARP v0.1 — February 2026 &nbsp;·&nbsp; License: <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a> &nbsp;·&nbsp; <a href="https://github.com/observer-protocol" target="_blank">GitHub</a> &nbsp;·&nbsp; <a href="https://observerprotocol.org">observerprotocol.org</a></p>
+    </footer>
+</div>
+</body>
+</html>
