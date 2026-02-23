@@ -22,6 +22,7 @@
             --accent: #f7931a;
             --border: #2a2a2a;
             --border-subtle: #333;
+            --terminal-green: #4caf50;
         }
 
         body {
@@ -86,11 +87,18 @@
             font-weight: 500;
         }
 
-        .hero .sub-tagline {
-            font-size: 14px;
+        .hero .identity-anchor {
+            font-size: 12px;
             color: var(--text-secondary);
-            margin-bottom: 32px;
-            font-style: italic;
+            margin-bottom: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .hero .protocol-meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin: 16px 0 24px;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .hero-nav {
@@ -113,6 +121,31 @@
         .hero-note {
             font-size: 12px;
             color: var(--text-secondary);
+        }
+
+        /* Terminal status block */
+        .terminal-status {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 20px;
+            margin: 24px 0 32px;
+            font-size: 12px;
+            line-height: 1.8;
+            white-space: pre;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .terminal-status .prompt {
+            color: var(--terminal-green);
+        }
+
+        .terminal-status .key {
+            color: var(--terminal-green);
+        }
+
+        .terminal-status .value {
+            color: var(--text-primary);
         }
 
         /* Sections */
@@ -215,6 +248,26 @@
             color: var(--text-primary);
         }
 
+        /* Expandable details */
+        details {
+            margin: 16px 0 24px;
+            font-size: 12px;
+        }
+
+        details summary {
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        details summary:hover {
+            color: var(--accent);
+        }
+
+        details pre {
+            margin-top: 16px;
+        }
+
         /* Manifesto */
         .manifesto {
             border-left: 2px solid var(--accent);
@@ -272,6 +325,10 @@
         .mono {
             font-family: 'JetBrains Mono', 'IBM Plex Mono', monospace;
         }
+
+        .dim {
+            color: var(--text-secondary);
+        }
     </style>
 </head>
 <body>
@@ -280,7 +337,21 @@
         <header class="hero">
             <h1>Observer Protocol</h1>
             <p class="tagline">The trust layer for the agentic economy.</p>
-            <p class="sub-tagline">The first publicly verifiable history layer for agent payments.</p>
+            
+            <p class="identity-anchor">identity anchor: public_key_hash</p>
+            <p class="identity-anchor">aliases are human-readable. key hashes are ground truth.</p>
+            
+            <p class="protocol-meta dim">Protocol Version: v0.1-alpha<br>Genesis Registry Entry: OP-000001 — 2026-02-22T23:24:35Z</p>
+            
+            <div class="terminal-status">
+<span class="prompt">$</span> observer_protocol status
+
+  <span class="key">network:</span>            <span class="value">active</span>
+  <span class="key">registry_entries:</span>   <span class="value">1</span>
+  <span class="key">verification:</span>       <span class="value">online</span>
+  <span class="key">rails_supported:</span>    <span class="value">L402 (Lightning)</span>
+  <span class="key">protocol_version:</span>   <span class="value">v0.1-alpha</span>
+  <span class="key">genesis_entry:</span>      <span class="value">OP-000001</span></div>
             
             <div class="hero-nav">
                 <a href="#registry">[ View Public Registry ]</a>
@@ -292,6 +363,76 @@
             
             <p class="hero-note">Open source. Rail-neutral. Cryptographically verifiable.</p>
         </header>
+
+        <hr>
+
+        <!-- Public Registry -->
+        <section id="registry">
+            <h2>Live Verification Registry</h2>
+            
+            <p>The registry is a permanent, publicly browsable record of verified agent-to-agent transactions.</p>
+            
+            <p>Each entry is cryptographically provable. Preimages for Lightning. Transaction signatures for on-chain and x402 rails. A receipt you cannot fake.</p>
+            
+            <p>Each entry contains:</p>
+            
+            <ul>
+                <li>Transaction ID</li>
+                <li>Timestamp (UTC)</li>
+                <li>Payment Rail</li>
+                <li>Sender Public Key Hash</li>
+                <li>Receiver Public Key Hash</li>
+                <li>Settlement Reference (preimage / tx hash)</li>
+                <li>Verification Status</li>
+                <li>Protocol Version</li>
+                <li>Raw Receipt (expandable JSON)</li>
+            </ul>
+            
+            <p><strong>Genesis Entry — First Verified Agent-to-Agent Transaction:</strong></p>
+            
+            <div class="terminal">
+<span class="label">TX_ID:</span>              <span class="value">OP-000001</span>
+<span class="label">TIMESTAMP:</span>          <span class="value">2026-02-22T23:24:35Z</span>
+<span class="label">RAIL:</span>               <span class="value">Lightning (L402)</span>
+<span class="label">SENDER:</span>             <span class="value">vicky-0002</span>
+<span class="label">RECEIVER:</span>           <span class="value">maxi-0001</span>
+<span class="label">SENDER_STACK:</span>       <span class="value">phoenixd</span>
+<span class="label">RECEIVER_STACK:</span>     <span class="value">lnd_v0.18.5</span>
+<span class="label">AMOUNT:</span>             <span class="value">1521 sats</span>
+<span class="label">PAYMENT_HASH:</span>       <span class="value">6a30ba7fff332c4eb8f368da804b663a20bf59ae1362d76ac1d10c298d4cd875</span>
+<span class="label">PREIMAGE:</span>           <span class="value">7f1eefd276ca53606244802c24995eea81484684bbdd9d5a34429004728f6d09</span>
+<span class="label">STATUS:</span>             <span class="value">VERIFIED</span>
+<span class="label">PROTOCOL_VERSION:</span>   <span class="value">0.1</span></div>
+            
+            <details>
+                <summary>[ expand raw receipt JSON ]</summary>
+                <pre>{
+  "protocol_version": "0.1",
+  "event_id": "event-maxi-0001-0004",
+  "transaction_id": "OP-000001",
+  "timestamp": "2026-02-22T23:24:35Z",
+  "payment_rail": "lightning",
+  "sender": {
+    "alias": "vicky-0002",
+    "stack": "phoenixd"
+  },
+  "receiver": {
+    "alias": "maxi-0001",
+    "stack": "lnd_v0.18.5"
+  },
+  "amount_sats": 1521,
+  "payment_hash": "6a30ba7fff332c4eb8f368da804b663a20bf59ae1362d76ac1d10c298d4cd875",
+  "preimage": "7f1eefd276ca53606244802c24995eea81484684bbdd9d5a34429004728f6d09",
+  "verification": "SHA256(preimage) == payment_hash",
+  "status": "VERIFIED",
+  "arp_version": "0.1"
+}</pre>
+            </details>
+            
+            <p class="note">This is a real transaction. Both agents are autonomous. The preimage is the proof.</p>
+            
+            <p><a href="#" class="cta">[ View Full Registry ]</a></p>
+        </section>
 
         <hr>
 
@@ -313,51 +454,6 @@
             </ul>
             
             <p>Verification is permissionless. The registry is public. No custody. No control.</p>
-        </section>
-
-        <hr>
-
-        <!-- Public Registry -->
-        <section id="registry">
-            <h2>The First Publicly Verifiable History Layer for Agent Payments</h2>
-            
-            <p>The registry is a permanent, publicly browsable record of verified agent-to-agent transactions.</p>
-            
-            <p>Each entry is cryptographically provable. Preimages for Lightning. Transaction signatures for on-chain and x402 rails. A receipt you cannot fake.</p>
-            
-            <p>Each entry contains:</p>
-            
-            <ul>
-                <li>Transaction ID</li>
-                <li>Timestamp (UTC)</li>
-                <li>Payment Rail</li>
-                <li>Sender Public Key Hash</li>
-                <li>Receiver Public Key Hash</li>
-                <li>Settlement Reference (preimage / tx hash)</li>
-                <li>Verification Status</li>
-                <li>Protocol Version</li>
-                <li>Raw Receipt (expandable JSON)</li>
-            </ul>
-            
-            <p><strong>Example — First Verified Agent-to-Agent Transaction:</strong></p>
-            
-            <div class="terminal">
-TX_ID:              OP-000001
-TIMESTAMP:          2026-02-22T23:24:35Z
-RAIL:               Lightning (L402)
-SENDER:             vicky-0002
-RECEIVER:           maxi-0001
-SENDER_STACK:       phoenixd
-RECEIVER_STACK:     lnd_v0.18.5
-AMOUNT:             1521 sats
-PAYMENT_HASH:       6a30ba7fff332c4eb8f368da804b663a20bf59ae1362d76ac1d10c298d4cd875
-PREIMAGE:           7f1eefd276ca53606244802c24995eea81484684bbdd9d5a34429004728f6d09
-STATUS:             VERIFIED
-PROTOCOL_VERSION:   0.1</div>
-            
-            <p class="note">This is a real transaction. Both agents are autonomous. The preimage is the proof.</p>
-            
-            <p><a href="#" class="cta">[ View Full Registry ]</a></p>
         </section>
 
         <hr>
