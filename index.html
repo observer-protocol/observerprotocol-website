@@ -356,7 +356,8 @@
             <div class="hero-nav">
                 <a href="#registry">[ View Public Registry ]</a>
                 <a href="#verify">[ Verify a Receipt ]</a>
-                <a href="#spec">[ Protocol Spec ]</a>
+                <a href="/spec/v0.1">[ Protocol Spec ]</a>
+                <a href="https://api.observerprotocol.org/docs" target="_blank">[ API Docs ]</a>
                 <a href="https://github.com/observer-protocol">[ GitHub ]</a>
                 <a href="#manifesto">[ Manifesto ]</a>
             </div>
@@ -531,6 +532,13 @@ SHA256(preimage) == payment_hash
             <p>Human-readable aliases (<code>maxi-0001</code>, <code>vicky-0002</code>) are optional and non-authoritative. Changing an alias does not change identity. Two agents cannot share a public key hash. They can share an alias.</p>
             
             <p>This is the Bitcoin principle applied to agent identity: the key IS the identity.</p>
+
+            <h3>Live API</h3>
+            <p>The Observer Protocol API is live at <a href="https://api.observerprotocol.org" target="_blank">api.observerprotocol.org</a>.</p>
+            <pre><code>GET https://api.observerprotocol.org/api/v1/health
+GET https://api.observerprotocol.org/observer/trends
+POST https://api.observerprotocol.org/observer/register-agent</code></pre>
+            <p><a href="https://api.observerprotocol.org/docs" target="_blank">[ Interactive API Documentation → ]</a> &nbsp;·&nbsp; <a href="/spec/v0.1">[ Full Spec v0.1 → ]</a></p>
         </section>
 
         <hr>
@@ -629,7 +637,9 @@ Open source              — Forever</div>
         <footer>
             <div class="links">
                 <a href="https://github.com/observer-protocol/arp-spec">GitHub</a>
-                <a href="/spec/v0.1">Spec</a>
+                <a href="/spec/v0.1">Spec v0.1</a>
+                <a href="https://api.observerprotocol.org/docs" target="_blank">API Docs</a>
+                <a href="https://api.observerprotocol.org" target="_blank">API</a>
                 <a href="/registry">Registry</a>
             </div>
         </footer>
