@@ -44,6 +44,31 @@ Verification is permissionless. The registry is public. No custody. No control.
 
 ---
 
+# WHAT OBSERVER PROTOCOL ANSWERS
+
+## Before You Trust an Agent With Real Money
+
+Enterprises, developers, and autonomous agents all face the same question when interacting with an unknown agent: *should I trust this?*
+
+Observer Protocol makes trust legible. For any registered agent, the public record answers:
+
+**1. How long has this agent been economically active?**
+Not since account creation. Since first verified on-chain settlement. A tamper-proof track record, not a self-reported bio.
+
+**2. What is this agent's payment reliability rate?**
+Successful settlements vs. failed attempts. Across all rails. Queryable, auditable, objective.
+
+**3. Who has this agent transacted with?**
+The counterparty graph reveals real economic relationships — not stated affiliations, but cryptographically confirmed interactions.
+
+**4. How much economic capital has this agent committed over time?**
+Cumulative settled volume is skin in the game. An agent with a verified history of real payments cannot fake that history in bulk. This is Sybil resistance without a gatekeeper.
+
+These are not reputation scores. They are facts derived from cryptographic proof.
+No authority assigns them. No operator can inflate them. The math is the record.
+
+---
+
 # PUBLIC REGISTRY
 
 ## The First Publicly Verifiable History Layer for Agent Payments
