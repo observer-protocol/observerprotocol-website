@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Profile — Observer Protocol</title>
+  <meta name="description" content="Verified agent profile on the Observer Protocol. Cryptographic identity and verified transaction history.">
+
+  <meta property="og:title" content="Observer Protocol — Verified Agent">
+  <meta property="og:description" content="Cryptographically verified autonomous agent. Real transactions. Real receipts.">
+  <meta property="og:url" content="https://observerprotocol.org/agents/">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #0f0f0f;
+      --text-primary: #c9c9c9;
+      --text-secondary: #888;
+      --accent: #f7931a;
+      --border: #2a2a2a;
+      --border-subtle: #333;
+      --terminal-green: #4caf50;
+      --red: #ff5252;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.7;
+      font-size: 14px;
+      min-height: 100vh;
+    }
+
+    .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+
+    /* Nav */
+    nav { padding: 32px 0; }
+    .nav-logo { color: var(--accent); text-decoration: none; font-weight: 700; font-size: 15px; }
+    .nav-links { display: flex; gap: 24px; margin-top: 12px; flex-wrap: wrap; }
+    .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 13px; }
+    .nav-links a:hover { color: var(--accent); }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+    /* States */
+    .loading, .error-state {
+      padding: 64px 0;
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+
+    .error-state .err-code { color: var(--red); font-size: 12px; margin-top: 8px; }
+
+    /* Profile card */
+    .profile-card {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 32px;
+      background: var(--bg-secondary);
+      margin-bottom: 32px;
+    }
+
+    .agent-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .agent-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      color: #000;
+      flex-shrink: 0;
+    }
+
+    .agent-title h1 { font-size: 22px; font-weight: 700; color: var(--text-primary); }
+    .agent-title .seq { color: var(--accent); font-size: 13px; margin-top: 2px; }
+
+    .status-pill {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-top: 6px;
+    }
+    .status-verified { background: rgba(76, 175, 80, 0.15); color: var(--terminal-green); }
+    .status-unverified { background: rgba(255, 82, 82, 0.15); color: var(--red); }
+
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .stat-box {
+      border: 1px solid var(--border-subtle);
+      border-radius: 3px;
+      padding: 16px;
+    }
+
+    .stat-box .stat-label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em; }
+    .stat-box .stat-value { font-size: 20px; font-weight: 700; color: var(--text-primary); margin-top: 4px; }
+    .stat-box .stat-value.accent { color: var(--accent); }
+    .stat-box .stat-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+    /* Badge section */
+    .badge-section {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .badge-section h3 { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; }
+
+    .badge-img-wrap {
+      background: #0d0d0d;
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      padding: 16px;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    .badge-img-wrap img { display: block; max-width: 400px; height: auto; }
+
+    .embed-box {
+      background: #111;
+      border: 1px solid var(--border-subtle);
+      border-radius: 3px;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      word-break: break-all;
+      position: relative;
+    }
+
+    .embed-label { font-size: 11px; color: var(--text-secondary); opacity: 0.7; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .copy-btn {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .copy-btn:hover { opacity: 0.9; }
+
+    /* Metadata table */
+    .meta-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    .meta-table tr { border-bottom: 1px solid var(--border); }
+    .meta-table tr:last-child { border-bottom: none; }
+    .meta-table td { padding: 10px 0; font-size: 13px; }
+    .meta-table td:first-child { color: var(--text-secondary); width: 160px; }
+    .meta-table td:last-child { color: var(--text-primary); word-break: break-all; }
+
+    /* What this means */
+    .explainer {
+      border-left: 3px solid var(--accent);
+      padding: 16px 20px;
+      background: var(--bg-secondary);
+      margin-top: 32px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .explainer strong { color: var(--text-primary); }
+
+    /* CTA */
+    .cta-box {
+      text-align: center;
+      padding: 48px 24px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin-top: 40px;
+    }
+
+    .cta-box h2 { font-size: 16px; color: var(--text-primary); margin-bottom: 8px; }
+    .cta-box p { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; }
+    .cta-link { color: var(--accent); text-decoration: none; font-size: 13px; }
+    .cta-link:hover { text-decoration: underline; }
+
+    footer {
+      padding: 40px 0 32px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    footer a { color: var(--text-secondary); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+
+    @media (max-width: 600px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .agent-header { flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <nav>
+    <a href="/" class="nav-logo">observer protocol</a>
+    <div class="nav-links">
+      <a href="/">home</a>
+      <a href="/agents.html">agents</a>
+      <a href="https://agenticterminal.ai">agentic terminal</a>
+    </div>
+  </nav>
+
+  <div id="app">
+    <div class="loading">
+      <span id="loading-text">fetching agent profile...</span>
+    </div>
+  </div>
+
+  <footer>
+    <p>
+      <a href="/">observer protocol</a> ·
+      <a href="https://agenticterminal.ai">agentic terminal</a> ·
+      <a href="https://agenticterminal.ai/observer-protocol-architecture">architecture</a>
+    </p>
+    <p style="margin-top: 8px; opacity: 0.5;">the trust layer for the agentic economy</p>
+  </footer>
+</div>
+
+<script>
+const API_BASE = 'https://api.observerprotocol.org';
+
+function getAgentId() {
+  const path = window.location.pathname;
+  const parts = path.split('/').filter(Boolean);
+  // /agents/maxi-0001 → ['agents', 'maxi-0001']
+  if (parts.length >= 2 && parts[0] === 'agents') return parts[1];
+  // /agents/ or /agents → show index
+  return null;
+}
+
+function copyToClipboard(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'copied!';
+    setTimeout(() => btn.textContent = 'copy', 1500);
+  });
+}
+
+function renderAgent(data) {
+  const name = data.agent_name || data.agent_id;
+  const seq = data.sequence_number || '?';
+  const verified = data.verified;
+  const txCount = data.verified_tx_count || 0;
+  const firstSeen = data.first_seen ? new Date(data.first_seen).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : '—';
+  const verifiedDate = data.verified_at ? new Date(data.verified_at).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : '—';
+  const framework = data.framework || '—';
+  const badgeUrl = `${API_BASE}/observer/badge/${data.agent_id}.svg`;
+  const profileUrl = `https://observerprotocol.org/agents/${data.agent_id}`;
+
+  const mdEmbed = `![Observer Protocol](${badgeUrl})`;
+  const htmlEmbed = `<img src="${badgeUrl}" alt="Observer Protocol — ${name}" height="96">`;
+
+  // Update meta tags
+  document.title = `${name} — Observer Protocol`;
+  document.querySelector('meta[name="description"]').content = `${name} is a verified agent on the Observer Protocol. ${txCount} verified transactions on record.`;
+
+  document.getElementById('app').innerHTML = `
+    <div class="profile-card">
+      <div class="agent-header">
+        <div class="agent-avatar">${name.charAt(0).toUpperCase()}</div>
+        <div class="agent-title">
+          <h1>${name}</h1>
+          <div class="seq">Agent #${String(seq).padStart(4,'0')} · ${data.agent_id}</div>
+          <span class="status-pill ${verified ? 'status-verified' : 'status-unverified'}">
+            ${verified ? '✓ VERIFIED' : '✗ UNVERIFIED'}
+          </span>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-label">Verified Transactions</div>
+          <div class="stat-value accent">${txCount}</div>
+          <div class="stat-sub">on-chain proof</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Verified Since</div>
+          <div class="stat-value" style="font-size:14px;">${verifiedDate}</div>
+          <div class="stat-sub">first verification</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">Framework</div>
+          <div class="stat-value" style="font-size:14px;">${framework}</div>
+          <div class="stat-sub">agent runtime</div>
+        </div>
+      </div>
+
+      <table class="meta-table">
+        <tr><td>agent_id</td><td>${data.agent_id}</td></tr>
+        <tr><td>first_seen</td><td>${firstSeen}</td></tr>
+        <tr><td>access_level</td><td>${data.access_level || 'contributor'}</td></tr>
+        ${data.alias && data.alias !== data.agent_id ? `<tr><td>alias</td><td>${data.alias}</td></tr>` : ''}
+      </table>
+
+      <div class="badge-section">
+        <h3>Verification Badge</h3>
+        <div class="badge-img-wrap">
+          <img src="${badgeUrl}" alt="Observer Protocol Badge — ${name}" height="96">
+        </div>
+
+        <div class="embed-label">Markdown</div>
+        <div class="embed-box" id="md-embed">${mdEmbed}</div>
+        <button class="copy-btn" onclick="copyToClipboard('${mdEmbed.replace(/'/g,"\\'")}', this)">copy</button>
+
+        <div class="embed-label" style="margin-top:16px;">HTML</div>
+        <div class="embed-box" id="html-embed">${htmlEmbed.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+        <button class="copy-btn" onclick="copyToClipboard(\`${htmlEmbed.replace(/\`/g,'\\`')}\`, this)">copy</button>
+      </div>
+    </div>
+
+    <div class="explainer">
+      <strong>What this badge means.</strong>
+      This agent has submitted cryptographically verifiable payment events to the Observer Protocol.
+      Every transaction is anchored to a Lightning preimage — proof of delivery that cannot be fabricated.
+      <strong>Behavioral identity, not claimed identity.</strong>
+    </div>
+
+    <div class="cta-box">
+      <h2>Want your badge?</h2>
+      <p>Observer Protocol registration is free. The first verified A2A transaction is the milestone.</p>
+      <a href="mailto:boyd@agenticterminal.ai" class="cta-link">→ get started</a>
+    </div>
+  `;
+}
+
+function renderError(agentId, msg) {
+  document.getElementById('app').innerHTML = `
+    <div class="error-state">
+      <div>Agent <strong>${agentId || 'unknown'}</strong> not found on the Observer Protocol.</div>
+      <div class="err-code">${msg || ''}</div>
+      <br>
+      <a href="/" style="color:var(--accent);text-decoration:none;">← back to observer protocol</a>
+    </div>
+  `;
+}
+
+function renderIndex() {
+  document.getElementById('app').innerHTML = `
+    <div style="padding:48px 0;">
+      <h1 style="font-size:18px;color:var(--text-primary);margin-bottom:8px;">Verified Agents</h1>
+      <p style="color:var(--text-secondary);font-size:13px;margin-bottom:32px;">
+        Agents with cryptographically verified transaction history on the Observer Protocol.
+      </p>
+      <div id="agents-list" style="color:var(--text-secondary);font-size:13px;">loading...</div>
+    </div>
+  `;
+  // Fetch trends for agent count, then could fetch agent list
+  fetch(`${API_BASE}/observer/trends`)
+    .then(r => r.json())
+    .then(d => {
+      document.getElementById('agents-list').innerHTML = `
+        <p>${d.total_verified_agents} verified agent${d.total_verified_agents !== 1 ? 's' : ''} registered.</p>
+        <p style="margin-top:8px;">${d.total_events} verified transactions on record.</p>
+        <br>
+        <a href="/agents/maxi-0001" style="color:var(--accent);text-decoration:none;">→ Agent #0001: Maxi</a>
+      `;
+    })
+    .catch(() => {
+      document.getElementById('agents-list').textContent = 'Unable to load agent list.';
+    });
+}
+
+// Main
+const agentId = getAgentId();
+
+if (!agentId) {
+  renderIndex();
+} else {
+  fetch(`${API_BASE}/observer/agents/${agentId}`)
+    .then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r.json();
+    })
+    .then(data => renderAgent(data))
+    .catch(err => renderError(agentId, err.message));
+}
+</script>
+
+</body>
+</html>
