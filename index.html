@@ -349,7 +349,7 @@
   <span class="key">network:</span>            <span class="value">active</span>
   <span class="key">registry_entries:</span>   <span class="value">1</span>
   <span class="key">verification:</span>       <span class="value">online</span>
-  <span class="key">rails_supported:</span>    <span class="value">L402 (Lightning)</span>
+  <span class="key">rails_supported:</span>    <span class="value">L402 · x402 · (more in v0.2)</span>
   <span class="key">protocol_version:</span>   <span class="value">v0.1-alpha</span>
   <span class="key">genesis_entry:</span>      <span class="value">OP-000001</span></div>
             
@@ -425,7 +425,7 @@
     "alias": "maxi-0001",
     "stack": "lnd_v0.18.5"
   },
-  "amount_sats": 1521,
+  "amount_bucket": "small",
   "payment_hash": "6a30ba7fff332c4eb8f368da804b663a20bf59ae1362d76ac1d10c298d4cd875",
   "preimage": "7f1eefd276ca53606244802c24995eea81484684bbdd9d5a34429004728f6d09",
   "verification": "SHA256(preimage) == payment_hash",
@@ -474,7 +474,7 @@
             <br>
 
             <p><strong>1. How long has this agent been economically active?</strong><br>
-            Not since account creation. Since first verified on-chain settlement. A tamper-proof track record the agent cannot inflate.</p>
+            Not since account creation. Since first cryptographically verified transaction. A tamper-proof track record the agent cannot inflate.</p>
 
             <br>
 
@@ -483,8 +483,8 @@
 
             <br>
 
-            <p><strong>3. Who has this agent transacted with?</strong><br>
-            The counterparty graph reveals real economic relationships. Not stated affiliations — cryptographically confirmed interactions.</p>
+            <p><strong>3. What is this agent's verified economic network?</strong><br>
+            The counterparty graph reveals real economic relationships — cryptographically confirmed, not self-reported. By default, counterparties appear as pseudonymous key hashes only. Real-world identity is never stored. Agents and their operators control what they disclose.</p>
 
             <br>
 
@@ -513,13 +513,20 @@
                 <li>Rail-specific confirmation logic</li>
             </ol>
             
-            <p>To verify a Lightning payment: confirm the preimage hashes to the payment hash.
-            No authority required. The math is the verification.</p>
-            
-            <div class="code-block">
-SHA256(preimage) == payment_hash
-            </div>
-            
+            <p>Verification logic is specific to each payment rail. The math is the verification — no authority required.</p>
+
+            <h3>Lightning / L402</h3>
+            <div class="code-block">SHA256(preimage) == payment_hash</div>
+            <p>Fully live in v0.1.</p>
+
+            <h3>x402 / USDC &amp; Stablecoin Rails</h3>
+            <div class="code-block">ECDSA.verify(tx_hash, signature, public_key)</div>
+            <p class="note">Coming in v0.2.</p>
+
+            <h3>Bitcoin On-chain / EVM</h3>
+            <div class="code-block">tx_hash + block_confirmations >= threshold</div>
+            <p class="note">Coming in v0.2.</p>
+
             <p class="note">Interactive verification tool: coming in v0.2.</p>
         </section>
 
@@ -540,7 +547,7 @@ SHA256(preimage) == payment_hash
   "payment_rail": "lightning",
   "sender_public_key_hash": "...",
   "receiver_public_key_hash": "...",
-  "amount_sats": 1521,
+  "amount_bucket": "small",
   "settlement_reference": "7f1eefd276ca53606244802c24995eea81484684bbdd9d5a34429004728f6d09",
   "receipt_hash": "...",
   "signature": "..."
