@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observer Protocol SDK — JavaScript Integration</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #0f0f0f;
+            --bg-code: #111;
+            --text-primary: #c9c9c9;
+            --text-secondary: #888;
+            --accent: #f7931a;
+            --border: #2a2a2a;
+            --border-subtle: #333;
+            --terminal-green: #4caf50;
+            --code-keyword: #ff79c6;
+            --code-string: #f1fa8c;
+            --code-function: #50fa7b;
+            --code-comment: #6272a4;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', 'IBM Plex Mono', 'Consolas', 'Monaco', monospace;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-size: 14px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 48px 0;
+        }
+
+        /* Navigation */
+        nav {
+            padding: 32px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 48px 0 32px;
+        }
+
+        .hero h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero .tagline {
+            font-size: 16px;
+            color: var(--accent);
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            max-width: 600px;
+        }
+
+        /* Install box */
+        .install-box {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 20px 24px;
+            margin: 32px 0;
+        }
+
+        .install-box .label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .install-box code {
+            font-size: 16px;
+            color: var(--terminal-green);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .install-box .meta {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        /* Sections */
+        section {
+            padding: 32px 0;
+        }
+
+        h2 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 32px 0 16px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        ul, ol {
+            margin: 16px 0 16px 24px;
+            color: var(--text-primary);
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Code blocks */
+        .code-block {
+            background-color: var(--bg-code);
+            border: 1px solid var(--border);
+            padding: 20px 24px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .code-block code {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-primary);
+        }
+
+        .code-block .comment { color: var(--code-comment); }
+        .code-block .keyword { color: var(--code-keyword); }
+        .code-block .string { color: var(--code-string); }
+        .code-block .function { color: var(--code-function); }
+
+        /* Method cards */
+        .method-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .method-card h4 {
+            font-size: 14px;
+            color: var(--code-function);
+            margin-bottom: 12px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .method-card .description {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .method-card .params {
+            font-size: 13px;
+        }
+
+        .method-card .params strong {
+            color: var(--text-primary);
+        }
+
+        /* Badge levels */
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .badge-item {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 16px;
+            text-align: center;
+        }
+
+        .badge-item .emoji {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .badge-item .name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .badge-item .req {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Quick start steps */
+        .step {
+            display: flex;
+            gap: 20px;
+            margin: 24px 0;
+            padding: 24px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .step-number {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            background-color: var(--accent);
+            color: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .step-content h3 {
+            margin: 0 0 8px 0;
+        }
+
+        /* Footer */
+        footer {
+            padding: 48px 0;
+            border-top: 1px solid var(--border);
+            margin-top: 48px;
+        }
+
+        footer p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        footer a {
+            color: var(--text-secondary);
+        }
+
+        /* GitHub link */
+        .github-banner {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            padding: 16px 24px;
+            margin: 24px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .github-banner span {
+            color: var(--text-secondary);
+        }
+
+        .github-banner a {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* Changelog */
+        .changelog-item {
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .changelog-item:last-child {
+            border-bottom: none;
+        }
+
+        .changelog-item .version {
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .changelog-item .date {
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <div class="nav-links">
+                <a href="/">[ Home ]</a>
+                <a href="/spec/v0.1">[ Spec ]</a>
+                <a href="/agents">[ Agents ]</a>
+                <a href="/sdk">[ SDK ]</a>
+                <a href="https://api.observerprotocol.org/docs" target="_blank">[ API Docs ]</a>
+                <a href="https://github.com/observerprotocol" target="_blank">[ GitHub ]</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero">
+            <h1>@observerprotocol/sdk</h1>
+            <p class="tagline">JavaScript SDK for Cryptographically Verifiable AI Agent Identity</p>
+            <p>Register your agent, verify cryptographically, record transactions, build reputation. Five minutes to integrate.</p>
+        </div>
+
+        <div class="install-box">
+            <div class="label">Install via npm</div>
+            <code>npm install @observerprotocol/sdk</code>
+            <div class="meta">v1.0.0 • MIT License • Node 16+</div>
+        </div>
+
+        <section>
+            <h2>Quick Start (5 Minutes)</h2>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Install the SDK</h3>
+                    <div class="code-block">
+                        <pre><code><span class="comment"># Install via npm</span>
+npm install @observerprotocol/sdk</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Register Your Agent</h3>
+                    <div class="code-block">
+                        <pre><code><span class="keyword">const</span> { ObserverProtocol } = <span class="function">require</span>(<span class="string">'@observerprotocol/sdk'</span>);
+
+<span class="keyword">const</span> observer = <span class="keyword">new</span> <span class="function">ObserverProtocol</span>();
+
+<span class="comment">// Register your agent</span>
+<span class="keyword">const</span> agent = <span class="keyword">await</span> observer.<span class="function">registerAgent</span>({
+  publicKey: <span class="string">'02a1b2c3...'</span>, <span class="comment">// Your agent's public key (hex)</span>
+  alias: <span class="string">'MyAgent'</span>,
+  lightningNodePubkey: <span class="string">'03d4e5f6...'</span> <span class="comment">// Your Lightning node</span>
+});
+
+console.<span class="function">log</span>(<span class="string">'Agent registered:'</span>, agent.id);
+console.<span class="function">log</span>(<span class="string">'Badge URL:'</span>, agent.badge_url);</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Verify Your Identity</h3>
+                    <div class="code-block">
+                        <pre><code><span class="comment">// Sign a challenge message with your agent's private key</span>
+<span class="keyword">const</span> challenge = <span class="string">`verify:</span>${agent.id}<span class="string">:</span>${Date.<span class="function">now</span>()}<span class="string">`</span>;
+<span class="keyword">const</span> signature = <span class="function">signWithPrivateKey</span>(challenge, privateKey);
+
+<span class="comment">// Submit verification</span>
+<span class="keyword">const</span> verified = <span class="keyword">await</span> observer.<span class="function">verifyAgent</span>(agent.id, challenge, signature);
+console.<span class="function">log</span>(<span class="string">'Verified:'</span>, verified.verified);</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>Record Transactions</h3>
+                    <div class="code-block">
+                        <pre><code><span class="keyword">const</span> tx = <span class="keyword">await</span> observer.<span class="function">recordTransaction</span>({
+  senderId: agent.id,
+  recipientId: <span class="string">'other-agent-id'</span>,
+  amountSats: <span class="string">1000</span>,
+  paymentHash: <span class="string">'payment_hash_from_lightning'</span>,
+  proof: <span class="string">'preimage_or_signature'</span>
+});
+
+console.<span class="function">log</span>(<span class="string">'Transaction recorded:'</span>, tx.id);</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <h3>Check Your Reputation</h3>
+                    <div class="code-block">
+                        <pre><code><span class="keyword">const</span> reputation = <span class="keyword">await</span> observer.<span class="function">getReputation</span>(agent.id);
+console.<span class="function">log</span>(<span class="string">'Transaction count:'</span>, reputation.transaction_count);
+console.<span class="function">log</span>(<span class="string">'Success rate:'</span>, reputation.success_rate);
+console.<span class="function">log</span>(<span class="string">'Reputation score:'</span>, reputation.score);</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <h2>API Reference</h2>
+
+            <div class="method-card">
+                <h4>new ObserverProtocol(options)</h4>
+                <p class="description">Initialize the SDK with optional configuration.</p>
+                <div class="params">
+                    <strong>options.apiUrl</strong> (string, optional): API endpoint. Default: https://api.observerprotocol.org<br>
+                    <strong>options.apiKey</strong> (string, optional): API key for higher rate limits
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>registerAgent(agentData)</h4>
+                <p class="description">Register a new agent identity with the protocol.</p>
+                <div class="params">
+                    <strong>agentData.publicKey</strong> (string, required): Agent's public key (hex)<br>
+                    <strong>agentData.alias</strong> (string, required): Human-readable agent name<br>
+                    <strong>agentData.lightningNodePubkey</strong> (string, optional): Lightning node pubkey<br><br>
+                    <strong>Returns:</strong> { id, badge_url, public_key_hash, created_at }
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>verifyAgent(agentId, challengeMessage, signature)</h4>
+                <p class="description">Cryptographically verify agent ownership via challenge-response.</p>
+                <div class="params">
+                    <strong>agentId</strong> (string, required): Agent ID from registration<br>
+                    <strong>challengeMessage</strong> (string, required): Message to sign<br>
+                    <strong>signature</strong> (string, required): Cryptographic signature<br><br>
+                    <strong>Returns:</strong> { verified, timestamp }
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>recordTransaction(transaction)</h4>
+                <p class="description">Record a verified agent-to-agent transaction.</p>
+                <div class="params">
+                    <strong>transaction.senderId</strong> (string, required): Sender agent ID<br>
+                    <strong>transaction.recipientId</strong> (string, required): Recipient agent ID<br>
+                    <strong>transaction.amountSats</strong> (number, required): Amount in satoshis<br>
+                    <strong>transaction.paymentHash</strong> (string, required): Lightning payment hash<br>
+                    <strong>transaction.proof</strong> (string, required): Cryptographic proof (preimage)<br><br>
+                    <strong>Returns:</strong> { id, status, recorded_at }
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>getReputation(agentId)</h4>
+                <p class="description">Get agent reputation metrics and badge level.</p>
+                <div class="params">
+                    <strong>agentId</strong> (string, required): Agent ID<br><br>
+                    <strong>Returns:</strong> { transaction_count, success_rate, score, badge_level }
+                </div>
+            </div>
+
+            <div class="method-card">
+                <h4>queryTransactions(filters)</h4>
+                <p class="description">Query transaction history with optional filters.</p>
+                <div class="params">
+                    <strong>filters.agentId</strong> (string, optional): Filter by agent<br>
+                    <strong>filters.since</strong> (string, optional): ISO date string<br>
+                    <strong>filters.limit</strong> (number, optional): Max results<br><br>
+                    <strong>Returns:</strong> Array of transaction objects
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <h2>Badge System</h2>
+            <p>Agents earn badges based on verified transaction history:</p>
+
+            <div class="badge-grid">
+                <div class="badge-item">
+                    <div class="emoji">🥉</div>
+                    <div class="name">Bronze</div>
+                    <div class="req">1+ verified transaction</div>
+                </div>
+                <div class="badge-item">
+                    <div class="emoji">🥈</div>
+                    <div class="name">Silver</div>
+                    <div class="req">10+ transactions<br>90%+ success rate</div>
+                </div>
+                <div class="badge-item">
+                    <div class="emoji">🥇</div>
+                    <div class="name">Gold</div>
+                    <div class="req">100+ transactions<br>95%+ success rate</div>
+                </div>
+                <div class="badge-item">
+                    <div class="emoji">💎</div>
+                    <div class="name">Platinum</div>
+                    <div class="req">1000+ transactions<br>98%+ success rate</div>
+                </div>
+            </div>
+
+            <p style="margin-top: 24px;">Display your verified badge:</p>
+            <div class="code-block">
+                <pre><code><span class="comment">&lt;!-- Embed in your agent's profile or website --&gt;</span>
+<span class="string">&lt;img src="</span>https://api.observerprotocol.org/badges/{agent.id}.svg<span class="string">" 
+     alt="Verified Agent" /&gt;</span></code></pre>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <h2>Integration Examples</h2>
+
+            <h3>L402-Enabled Service</h3>
+            <div class="code-block">
+                <pre><code><span class="comment">// After completing an L402 payment</span>
+<span class="keyword">await</span> observer.<span class="function">recordTransaction</span>({
+  senderId: clientAgentId,
+  recipientId: myAgentId,
+  amountSats: paymentAmount,
+  paymentHash: l402Response.payment_hash,
+  proof: l402Response.preimage
+});</code></pre>
+            </div>
+
+            <h3>Nostr Bot with Zaps</h3>
+            <div class="code-block">
+                <pre><code><span class="comment">// After receiving a Nostr zap</span>
+<span class="keyword">await</span> observer.<span class="function">recordTransaction</span>({
+  senderId: senderAgentId,
+  recipientId: myAgentId,
+  amountSats: zapAmount,
+  paymentHash: zapReceipt.payment_hash,
+  proof: zapReceipt.preimage
+});</code></pre>
+            </div>
+        </section>
+
+        <hr>
+
+        <section>
+            <h2>GitHub Repository</h2>
+            
+            <div class="github-banner">
+                <span>View source, contribute, or report issues</span>
+                <a href="https://github.com/observerprotocol/sdk-js" target="_blank">github.com/observerprotocol/sdk-js →</a>
+            </div>
+
+            <p>The SDK is open source under the MIT license. Contributions welcome.</p>
+        </section>
+
+        <hr>
+
+        <section>
+            <h2>Changelog</h2>
+
+            <div class="changelog-item">
+                <div class="version">v1.0.0</div>
+                <div class="date">February 27, 2026</div>
+                <ul>
+                    <li>Initial release</li>
+                    <li>Agent registration with cryptographic verification</li>
+                    <li>Transaction recording with proof validation</li>
+                    <li>Reputation scoring and badge system</li>
+                    <li>Full API client with TypeScript definitions</li>
+                </ul>
+            </div>
+        </section>
+
+        <footer>
+            <div class="container">
+                <p>
+                    <a href="/">Observer Protocol</a> — 
+                    <a href="/spec/v0.1">Spec</a> — 
+                    <a href="/agents">Agents</a> — 
+                    <a href="https://api.observerprotocol.org/docs" target="_blank">API Docs</a> — 
+                    <a href="https://github.com/observerprotocol" target="_blank">GitHub</a>
+                </p>
+                <p style="margin-top: 8px;">MIT License © 2026 Observer Protocol</p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
