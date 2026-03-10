@@ -40,6 +40,7 @@
             line-height: 1.7;
             font-size: 14px;
             min-height: 100vh;
+            padding-top: 50px;
         }
 
         .container {
@@ -55,24 +56,57 @@
         }
 
         /* Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.96);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            height: 50px;
+            backdrop-filter: blur(12px);
+        }
+
         nav {
-            padding: 32px 0;
-        }
-
-        nav .nav-links {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 24px;
             display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
+            justify-content: space-between;
+            align-items: center;
+            height: 50px;
         }
 
-        nav a {
+        .nav-logo {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--accent);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
             color: var(--text-secondary);
             text-decoration: none;
             font-size: 13px;
+            font-weight: 500;
+            transition: color 0.2s;
         }
 
-        nav a:hover {
+        .nav-links a:hover, .nav-links a.active {
             color: var(--accent);
+        }
+
+        /* Hero - adjusted for fixed header */
+        .hero {
+            padding: 90px 0 40px;
         }
 
         /* Hero */
@@ -340,16 +374,31 @@
     </style>
 </head>
 <body>
+    <!-- Navigation Header -->
+    <header>
+        <nav>
+            <a href="/" class="nav-logo">Observer Protocol</a>
+            <ul class="nav-links">
+                <li><a href="/" class="active">Home</a></li>
+                <li><a href="/architecture">Architecture</a></li>
+                <li><a href="/spec/v0.1">Spec</a></li>
+                <li><a href="/agents">Agents</a></li>
+                <li><a href="/sdk">SDK</a></li>
+                <li><a href="https://api.observerprotocol.org/docs">API</a></li>
+            </ul>
+        </nav>
+    </header>
+
     <div class="container">
         <!-- Hero -->
-        <header class="hero">
+        <section class="hero">
             <h1>Observer Protocol</h1>
             <p class="tagline">The trust layer for the agentic economy.</p>
             
             <p class="identity-anchor">identity anchor: public_key_hash</p>
             <p class="identity-anchor">aliases are human-readable. key hashes are ground truth.</p>
             
-            <p class="protocol-meta dim">Protocol Version: v0.1-alpha<br>Genesis Registry Entry: OP-000001 — 2026-02-22T23:24:35Z</p>
+            <p class="protocol-meta dim">Protocol Version: v0.2<br>Genesis Registry Entry: OP-000001 — 2026-02-22T23:24:35Z</p>
             
             <div class="terminal-status">
 <span class="prompt">$</span> observer_protocol status
@@ -357,15 +406,15 @@
   <span class="key">network:</span>            <span class="value">active</span>
   <span class="key">registry_entries:</span>   <span class="value">1</span>
   <span class="key">verification:</span>       <span class="value">online</span>
-  <span class="key">rails_supported:</span>    <span class="value">L402 · x402 · (more in v0.2)</span>
-  <span class="key">protocol_version:</span>   <span class="value">v0.1-alpha</span>
+  <span class="key">rails_supported:</span>    <span class="value">L402 (Lightning) · x402 (EVM) · Solana (coming)</span>
+  <span class="key">protocol_version:</span>   <span class="value">v0.2</span>
   <span class="key">genesis_entry:</span>      <span class="value">OP-000001</span></div>
             
             <div class="hero-nav">
                 <a href="#registry">[ View Public Registry ]</a>
                 <a href="#verify">[ Verify a Receipt ]</a>
                 <a href="#why">[ Why It Matters ]</a>
-                <a href="/spec/v0.1">[ Protocol Spec ]</a>
+                <a href="/spec/v0.2">[ Protocol Spec ]</a>
                 <a href="/sdk">[ SDK ]</a>
                 <a href="https://api.observerprotocol.org/docs" target="_blank">[ API Docs ]</a>
                 <a href="https://github.com/observer-protocol">[ GitHub ]</a>
@@ -373,7 +422,7 @@
             </div>
             
             <p class="hero-note">Open source. Rail-neutral. Cryptographically verifiable.</p>
-        </header>
+        </section>
 
         <hr>
 
@@ -421,7 +470,7 @@
             <details>
                 <summary>[ expand raw receipt JSON ]</summary>
                 <pre>{
-  "protocol_version": "0.1",
+  "protocol_version": "0.2",
   "event_id": "event-maxi-0001-0004",
   "transaction_id": "OP-000001",
   "timestamp": "2026-02-22T23:24:35Z",
@@ -439,7 +488,7 @@
   "preimage": "7f1eefd276ca53606244802c24995eea81484684bbdd9d5a34429004728f6d09",
   "verification": "SHA256(preimage) == payment_hash",
   "status": "VERIFIED",
-  "arp_version": "0.1"
+  "arp_version": "0.2"
 }</pre>
             </details>
             
@@ -454,9 +503,9 @@
         <section id="about">
             <h2>What This Is</h2>
             
-            <p>Observer Protocol is an open, rail-neutral verification layer for autonomous agent transactions.</p>
+            <p>Observer Protocol is an open, settlement-agnostic verification layer for autonomous agent transactions.</p>
             
-            <p>Autonomous agents are beginning to transact without human mediation — across Lightning, x402, and other payment standards. As machine commerce scales, claims of payment must be independently verifiable.</p>
+            <p>Autonomous agents are beginning to transact without human mediation — across Lightning (L402), EVM chains (x402), Solana, and other payment rails. As machine commerce scales, claims of payment must be independently verifiable regardless of which settlement layer agents use.</p>
             
             <p>Observer Protocol provides:</p>
             
@@ -530,27 +579,27 @@
 
             <h3>x402 / USDC &amp; Stablecoin Rails</h3>
             <div class="code-block">ECDSA.verify(tx_hash, signature, public_key)</div>
-            <p class="note">Coming in v0.2.</p>
+            <p>LIVE in v0.2.</p>
 
             <h3>Bitcoin On-chain / EVM</h3>
             <div class="code-block">tx_hash + block_confirmations >= threshold</div>
-            <p class="note">Coming in v0.2.</p>
+            <p class="note">Coming in v0.3.</p>
 
-            <p class="note">Interactive verification tool: coming in v0.2.</p>
+            <p class="note">Interactive verification tool: coming in v0.3.</p>
         </section>
 
         <hr>
 
         <!-- Protocol Specification -->
         <section id="spec">
-            <h2>Protocol Specification (v0.1)</h2>
+            <h2>Protocol Specification (v0.2)</h2>
             
             <h3>Receipt Schema</h3>
             
             <p>Required fields:</p>
             
             <pre><code>{
-  "protocol_version": "0.1",
+  "protocol_version": "0.2",
   "transaction_id": "OP-000001",
   "timestamp": "2026-02-22T23:24:35Z",
   "payment_rail": "lightning",
@@ -674,13 +723,21 @@ Open source              — Forever</div>
         <section id="status">
             <h2>Status</h2>
             
-            <p>Observer Protocol v0.1 is live.</p>
+            <p><strong>Observer Protocol v0.2 is live — settlement-agnostic verification for L402 and x402.</strong></p>
             
-            <p>The first verified agent-to-agent transaction is in the registry.
+            <p>The protocol supports both Lightning (L402) and EVM/stablecoin (x402) rails with full ECDSA signature verification.
+            The first verified agent-to-agent transaction is in the registry.
             The spec is published.
             The registry is open.</p>
             
-            <p>v0.2 roadmap: full ECDSA signature verification, multi-rail verification logic, interactive receipt checker.</p>
+            <p><strong>Supported Rails:</strong></p>
+            <ul>
+                <li>✓ Lightning Network (L402) — LIVE with preimage verification</li>
+                <li>✓ x402 (Base, EVM chains) — LIVE with ECDSA signature verification</li>
+                <li>○ Solana (x402) — In development</li>
+            </ul>
+            
+            <p><strong>v0.3 roadmap:</strong> Interactive receipt checker, expanded Solana support, reputation graph API.</p>
             
             <p>Contributions welcome. The spec lives at GitHub.</p>
         </section>
@@ -689,7 +746,7 @@ Open source              — Forever</div>
         <footer>
             <div class="links">
                 <a href="https://github.com/observer-protocol/arp-spec">GitHub</a>
-                <a href="/spec/v0.1">Spec v0.1</a>
+                <a href="/spec/v0.2">Spec v0.2</a>
                 <a href="https://api.observerprotocol.org/docs" target="_blank">API Docs</a>
                 <a href="https://api.observerprotocol.org" target="_blank">API</a>
                 <a href="/registry">Registry</a>

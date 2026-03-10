@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Observer Protocol Architecture — Agentic Terminal</title>
+  <meta name="description" content="Canonical architecture reference for the Observer Protocol — the verification layer for autonomous economic agents. Cryptographic identity, proof of payment, immutable behavioral record.">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Observer Protocol — Verification Layer for the Agentic Economy">
+  <meta property="og:description" content="Canonical architecture reference. How the Observer Protocol establishes verified identity and cryptographic proof for AI agent transactions.">
+  <meta property="og:image" content="https://agenticterminal.ai/assets/observer-protocol-architecture.png">
+  <meta property="og:url" content="https://observerprotocol.org/architecture">
+  <meta property="og:type" content="article">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Observer Protocol — Verification Layer for the Agentic Economy">
+  <meta name="twitter:image" content="https://agenticterminal.ai/assets/observer-protocol-architecture.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <script defer data-domain="observerprotocol.org" src="https://plausible.io/js/script.js"></script>
+
+  <style>
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-tertiary: #1a1a25;
+      --text-primary: #e8e8ed;
+      --text-secondary: #8888a0;
+      --text-tertiary: #55556a;
+      --accent-bitcoin: #F7931A;
+      --accent-up: #00c853;
+      --accent-neutral: #448aff;
+      --accent-protocol: #7c4dff;
+      --border-subtle: #1e1e2e;
+      --border-card: #252535;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'IBM Plex Sans', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.65;
+    }
+
+    /* NAV */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(10, 10, 15, 0.96);
+      border-bottom: 1px solid var(--border-subtle);
+      z-index: 1000;
+      height: 50px;
+      backdrop-filter: blur(12px);
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 50px;
+    }
+
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--accent-bitcoin);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
+
+    /* MAIN */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 90px 2rem 80px;
+    }
+
+    /* BREADCRUMB */
+    .breadcrumb {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-bottom: 2rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .breadcrumb a { color: var(--text-tertiary); text-decoration: none; }
+    .breadcrumb a:hover { color: var(--text-secondary); }
+    .breadcrumb span { margin: 0 0.5rem; }
+
+    /* HEADER BLOCK */
+    .page-header {
+      border-left: 3px solid var(--accent-bitcoin);
+      padding-left: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .doc-type {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-bitcoin);
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+
+    .page-meta {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .page-meta span { margin-right: 1.5rem; }
+
+    /* CANONICAL NOTICE */
+    .canonical-notice {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-card);
+      border-left: 3px solid var(--accent-up);
+      border-radius: 4px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 3rem;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .canonical-notice .icon { color: var(--accent-up); font-size: 14px; margin-top: 1px; }
+
+    .canonical-notice strong { color: var(--text-primary); }
+
+    /* DIAGRAM */
+    .diagram-container {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 0;
+      margin-bottom: 3.5rem;
+      overflow: hidden;
+      border: 1px solid var(--border-card);
+    }
+
+    .diagram-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .diagram-caption {
+      background: var(--bg-secondary);
+      padding: 0.75rem 1.25rem;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      border-top: 1px solid var(--border-card);
+    }
+
+    /* CONTENT SECTIONS */
+    .section {
+      margin-bottom: 3rem;
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-bitcoin);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.6rem;
+      margin-top: 1.5rem;
+    }
+
+    p {
+      color: var(--text-secondary);
+      font-size: 15px;
+      margin-bottom: 1rem;
+      line-height: 1.7;
+    }
+
+    p strong { color: var(--text-primary); }
+
+    /* TRANSACTION RECORD */
+    .event-record {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      font-family: var(--font-mono);
+    }
+
+    .event-record .event-id {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-up);
+      margin-bottom: 1rem;
+    }
+
+    .event-field {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 13px;
+    }
+
+    .event-field:last-child { border-bottom: none; }
+
+    .event-field .field-name { color: var(--text-tertiary); min-width: 140px; }
+
+    .event-field .field-value { color: var(--text-primary); text-align: right; word-break: break-all; }
+
+    .event-field .field-value.highlight { color: var(--accent-bitcoin); }
+
+    .event-field .field-value.verified {
+      color: var(--accent-up);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* LAYERS */
+    .layer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .layer-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 1.25rem;
+    }
+
+    .layer-card .layer-num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-tertiary);
+      margin-bottom: 0.4rem;
+    }
+
+    .layer-card h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+
+    .layer-card p {
+      font-size: 13px;
+      margin-bottom: 0;
+      color: var(--text-secondary);
+    }
+
+    /* PROTOCOL PRINCIPLES */
+    .principle {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      align-items: flex-start;
+    }
+
+    .principle-num {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent-bitcoin);
+      min-width: 24px;
+      margin-top: 2px;
+    }
+
+    .principle-body h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .principle-body p {
+      font-size: 13px;
+      margin-bottom: 0;
+    }
+
+    /* CITE BLOCK */
+    .cite-block {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+
+    .cite-block .cite-url {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--accent-bitcoin);
+      margin-bottom: 0.5rem;
+    }
+
+    .cite-block p {
+      font-size: 13px;
+      margin-bottom: 0;
+      color: var(--text-tertiary);
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 2rem;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-tertiary);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    footer a { color: var(--text-tertiary); text-decoration: none; }
+    footer a:hover { color: var(--text-secondary); }
+
+    @media (max-width: 700px) {
+      .layer-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="/" class="nav-logo">Observer Protocol</a>
+    <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/architecture" class="active">Architecture</a></li>
+        <li><a href="/spec/v0.1">Spec</a></li>
+        <li><a href="/agents">Agents</a></li>
+        <li><a href="/sdk">SDK</a></li>
+        <li><a href="https://api.observerprotocol.org/docs">API</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+
+  <div class="breadcrumb">
+    <a href="/">Observer Protocol</a>
+    <span>/</span>
+    Architecture
+  </div>
+
+  <div class="page-header">
+    <div class="doc-type">Canonical Reference — v0.2 — March 2026</div>
+    <h1>Observer Protocol<br>Verification Layer for the Agentic Economy</h1>
+    <div class="page-meta">
+      <span>Published: February 24, 2026</span>
+      <span>Permanent URL: observerprotocol.org/architecture</span>
+    </div>
+  </div>
+
+  <div class="canonical-notice">
+    <span class="icon">⬡</span>
+    <div>
+      <strong>This is the canonical reference document for the Observer Protocol.</strong><br>
+      This URL (observerprotocol.org/architecture) is permanent and intended as the citable source for grants, investor materials, developer documentation, and academic reference.
+    </div>
+  </div>
+
+  <!-- ARCHITECTURE DIAGRAM -->
+  <div class="diagram-container">
+    <img
+      src="https://agenticterminal.ai/assets/observer-protocol-architecture.png"
+      alt="Observer Protocol Architecture — full flow from agent keypair generation through payment, cryptographic verification, and intelligence output"
+    >
+    <div class="diagram-caption">
+      Figure 1 — Observer Protocol: Full transaction verification flow. Agent #0001 (Maxi) and Agent #0002 (Vicky). World's first formalized A2A verified agent payment. February 22, 2026.
+    </div>
+  </div>
+
+  <!-- WHAT IT IS -->
+  <div class="section">
+    <h2>What the Observer Protocol Is</h2>
+    <p>
+      The Observer Protocol is a <strong>verification layer for autonomous economic agents</strong>. It answers one question that no existing infrastructure addresses: how do you know an AI agent actually did what it claims?
+    </p>
+    <p>
+      Current AI agent platforms track presence — posts, karma, activity logs. None of it is cryptographically verifiable. Human operators can instruct agents to say anything. The Observer Protocol anchors agent reputation to something that cannot be faked at scale: <strong>proof of payment</strong>.
+    </p>
+    <p>
+      Every event submitted to the Observer Protocol requires a cryptographic proof tied to a real economic transaction. A Lightning preimage — the key released when a payment is completed — is non-repudiable. You cannot fabricate it. You cannot backdate it. It either happened or it didn't.
+    </p>
+  </div>
+
+  <!-- CANONICAL TRANSACTION -->
+  <div class="section">
+    <h2>The Canonical Transaction — Event #0002</h2>
+    <p>
+      The following transaction is the first formally verified agent-to-agent Lightning payment logged under the Observer Protocol. It is the empirical foundation this architecture document is built on.
+    </p>
+
+    <div class="event-record">
+      <div class="event-id">✓ Observer Protocol — Verified Event #0002</div>
+
+      <div class="event-field">
+        <span class="field-name">Date</span>
+        <span class="field-value highlight">February 22, 2026</span>
+      </div>
+      <div class="event-field">
+        <span class="field-name">Payer (Agent #0002)</span>
+        <span class="field-value">Vicky · sha256:9c4b… · phoenixd</span>
+      </div>
+      <div class="event-field">
+        <span class="field-name">Payee (Agent #0001)</span>
+        <span class="field-value">Maxi · sha256:3f7a… · LND</span>
+      </div>
+      <div class="event-field">
+        <span class="field-name">Amount</span>
+        <span class="field-value highlight">1,521 satoshis</span>
+      </div>
+      <div class="event-field">
+        <span class="field-name">Rail</span>
+        <span class="field-value">Lightning Network</span>
+      </div>
+      <div class="event-field">
+        <span class="field-name">Payment Hash</span>
+        <span class="field-value">6a30ba7fff332c4e…</span>
+      </div>
+      <div class="event-field">
+        <span class="field-name">Preimage (proof)</span>
+        <span class="field-value">6a30ba7fff332c4eb8f368da…</span>
+      </div>
+      <div class="event-field">
+        <span class="field-name">Verification status</span>
+        <span class="field-value verified">✓ Cryptographically verified</span>
+      </div>
+      <div class="event-field">
+        <span class="field-name">Logged to</span>
+        <span class="field-value">Observer Registry · PostgreSQL · Permanent</span>
+      </div>
+    </div>
+
+    <p>
+      Both agents operated without human approval of this specific transaction. No human authorized the payment. No bank processed it. No compliance officer reviewed it. The Lightning Network validated a cryptographic signature. That is sufficient.
+    </p>
+  </div>
+
+  <!-- ARCHITECTURE LAYERS -->
+  <div class="section">
+    <h2>Architecture — Four Layers</h2>
+
+    <div class="layer-grid">
+      <div class="layer-card">
+        <div class="layer-num">Layer 1</div>
+        <h4>Identity</h4>
+        <p>Agents generate a keypair. SHA256 hash of the public key becomes the canonical identity. The alias (Maxi, Vicky) is UX only — two agents cannot share a public key hash.</p>
+      </div>
+      <div class="layer-card">
+        <div class="layer-num">Layer 2</div>
+        <h4>Payment Rail</h4>
+        <p><strong>LIVE:</strong> Lightning (L402) and EVM chains (x402). <strong>Coming:</strong> Solana. The payment rail is not the constant — <strong>verification is the constant</strong>. The protocol is settlement-agnostic by design.</p>
+      </div>
+      <div class="layer-card">
+        <div class="layer-num">Layer 3</div>
+        <h4>Verification</h4>
+        <p>Two checks: (1) Challenge-response filter — agent must sign programmatically, proving autonomy at scale. (2) Proof verification — preimage is checked against the payment hash. Cryptographic, not policy.</p>
+      </div>
+      <div class="layer-card">
+        <div class="layer-num">Layer 4</div>
+        <h4>Intelligence</h4>
+        <p>Verified events flow into PostgreSQL — immutable, timestamped, permanent. Agentic Terminal's intelligence layer reads this database to produce analytics, API feeds, and the public dashboard.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DESIGN PRINCIPLES -->
+  <div class="section">
+    <h2>Design Principles</h2>
+
+    <div class="principle">
+      <span class="principle-num">01</span>
+      <div class="principle-body">
+        <h4>Don't trust claims. Verify behavior.</h4>
+        <p>Agent reputation is not what an agent says. It is the cryptographic record of what an agent did. Behavioral identity is the only identity model that survives adversarial conditions.</p>
+      </div>
+    </div>
+
+    <div class="principle">
+      <span class="principle-num">02</span>
+      <div class="principle-body">
+        <h4>Public key hash = canonical identity.</h4>
+        <p>The key is the identity. Alias is UX. Verification always checks against the hash, never the alias. This cryptographic identity model works across all chains — Bitcoin, Ethereum, Solana, or any keypair-based system.</p>
+      </div>
+    </div>
+
+    <div class="principle">
+      <span class="principle-num">03</span>
+      <div class="principle-body">
+        <h4>Verification is the constant. The payment rail is not.</h4>
+        <p>Observer Protocol supports multiple rails today: Lightning (L402) and EVM chains (x402) are live. Solana support in development. The verification logic is identical regardless of settlement layer.</p>
+      </div>
+    </div>
+
+    <div class="principle">
+      <span class="principle-num">04</span>
+      <div class="principle-body">
+        <h4>The record is permanent.</h4>
+        <p>Verified events are timestamped and stored permanently. Historical agent behavioral data cannot be backfilled. Every day of verified data collected from day one is irreplaceable.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CITE THIS -->
+  <div class="cite-block">
+    <div class="cite-url">observerprotocol.org/architecture</div>
+    <p>This URL is permanent. Use it for citations, grant applications, investor materials, and developer reference.</p>
+  </div>
+
+</main>
+
+<footer>
+  <p>
+    <a href="/">Observer Protocol</a> &nbsp;·&nbsp;
+    <a href="/architecture">Architecture</a> &nbsp;·&nbsp;
+    <a href="/spec/v0.1">Spec</a> &nbsp;·&nbsp;
+    <a href="/sdk">SDK</a> &nbsp;·&nbsp;
+    <a href="https://api.observerprotocol.org/docs">API</a>
+  </p>
+  <p style="margin-top: 0.75rem;">© 2026 Observer Protocol · Published February 24, 2026</p>
+</footer>
+
+</body>
+</html>

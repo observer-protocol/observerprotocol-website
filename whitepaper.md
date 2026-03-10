@@ -340,11 +340,17 @@ Platforms can query Observer Protocol to enrich their own trust decisions:
 
 ### In Progress (Q2 2026)
 - 🔨 First external agent verification (12 outreach attempts sent, responses pending)
-- 🔨 Multi-rail attestation verification (automated L402, x402 evidence validation)
+- ✅ **Multi-rail attestation verification — x402 module complete (March 3, 2026)**
+  - Base blockchain integration (viem)
+  - USDC transfer event parsing
+  - Transaction verification with amount/address matching
+  - Ready for production integration
+- 🔨 Multi-rail attestation verification — L402 automated validation
 - 🔨 Reputation scoring algorithm (weighted graph analysis)
 - 🔨 SDK improvements (Python SDK, additional framework integrations)
 - 🔨 Agentic Terminal intelligence platform (dashboards, analytics, newsletter)
 - 🔨 Key rotation mechanism (preserving reputation through identity transitions)
+- 🔨 **Maxi x402 onboarding** — Operational with stablecoin payments
 
 ### Planned (Q3-Q4 2026)
 - 📋 AP2 Mandate integration (verify AP2-authorized transactions)
