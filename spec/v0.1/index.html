@@ -128,14 +128,14 @@
     <header>
     <nav>
         <a href="/" class="nav-logo">Observer Protocol</a>
-        <ul class="nav-links">
-            <li><a href="/">Home</a></li>
-            <li><a href="/architecture">Architecture</a></li>
-            <li><a href="/spec/v0.1" class="active">Spec</a></li>
-            <li><a href="/agents">Agents</a></li>
-            <li><a href="/sdk">SDK</a></li>
-            <li><a href="https://api.observerprotocol.org/docs">API</a></li>
-        </ul>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/architecture">Architecture</a>
+            <a href="/spec/v0.1" class="active">Spec</a>
+            <a href="/agents">Agents</a>
+            <a href="/sdk">SDK</a>
+            <a href="https://api.observerprotocol.org/docs">API</a>
+        </div>
     </nav>
     </header>
 
@@ -153,16 +153,16 @@
     <div class="toc">
         <h3>Contents</h3>
         <ol>
-            <li><a href="#abstract">Abstract</a></li>
-            <li><a href="#motivation">Motivation</a></li>
-            <li><a href="#identity">Identity Model</a></li>
-            <li><a href="#schema">Event Schema</a></li>
-            <li><a href="#protocols">Protocol Registry</a></li>
-            <li><a href="#verification">Verification</a></li>
-            <li><a href="#privacy">Privacy Model</a></li>
-            <li><a href="#api">API Reference</a></li>
-            <li><a href="#versioning">Versioning Policy</a></li>
-            <li><a href="#limitations">Known Limitations</a></li>
+            <a href="#abstract">Abstract</a>
+            <a href="#motivation">Motivation</a>
+            <a href="#identity">Identity Model</a>
+            <a href="#schema">Event Schema</a>
+            <a href="#protocols">Protocol Registry</a>
+            <a href="#verification">Verification</a>
+            <a href="#privacy">Privacy Model</a>
+            <a href="#api">API Reference</a>
+            <a href="#versioning">Versioning Policy</a>
+            <a href="#limitations">Known Limitations</a>
         </ol>
     </div>
 
@@ -174,10 +174,10 @@
     <p>As AI agents begin to transact economically, no shared standard exists for measuring or verifying that activity. Platforms claim agent participation. Agents claim capabilities. Without a verification layer, the agent economy is built on unverifiable assertions.</p>
     <p>ARP solves three problems:</p>
     <ul>
-        <li><strong>Identity without custodians</strong> — Agent identity is a public key hash, not a platform account</li>
-        <li><strong>Activity without trust</strong> — Economic events require cryptographic proof, not self-reporting</li>
-        <li><strong>Measurement without bias</strong> — Protocol-neutral schema enables honest cross-rail comparison</li>
-    </ul>
+        <strong>Identity without custodians</strong> — Agent identity is a public key hash, not a platform account
+        <strong>Activity without trust</strong> — Economic events require cryptographic proof, not self-reporting
+        <strong>Measurement without bias</strong> — Protocol-neutral schema enables honest cross-rail comparison
+    </div>
 
     <h2 id="identity">2. Identity Model</h2>
     <h3>2.1 Canonical Identity</h3>
@@ -187,9 +187,9 @@
 
     <h3>2.2 Agent Registration</h3>
     <ol>
-        <li>Agent submits <code>public_key</code> → server returns <code>agent_id</code> + time-limited <code>challenge</code></li>
-        <li>Agent signs <code>challenge</code> with private key → server verifies signature → issues <code>api_key</code></li>
-        <li>Agent uses <code>api_key</code> to submit events</li>
+        Agent submits <code>public_key</code> → server returns <code>agent_id</code> + time-limited <code>challenge</code>
+        Agent signs <code>challenge</code> with private key → server verifies signature → issues <code>api_key</code>
+        Agent uses <code>api_key</code> to submit events
     </ol>
     <p>The challenge-response is not a policy gate — it is a cryptographic filter. Autonomous agents complete it programmatically; human operators complete it manually once.</p>
 
@@ -329,11 +329,11 @@
 
     <h2 id="limitations">9. Known Limitations (v0.1)</h2>
     <ul>
-        <li><code>signed_challenge</code> verification accepts any non-empty string in v0.1. Full ECDSA enforcement ships in v0.2.</li>
-        <li>No batch event submission endpoint (planned v0.2)</li>
-        <li>No streaming or subscription event types (planned v0.3)</li>
-        <li>Bitcoin on-chain + EVM transaction verification not yet implemented (planned v0.2)</li>
-    </ul>
+        <code>signed_challenge</code> verification accepts any non-empty string in v0.1. Full ECDSA enforcement ships in v0.2.
+        No batch event submission endpoint (planned v0.2)
+        No streaming or subscription event types (planned v0.3)
+        Bitcoin on-chain + EVM transaction verification not yet implemented (planned v0.2)
+    </div>
 
     <footer>
         <p>ARP v0.1 — February 2026 &nbsp;·&nbsp; License: <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a> &nbsp;·&nbsp; <a href="https://github.com/observer-protocol" target="_blank">GitHub</a> &nbsp;·&nbsp; <a href="https://observerprotocol.org">observerprotocol.org</a></p>

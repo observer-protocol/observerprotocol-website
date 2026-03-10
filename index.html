@@ -378,14 +378,14 @@
     <header>
         <nav>
             <a href="/" class="nav-logo">Observer Protocol</a>
-            <ul class="nav-links">
-                <li><a href="/" class="active">Home</a></li>
-                <li><a href="/architecture">Architecture</a></li>
-                <li><a href="/spec/v0.1">Spec</a></li>
-                <li><a href="/agents">Agents</a></li>
-                <li><a href="/sdk">SDK</a></li>
-                <li><a href="https://api.observerprotocol.org/docs">API</a></li>
-            </ul>
+            <div class="nav-links">
+                <a href="/" class="active">Home</a>
+                <a href="/architecture">Architecture</a>
+                <a href="/spec/v0.1">Spec</a>
+                <a href="/agents">Agents</a>
+                <a href="/sdk">SDK</a>
+                <a href="https://api.observerprotocol.org/docs">API</a>
+            </div>
         </nav>
     </header>
 
@@ -437,16 +437,16 @@
             <p>Each entry contains:</p>
             
             <ul>
-                <li>Transaction ID</li>
-                <li>Timestamp (UTC)</li>
-                <li>Payment Rail</li>
-                <li>Sender Public Key Hash</li>
-                <li>Receiver Public Key Hash</li>
-                <li>Settlement Reference (preimage / tx hash)</li>
-                <li>Verification Status</li>
-                <li>Protocol Version</li>
-                <li>Raw Receipt (expandable JSON)</li>
-            </ul>
+                Transaction ID
+                Timestamp (UTC)
+                Payment Rail
+                Sender Public Key Hash
+                Receiver Public Key Hash
+                Settlement Reference (preimage / tx hash)
+                Verification Status
+                Protocol Version
+                Raw Receipt (expandable JSON)
+            </div>
             
             <p><strong>Genesis Entry — First Verified Agent-to-Agent Transaction:</strong></p>
             
@@ -510,11 +510,11 @@
             <p>Observer Protocol provides:</p>
             
             <ul>
-                <li>Dispute-grade receipts using cryptographic proof</li>
-                <li>Rail-neutral verification logic (Lightning, x402, and beyond)</li>
-                <li>Identity anchoring via public key hashes</li>
-                <li>A publicly auditable, permanently growing transaction history</li>
-            </ul>
+                Dispute-grade receipts using cryptographic proof
+                Rail-neutral verification logic (Lightning, x402, and beyond)
+                Identity anchoring via public key hashes
+                A publicly auditable, permanently growing transaction history
+            </div>
             
             <p>Verification is permissionless. The registry is public. No custody. No control.</p>
         </section>
@@ -565,10 +565,10 @@
             <p>Verification checks:</p>
             
             <ol>
-                <li>Canonical receipt structure</li>
-                <li>Deterministic hash generation</li>
-                <li>Settlement reference validity (preimage or tx signature)</li>
-                <li>Rail-specific confirmation logic</li>
+                Canonical receipt structure
+                Deterministic hash generation
+                Settlement reference validity (preimage or tx signature)
+                Rail-specific confirmation logic
             </ol>
             
             <p>Verification logic is specific to each payment rail. The math is the verification — no authority required.</p>
@@ -616,12 +616,12 @@
             <h3>Verification Flow</h3>
             
             <ol>
-                <li>Parse receipt</li>
-                <li>Normalize field order</li>
-                <li>Generate canonical hash</li>
-                <li>Validate settlement reference against rail logic</li>
-                <li>Confirm signature</li>
-                <li>Return verification status</li>
+                Parse receipt
+                Normalize field order
+                Generate canonical hash
+                Validate settlement reference against rail logic
+                Confirm signature
+                Return verification status
             </ol>
             
             <h3>Identity Model</h3>
@@ -690,9 +690,9 @@ POST https://api.observerprotocol.org/observer/register-agent</code></pre>
             <p>Developers can integrate Observer Protocol in three steps:</p>
             
             <ol>
-                <li>Generate receipts using the canonical schema</li>
-                <li>Sign receipts using your agent's key pair</li>
-                <li>Submit to the public registry endpoint</li>
+                Generate receipts using the canonical schema
+                Sign receipts using your agent's key pair
+                Submit to the public registry endpoint
             </ol>
             
             <pre><code>curl -X POST https://observerprotocol.org/api/submit \
@@ -732,10 +732,10 @@ Open source              — Forever</div>
             
             <p><strong>Supported Rails:</strong></p>
             <ul>
-                <li>✓ Lightning Network (L402) — LIVE with preimage verification</li>
-                <li>✓ x402 (Base, EVM chains) — LIVE with ECDSA signature verification</li>
-                <li>○ Solana (x402) — In development</li>
-            </ul>
+                ✓ Lightning Network (L402) — LIVE with preimage verification
+                ✓ x402 (Base, EVM chains) — LIVE with ECDSA signature verification
+                ○ Solana (x402) — In development
+            </div>
             
             <p><strong>v0.3 roadmap:</strong> Interactive receipt checker, expanded Solana support, reputation graph API.</p>
             
