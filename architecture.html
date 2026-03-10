@@ -65,31 +65,29 @@
     }
 
     nav {
-      max-width: 1200px;
+      max-width: 860px;
       margin: 0 auto;
-      padding: 0 2rem;
+      padding: 0 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       height: 50px;
     }
-
     .nav-logo {
-      font-family: var(--font-mono);
-      font-weight: 700;
+      font-weight: 600;
       font-size: 15px;
-      color: var(--accent-bitcoin);
+      color: var(--accent);
       text-decoration: none;
       letter-spacing: -0.02em;
     }
-
     .nav-links {
       display: flex;
-      gap: 28px;
+      gap: 24px;
       list-style: none;
       align-items: center;
+      margin: 0;
+      padding: 0;
     }
-
     .nav-links a {
       color: var(--text-secondary);
       text-decoration: none;
@@ -97,8 +95,9 @@
       font-weight: 500;
       transition: color 0.2s;
     }
-
-    .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--accent);
+    }
 
     /* MAIN */
     main {

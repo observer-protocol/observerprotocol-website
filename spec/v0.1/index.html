@@ -26,11 +26,40 @@
             font-size: 14px;
         }
         .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
-        nav { padding: 28px 0; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
-        nav .nav-links { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
-        nav a { color: var(--text-secondary); text-decoration: none; font-size: 13px; }
-        nav a:hover { color: var(--accent); }
-        nav .logo { color: var(--text-primary); font-weight: 600; font-size: 15px; margin-right: 8px; }
+                nav {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 50px;
+        }
+        .nav-logo {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--accent);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--accent);
+        }
 
         .spec-header { padding: 40px 0 32px; border-bottom: 1px solid var(--border); margin-bottom: 40px; }
         .spec-header h1 { font-size: 28px; font-weight: 600; color: var(--text-primary); margin-bottom: 12px; }
@@ -96,6 +125,7 @@
 </head>
 <body>
 <div class="container">
+    <header>
     <nav>
         <a href="/" class="nav-logo">Observer Protocol</a>
         <ul class="nav-links">
@@ -107,6 +137,7 @@
             <li><a href="https://api.observerprotocol.org/docs">API</a></li>
         </ul>
     </nav>
+    </header>
 
     <div class="spec-header">
         <h1>ARP Specification v0.1</h1>
