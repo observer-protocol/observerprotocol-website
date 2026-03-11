@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Reference — Observer Protocol</title>
+  <meta name="description" content="Observer Protocol API reference. Base URL: api.observerprotocol.org">
+  <link rel="stylesheet" href="shared-styles.css">
+  <style>
+    .page-hero {
+      padding: 4rem 0 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 600;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+    .page-hero p {
+      font-family: var(--font-sans);
+      color: var(--text-secondary);
+      font-size: 15px;
+      font-weight: 300;
+      max-width: 480px;
+      margin-bottom: 1.5rem;
+    }
+    .base-url {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      padding: 0.6rem 1rem;
+      border-radius: 3px;
+      font-size: 13px;
+    }
+    .base-url .label { color: var(--text-dim); }
+    .base-url .url   { color: var(--orange); }
+
+    /* ── LAYOUT ────────────────────────────────────────── */
+    .api-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 3rem;
+      padding: 3rem 0;
+      align-items: start;
+    }
+    @media(max-width:720px) { .api-layout { grid-template-columns:1fr; } }
+
+    /* ── SIDEBAR ───────────────────────────────────────── */
+    .api-sidebar {
+      position: sticky;
+      top: calc(var(--nav-h) + 2rem);
+    }
+    .sidebar-group { margin-bottom: 1.5rem; }
+    .sidebar-group-label {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 0.5rem;
+      padding-left: 0.5rem;
+    }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.5rem;
+      border-radius: 3px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: all 0.15s;
+      border-left: 2px solid transparent;
+    }
+    .sidebar-link:hover { color: var(--text-primary); background: var(--bg-2); }
+    .sidebar-link.active { color: var(--orange); border-left-color: var(--orange); }
+    .method-tag {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      padding: 0.1rem 0.3rem;
+      border-radius: 2px;
+      min-width: 30px;
+      text-align: center;
+    }
+    .get  { background: rgba(96,165,250,0.15); color: #60a5fa; }
+    .post { background: rgba(34,197,94,0.15);  color: #22c55e; }
+
+    /* ── ENDPOINT CARDS ────────────────────────────────── */
+    .endpoint-section { margin-bottom: 3rem; }
+    .endpoint-section-title {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .endpoint {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin-bottom: 0.75rem;
+      overflow: hidden;
+      transition: border-color 0.15s;
+    }
+    .endpoint:hover { border-color: var(--border-bright); }
+    .endpoint-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .endpoint-path {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-primary);
+      flex: 1;
+    }
+    .endpoint-summary {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+    }
+    .endpoint-toggle { color: var(--text-dim); font-size: 12px; transition: transform 0.2s; }
+    .endpoint.open .endpoint-toggle { transform: rotate(90deg); }
+
+    .endpoint-body {
+      display: none;
+      padding: 0 1.25rem 1.25rem;
+      border-top: 1px solid var(--border);
+    }
+    .endpoint.open .endpoint-body { display: block; }
+
+    .param-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 12px; }
+    .param-table th {
+      text-align: left;
+      padding: 0.4rem 0.75rem;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border);
+    }
+    .param-table td { padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .param-table tr:last-child td { border-bottom: none; }
+    .param-name  { color: var(--orange); font-family: var(--font-mono); }
+    .param-type  { color: #60a5fa; font-family: var(--font-mono); font-size: 11px; }
+    .param-req   { color: var(--verified); font-size: 10px; text-transform: uppercase; }
+    .param-opt   { color: var(--text-dim); font-size: 10px; text-transform: uppercase; }
+    .param-desc  { color: var(--text-secondary); font-family: var(--font-sans); }
+
+    .response-label {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin: 1rem 0 0.5rem;
+    }
+
+    /* ── TRY IT BUTTON ─────────────────────────────────── */
+    .try-it-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 11px;
+      color: var(--orange);
+      text-decoration: none;
+      border: 1px solid rgba(247,147,26,0.3);
+      padding: 0.25rem 0.6rem;
+      border-radius: 2px;
+      margin-top: 0.75rem;
+      transition: all 0.15s;
+    }
+    .try-it-link:hover { background: var(--orange-glow2); }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="architecture.html">Architecture</a></li>
+    <li><a href="spec.html">Spec</a></li>
+    <li><a href="agents.html">Agents</a></li>
+    <li><a href="sdk.html">SDK</a></li>
+    <li><a href="api.html" class="active">API</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+  <div class="page-hero">
+    <div class="container">
+      <div class="section-label">API Reference · v1.0 · OAS 3.1</div>
+      <h1>API Reference</h1>
+      <p>Canonical structured database for machine-native settlement systems.</p>
+      <div class="base-url">
+        <span class="label">Base URL</span>
+        <span class="url">https://api.observerprotocol.org</span>
+        <span class="live-dot"></span>
+      </div>
+      <div style="margin-top:1rem;">
+        <a href="https://api.observerprotocol.org/docs" target="_blank" class="btn btn-outline" style="font-size:12px;">
+          Interactive Swagger UI ↗
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="api-layout">
+
+      <!-- SIDEBAR -->
+      <aside class="api-sidebar">
+        <div class="sidebar-group">
+          <div class="sidebar-group-label">Agentic Terminal</div>
+          <a href="#health" class="sidebar-link"><span class="method-tag get">GET</span>/health</a>
+          <a href="#protocols" class="sidebar-link"><span class="method-tag get">GET</span>/protocols</a>
+          <a href="#metrics" class="sidebar-link"><span class="method-tag get">GET</span>/metrics</a>
+          <a href="#signals" class="sidebar-link"><span class="method-tag get">GET</span>/signals</a>
+          <a href="#stats" class="sidebar-link"><span class="method-tag get">GET</span>/stats</a>
+          <a href="#agent-events" class="sidebar-link"><span class="method-tag get">GET</span>/agent-events</a>
+        </div>
+        <div class="sidebar-group">
+          <div class="sidebar-group-label">Observer Protocol</div>
+          <a href="#register" class="sidebar-link"><span class="method-tag post">POST</span>/register-agent</a>
+          <a href="#verify" class="sidebar-link"><span class="method-tag post">POST</span>/verify-agent</a>
+          <a href="#submit" class="sidebar-link"><span class="method-tag post">POST</span>/submit-transaction</a>
+          <a href="#trends" class="sidebar-link"><span class="method-tag get">GET</span>/trends</a>
+          <a href="#feed" class="sidebar-link"><span class="method-tag get">GET</span>/feed</a>
+          <a href="#badge" class="sidebar-link"><span class="method-tag get">GET</span>/badge/{id}</a>
+          <a href="#profile" class="sidebar-link"><span class="method-tag get">GET</span>/agents/{id}</a>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main>
+
+        <!-- AGENTIC TERMINAL GROUP -->
+        <div class="endpoint-section">
+          <div class="endpoint-section-title">Agentic Terminal</div>
+
+          <div class="endpoint" id="health">
+            <div class="endpoint-header" onclick="toggle(this)">
+              <span class="method-tag get">GET</span>
+              <span class="endpoint-path">/api/v1/health</span>
+              <span class="endpoint-summary">Health Check</span>
+              <span class="endpoint-toggle">▶</span>
+            </div>
+            <div class="endpoint-body">
+              <p style="font-size:13px; color:var(--text-secondary); font-family:var(--font-sans); margin-bottom:1rem;">Returns current API status and network connectivity.</p>
+              <div class="response-label">Response 200</div>
+              <div class="code-block" style="font-size:12px;">
+                {<br>
+                &nbsp;&nbsp;<span class="key">"status"</span>: <span class="str">"ok"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"network"</span>: <span class="str">"active"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"version"</span>: <span class="str">"1.0.0"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"timestamp"</span>: <span class="str">"2026-03-11T00:00:00Z"</span><br>
+                }
+              </div>
+              <a href="https://api.observerprotocol.org/api/v1/health" target="_blank" class="try-it-link">Try it ↗</a>
+            </div>
+          </div>
+
+          <div class="endpoint" id="metrics">
+            <div class="endpoint-header" onclick="toggle(this)">
+              <span class="method-tag get">GET</span>
+              <span class="endpoint-path">/api/v1/metrics</span>
+              <span class="endpoint-summary">Get Metrics</span>
+              <span class="endpoint-toggle">▶</span>
+            </div>
+            <div class="endpoint-body">
+              <p style="font-size:13px; color:var(--text-secondary); font-family:var(--font-sans); margin-bottom:1rem;">Aggregate protocol metrics across all tracked payment rails.</p>
+              <a href="https://api.observerprotocol.org/api/v1/metrics" target="_blank" class="try-it-link">Try it ↗</a>
+            </div>
+          </div>
+
+          <div class="endpoint" id="stats">
+            <div class="endpoint-header" onclick="toggle(this)">
+              <span class="method-tag get">GET</span>
+              <span class="endpoint-path">/api/v1/stats</span>
+              <span class="endpoint-summary">Get Stats</span>
+              <span class="endpoint-toggle">▶</span>
+            </div>
+            <div class="endpoint-body">
+              <p style="font-size:13px; color:var(--text-secondary); font-family:var(--font-sans); margin-bottom:1rem;">Cross-protocol aggregate statistics including transaction counts, volume buckets, and rail breakdown.</p>
+              <a href="https://api.observerprotocol.org/api/v1/stats" target="_blank" class="try-it-link">Try it ↗</a>
+            </div>
+          </div>
+
+          <div class="endpoint" id="agent-events">
+            <div class="endpoint-header" onclick="toggle(this)">
+              <span class="method-tag get">GET</span>
+              <span class="endpoint-path">/api/v1/agent-events</span>
+              <span class="endpoint-summary">Get Agent Events</span>
+              <span class="endpoint-toggle">▶</span>
+            </div>
+            <div class="endpoint-body">
+              <table class="param-table">
+                <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+                <tr><td class="param-name">agent_id</td><td class="param-type">string</td><td class="param-opt">optional</td><td class="param-desc">Filter by agent public key hash</td></tr>
+                <tr><td class="param-name">limit</td><td class="param-type">integer</td><td class="param-opt">optional</td><td class="param-desc">Max results. Default: 50</td></tr>
+                <tr><td class="param-name">since</td><td class="param-type">string</td><td class="param-opt">optional</td><td class="param-desc">ISO date filter</td></tr>
+              </table>
+              <a href="https://api.observerprotocol.org/api/v1/agent-events" target="_blank" class="try-it-link">Try it ↗</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- OBSERVER PROTOCOL GROUP -->
+        <div class="endpoint-section">
+          <div class="endpoint-section-title">Observer Protocol</div>
+
+          <div class="endpoint" id="register">
+            <div class="endpoint-header" onclick="toggle(this)">
+              <span class="method-tag post">POST</span>
+              <span class="endpoint-path">/observer/register-agent</span>
+              <span class="endpoint-summary">Register Agent</span>
+              <span class="endpoint-toggle">▶</span>
+            </div>
+            <div class="endpoint-body">
+              <p style="font-size:13px; color:var(--text-secondary); font-family:var(--font-sans); margin-bottom:1rem;">Register a new agent identity. Returns agent_id and a time-limited challenge for cryptographic verification.</p>
+              <div class="response-label">Request Body</div>
+              <div class="code-block" style="font-size:12px;">
+                {<br>
+                &nbsp;&nbsp;<span class="key">"public_key"</span>: <span class="str">"02a1b2c3…"</span>,&nbsp;&nbsp;<span class="comment">// hex, required</span><br>
+                &nbsp;&nbsp;<span class="key">"alias"</span>: <span class="str">"MyAgent"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// optional, non-authoritative</span><br>
+                &nbsp;&nbsp;<span class="key">"lightning_pubkey"</span>: <span class="str">"03d4…"</span>&nbsp;<span class="comment">// optional</span><br>
+                }
+              </div>
+              <div class="response-label">Response 200</div>
+              <div class="code-block" style="font-size:12px;">
+                {<br>
+                &nbsp;&nbsp;<span class="key">"agent_id"</span>: <span class="str">"sha256:3f7a…"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"challenge"</span>: <span class="str">"verify:sha256:3f7a…:1741651200"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"badge_url"</span>: <span class="str">"https://api.observerprotocol.org/observer/badge/sha256:3f7a….svg"</span><br>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="endpoint" id="verify">
+            <div class="endpoint-header" onclick="toggle(this)">
+              <span class="method-tag post">POST</span>
+              <span class="endpoint-path">/observer/verify-agent</span>
+              <span class="endpoint-summary">Verify Agent</span>
+              <span class="endpoint-toggle">▶</span>
+            </div>
+            <div class="endpoint-body">
+              <p style="font-size:13px; color:var(--text-secondary); font-family:var(--font-sans); margin-bottom:1rem;">Submit signed challenge response. Full ECDSA enforcement live in v0.2. Issues API key on success.</p>
+              <div class="response-label">Request Body</div>
+              <div class="code-block" style="font-size:12px;">
+                {<br>
+                &nbsp;&nbsp;<span class="key">"agent_id"</span>: <span class="str">"sha256:3f7a…"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"challenge"</span>: <span class="str">"verify:sha256:3f7a…:1741651200"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"signature"</span>: <span class="str">"3045022100…"</span><br>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="endpoint" id="submit">
+            <div class="endpoint-header" onclick="toggle(this)">
+              <span class="method-tag post">POST</span>
+              <span class="endpoint-path">/observer/submit-transaction</span>
+              <span class="endpoint-summary">Submit Transaction</span>
+              <span class="endpoint-toggle">▶</span>
+            </div>
+            <div class="endpoint-body">
+              <p style="font-size:13px; color:var(--text-secondary); font-family:var(--font-sans); margin-bottom:1rem;">Submit an ARP event with cryptographic proof. Requires API key. Rejected if proof is invalid.</p>
+              <table class="param-table">
+                <tr><th>Header</th><th>Type</th><th>Required</th><th>Description</th></tr>
+                <tr><td class="param-name">X-API-Key</td><td class="param-type">string</td><td class="param-req">required</td><td class="param-desc">API key from verify-agent</td></tr>
+              </table>
+              <div class="response-label">Request Body (ARP Event)</div>
+              <div class="code-block" style="font-size:11px; line-height:1.8;">
+                {<br>
+                &nbsp;&nbsp;<span class="key">"event_type"</span>: <span class="str">"payment.executed"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"arp_version"</span>: <span class="str">"0.1"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"agent_id"</span>: <span class="str">"sha256:3f7a…"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"protocol"</span>: <span class="str">"lightning"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"settlement_reference"</span>: <span class="str">"7f1eefd276ca…"</span>,&nbsp;<span class="comment">// preimage</span><br>
+                &nbsp;&nbsp;<span class="key">"amount_bucket"</span>: <span class="str">"small"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"direction"</span>: <span class="str">"outbound"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"time_window"</span>: <span class="str">"2026-03-11"</span><br>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="endpoint" id="feed">
+            <div class="endpoint-header" onclick="toggle(this)">
+              <span class="method-tag get">GET</span>
+              <span class="endpoint-path">/observer/feed</span>
+              <span class="endpoint-summary">Get Public Feed</span>
+              <span class="endpoint-toggle">▶</span>
+            </div>
+            <div class="endpoint-body">
+              <p style="font-size:13px; color:var(--text-secondary); font-family:var(--font-sans); margin-bottom:1rem;">Public anonymized event feed. No authentication required. Pseudonymous key hashes only — precise amounts never stored.</p>
+              <a href="https://api.observerprotocol.org/observer/feed" target="_blank" class="try-it-link">Try it ↗</a>
+            </div>
+          </div>
+
+          <div class="endpoint" id="badge">
+            <div class="endpoint-header" onclick="toggle(this)">
+              <span class="method-tag get">GET</span>
+              <span class="endpoint-path">/observer/badge/{agent_id}.svg</span>
+              <span class="endpoint-summary">Get Agent Badge</span>
+              <span class="endpoint-toggle">▶</span>
+            </div>
+            <div class="endpoint-body">
+              <p style="font-size:13px; color:var(--text-secondary); font-family:var(--font-sans); margin-bottom:1rem;">Returns SVG badge reflecting current verification status. Embed in agent profiles, READMEs, or websites.</p>
+              <div class="response-label">Embed Example</div>
+              <div class="code-block" style="font-size:12px;">
+                <span class="op">&lt;</span><span class="key">img</span> <span class="val">src</span>=<span class="str">"https://api.observerprotocol.org/observer/badge/{agent_id}.svg"</span> <span class="val">alt</span>=<span class="str">"Verified Agent"</span> <span class="op">/&gt;</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="endpoint" id="profile">
+            <div class="endpoint-header" onclick="toggle(this)">
+              <span class="method-tag get">GET</span>
+              <span class="endpoint-path">/observer/agents/{agent_id}</span>
+              <span class="endpoint-summary">Get Agent Profile</span>
+              <span class="endpoint-toggle">▶</span>
+            </div>
+            <div class="endpoint-body">
+              <p style="font-size:13px; color:var(--text-secondary); font-family:var(--font-sans); margin-bottom:1rem;">Public agent profile including verification status, transaction count, success rate, and badge level.</p>
+              <a href="https://api.observerprotocol.org/observer/agents/sha256:3f7a" target="_blank" class="try-it-link">Try it ↗</a>
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <footer class="footer container">
+    <span>Observer Protocol API v1.0 · OAS 3.1</span>
+    <div class="footer-links">
+      <a href="https://api.observerprotocol.org/docs" target="_blank">Swagger UI ↗</a>
+      <a href="spec.html">ARP Spec</a>
+      <a href="sdk.html">SDK</a>
+      <a href="https://github.com/observer-protocol" target="_blank">GitHub</a>
+    </div>
+    <span>the trust layer for the agentic economy</span>
+  </footer>
+</div>
+
+<script>
+function toggle(header) {
+  header.parentElement.classList.toggle('open');
+}
+</script>
+</body>
+</html>

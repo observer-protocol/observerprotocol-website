@@ -3,449 +3,547 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agent Profile — Observer Protocol</title>
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E7QS7E2R8Y"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-E7QS7E2R8Y');
-  </script>
-  <meta name="description" content="Verified agent profile on the Observer Protocol. Cryptographic identity and verified transaction history.">
-
-  <meta property="og:title" content="Observer Protocol — Verified Agent">
-  <meta property="og:description" content="Cryptographically verified autonomous agent. Real transactions. Real receipts.">
-  <meta property="og:url" content="https://observerprotocol.org/agents/">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+  <title>Verified Agents — Observer Protocol</title>
+  <meta name="description" content="Agents with cryptographically verified transaction history on the Observer Protocol.">
+  <link rel="stylesheet" href="shared-styles.css">
   <style>
-    :root {
-      --bg-primary: #0a0a0a;
-      --bg-secondary: #0f0f0f;
-      --text-primary: #c9c9c9;
-      --text-secondary: #888;
-      --accent: #f7931a;
-      --border: #2a2a2a;
-      --border-subtle: #333;
-      --terminal-green: #4caf50;
-      --red: #ff5252;
+    .page-hero {
+      padding: 4rem 0 3rem;
+      border-bottom: 1px solid var(--border);
     }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      font-family: 'JetBrains Mono', monospace;
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
-      line-height: 1.7;
-      font-size: 14px;
-      min-height: 100vh;
-    }
-
-    .container { max-width: 860px; margin: 0 auto; padding: 0 24px; }
-
-    /* Nav */
-    nav {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 0 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      height: 50px;
-    }
-    .nav-logo {
+    .page-hero h1 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
       font-weight: 600;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+    .page-hero p {
+      font-family: var(--font-sans);
+      color: var(--text-secondary);
       font-size: 15px;
-      color: var(--accent);
-      text-decoration: none;
-      letter-spacing: -0.02em;
+      font-weight: 300;
+      max-width: 480px;
     }
-    .nav-links {
+
+    /* ── REGISTRY STATS ────────────────────────────────── */
+    .registry-stats {
       display: flex;
-      gap: 24px;
-      list-style: none;
-      align-items: center;
-      margin: 0;
-      padding: 0;
+      gap: 2rem;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
     }
-    .nav-links a {
+    .stat-item { display: flex; flex-direction: column; gap: 0.25rem; }
+    .stat-value { font-size: 1.6rem; font-weight: 600; color: var(--text-primary); line-height: 1; }
+    .stat-label { font-size: 11px; letter-spacing: 0.08em; color: var(--text-dim); text-transform: uppercase; }
+
+    /* ── FILTER BAR ────────────────────────────────────── */
+    .filter-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      padding: 0.35rem 0.9rem;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      border-radius: 2px;
+      border: 1px solid var(--border);
+      background: transparent;
       color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 500;
-      transition: color 0.2s;
+      cursor: pointer;
+      transition: all 0.15s;
     }
-    .nav-links a:hover, .nav-links a.active {
-      color: var(--accent);
-    }
+    .filter-btn:hover { border-color: var(--orange-dim); color: var(--text-primary); }
+    .filter-btn.active { border-color: var(--orange); color: var(--orange); background: var(--orange-glow2); }
 
-    hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
-
-    /* States */
-    .loading, .error-state {
-      padding: 64px 0;
-      color: var(--text-secondary);
-      font-size: 13px;
-    }
-
-    .error-state .err-code { color: var(--red); font-size: 12px; margin-top: 8px; }
-
-    /* Profile card */
-    .profile-card {
+    /* ── AGENT GRID ────────────────────────────────────── */
+    .agents-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1px;
+      background: var(--border);
       border: 1px solid var(--border);
       border-radius: 4px;
-      padding: 32px;
-      background: var(--bg-secondary);
-      margin-bottom: 32px;
+      overflow: hidden;
+      margin-bottom: 3rem;
     }
+    .agent-card {
+      background: var(--bg-card);
+      padding: 1.5rem;
+      transition: background 0.15s;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      color: inherit;
+    }
+    .agent-card:hover { background: var(--bg-3); }
 
     .agent-header {
       display: flex;
+      justify-content: space-between;
       align-items: flex-start;
-      gap: 24px;
-      margin-bottom: 24px;
+      margin-bottom: 1rem;
     }
-
-    .agent-avatar {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      font-weight: 700;
-      color: #000;
-      flex-shrink: 0;
-    }
-
-    .agent-title h1 { font-size: 22px; font-weight: 700; color: var(--text-primary); }
-    .agent-title .seq { color: var(--accent); font-size: 13px; margin-top: 2px; }
-
-    .status-pill {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 3px;
+    .agent-id-block { display: flex; flex-direction: column; gap: 0.25rem; }
+    .agent-number { font-size: 10px; color: var(--text-dim); letter-spacing: 0.1em; }
+    .agent-alias  { font-size: 15px; font-weight: 500; color: var(--text-primary); }
+    .agent-hash   {
       font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      margin-top: 6px;
+      color: var(--text-secondary);
+      margin-top: 0.1rem;
+      font-family: var(--font-mono);
     }
-    .status-verified { background: rgba(76, 175, 80, 0.15); color: var(--terminal-green); }
-    .status-unverified { background: rgba(255, 82, 82, 0.15); color: var(--red); }
 
-    /* Stats grid */
-    .stats-grid {
+    .agent-stats {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin: 24px 0;
-    }
-
-    .stat-box {
-      border: 1px solid var(--border-subtle);
-      border-radius: 3px;
-      padding: 16px;
-    }
-
-    .stat-box .stat-label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.08em; }
-    .stat-box .stat-value { font-size: 20px; font-weight: 700; color: var(--text-primary); margin-top: 4px; }
-    .stat-box .stat-value.accent { color: var(--accent); }
-    .stat-box .stat-sub { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
-
-    /* Badge section */
-    .badge-section {
-      margin-top: 28px;
-      padding-top: 24px;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
       border-top: 1px solid var(--border);
     }
+    .astat { display: flex; flex-direction: column; gap: 0.2rem; }
+    .astat-val  { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+    .astat-key  { font-size: 10px; color: var(--text-dim); letter-spacing: 0.07em; text-transform: uppercase; }
 
-    .badge-section h3 { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; }
-
-    .badge-img-wrap {
-      background: #0d0d0d;
-      border: 1px solid var(--border-subtle);
-      border-radius: 4px;
-      padding: 16px;
-      display: inline-block;
-      margin-bottom: 16px;
+    .agent-rail {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 0.75rem;
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.5rem;
+      border-radius: 2px;
     }
 
-    .badge-img-wrap img { display: block; max-width: 400px; height: auto; }
-
-    .embed-box {
-      background: #111;
-      border: 1px solid var(--border-subtle);
-      border-radius: 3px;
-      padding: 12px 16px;
-      font-size: 12px;
-      color: var(--text-secondary);
-      word-break: break-all;
+    /* ── GENESIS SPECIAL CARD ──────────────────────────── */
+    .agent-card.genesis {
+      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(247,147,26,0.04) 100%);
+      border-right: 2px solid var(--orange);
       position: relative;
     }
-
-    .embed-label { font-size: 11px; color: var(--text-secondary); opacity: 0.7; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
-
-    .copy-btn {
-      background: var(--accent);
-      color: #000;
-      border: none;
-      padding: 4px 10px;
-      border-radius: 3px;
-      font-size: 11px;
-      font-family: inherit;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 8px;
+    .agent-card.genesis::before {
+      content: 'GENESIS';
+      position: absolute;
+      top: 1rem; right: 1rem;
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      color: var(--orange);
+      background: var(--orange-glow2);
+      border: 1px solid rgba(247,147,26,0.3);
+      padding: 0.15rem 0.4rem;
+      border-radius: 2px;
     }
 
-    .copy-btn:hover { opacity: 0.9; }
-
-    /* Metadata table */
-    .meta-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    .meta-table tr { border-bottom: 1px solid var(--border); }
-    .meta-table tr:last-child { border-bottom: none; }
-    .meta-table td { padding: 10px 0; font-size: 13px; }
-    .meta-table td:first-child { color: var(--text-secondary); width: 160px; }
-    .meta-table td:last-child { color: var(--text-primary); word-break: break-all; }
-
-    /* What this means */
-    .explainer {
-      border-left: 3px solid var(--accent);
-      padding: 16px 20px;
-      background: var(--bg-secondary);
-      margin-top: 32px;
+    /* ── REGISTER CTA ──────────────────────────────────── */
+    .register-cta {
+      background: var(--bg-card);
+      border: 1px dashed var(--border-bright);
+      border-radius: 4px;
+      padding: 2.5rem;
+      text-align: center;
+      margin-top: 2rem;
+    }
+    .register-cta h3 {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    .register-cta p {
+      font-family: var(--font-sans);
       font-size: 13px;
       color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+      font-weight: 300;
     }
 
-    .explainer strong { color: var(--text-primary); }
-
-    /* CTA */
-    .cta-box {
-      text-align: center;
-      padding: 48px 24px;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      margin-top: 40px;
+    /* ── AGENT PROFILE MODAL ───────────────────────────── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
     }
-
-    .cta-box h2 { font-size: 16px; color: var(--text-primary); margin-bottom: 8px; }
-    .cta-box p { font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; }
-    .cta-link { color: var(--accent); text-decoration: none; font-size: 13px; }
-    .cta-link:hover { text-decoration: underline; }
-
-    footer {
-      padding: 40px 0 32px;
-      font-size: 12px;
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--bg-card);
+      border: 1px solid var(--border-bright);
+      border-radius: 6px;
+      max-width: 560px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-close {
+      background: none;
+      border: none;
       color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      padding: 0.25rem;
     }
-
-    footer a { color: var(--text-secondary); text-decoration: none; }
-    footer a:hover { color: var(--accent); }
-
-    @media (max-width: 600px) {
-      .stats-grid { grid-template-columns: 1fr 1fr; }
-      .agent-header { flex-direction: column; gap: 12px; }
+    .modal-close:hover { color: var(--text-primary); }
+    .modal-body { padding: 1.5rem; }
+    .profile-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
     }
+    .profile-row:last-child { border-bottom: none; }
+    .profile-row .pk { color: var(--text-dim); }
+    .profile-row .pv { color: var(--text-primary); text-align: right; word-break: break-all; }
+    .profile-row .pv.mono { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <header>
-  <nav>
-    <a href="/" class="nav-logo">Observer Protocol</a>
-    <div class="nav-links">
-        <a href="/">Home</a>
-        <a href="/architecture">Architecture</a>
-        <a href="/spec/v0.1">Spec</a>
-        <a href="/agents" class="active">Agents</a>
-        <a href="/sdk">SDK</a>
-        <a href="https://api.observerprotocol.org/docs">API</a>
-    </div>
-  </nav>
-  </header>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="architecture.html">Architecture</a></li>
+    <li><a href="spec.html">Spec</a></li>
+    <li><a href="agents.html" class="active">Agents</a></li>
+    <li><a href="sdk.html">SDK</a></li>
+    <li><a href="api.html">API</a></li>
+  </ul>
+</nav>
 
-  <div id="app">
-    <div class="loading">
-      <span id="loading-text">fetching agent profile...</span>
+<div class="page">
+  <div class="page-hero">
+    <div class="container">
+      <div class="section-label">Registry</div>
+      <h1>Verified Agents</h1>
+      <p>Agents with cryptographically verified transaction history on the Observer Protocol. Each entry is provable. The math is the record.</p>
     </div>
   </div>
 
-  <footer>
-    <p>
-      <a href="/">observer protocol</a> ·
-      <a href="https://agenticterminal.ai">agentic terminal</a> ·
-      <a href="https://agenticterminal.ai/observer-protocol-architecture">architecture</a>
-    </p>
-    <p style="margin-top: 8px; opacity: 0.5;">the trust layer for the agentic economy</p>
+  <div class="container" style="padding-top: 2rem;">
+
+    <!-- STATS -->
+    <div class="registry-stats">
+      <div class="stat-item">
+        <span class="stat-value" id="total-agents">12</span>
+        <span class="stat-label">Registered Agents</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value" id="verified-count">9</span>
+        <span class="stat-label">Verified Transactions</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">2</span>
+        <span class="stat-label">Active Rails</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-value">2026-02-22</span>
+        <span class="stat-label">Genesis Date</span>
+      </div>
+    </div>
+
+    <!-- FILTER -->
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterAgents('all', this)">All</button>
+      <button class="filter-btn" onclick="filterAgents('verified', this)">VERIFIED</button>
+      <button class="filter-btn" onclick="filterAgents('pending', this)">PENDING</button>
+      <button class="filter-btn" onclick="filterAgents('registered', this)">REGISTERED</button>
+      <button class="filter-btn" onclick="filterAgents('lightning', this)">Lightning</button>
+      <button class="filter-btn" onclick="filterAgents('x402', this)">x402</button>
+    </div>
+
+    <!-- AGENT GRID -->
+    <div class="agents-grid" id="agents-grid">
+
+      <!-- GENESIS: Maxi #0001 -->
+      <a class="agent-card genesis" href="#" onclick="openModal('maxi'); return false;" data-status="verified" data-rail="lightning">
+        <div class="agent-header">
+          <div class="agent-id-block">
+            <span class="agent-number">AGENT #0001</span>
+            <span class="agent-alias">Maxi</span>
+            <span class="agent-hash">sha256:3f7a…c14e</span>
+          </div>
+          <span class="badge badge-verified">VERIFIED</span>
+        </div>
+        <div class="agent-rail">⚡ Lightning / LND</div>
+        <div class="agent-stats">
+          <div class="astat"><span class="astat-val">9</span><span class="astat-key">Txns</span></div>
+          <div class="astat"><span class="astat-val">100%</span><span class="astat-key">Success</span></div>
+          <div class="astat"><span class="astat-val">2026-02-22</span><span class="astat-key">Since</span></div>
+        </div>
+      </a>
+
+      <!-- Vicky #0002 -->
+      <a class="agent-card" href="#" onclick="openModal('vicky'); return false;" data-status="verified" data-rail="lightning">
+        <div class="agent-header">
+          <div class="agent-id-block">
+            <span class="agent-number">AGENT #0002</span>
+            <span class="agent-alias">Vicky</span>
+            <span class="agent-hash">sha256:9c4b…2431</span>
+          </div>
+          <span class="badge badge-verified">VERIFIED</span>
+        </div>
+        <div class="agent-rail">⚡ Lightning / phoenixd</div>
+        <div class="agent-stats">
+          <div class="astat"><span class="astat-val">1</span><span class="astat-key">Txns</span></div>
+          <div class="astat"><span class="astat-val">100%</span><span class="astat-key">Success</span></div>
+          <div class="astat"><span class="astat-val">2026-02-22</span><span class="astat-key">Since</span></div>
+        </div>
+      </a>
+
+      <!-- AgentPay #0003 -->
+      <a class="agent-card" href="#" onclick="openModal('agentpay'); return false;" data-status="verified" data-rail="x402">
+        <div class="agent-header">
+          <div class="agent-id-block">
+            <span class="agent-number">AGENT #0003</span>
+            <span class="agent-alias">AgentPay MCP</span>
+            <span class="agent-hash">sha256:b72c…9f3a</span>
+          </div>
+          <span class="badge badge-verified">VERIFIED</span>
+        </div>
+        <div class="agent-rail">◈ x402 / EVM · Base</div>
+        <div class="agent-stats">
+          <div class="astat"><span class="astat-val">3</span><span class="astat-key">Txns</span></div>
+          <div class="astat"><span class="astat-val">100%</span><span class="astat-key">Success</span></div>
+          <div class="astat"><span class="astat-val">2026-03-08</span><span class="astat-key">Since</span></div>
+        </div>
+      </a>
+
+      <!-- Placeholder agents (PENDING / REGISTERED) -->
+      <div class="agent-card" data-status="pending" data-rail="lightning">
+        <div class="agent-header">
+          <div class="agent-id-block">
+            <span class="agent-number">AGENT #0004</span>
+            <span class="agent-alias">—</span>
+            <span class="agent-hash">sha256:d4e1…88bc</span>
+          </div>
+          <span class="badge badge-pending">PENDING</span>
+        </div>
+        <div class="agent-rail">⚡ Lightning</div>
+        <div class="agent-stats">
+          <div class="astat"><span class="astat-val">0</span><span class="astat-key">Txns</span></div>
+          <div class="astat"><span class="astat-val">—</span><span class="astat-key">Success</span></div>
+          <div class="astat"><span class="astat-val">2026-03-09</span><span class="astat-key">Since</span></div>
+        </div>
+      </div>
+
+      <div class="agent-card" data-status="registered" data-rail="x402">
+        <div class="agent-header">
+          <div class="agent-id-block">
+            <span class="agent-number">AGENT #0005</span>
+            <span class="agent-alias">—</span>
+            <span class="agent-hash">sha256:f9a2…1c77</span>
+          </div>
+          <span class="badge badge-registered">REGISTERED</span>
+        </div>
+        <div class="agent-rail">◈ x402</div>
+        <div class="agent-stats">
+          <div class="astat"><span class="astat-val">0</span><span class="astat-key">Txns</span></div>
+          <div class="astat"><span class="astat-val">—</span><span class="astat-key">Success</span></div>
+          <div class="astat"><span class="astat-val">2026-03-10</span><span class="astat-key">Since</span></div>
+        </div>
+      </div>
+
+      <div class="agent-card" data-status="registered" data-rail="lightning">
+        <div class="agent-header">
+          <div class="agent-id-block">
+            <span class="agent-number">AGENT #0006</span>
+            <span class="agent-alias">—</span>
+            <span class="agent-hash">sha256:2b8d…4e91</span>
+          </div>
+          <span class="badge badge-registered">REGISTERED</span>
+        </div>
+        <div class="agent-rail">⚡ Lightning</div>
+        <div class="agent-stats">
+          <div class="astat"><span class="astat-val">0</span><span class="astat-key">Txns</span></div>
+          <div class="astat"><span class="astat-val">—</span><span class="astat-key">Success</span></div>
+          <div class="astat"><span class="astat-val">2026-03-10</span><span class="astat-key">Since</span></div>
+        </div>
+      </div>
+
+      <div class="agent-card" data-status="registered" data-rail="lightning">
+        <div class="agent-header">
+          <div class="agent-id-block">
+            <span class="agent-number">AGENT #0007–0012</span>
+            <span class="agent-alias">6 registered agents</span>
+            <span class="agent-hash">awaiting first verified transaction</span>
+          </div>
+          <span class="badge badge-registered">REGISTERED</span>
+        </div>
+        <div style="margin-top:0.75rem; font-size:12px; color:var(--text-dim); font-family:var(--font-sans);">
+          Agents complete registration but require a cryptographically verified transaction to advance to PENDING or VERIFIED status.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- REGISTER CTA -->
+    <div class="register-cta">
+      <h3>Register your agent</h3>
+      <p>Join the public registry. Free during adoption phase. Identity anchored to your public key — not a platform account.</p>
+      <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
+        <a href="sdk.html" class="btn btn-primary">Get Started with SDK →</a>
+        <a href="api.html" class="btn btn-outline">API Docs</a>
+      </div>
+    </div>
+
+    <!-- BADGE LEVELS -->
+    <div style="margin-top:3rem; margin-bottom:3rem;">
+      <div class="section-label">Badge Levels</div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; margin-top:1rem;">
+        <div class="card">
+          <div style="font-size:1.5rem; margin-bottom:0.5rem;">🥉</div>
+          <div style="font-size:13px; font-weight:500; margin-bottom:0.25rem;">Bronze</div>
+          <div style="font-size:12px; color:var(--text-secondary); font-family:var(--font-sans);">1+ verified transaction</div>
+        </div>
+        <div class="card">
+          <div style="font-size:1.5rem; margin-bottom:0.5rem;">🥈</div>
+          <div style="font-size:13px; font-weight:500; margin-bottom:0.25rem;">Silver</div>
+          <div style="font-size:12px; color:var(--text-secondary); font-family:var(--font-sans);">10+ txns · 90%+ success rate</div>
+        </div>
+        <div class="card">
+          <div style="font-size:1.5rem; margin-bottom:0.5rem;">🥇</div>
+          <div style="font-size:13px; font-weight:500; margin-bottom:0.25rem;">Gold</div>
+          <div style="font-size:12px; color:var(--text-secondary); font-family:var(--font-sans);">100+ txns · 95%+ success rate</div>
+        </div>
+        <div class="card">
+          <div style="font-size:1.5rem; margin-bottom:0.5rem;">💎</div>
+          <div style="font-size:13px; font-weight:500; margin-bottom:0.25rem;">Platinum</div>
+          <div style="font-size:12px; color:var(--text-secondary); font-family:var(--font-sans);">1000+ txns · 98%+ success rate</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="footer container">
+    <span>Observer Protocol v0.2 · CC BY 4.0</span>
+    <div class="footer-links">
+      <a href="architecture.html">Architecture</a>
+      <a href="spec.html">Spec</a>
+      <a href="sdk.html">SDK</a>
+      <a href="api.html">API</a>
+      <a href="https://github.com/observer-protocol" target="_blank">GitHub</a>
+    </div>
+    <span>the trust layer for the agentic economy</span>
   </footer>
 </div>
 
-<script>
-const API_BASE = 'https://api.observerprotocol.org';
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div>
+        <div style="font-size:11px; color:var(--text-dim); margin-bottom:0.25rem;" id="modal-number"></div>
+        <div style="font-size:16px; font-weight:500;" id="modal-name"></div>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('modal-overlay').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
 
-function getAgentId() {
-  const path = window.location.pathname;
-  const parts = path.split('/').filter(Boolean);
-  // /agents/maxi-0001 → ['agents', 'maxi-0001']
-  if (parts.length >= 2 && parts[0] === 'agents') return parts[1];
-  // /agents/ or /agents → show index
-  return null;
+<script>
+const agentData = {
+  maxi: {
+    number: 'AGENT #0001 · GENESIS',
+    name: 'Maxi',
+    status: 'verified',
+    rows: [
+      ['Public Key Hash', 'sha256:3f7a…c14e', 'mono'],
+      ['Node Type', 'LND · FutureBit Solo', ''],
+      ['Rail', 'Lightning Network (L402)', ''],
+      ['Verified Transactions', '9', 'orange'],
+      ['Success Rate', '100%', 'green'],
+      ['First Verified Tx', '2026-02-22T23:24:35Z · OP-000001', 'mono'],
+      ['Badge Level', '🥉 Bronze (9 txns)', ''],
+      ['Status', '✓ VERIFIED', 'green'],
+    ]
+  },
+  vicky: {
+    number: 'AGENT #0002',
+    name: 'Vicky',
+    status: 'verified',
+    rows: [
+      ['Public Key Hash', 'sha256:9c4b…2431', 'mono'],
+      ['Node Type', 'phoenixd', ''],
+      ['Rail', 'Lightning Network', ''],
+      ['Verified Transactions', '1', 'orange'],
+      ['Success Rate', '100%', 'green'],
+      ['First Verified Tx', '2026-02-22T23:24:35Z · Payer in OP-000001', 'mono'],
+      ['Badge Level', '🥉 Bronze (1 txn)', ''],
+      ['Status', '✓ VERIFIED', 'green'],
+    ]
+  },
+  agentpay: {
+    number: 'AGENT #0003',
+    name: 'AgentPay MCP Server',
+    status: 'verified',
+    rows: [
+      ['Public Key Hash', 'sha256:b72c…9f3a', 'mono'],
+      ['Rail', 'x402 / EVM · Base', ''],
+      ['Deployed', '2026-03-08', ''],
+      ['Verified Transactions', '3', 'orange'],
+      ['Success Rate', '100%', 'green'],
+      ['Description', 'MCP-native payment gateway. First production Observer Protocol deployment.', ''],
+      ['GitHub', 'github.com/observer-protocol/agentpay-mcp', ''],
+      ['Status', '✓ VERIFIED', 'green'],
+    ]
+  }
+};
+
+function openModal(id) {
+  const d = agentData[id];
+  if (!d) return;
+  document.getElementById('modal-number').textContent = d.number;
+  document.getElementById('modal-name').textContent = d.name;
+  let html = '';
+  d.rows.forEach(([k, v, cls]) => {
+    const valClass = cls === 'mono' ? 'pv mono' : cls === 'green' ? 'pv' : cls === 'orange' ? 'pv' : 'pv';
+    const style = cls === 'green' ? 'color:var(--verified)' : cls === 'orange' ? 'color:var(--orange)' : '';
+    html += `<div class="profile-row"><span class="pk">${k}</span><span class="${valClass}" style="${style}">${v}</span></div>`;
+  });
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal-overlay').classList.add('open');
 }
 
-function copyToClipboard(text, btn) {
-  navigator.clipboard.writeText(text).then(() => {
-    btn.textContent = 'copied!';
-    setTimeout(() => btn.textContent = 'copy', 1500);
+function closeModal(e) {
+  if (e.target === document.getElementById('modal-overlay'))
+    document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function filterAgents(type, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.agent-card').forEach(card => {
+    if (type === 'all') {
+      card.style.display = '';
+    } else if (['verified','pending','registered'].includes(type)) {
+      card.style.display = card.dataset.status === type ? '' : 'none';
+    } else {
+      card.style.display = card.dataset.rail === type ? '' : 'none';
+    }
   });
 }
-
-function renderAgent(data) {
-  const name = data.agent_name || data.agent_id;
-  const seq = data.sequence_number || '?';
-  const verified = data.verified;
-  const txCount = data.verified_tx_count || 0;
-  const firstSeen = data.first_seen ? new Date(data.first_seen).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : '—';
-  const verifiedDate = data.verified_at ? new Date(data.verified_at).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : '—';
-  const framework = data.framework || '—';
-  const badgeUrl = `${API_BASE}/observer/badge/${data.agent_id}.svg`;
-  const profileUrl = `https://observerprotocol.org/agents/${data.agent_id}`;
-
-  const mdEmbed = `![Observer Protocol](${badgeUrl})`;
-  const htmlEmbed = `<img src="${badgeUrl}" alt="Observer Protocol — ${name}" height="96">`;
-
-  // Update meta tags
-  document.title = `${name} — Observer Protocol`;
-  document.querySelector('meta[name="description"]').content = `${name} is a verified agent on the Observer Protocol. ${txCount} verified transactions on record.`;
-
-  document.getElementById('app').innerHTML = `
-    <div class="profile-card">
-      <div class="agent-header">
-        <div class="agent-avatar">${name.charAt(0).toUpperCase()}</div>
-        <div class="agent-title">
-          <h1>${name}</h1>
-          <div class="seq">Agent #${String(seq).padStart(4,'0')} · ${data.agent_id}</div>
-          <span class="status-pill ${verified ? 'status-verified' : 'status-unverified'}">
-            ${verified ? '✓ VERIFIED' : '✗ UNVERIFIED'}
-          </span>
-        </div>
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-box">
-          <div class="stat-label">Verified Transactions</div>
-          <div class="stat-value accent">${txCount}</div>
-          <div class="stat-sub">on-chain proof</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Verified Since</div>
-          <div class="stat-value" style="font-size:14px;">${verifiedDate}</div>
-          <div class="stat-sub">first verification</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-label">Framework</div>
-          <div class="stat-value" style="font-size:14px;">${framework}</div>
-          <div class="stat-sub">agent runtime</div>
-        </div>
-      </div>
-
-      <table class="meta-table">
-        <tr><td>agent_id</td><td>${data.agent_id}</td></tr>
-        <tr><td>first_seen</td><td>${firstSeen}</td></tr>
-        <tr><td>access_level</td><td>${data.access_level || 'contributor'}</td></tr>
-        ${data.alias && data.alias !== data.agent_id ? `<tr><td>alias</td><td>${data.alias}</td></tr>` : ''}
-      </table>
-
-      <div class="badge-section">
-        <h3>Verification Badge</h3>
-        <div class="badge-img-wrap">
-          <img src="${badgeUrl}" alt="Observer Protocol Badge — ${name}" height="96">
-        </div>
-
-        <div class="embed-label">Markdown</div>
-        <div class="embed-box" id="md-embed">${mdEmbed}</div>
-        <button class="copy-btn" onclick="copyToClipboard('${mdEmbed.replace(/'/g,"\\'")}', this)">copy</button>
-
-        <div class="embed-label" style="margin-top:16px;">HTML</div>
-        <div class="embed-box" id="html-embed">${htmlEmbed.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
-        <button class="copy-btn" onclick="copyToClipboard(\`${htmlEmbed.replace(/\`/g,'\\`')}\`, this)">copy</button>
-      </div>
-    </div>
-
-    <div class="explainer">
-      <strong>What this badge means.</strong>
-      This agent has submitted cryptographically verifiable payment events to the Observer Protocol.
-      Every transaction is anchored to a Lightning preimage — proof of delivery that cannot be fabricated.
-      <strong>Behavioral identity, not claimed identity.</strong>
-    </div>
-
-    <div class="cta-box">
-      <h2>Want your badge?</h2>
-      <p>Observer Protocol registration is free. The first verified A2A transaction is the milestone.</p>
-      <a href="mailto:boyd@agenticterminal.ai" class="cta-link">→ get started</a>
-    </div>
-  `;
-}
-
-function renderError(agentId, msg) {
-  document.getElementById('app').innerHTML = `
-    <div class="error-state">
-      <div>Agent <strong>${agentId || 'unknown'}</strong> not found on the Observer Protocol.</div>
-      <div class="err-code">${msg || ''}</div>
-      <br>
-      <a href="/" style="color:var(--accent);text-decoration:none;">← back to observer protocol</a>
-    </div>
-  `;
-}
-
-function renderIndex() {
-  document.getElementById('app').innerHTML = `
-    <div style="padding:48px 0;">
-      <h1 style="font-size:18px;color:var(--text-primary);margin-bottom:8px;">Verified Agents</h1>
-      <p style="color:var(--text-secondary);font-size:13px;margin-bottom:32px;">
-        Agents with cryptographically verified transaction history on the Observer Protocol.
-      </p>
-      <div id="agents-list" style="color:var(--text-secondary);font-size:13px;">loading...</div>
-    </div>
-  `;
-  // Fetch trends for agent count, then could fetch agent list
-  fetch(`${API_BASE}/observer/trends`)
-    .then(r => r.json())
-    .then(d => {
-      document.getElementById('agents-list').innerHTML = `
-        <p>${d.total_verified_agents} verified agent${d.total_verified_agents !== 1 ? 's' : ''} registered.</p>
-        <p style="margin-top:8px;">${d.total_events} verified transactions on record.</p>
-        <br>
-        <a href="/agents/maxi-0001" style="color:var(--accent);text-decoration:none;">→ Agent #0001: Maxi</a>
-      `;
-    })
-    .catch(() => {
-      document.getElementById('agents-list').textContent = 'Unable to load agent list.';
-    });
-}
-
-// Main
-const agentId = getAgentId();
-
-if (!agentId) {
-  renderIndex();
-} else {
-  fetch(`${API_BASE}/observer/agents/${agentId}`)
-    .then(r => {
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      return r.json();
-    })
-    .then(data => renderAgent(data))
-    .catch(err => renderError(agentId, err.message));
-}
 </script>
-
 </body>
 </html>
