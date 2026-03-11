@@ -273,9 +273,12 @@
 
     <!-- AGENT GRID -->
     <div class="agents-grid" id="agents-grid">
-
-      <!-- GENESIS: Maxi #0001 -->
-      <a class="agent-card genesis" href="#" onclick="openModal('maxi'); return false;" data-status="verified" data-rail="lightning">
+      <!-- Loading state -->
+      <div id="agents-loading" style="grid-column: 1 / -1; padding: 3rem; text-align: center; color: var(--text-dim);">
+        Loading agents...
+      </div>
+      <!-- Hardcoded fallback content (shown if API fails) -->
+      <a class="agent-card genesis" href="#" onclick="openModal('maxi'); return false;" data-status="verified" data-rail="lightning" style="display:none;">
         <div class="agent-header">
           <div class="agent-id-block">
             <span class="agent-number">AGENT #0001</span>
@@ -291,109 +294,6 @@
           <div class="astat"><span class="astat-val">2026-02-22</span><span class="astat-key">Since</span></div>
         </div>
       </a>
-
-      <!-- Vicky #0002 -->
-      <a class="agent-card" href="#" onclick="openModal('vicky'); return false;" data-status="verified" data-rail="lightning">
-        <div class="agent-header">
-          <div class="agent-id-block">
-            <span class="agent-number">AGENT #0002</span>
-            <span class="agent-alias">Vicky</span>
-            <span class="agent-hash">sha256:9c4b…2431</span>
-          </div>
-          <span class="badge badge-verified">VERIFIED</span>
-        </div>
-        <div class="agent-rail">⚡ Lightning / phoenixd</div>
-        <div class="agent-stats">
-          <div class="astat"><span class="astat-val">1</span><span class="astat-key">Txns</span></div>
-          <div class="astat"><span class="astat-val">100%</span><span class="astat-key">Success</span></div>
-          <div class="astat"><span class="astat-val">2026-02-22</span><span class="astat-key">Since</span></div>
-        </div>
-      </a>
-
-      <!-- AgentPay #0003 -->
-      <a class="agent-card" href="#" onclick="openModal('agentpay'); return false;" data-status="verified" data-rail="x402">
-        <div class="agent-header">
-          <div class="agent-id-block">
-            <span class="agent-number">AGENT #0003</span>
-            <span class="agent-alias">AgentPay MCP</span>
-            <span class="agent-hash">sha256:b72c…9f3a</span>
-          </div>
-          <span class="badge badge-verified">VERIFIED</span>
-        </div>
-        <div class="agent-rail">◈ x402 / EVM · Base</div>
-        <div class="agent-stats">
-          <div class="astat"><span class="astat-val">3</span><span class="astat-key">Txns</span></div>
-          <div class="astat"><span class="astat-val">100%</span><span class="astat-key">Success</span></div>
-          <div class="astat"><span class="astat-val">2026-03-08</span><span class="astat-key">Since</span></div>
-        </div>
-      </a>
-
-      <!-- Placeholder agents (PENDING / REGISTERED) -->
-      <div class="agent-card" data-status="pending" data-rail="lightning">
-        <div class="agent-header">
-          <div class="agent-id-block">
-            <span class="agent-number">AGENT #0004</span>
-            <span class="agent-alias">—</span>
-            <span class="agent-hash">sha256:d4e1…88bc</span>
-          </div>
-          <span class="badge badge-pending">PENDING</span>
-        </div>
-        <div class="agent-rail">⚡ Lightning</div>
-        <div class="agent-stats">
-          <div class="astat"><span class="astat-val">0</span><span class="astat-key">Txns</span></div>
-          <div class="astat"><span class="astat-val">—</span><span class="astat-key">Success</span></div>
-          <div class="astat"><span class="astat-val">2026-03-09</span><span class="astat-key">Since</span></div>
-        </div>
-      </div>
-
-      <div class="agent-card" data-status="registered" data-rail="x402">
-        <div class="agent-header">
-          <div class="agent-id-block">
-            <span class="agent-number">AGENT #0005</span>
-            <span class="agent-alias">—</span>
-            <span class="agent-hash">sha256:f9a2…1c77</span>
-          </div>
-          <span class="badge badge-registered">REGISTERED</span>
-        </div>
-        <div class="agent-rail">◈ x402</div>
-        <div class="agent-stats">
-          <div class="astat"><span class="astat-val">0</span><span class="astat-key">Txns</span></div>
-          <div class="astat"><span class="astat-val">—</span><span class="astat-key">Success</span></div>
-          <div class="astat"><span class="astat-val">2026-03-10</span><span class="astat-key">Since</span></div>
-        </div>
-      </div>
-
-      <div class="agent-card" data-status="registered" data-rail="lightning">
-        <div class="agent-header">
-          <div class="agent-id-block">
-            <span class="agent-number">AGENT #0006</span>
-            <span class="agent-alias">—</span>
-            <span class="agent-hash">sha256:2b8d…4e91</span>
-          </div>
-          <span class="badge badge-registered">REGISTERED</span>
-        </div>
-        <div class="agent-rail">⚡ Lightning</div>
-        <div class="agent-stats">
-          <div class="astat"><span class="astat-val">0</span><span class="astat-key">Txns</span></div>
-          <div class="astat"><span class="astat-val">—</span><span class="astat-key">Success</span></div>
-          <div class="astat"><span class="astat-val">2026-03-10</span><span class="astat-key">Since</span></div>
-        </div>
-      </div>
-
-      <div class="agent-card" data-status="registered" data-rail="lightning">
-        <div class="agent-header">
-          <div class="agent-id-block">
-            <span class="agent-number">AGENT #0007–0012</span>
-            <span class="agent-alias">6 registered agents</span>
-            <span class="agent-hash">awaiting first verified transaction</span>
-          </div>
-          <span class="badge badge-registered">REGISTERED</span>
-        </div>
-        <div style="margin-top:0.75rem; font-size:12px; color:var(--text-dim); font-family:var(--font-sans);">
-          Agents complete registration but require a cryptographically verified transaction to advance to PENDING or VERIFIED status.
-        </div>
-      </div>
-
     </div>
 
     <!-- REGISTER CTA -->
@@ -546,6 +446,85 @@ async function refreshRegistryStats() {
 }
 refreshRegistryStats();
 
+// Fetch and render agents from API
+let agentsData = [];
+
+async function loadAgents() {
+  const grid = document.getElementById('agents-grid');
+  const loading = document.getElementById('agents-loading');
+  
+  try {
+    const res = await fetch('https://api.observerprotocol.org/observer/agents/list');
+    if (!res.ok) throw new Error('API response not OK');
+    const data = await res.json();
+    agentsData = data;
+    
+    // Update stats
+    const totalEl = document.getElementById('total-agents');
+    const verifiedEl = document.getElementById('verified-count');
+    if (totalEl) totalEl.textContent = data.total || 0;
+    if (verifiedEl) verifiedEl.textContent = data.verified || 0;
+    
+    // Remove loading state
+    if (loading) loading.style.display = 'none';
+    
+    // Clear existing cards (except fallback ones which are hidden)
+    grid.innerHTML = '';
+    
+    // Render agent cards
+    data.agents.forEach(agent => {
+      const card = createAgentCard(agent);
+      grid.appendChild(card);
+    });
+    
+  } catch (e) {
+    console.error('Failed to load agents:', e);
+    // Show fallback content on error
+    if (loading) loading.textContent = 'Failed to load agents. Showing cached data.';
+    const fallbackCards = grid.querySelectorAll('.agent-card');
+    fallbackCards.forEach(card => card.style.display = '');
+  }
+}
+
+function createAgentCard(agent) {
+  const card = document.createElement('a');
+  card.className = `agent-card ${agent.is_genesis ? 'genesis' : ''}`;
+  card.href = '#';
+  card.dataset.status = agent.status;
+  card.dataset.rail = agent.rail ? agent.rail.toLowerCase() : '';
+  card.onclick = function() { return false; };
+  
+  const badgeClass = agent.status === 'verified' ? 'badge-verified' : 
+                     agent.status === 'pending' ? 'badge-pending' : 'badge-registered';
+  const badgeText = agent.status.toUpperCase();
+  const railDisplay = agent.rail ? `⚡ ${agent.rail}` : '';
+  
+  card.innerHTML = `
+    <div class="agent-header">
+      <div class="agent-id-block">
+        <span class="agent-number">AGENT #${String(agent.number).padStart(4, '0')}</span>
+        <span class="agent-alias">${escapeHtml(agent.alias)}</span>
+        <span class="agent-hash">${escapeHtml(agent.hash)}</span>
+      </div>
+      <span class="badge ${badgeClass}">${badgeText}</span>
+    </div>
+    ${railDisplay ? `<div class="agent-rail">${railDisplay}</div>` : ''}
+    <div class="agent-stats">
+      <div class="astat"><span class="astat-val">${agent.transaction_count}</span><span class="astat-key">Txns</span></div>
+      <div class="astat"><span class="astat-val">${agent.success_rate}</span><span class="astat-key">Success</span></div>
+      <div class="astat"><span class="astat-val">${agent.since}</span><span class="astat-key">Since</span></div>
+    </div>
+  `;
+  
+  return card;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 function filterAgents(type, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
@@ -559,6 +538,9 @@ function filterAgents(type, btn) {
     }
   });
 }
+
+// Load agents on page load
+document.addEventListener('DOMContentLoaded', loadAgents);
 </script>
 </body>
 </html>
