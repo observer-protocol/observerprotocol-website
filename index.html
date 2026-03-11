@@ -602,6 +602,35 @@ function copyInstall(el) {
     }, 2000);
   });
 }
+
+// Live status bar data
+async function refreshStatus() {
+  try {
+    const [statsRes, feedRes] = await Promise.all([
+      fetch('https://api.observerprotocol.org/api/v1/stats'),
+      fetch('https://api.observerprotocol.org/observer/feed')
+    ]);
+    const stats = await statsRes.json();
+    const feed = await feedRes.json();
+
+    const events = feed.events || [];
+    const verifiedCount = events.filter(e => e.verified).length;
+
+    // Update status bar items if elements exist
+    const items = document.querySelectorAll('.status-item strong');
+    // Find protocol count
+    if (stats.stats) {
+      const s = stats.stats;
+      // Update verification count in status bar
+      document.querySelectorAll('.status-item').forEach(el => {
+        if (el.textContent.includes('verification:')) {
+          el.innerHTML = '<strong>verification:</strong> online · ' + verifiedCount + ' events';
+        }
+      });
+    }
+  } catch(e) { /* fail silently — hardcoded fallback shows */ }
+}
+refreshStatus();
 </script>
 </body>
 </html>

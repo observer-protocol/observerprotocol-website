@@ -531,6 +531,21 @@ function closeModal(e) {
     document.getElementById('modal-overlay').classList.remove('open');
 }
 
+// Live registry stats from feed
+async function refreshRegistryStats() {
+  try {
+    const res = await fetch('https://api.observerprotocol.org/observer/feed');
+    const data = await res.json();
+    const events = data.events || [];
+    const verified = events.filter(e => e.verified).length;
+    if (verified > 0) {
+      const el = document.getElementById('verified-count');
+      if (el) el.textContent = verified;
+    }
+  } catch(e) { /* fail silently */ }
+}
+refreshRegistryStats();
+
 function filterAgents(type, btn) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
