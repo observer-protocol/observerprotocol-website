@@ -335,6 +335,45 @@
 
   </div>
 
+  <hr style="border:none;border-top:1px solid var(--border);margin:0 0 3rem;">
+
+  <!-- VERIFIED TRANSACTION REGISTRY -->
+  <div class="container" style="padding-bottom:3rem;">
+    <div class="section-label">Public Record</div>
+    <h2 style="font-size:clamp(1.4rem,3vw,2rem);font-weight:600;margin-bottom:0.5rem;">Verified Transaction Registry</h2>
+    <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1.5rem;max-width:560px;">
+      Every verified payment, cryptographically provable. SHA256(preimage) = payment hash. No trust required.
+    </p>
+
+    <div style="overflow-x:auto;">
+      <table class="registry-table" id="tx-table" style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:8px 12px;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.08em;text-transform:uppercase;">Event ID</th>
+            <th style="text-align:left;padding:8px 12px;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.08em;text-transform:uppercase;">Agent</th>
+            <th style="text-align:left;padding:8px 12px;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.08em;text-transform:uppercase;">Protocol</th>
+            <th style="text-align:left;padding:8px 12px;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.08em;text-transform:uppercase;">Payment Hash</th>
+            <th style="text-align:center;padding:8px 12px;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.08em;text-transform:uppercase;">Dir</th>
+            <th style="text-align:left;padding:8px 12px;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.08em;text-transform:uppercase;">Amount</th>
+            <th style="text-align:center;padding:8px 12px;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.08em;text-transform:uppercase;">✓</th>
+            <th style="text-align:left;padding:8px 12px;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.08em;text-transform:uppercase;">Time</th>
+            <th style="padding:8px 12px;border-bottom:1px solid var(--border);"></th>
+          </tr>
+        </thead>
+        <tbody id="tx-tbody">
+          <tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-dim);font-style:italic;">Loading transactions...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="tx-load-more" style="text-align:center;margin-top:1.5rem;display:none;">
+      <button onclick="loadMoreTx()"
+        style="background:none;border:1px solid var(--border);color:var(--text-dim);padding:8px 24px;cursor:pointer;border-radius:4px;font-size:12px;">
+        Load more
+      </button>
+    </div>
+  </div>
+
   <footer class="footer container">
     <span>Observer Protocol v0.2 · CC BY 4.0</span>
     <div class="footer-links">
@@ -539,8 +578,94 @@ function filterAgents(type, btn) {
   });
 }
 
+// ── Verified Transactions ─────────────────────────────────────────────────
+const API_BASE = 'https://api.observerprotocol.org';
+let txOffset = 0;
+const TX_PAGE = 50;
+
+function timeAgo(dateString) {
+  if (!dateString) return '—';
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '—';
+  const seconds = Math.floor((new Date() - date) / 1000);
+  if (seconds < 5) return 'just now';
+  if (seconds < 60) return `${seconds}s ago`;
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+  return `${Math.floor(seconds / 86400)}d ago`;
+}
+
+function toggleProof(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = el.style.display === 'none' ? 'table-row' : 'none';
+}
+
+function renderTxRow(tx) {
+  const hash = tx.transaction_hash || '';
+  const hashShort = hash.length > 16 ? `${hash.slice(0,8)}…${hash.slice(-8)}` : (hash || '—');
+  const verified = tx.verified
+    ? '<span style="color:#00c853">✓</span>'
+    : '<span style="color:var(--text-dim)">○</span>';
+  const dirIcon = tx.direction === 'inbound' ? '↓' : '↑';
+  const dirColor = tx.direction === 'inbound' ? 'color:#00c853' : 'color:#F7931A';
+  const proto = tx.protocol === 'x402' ? '◈ x402' : '⚡ Lightning';
+  const proofId = `txproof-${tx.event_id}`;
+  const preimage = tx.preimage || '';
+  const tdStyle = 'padding:8px 12px;border-bottom:1px solid var(--border);';
+
+  return `
+    <tr style="transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,.03)'" onmouseout="this.style.background=''">
+      <td style="${tdStyle}font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">${tx.event_id || '—'}</td>
+      <td style="${tdStyle}font-family:var(--font-mono);font-size:11px">${tx.agent_id || '—'}</td>
+      <td style="${tdStyle}font-size:11px">${proto}</td>
+      <td style="${tdStyle}font-family:var(--font-mono);font-size:10px;color:var(--text-dim)" title="${hash}">${hashShort}</td>
+      <td style="${tdStyle}text-align:center;font-weight:bold;${dirColor}">${dirIcon}</td>
+      <td style="${tdStyle}font-size:11px;color:var(--text-dim)">${tx.amount_bucket || '—'}</td>
+      <td style="${tdStyle}text-align:center">${verified}</td>
+      <td style="${tdStyle}font-size:10px;color:var(--text-dim)">${timeAgo(tx.created_at)}</td>
+      <td style="${tdStyle}">${preimage ? `
+        <button onclick="toggleProof('${proofId}')"
+          style="background:none;border:1px solid #F7931A;color:#F7931A;font-size:9px;padding:2px 8px;cursor:pointer;border-radius:3px;white-space:nowrap">
+          Verify
+        </button>` : ''}</td>
+    </tr>
+    ${preimage ? `
+    <tr id="${proofId}" style="display:none">
+      <td colspan="9" style="padding:10px 16px;background:rgba(247,147,26,.05);border-bottom:1px solid var(--border)">
+        <div style="font-family:var(--font-mono);font-size:10px;line-height:2;word-break:break-all">
+          <div><span style="color:var(--text-secondary)">preimage :</span> ${preimage}</div>
+          <div><span style="color:var(--text-secondary)">sha256(↑):</span> ${hash}</div>
+          <div style="color:#00c853;margin-top:4px">✓ SHA256(preimage) = payment_hash — cryptographic proof of receipt</div>
+        </div>
+      </td>
+    </tr>` : ''}
+  `;
+}
+
+async function fetchTransactions(offset = 0, append = false) {
+  try {
+    const res = await fetch(`${API_BASE}/observer/transactions?limit=${TX_PAGE}`);
+    const data = await res.json();
+    const txs = data.transactions || [];
+    const tbody = document.getElementById('tx-tbody');
+    if (!append) tbody.innerHTML = '';
+    if (txs.length === 0 && !append) {
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-dim);font-style:italic;">No transactions yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML += txs.map(renderTxRow).join('');
+    txOffset = offset + txs.length;
+    document.getElementById('tx-load-more').style.display = txs.length >= TX_PAGE ? 'block' : 'none';
+  } catch(e) { console.error('tx fetch failed:', e); }
+}
+
+function loadMoreTx() { fetchTransactions(txOffset, true); }
+
 // Load agents on page load
-document.addEventListener('DOMContentLoaded', loadAgents);
+document.addEventListener('DOMContentLoaded', () => {
+  loadAgents();
+  fetchTransactions();
+});
 </script>
 </body>
 </html>

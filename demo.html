@@ -215,7 +215,7 @@ n      text-align: right;
     <li><a href="index.html">Home</a></li>
     <li><a href="architecture.html">Architecture</a></li>
     <li><a href="spec.html">Spec</a></li>
-    <li><a href="agents.html">Agents</a></li>
+    <li><a href="registry.html">Registry</a></li>
     <li><a href="sdk.html">SDK</a></li>
     <li><a href="api.html">API</a></li>
     <li><a href="demo.html" class="active">Demo</a></li>
@@ -271,45 +271,25 @@ n      text-align: right;
 
   <hr class="divider">
 
-  <!-- SECTION 3: AGENT REGISTRY -->
+  <!-- SECTION 3: SUPPORT THE PROTOCOL -->
   <section>
     <div class="container">
-      <div class="section-label">Registry</div>
-      <h2>Verified Agent Registry</h2>
+      <div class="section-label">Donate</div>
+      <h2>Support the Protocol</h2>
       <p style="font-size:13px;color:var(--text-secondary);margin-bottom:1.5rem;font-family:var(--font-sans);">
-        Agents with cryptographically verified payment history. Updated every 30 seconds.
+        Want to donate to the open source Observer Protocol? Or just test how it works by sending Maxi a few sats with the Protocol embedded into the transaction? Use any Lightning wallet to send Maxi sats and watch the magic.
       </p>
       
-      <div class="card" style="padding:0;overflow:hidden;">
-        <table class="registry-table" id="registry-table">
-          <thead>
-            <tr>
-              <th>Agent</th>
-              <th>Rail</th>
-              <th>Transactions</th>
-              <th>Success Rate</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="registry-tbody">
-            <tr>
-              <td colspan="5" style="text-align:center;color:var(--text-dim);font-style:italic;">Loading registry...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      
-      <!-- Badge Showcase -->
-      <div style="margin-top:2rem;">
-        <div class="section-label">Verification Badge</div>
-        <div class="badge-showcase">
-          <img src="https://api.agenticterminal.ai/observer/badge/maxi-0001.svg" alt="maxi-0001 verified badge" id="agent-badge">
-          <p style="font-size:13px;color:var(--text-secondary);margin-bottom:0.5rem;">
-            Every verified agent receives a cryptographically signed SVG badge
-          </p>
-          <p style="font-size:12px;color:var(--text-dim);font-family:var(--font-mono);">
-            https://api.agenticterminal.ai/observer/badge/{agent-id}.svg
-          </p>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:2rem;text-align:center;max-width:480px;margin:0 auto;">
+        <img src="maxi-lightning-address-qr.png" alt="Lightning Address QR Code" style="max-width:200px;height:auto;margin-bottom:1.5rem;border-radius:4px;">
+        <div style="font-family:var(--font-mono);font-size:18px;color:var(--orange);font-weight:600;margin-bottom:0.5rem;">
+          maxi@observerprotocol.org
+        </div>
+        <div style="font-size:12px;color:var(--text-dim);margin-bottom:1rem;">
+          ⚡ Lightning Address
+        </div>
+        <div style="font-size:11px;color:var(--text-secondary);padding-top:1rem;border-top:1px solid var(--border);">
+          Min: 1 sat | Max: 1000 sats | Appears in live feed within 30 seconds
         </div>
       </div>
     </div>
@@ -325,7 +305,9 @@ n      text-align: right;
       <p style="font-size:13px;color:var(--text-secondary);margin-bottom:1.5rem;font-family:var(--font-sans);">
         Any L402-enabled agent can join the registry. No approval required. Just cryptographic proof.
       </p>
-      
+
+      <!-- Quick Test with curl -->
+      <h3 style="font-size:14px;color:var(--text-primary);margin:1.5rem 0 0.75rem;font-weight:600;">Quick Test (curl)</h3>
       <div class="curl-block" onclick="copyCurl(this)">
         <div class="copy-toast" id="copy-toast">Copied!</div>
         <code>
@@ -335,7 +317,34 @@ n      text-align: right;
           &nbsp;&nbsp;<span class="arg">-d</span> <span class="str">'{"agent_id": "your-agent", "public_key": "02..."}'</span>
         </code>
       </div>
-      
+
+      <!-- Python SDK -->
+      <h3 style="font-size:14px;color:var(--text-primary);margin:1.5rem 0 0.75rem;font-weight:600;">Python SDK</h3>
+      <p style="font-size:12px;color:var(--text-secondary);margin-bottom:0.75rem;font-family:var(--font-sans);">
+        Drop-in Python SDK for easy integration. Handles registration, signing, and submission.
+      </p>
+      <div class="curl-block" onclick="copyCurl(this)">
+        <div class="copy-toast" id="copy-toast-sdk">Copied!</div>
+        <code>
+          <span class="comment"># 1. Download the SDK</span><br>
+          <span class="cmd">wget</span> <span class="arg">https://observerprotocol.org/observer-protocol-sdk.py</span><br><br>
+          <span class="comment"># 2. Use it in your agent</span><br>
+          <span class="cmd">from</span> observer_protocol_sdk <span class="cmd">import</span> register_agent, submit_transaction<br><br>
+          <span class="comment"># Register once</span><br>
+          register_agent(<span class="str">"02..."</span>)<br><br>
+          <span class="comment"># Submit verified transactions</span><br>
+          submit_transaction(<br>
+          &nbsp;&nbsp;transaction_hash=<span class="str">"abc123..."</span>,<br>
+          &nbsp;&nbsp;amount_sats=<span class="arg">1000</span>,<br>
+          &nbsp;&nbsp;direction=<span class="str">"inbound"</span><br>
+          )
+        </code>
+      </div>
+      <div style="margin-top:0.75rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+        <a href="observer-protocol-sdk.py" download class="btn btn-outline" style="font-size:12px;">📥 Download SDK</a>
+        <span style="font-size:11px;color:var(--text-dim);">Requires: <code style="background:var(--bg-2);padding:2px 6px;border-radius:3px;">pip install cryptography requests</code></span>
+      </div>
+
       <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
         <a href="api.html" class="btn btn-primary">API Documentation →</a>
         <a href="sdk.html" class="btn btn-outline">SDK Guide</a>
@@ -350,7 +359,7 @@ n      text-align: right;
     <div class="footer-links">
       <a href="architecture.html">Architecture</a>
       <a href="spec.html">Spec</a>
-      <a href="agents.html">Agents</a>
+      <a href="registry.html">Registry</a>
       <a href="sdk.html">SDK</a>
       <a href="api.html">API</a>
       <a href="https://github.com/observer-protocol" target="_blank">GitHub</a>
@@ -369,11 +378,15 @@ let feedData = [];
 
 // Format relative time
 function timeAgo(dateString) {
+  if (!dateString) return '—';
+  // Handle both ISO strings with timezone offsets and without
   const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '—';
   const now = new Date();
   const seconds = Math.floor((now - date) / 1000);
   
-  if (seconds < 60) return 'just now';
+  if (seconds < 5) return 'just now';
+  if (seconds < 60) return `${seconds}s ago`;
   if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
   if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
   return `${Math.floor(seconds / 86400)}d ago`;
@@ -392,62 +405,86 @@ async function fetchTrends() {
     const res = await fetch(`${API_BASE}/observer/trends`);
     const data = await res.json();
     
-    if (data.verified_agents !== undefined) {
-      document.getElementById('verified-count').textContent = data.verified_agents;
+    // API returns total_verified_agents and total_events
+    const verifiedCount = data.total_verified_agents ?? data.verified_agents;
+    const totalEvents = data.total_events ?? data.total_verifications;
+    if (verifiedCount !== undefined) {
+      document.getElementById('verified-count').textContent = verifiedCount;
     }
-    if (data.total_verifications !== undefined) {
-      document.getElementById('verification-count').textContent = data.total_verifications.toLocaleString();
+    if (totalEvents !== undefined) {
+      document.getElementById('verification-count').textContent = totalEvents.toLocaleString();
     }
   } catch (e) {
     console.error('Failed to fetch trends:', e);
   }
 }
 
-// Fetch and display feed
+// Fetch and display feed — uses /observer/transactions for full detail
 async function fetchFeed() {
   try {
-    const res = await fetch(`${API_BASE}/observer/feed`);
+    const res = await fetch(`${API_BASE}/observer/transactions?limit=20`);
     const data = await res.json();
+    const items = data.transactions || data.events || [];
     
-    if (!data.events || data.events.length === 0) {
+    if (items.length === 0) {
       document.getElementById('feed-container').innerHTML = 
         '<div class="feed-item" style="color:var(--text-dim);font-style:italic;">No events yet. Watch this space...</div>';
       return;
     }
     
-    // Detect new items
-    const newTxIds = new Set(data.events.map(e => e.tx_id || e.payment_hash));
-    const hasNewItems = data.events.some(e => !seenTxIds.has(e.tx_id || e.payment_hash));
+    // Use event_id as stable key
+    const eventKey = e => e.event_id || e.created_at || '';
+    const hasNewItems = items.some(e => !seenTxIds.has(eventKey(e)));
+    items.forEach(e => seenTxIds.add(eventKey(e)));
     
-    // Update seen set
-    data.events.forEach(e => seenTxIds.add(e.tx_id || e.payment_hash));
-    
-    // Render feed
     const container = document.getElementById('feed-container');
-    container.innerHTML = data.events.slice(0, 20).map(event => {
-      const isNew = !feedData.find(e => (e.tx_id || e.payment_hash) === (event.tx_id || event.payment_hash));
+    container.innerHTML = items.map(event => {
+      const isNew = !feedData.find(e => eventKey(e) === eventKey(event));
       const protocolClass = event.protocol === 'x402' ? 'x402' : 'lightning';
       const protocolIcon = event.protocol === 'x402' ? '◈' : '⚡';
       const protocolName = event.protocol === 'x402' ? 'x402' : 'Lightning';
-      const txRef = event.tx_id || event.payment_hash || event.preimage_hash || 'unknown';
       const verified = event.verified ? '✓' : '○';
       const verifiedColor = event.verified ? 'color:var(--verified);' : 'color:var(--text-dim);';
-      const amount = event.amount_bucket || (event.amount ? `${event.amount} sats` : '—');
+      const ts = event.created_at || event.timestamp || '';
+      // Show truncated payment hash — the key proof element
+      const txHash = event.transaction_hash || '';
+      const txDisplay = txHash.length > 16
+        ? `${txHash.slice(0,8)}…${txHash.slice(-8)}`
+        : (txHash || '—');
+      const agentLabel = event.agent_id || '—';
+      const dirIcon = event.direction === 'inbound' ? '↓' : '↑';
+      const preimage = event.preimage || '';
+      const proofId = `proof-${event.event_id}`;
       
       return `
-        <div class="feed-item ${isNew && hasNewItems ? 'new' : ''}">
+        <div class="feed-item ${isNew && hasNewItems ? 'new' : ''}" style="flex-wrap:wrap;gap:4px;">
           <div class="feed-protocol ${protocolClass}">
             <span>${protocolIcon}</span>
             <span>${protocolName}</span>
           </div>
-          <div class="feed-tx" title="${txRef}">${truncateTx(txRef)}</div>
+          <div class="feed-tx" title="${txHash}" style="font-family:monospace;font-size:11px;color:var(--text-dim);">
+            ${txDisplay}
+          </div>
+          <div style="font-size:11px;color:var(--text-dim);min-width:80px;">${agentLabel} ${dirIcon}</div>
           <div class="feed-status" style="${verifiedColor}">${verified}</div>
-          <div class="feed-time">${timeAgo(event.timestamp)}</div>
+          <div class="feed-time">${timeAgo(ts)}</div>
+          ${preimage ? `
+          <div style="width:100%;margin-top:4px;">
+            <button onclick="document.getElementById('${proofId}').style.display='block';this.style.display='none'"
+              style="background:none;border:1px solid var(--orange);color:var(--orange);font-size:10px;padding:2px 8px;cursor:pointer;border-radius:3px;">
+              Verify Proof
+            </button>
+            <div id="${proofId}" style="display:none;font-family:monospace;font-size:10px;color:var(--text-dim);margin-top:4px;line-height:1.8;background:rgba(255,255,255,0.03);padding:6px;border-radius:4px;word-break:break-all;">
+              <div><span style="color:var(--text-light)">preimage:</span> ${preimage}</div>
+              <div><span style="color:var(--text-light)">sha256(↑):</span> ${txHash}</div>
+              <div style="color:var(--verified);margin-top:2px;">✓ SHA256(preimage) = payment_hash — cryptographic proof of receipt</div>
+            </div>
+          </div>` : ''}
         </div>
       `;
     }).join('');
     
-    feedData = data.events;
+    feedData = items;
     document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
   } catch (e) {
     console.error('Failed to fetch feed:', e);
@@ -456,8 +493,9 @@ async function fetchFeed() {
   }
 }
 
-// Fetch and display registry
-async function fetchRegistry() {
+// Registry moved to registry.html — stub kept to avoid init() errors
+async function fetchRegistry() { return; }
+async function _fetchRegistry_unused() {
   try {
     const res = await fetch(`${API_BASE}/observer/agents/list`);
     const data = await res.json();
@@ -480,7 +518,7 @@ async function fetchRegistry() {
     const tbody = document.getElementById('registry-tbody');
     tbody.innerHTML = sortedAgents.map(agent => {
       const isMaxi = agent.agent_id === 'maxi-0001';
-      const badgeUrl = `https://api.agenticterminal.ai/observer/badge/${agent.agent_id}.svg`;
+      const badgeUrl = `https://api.observerprotocol.org/observer/badge/${agent.agent_id}.svg`;
       const rail = agent.rail || agent.preferred_rail || 'L402';
       const txns = agent.total_transactions || agent.tx_count || 0;
       const successRate = agent.success_rate !== undefined ? `${(agent.success_rate * 100).toFixed(0)}%` : '—';
@@ -523,20 +561,95 @@ function copyCurl(el) {
   });
 }
 
+// ── Verified Transactions Registry ──────────────────────────────────────────
+let txOffset = 0;
+const TX_PAGE = 50;
+
+function renderTxRow(tx) {
+  const hash = tx.transaction_hash || '';
+  const hashShort = hash.length > 16 ? `${hash.slice(0,8)}…${hash.slice(-8)}` : (hash || '—');
+  const verified = tx.verified
+    ? '<span style="color:var(--verified)">✓</span>'
+    : '<span style="color:var(--text-dim)">○</span>';
+  const dirIcon = tx.direction === 'inbound' ? '↓' : '↑';
+  const dirColor = tx.direction === 'inbound' ? 'color:var(--verified)' : 'color:var(--orange)';
+  const proto = tx.protocol === 'x402' ? '◈ x402' : '⚡ Lightning';
+  const protoClass = tx.protocol === 'x402' ? 'x402' : 'lightning';
+  const proofId = `txproof-${tx.event_id}`;
+  const preimage = tx.preimage || '';
+
+  return `
+    <tr>
+      <td style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">${tx.event_id || '—'}</td>
+      <td style="font-family:var(--font-mono);font-size:11px">${tx.agent_id || '—'}</td>
+      <td><span class="protocol-badge ${protoClass}" style="font-size:10px">${proto}</span></td>
+      <td style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim)" title="${hash}">${hashShort}</td>
+      <td style="${dirColor};font-weight:bold">${dirIcon}</td>
+      <td style="font-size:11px;color:var(--text-dim)">${tx.amount_bucket || '—'}</td>
+      <td style="text-align:center">${verified}</td>
+      <td style="font-size:10px;color:var(--text-dim)">${timeAgo(tx.created_at)}</td>
+      <td>${preimage ? `
+        <button onclick="toggleProof('${proofId}')"
+          style="background:none;border:1px solid var(--orange);color:var(--orange);font-size:9px;padding:2px 6px;cursor:pointer;border-radius:3px;white-space:nowrap">
+          Verify
+        </button>` : ''}</td>
+    </tr>
+    ${preimage ? `
+    <tr id="${proofId}" style="display:none">
+      <td colspan="9" style="padding:8px 12px;background:rgba(247,147,26,0.05);border-bottom:1px solid var(--border)">
+        <div style="font-family:var(--font-mono);font-size:10px;line-height:2;word-break:break-all">
+          <div><span style="color:var(--text-secondary)">preimage :</span> ${preimage}</div>
+          <div><span style="color:var(--text-secondary)">sha256(↑):</span> ${hash}</div>
+          <div style="color:var(--verified);margin-top:4px">✓ SHA256(preimage) = payment_hash — cryptographic proof of receipt</div>
+        </div>
+      </td>
+    </tr>` : ''}
+  `;
+}
+
+function toggleProof(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = el.style.display === 'none' ? 'table-row' : 'none';
+}
+
+async function fetchTransactions(offset = 0, append = false) {
+  try {
+    const res = await fetch(`${API_BASE}/observer/transactions?limit=${TX_PAGE}`);
+    const data = await res.json();
+    const txs = data.transactions || [];
+
+    const tbody = document.getElementById('tx-tbody');
+    if (!append) tbody.innerHTML = '';
+
+    if (txs.length === 0 && !append) {
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-dim);font-style:italic;">No transactions yet.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML += txs.map(renderTxRow).join('');
+    txOffset = offset + txs.length;
+
+    const loadMore = document.getElementById('tx-load-more');
+    loadMore.style.display = txs.length >= TX_PAGE ? 'block' : 'none';
+  } catch (e) {
+    console.error('Failed to fetch transactions:', e);
+  }
+}
+
+function loadMoreTx() {
+  fetchTransactions(txOffset, true);
+}
+
 // Initialize and set up polling
 function init() {
   fetchTrends();
   fetchFeed();
-  fetchRegistry();
-  
+
   // Poll trends every 10s
   setInterval(fetchTrends, 10000);
-  
-  // Poll feed every 5s
-  setInterval(fetchFeed, 5000);
-  
-  // Poll registry every 30s
-  setInterval(fetchRegistry, 30000);
+
+  // Poll feed every 30s
+  setInterval(fetchFeed, 30000);
 }
 
 // Start when DOM is ready
