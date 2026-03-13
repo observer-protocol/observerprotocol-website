@@ -72,12 +72,14 @@
     }
     .agent-card {
       background: var(--bg-card);
-      padding: 1.5rem;
+      padding: 1.25rem;
       transition: background 0.15s;
       cursor: pointer;
       text-decoration: none;
-      display: block;
+      display: flex;
+      flex-direction: column;
       color: inherit;
+      min-height: 160px;
     }
     .agent-card:hover { background: var(--bg-3); }
 
@@ -85,9 +87,10 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
+      gap: 1rem;
     }
-    .agent-id-block { display: flex; flex-direction: column; gap: 0.25rem; }
+    .agent-id-block { display: flex; flex-direction: column; gap: 0.25rem; flex: 1; min-width: 0; }
     .agent-number { font-size: 10px; color: var(--text-dim); letter-spacing: 0.1em; }
     .agent-alias  { font-size: 15px; font-weight: 500; color: var(--text-primary); }
     .agent-hash   {
@@ -95,31 +98,57 @@
       color: var(--text-secondary);
       margin-top: 0.1rem;
       font-family: var(--font-mono);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .agent-badges {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.35rem;
+      flex-shrink: 0;
     }
 
     .agent-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 0.75rem;
-      margin-top: 1rem;
-      padding-top: 1rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-top: auto;
+      padding-top: 0.75rem;
       border-top: 1px solid var(--border);
     }
-    .astat { display: flex; flex-direction: column; gap: 0.2rem; }
+    .astat {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      flex: 1;
+      text-align: center;
+      padding: 0 0.25rem;
+    }
+    .astat:first-child { text-align: left; padding-left: 0; }
+    .astat:last-child { text-align: right; padding-right: 0; }
     .astat-val  { font-size: 13px; font-weight: 500; color: var(--text-primary); }
-    .astat-key  { font-size: 10px; color: var(--text-dim); letter-spacing: 0.07em; text-transform: uppercase; }
+    .astat-key  { font-size: 9px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; }
 
     .agent-rail {
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-secondary);
-      margin-top: 0.75rem;
+      margin-bottom: 0.75rem;
       background: var(--bg-2);
       border: 1px solid var(--border);
-      padding: 0.2rem 0.5rem;
+      padding: 0.15rem 0.5rem;
       border-radius: 2px;
+    }
+    .agent-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      min-height: 22px;
     }
 
     /* ── GENESIS SPECIAL CARD ──────────────────────────── */
@@ -131,7 +160,8 @@
     .agent-card.genesis::before {
       content: 'GENESIS';
       position: absolute;
-      top: 1rem; right: 1rem;
+      top: 0.75rem;
+      left: 0.75rem;
       font-size: 9px;
       letter-spacing: 0.15em;
       color: var(--orange);
@@ -139,6 +169,14 @@
       border: 1px solid rgba(247,147,26,0.3);
       padding: 0.15rem 0.4rem;
       border-radius: 2px;
+      z-index: 1;
+    }
+    .agent-card.genesis .agent-number {
+      margin-left: 4.2rem;
+    }
+    /* Stack badges vertically for genesis agents to prevent overlap */
+    .agent-card.genesis .agent-badges {
+      margin-top: 1.6rem;
     }
 
     /* ── REGISTER CTA ──────────────────────────────────── */
@@ -225,6 +263,7 @@
     <li><a href="architecture.html">Architecture</a></li>
     <li><a href="spec.html">Spec</a></li>
     <li><a href="registry.html" class="active">Registry</a></li>
+    <li><a href="demo.html">Demo</a></li>
     <li><a href="sdk.html">SDK</a></li>
     <li><a href="api.html">API</a></li>
   </ul>
@@ -285,9 +324,13 @@
             <span class="agent-alias">Maxi</span>
             <span class="agent-hash">sha256:3f7a…c14e</span>
           </div>
-          <span class="badge badge-verified">VERIFIED</span>
+          <div class="agent-badges">
+            <span class="badge badge-verified">VERIFIED</span>
+          </div>
         </div>
-        <div class="agent-rail">⚡ Lightning / LND</div>
+        <div class="agent-meta-row">
+          <div class="agent-rail">⚡ Lightning / LND</div>
+        </div>
         <div class="agent-stats">
           <div class="astat"><span class="astat-val">9</span><span class="astat-key">Txns</span></div>
           <div class="astat"><span class="astat-val">100%</span><span class="astat-key">Success</span></div>
@@ -379,6 +422,8 @@
     <div class="footer-links">
       <a href="architecture.html">Architecture</a>
       <a href="spec.html">Spec</a>
+      <a href="registry.html">Registry</a>
+      <a href="demo.html">Demo</a>
       <a href="sdk.html">SDK</a>
       <a href="api.html">API</a>
       <a href="https://github.com/observer-protocol" target="_blank">GitHub</a>
@@ -532,12 +577,12 @@ function createAgentCard(agent) {
   card.dataset.status = agent.status;
   card.dataset.rail = agent.rail ? agent.rail.toLowerCase() : '';
   card.onclick = function() { return false; };
-  
-  const badgeClass = agent.status === 'verified' ? 'badge-verified' : 
+
+  const badgeClass = agent.status === 'verified' ? 'badge-verified' :
                      agent.status === 'pending' ? 'badge-pending' : 'badge-registered';
   const badgeText = agent.status.toUpperCase();
   const railDisplay = agent.rail ? `⚡ ${agent.rail}` : '';
-  
+
   card.innerHTML = `
     <div class="agent-header">
       <div class="agent-id-block">
@@ -545,16 +590,18 @@ function createAgentCard(agent) {
         <span class="agent-alias">${escapeHtml(agent.alias)}</span>
         <span class="agent-hash">${escapeHtml(agent.hash)}</span>
       </div>
-      <span class="badge ${badgeClass}">${badgeText}</span>
+      <div class="agent-badges">
+        <span class="badge ${badgeClass}">${badgeText}</span>
+      </div>
     </div>
-    ${railDisplay ? `<div class="agent-rail">${railDisplay}</div>` : ''}
+    ${railDisplay ? `<div class="agent-meta-row"><div class="agent-rail">${railDisplay}</div></div>` : '<div class="agent-meta-row"></div>'}
     <div class="agent-stats">
       <div class="astat"><span class="astat-val">${agent.transaction_count}</span><span class="astat-key">Txns</span></div>
       <div class="astat"><span class="astat-val">${agent.success_rate}</span><span class="astat-key">Success</span></div>
       <div class="astat"><span class="astat-val">${agent.since}</span><span class="astat-key">Since</span></div>
     </div>
   `;
-  
+
   return card;
 }
 
@@ -620,7 +667,15 @@ function renderTxRow(tx) {
       <td style="${tdStyle}font-size:11px">${proto}</td>
       <td style="${tdStyle}font-family:var(--font-mono);font-size:10px;color:var(--text-dim)" title="${hash}">${hashShort}</td>
       <td style="${tdStyle}text-align:center;font-weight:bold;${dirColor}">${dirIcon}</td>
-      <td style="${tdStyle}font-size:11px;color:var(--text-dim)">${tx.amount_bucket || '—'}</td>
+      <td style="${tdStyle}font-size:11px;color:var(--orange);font-family:var(--font-mono);">${(() => {
+        const protocol = tx.protocol?.toLowerCase() || '';
+        const amount = tx.amount_sats;
+        if (amount === undefined || amount === null) return tx.amount_bucket || '—';
+        if (protocol === 'x402' || protocol === 'l402') {
+          return (amount / 100).toFixed(2) + ' USDC';
+        }
+        return amount.toLocaleString() + ' sats';
+      })()}</td>
       <td style="${tdStyle}text-align:center">${verified}</td>
       <td style="${tdStyle}font-size:10px;color:var(--text-dim)">${timeAgo(tx.created_at)}</td>
       <td style="${tdStyle}">${preimage ? `
