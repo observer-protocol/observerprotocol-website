@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Observer Protocol — Live Demo</title>
-  <meta name="description" content="Live verification demo for the Observer Protocol. See cryptographic proof of agentic payments in real time.">
+  <meta name="description" content="Live verification demo. Lightning transactions and WDK agent wallets — cryptographically verified in real time.">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="shared-styles.css">
   <style>
@@ -303,27 +303,29 @@
 
   <!-- SECTION 1: HERO -->
   <div class="demo-hero">
-    <div class="hero-eyebrow fade-up">Live Demo — Lightning Labs Community Call</div>
+    <div class="hero-eyebrow fade-up">Live Demo</div>
     <h1 class="fade-up fade-up-1">Don't Trust, Verify</h1>
     <p class="hero-sub fade-up fade-up-2">
-      Cryptographic proof that an agent's payment claims are real. Not a reputation score. Not a review. <em style="color:var(--text-primary);">Math.</em>
+      Cryptographic proof that an agent's payment claims are real. See it live — Lightning transactions and WDK agent wallets, verified in real time.
     </p>
-    
-    <div class="live-counter fade-up fade-up-3">
-      <span class="live-dot"></span>
-      <div>
-        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;">Verified Agents</div>
-        <div class="counter-value" id="verified-count">—</div>
-      </div>
-      <div style="margin-left:1rem;padding-left:1rem;border-left:1px solid var(--border);">
-        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.1em;">Total Verifications</div>
-        <div class="counter-value" id="verification-count" style="font-size:18px;color:var(--text-secondary);">—</div>
-      </div>
-    </div>
   </div>
 
-  <!-- SECTION 2: LIVE VERIFICATION FEED -->
-  <section>
+  <!-- SECTION 2: SUB-NAVIGATION -->
+  <section style="padding: 0 0 2rem 0; margin-top: -2rem;">
+    <div class="container">
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="#lightning-demo" style="background: var(--bg-2); border: 1px solid var(--border); border-radius: 9999px; padding: 0.75rem 1.5rem; color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;" onmouseover="this.style.borderColor='var(--orange)'; this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'">
+          <span>⚡</span> Lightning Demo
+        </a>
+        <a href="#wdk-integration" style="background: var(--bg-2); border: 1px solid var(--border); border-radius: 9999px; padding: 0.75rem 1.5rem; color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;" onmouseover="this.style.borderColor='var(--orange)'; this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'">
+          <span>💼</span> WDK Agent Wallets
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: LIVE VERIFICATION FEED -->
+  <section id="lightning-demo">
     <div class="container">
       <div class="section-label">Real-Time</div>
       <h2>Live Verification Stream</h2>
@@ -348,33 +350,58 @@
 
   <hr class="divider">
 
-  <!-- SECTION 3: SUPPORT THE PROTOCOL -->
-  <section>
+  <!-- SECTION 4: WDK INTEGRATION -->
+  <section id="wdk-integration">
     <div class="container">
-      <div class="section-label">Donate</div>
-      <h2>Support the Protocol</h2>
-      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:1.5rem;font-family:var(--font-sans);">
-        Want to donate to the open source Observer Protocol? Or just test how it works by sending Maxi a few sats with the Protocol embedded into the transaction? Use any Lightning wallet to send Maxi sats and watch the magic.
+      <div class="section-label">WDK Integration</div>
+      <h2>Agent Wallets via Tether WDK</h2>
+      <p style="color:var(--text-secondary); margin-bottom: 2rem;">
+        Observer Protocol integrates with <a href="https://wdk.tether.io" target="_blank" style="color:var(--orange);">Tether's Wallet Development Kit</a>
+        to give AI agents self-custodial Bitcoin and EVM wallets — with cryptographic identity baked in.
+        Every agent gets BOTH a verified identity (Observer Protocol) AND a verified wallet (WDK).
       </p>
-      
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:2rem;text-align:center;max-width:480px;margin:0 auto;">
-        <img src="maxi-lightning-qr-v2.png" alt="Lightning Address QR Code" style="max-width:200px;height:auto;margin:0 auto 1.5rem auto;border-radius:4px;display:block;">
-        <div style="font-family:var(--font-mono);font-size:18px;color:var(--orange);font-weight:600;margin-bottom:0.5rem;">
-          maxi@observerprotocol.org
+
+      <div class="code-block">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
+          <span style="font-size:12px;color:var(--text-secondary);">Quick Start — WDK + Observer Protocol</span>
+          <button class="btn btn-outline" style="font-size:11px;padding:0.3rem 0.75rem;" onclick="copyCode('wdk-code')">Copy</button>
         </div>
-        <div style="font-size:12px;color:var(--text-dim);margin-bottom:1rem;">
-          ⚡ Lightning Address
+        <div id="wdk-code" style="font-size:12px;line-height:1.8;">
+<span class="comment">// 1. Create agent wallet via WDK</span>
+<span style="color:#60a5fa;">import</span> { createAgentWallet } <span style="color:#60a5fa;">from</span> <span style="color:#86efac;">'wdk-observer-protocol'</span>
+
+<span style="color:#60a5fa;">const</span> wallet = <span style="color:#60a5fa;">await</span> createAgentWallet()
+<span style="color:#60a5fa;">const</span> btcAddress = <span style="color:#60a5fa;">await</span> wallet.getBitcoinAddress()
+<span style="color:#60a5fa;">const</span> evmAddress = <span style="color:#60a5fa;">await</span> wallet.getEVMAddress()
+
+<span class="comment">// 2. Register with Observer Protocol (identity + wallet together)</span>
+<span style="color:#60a5fa;">const</span> agent = <span style="color:#60a5fa;">await</span> wallet.register({
+  alias: <span style="color:#86efac;">'my-agent-001'</span>,
+  btcAddress,
+  evmAddress
+})
+
+<span class="comment">// 3. Send verified payment — both parties verified before funds move</span>
+<span style="color:#60a5fa;">await</span> wallet.verifiedSend({
+  recipientAlias: <span style="color:#86efac;">'maxi-0001'</span>,
+  amount: <span style="color:#86efac;">'0.001'</span>,
+  chain: <span style="color:#86efac;">'bitcoin'</span>
+})
+
+<span class="comment">// Result: Trust-bound payment — identity is inseparable from the transaction</span>
         </div>
-        <div style="font-size:11px;color:var(--text-secondary);padding-top:1rem;border-top:1px solid var(--border);">
-          Min: 1 sat | Max: 1000 sats | Appears in live feed within 30 seconds
-        </div>
+      </div>
+
+      <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="https://github.com/observer-protocol/wdk-observer-protocol" target="_blank" class="btn btn-primary">View WDK Repo</a>
+        <a href="https://wdk.tether.io" target="_blank" class="btn btn-outline">Tether WDK Docs</a>
       </div>
     </div>
   </section>
 
   <hr class="divider">
 
-  <!-- SECTION 4: GET VERIFIED CTA -->
+  <!-- SECTION 5: GET VERIFIED CTA -->
   <section>
     <div class="container">
       <div class="section-label">Integration</div>
@@ -476,51 +503,26 @@
 
   <hr class="divider">
 
-  <!-- SECTION: WDK INTEGRATION -->
+  <!-- SECTION 6: SUPPORT THE PROTOCOL -->
   <section>
     <div class="container">
-      <div class="section-label">WDK Integration</div>
-      <h2>Agent Wallets via Tether WDK</h2>
-      <p style="color:var(--text-secondary); margin-bottom: 2rem;">
-        Observer Protocol integrates with <a href="https://wdk.tether.io" target="_blank" style="color:var(--orange);">Tether's Wallet Development Kit</a>
-        to give AI agents self-custodial Bitcoin and EVM wallets — with cryptographic identity baked in.
-        Every agent gets BOTH a verified identity (Observer Protocol) AND a verified wallet (WDK).
+      <div class="section-label">Donate</div>
+      <h2>Support the Protocol</h2>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:1.5rem;font-family:var(--font-sans);">
+        Want to donate to the open source Observer Protocol? Or just test how it works by sending Maxi a few sats with the Protocol embedded into the transaction? Use any Lightning wallet to send Maxi sats and watch the magic.
       </p>
-
-      <div class="code-block">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-          <span style="font-size:12px;color:var(--text-secondary);">Quick Start — WDK + Observer Protocol</span>
-          <button class="btn btn-outline" style="font-size:11px;padding:0.3rem 0.75rem;" onclick="copyCode('wdk-code')">Copy</button>
+      
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:2rem;text-align:center;max-width:480px;margin:0 auto;">
+        <img src="maxi-lightning-qr-v2.png" alt="Lightning Address QR Code" style="max-width:200px;height:auto;margin:0 auto 1.5rem auto;border-radius:4px;display:block;">
+        <div style="font-family:var(--font-mono);font-size:18px;color:var(--orange);font-weight:600;margin-bottom:0.5rem;">
+          maxi@observerprotocol.org
         </div>
-        <div id="wdk-code" style="font-size:12px;line-height:1.8;">
-<span class="comment">// 1. Create agent wallet via WDK</span>
-<span style="color:#60a5fa;">import</span> { createAgentWallet } <span style="color:#60a5fa;">from</span> <span style="color:#86efac;">'wdk-observer-protocol'</span>
-
-<span style="color:#60a5fa;">const</span> wallet = <span style="color:#60a5fa;">await</span> createAgentWallet()
-<span style="color:#60a5fa;">const</span> btcAddress = <span style="color:#60a5fa;">await</span> wallet.getBitcoinAddress()
-<span style="color:#60a5fa;">const</span> evmAddress = <span style="color:#60a5fa;">await</span> wallet.getEVMAddress()
-
-<span class="comment">// 2. Register with Observer Protocol (identity + wallet together)</span>
-<span style="color:#60a5fa;">const</span> agent = <span style="color:#60a5fa;">await</span> wallet.register({
-  alias: <span style="color:#86efac;">'my-agent-001'</span>,
-  btcAddress,
-  evmAddress
-})
-
-<span class="comment">// 3. Send verified payment — both parties verified before funds move</span>
-<span style="color:#60a5fa;">await</span> wallet.verifiedSend({
-  recipientAlias: <span style="color:#86efac;">'maxi-0001'</span>,
-  amount: <span style="color:#86efac;">'0.001'</span>,
-  chain: <span style="color:#86efac;">'bitcoin'</span>
-})
-
-<span class="comment">// Result: Trust-bound payment — identity is inseparable from the transaction</span>
+        <div style="font-size:12px;color:var(--text-dim);margin-bottom:1rem;">
+          ⚡ Lightning Address
         </div>
-      </div>
-
-      <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-        <a href="https://github.com/observer-protocol/wdk-observer-protocol" target="_blank" class="btn btn-primary">View WDK Repo</a>
-        <a href="https://wdk.tether.io" target="_blank" class="btn btn-outline">Tether WDK Docs</a>
+        <div style="font-size:11px;color:var(--text-secondary);padding-top:1rem;border-top:1px solid var(--border);">
+          Min: 1 sat | Max: 1000 sats | Appears in live feed within 30 seconds
+        </div>
       </div>
     </div>
   </section>
@@ -537,7 +539,7 @@
       <a href="api.html">API</a>
       <a href="https://github.com/observer-protocol" target="_blank">GitHub</a>
     </div>
-    <span>Built for the Lightning Labs Community Call · March 18, 2026</span>
+    <span>Observer Protocol · Trust layer for the agentic economy</span>
   </footer>
 
 </div>
@@ -635,7 +637,8 @@ async function fetchFeed() {
             <span>${protocolIcon}</span>
             <span>${protocolName}</span>
           </div>
-          <div class="feed-tx" title="${txHash}" style="font-family:monospace;font-size:11px;color:var(--text-dim);">
+          <div class="feed-tx" title="${tx
+Hash}" style="font-family:monospace;font-size:11px;color:var(--text-dim);">
             ${txDisplay}
           </div>
           <div style="font-size:11px;color:var(--text-dim);min-width:80px;">${agentLabel} ${dirIcon}</div>
