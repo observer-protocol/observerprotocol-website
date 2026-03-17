@@ -382,6 +382,38 @@ function formatAmount(amount, protocol) {
 
 function renderAgentProfile(agent) {
   const earnedBadgeIds = new Set(agent.badges.map(b => b.id));
+
+  // Tier calculation
+  const txCount = agent.total_transactions || 0;
+  const TIERS = [
+    { id: 'platinum', label: 'Platinum', icon: '💎', color: '#a8d8f0', req: '1000+ txns · 98%+ success rate', min: 1000 },
+    { id: 'gold',     label: 'Gold',     icon: '🥇', color: '#f7c948', req: '100+ txns · 95%+ success rate',  min: 100  },
+    { id: 'silver',   label: 'Silver',   icon: '🥈', color: '#c0c0c0', req: '10+ txns · 90%+ success rate',   min: 10   },
+    { id: 'bronze',   label: 'Bronze',   icon: '🥉', color: '#cd7f32', req: '1+ verified transaction',         min: 1    },
+  ];
+  const earnedTierId = txCount >= 1000 ? 'platinum' : txCount >= 100 ? 'gold' : txCount >= 10 ? 'silver' : txCount >= 1 ? 'bronze' : null;
+  const tierHtml = `
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-top:1rem;">
+      ${TIERS.map(t => {
+        const earned = earnedTierId && TIERS.findIndex(x=>x.id===earnedTierId) >= TIERS.findIndex(x=>x.id===t.id);
+        return `<div style="
+          background: var(--bg-2);
+          border: 1px solid ${earned ? t.color : 'var(--border)'};
+          border-radius: 8px;
+          padding: 1.25rem 1rem;
+          opacity: ${earned ? '1' : '0.35'};
+          position: relative;
+          transition: border-color 0.2s;
+          ${earned && t.id === earnedTierId ? 'box-shadow: 0 0 12px ' + t.color + '44;' : ''}
+        ">
+          ${earned && t.id === earnedTierId ? '<div style="position:absolute;top:8px;right:8px;font-size:9px;font-family:var(--font-mono);color:' + t.color + ';letter-spacing:0.1em;">CURRENT</div>' : ''}
+          <div style="font-size:1.75rem; margin-bottom:0.5rem;">${t.icon}</div>
+          <div style="font-size:13px; font-weight:600; margin-bottom:0.25rem; color:${earned ? t.color : 'var(--text-secondary)'};">${t.label}</div>
+          <div style="font-size:11px; color:var(--text-secondary); font-family:var(--font-sans);">${t.req}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  `;
   
   // Build earned badges HTML
   const earnedBadgesHtml = agent.badges.map(badge => `
@@ -504,7 +536,12 @@ function renderAgentProfile(agent) {
 
     <div class="container" style="padding-top: 2rem;">
       <div class="badges-section">
-        <div class="section-label">Badges</div>
+        <div class="section-label">Badge Level</div>
+        ${tierHtml}
+      </div>
+
+      <div class="badges-section" style="margin-top: 2rem;">
+        <div class="section-label">Earned Badges</div>
         <div class="badges-grid">
           ${earnedBadgesHtml}
           ${unearnedBadgesHtml}
