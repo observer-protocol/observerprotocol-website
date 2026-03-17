@@ -344,6 +344,7 @@
         <button id="filter-all" onclick="setFilter('all')" style="background:var(--orange);color:#000;border:1px solid var(--orange);border-radius:9999px;padding:0.25rem 0.85rem;font-size:12px;font-weight:600;cursor:pointer;">All</button>
         <button id="filter-lightning" onclick="setFilter('lightning')" style="background:var(--bg-2);color:var(--text-secondary);border:1px solid var(--border);border-radius:9999px;padding:0.25rem 0.85rem;font-size:12px;cursor:pointer;">⚡ Lightning</button>
         <button id="filter-x402" onclick="setFilter('x402')" style="background:var(--bg-2);color:var(--text-secondary);border:1px solid var(--border);border-radius:9999px;padding:0.25rem 0.85rem;font-size:12px;cursor:pointer;">◈ x402</button>
+        <button id="filter-lnget" onclick="setFilter('lnget')" style="background:var(--bg-2);color:var(--text-secondary);border:1px solid var(--border);border-radius:9999px;padding:0.25rem 0.85rem;font-size:12px;cursor:pointer;">lnget</button>
         <button id="filter-verified" onclick="setFilter('verified')" style="background:var(--bg-2);color:var(--text-secondary);border:1px solid var(--border);border-radius:9999px;padding:0.25rem 0.85rem;font-size:12px;cursor:pointer;">✓ Verified</button>
         <span id="feed-count" style="margin-left:auto;font-size:11px;color:var(--text-dim);"></span>
       </div>
@@ -672,7 +673,7 @@ let activeFilter = 'all';
 function setFilter(f) {
   activeFilter = f;
   // Update button styles
-  ['all','lightning','x402','verified'].forEach(id => {
+  ['all','lightning','x402','lnget','verified'].forEach(id => {
     const btn = document.getElementById('filter-' + id);
     if (!btn) return;
     if (id === f) {
@@ -695,6 +696,7 @@ function renderFeed(items) {
   let filtered = items;
   if (activeFilter === 'lightning') filtered = items.filter(e => (e.protocol || '').toLowerCase() === 'lightning');
   else if (activeFilter === 'x402') filtered = items.filter(e => ['x402','l402'].includes((e.protocol || '').toLowerCase()));
+  else if (activeFilter === 'lnget') filtered = items.filter(e => e.source === 'lnget');
   else if (activeFilter === 'verified') filtered = items.filter(e => e.verified);
 
   const countEl = document.getElementById('feed-count');
@@ -730,11 +732,20 @@ function renderFeed(items) {
       if (protocol === 'x402') return (amount / 100).toFixed(2) + ' USDC'; // x402=USDC, L402=sats
       return amount.toLocaleString() + ' sats';
     })();
+    // lnget source badge + claimed status
+    const isLnget = event.source === 'lnget';
+    const lngetClaimed = event.lnget_claimed;
+    const lngetDomain = event.lnget_domain || '';
+    const lngetBadge = isLnget
+      ? `<span title="Paid via lnget CLI" style="font-size:9px;background:#1a2a1a;border:1px solid #2a4a2a;color:#4ade80;border-radius:3px;padding:1px 6px;letter-spacing:0.05em;">lnget</span>
+         <span title="${lngetClaimed ? 'Claimed by verified agent' : 'Unclaimed — no agent registered yet'}" style="font-size:9px;background:${lngetClaimed ? '#1a2a1a' : '#2a1a0a'};border:1px solid ${lngetClaimed ? '#2a4a2a' : '#4a3a0a'};color:${lngetClaimed ? '#4ade80' : '#f59e0b'};border-radius:3px;padding:1px 6px;">${lngetClaimed ? '✓ claimed' : '○ unclaimed'}</span>`
+      : '';
     return `
       <div class="feed-item ${isNew ? 'new' : ''}" style="flex-wrap:wrap;gap:4px;">
         <div class="feed-protocol ${protocolClass}"><span>${protocolIcon}</span><span>${protocolName}</span></div>
+        ${lngetBadge}
         <div class="feed-tx" title="${txHash}" style="font-family:monospace;font-size:11px;color:var(--text-dim);">${txDisplay}</div>
-        <div style="font-size:11px;color:var(--text-dim);min-width:80px;">${agentLabel} ${dirIcon}</div>
+        <div style="font-size:11px;color:var(--text-dim);min-width:80px;">${lngetDomain || agentLabel} ${dirIcon}</div>
         <div class="feed-amount" style="font-family:var(--font-mono);color:var(--orange);">${amountStr}</div>
         <div class="feed-status" style="${verifiedColor}">${verified}</div>
         <div class="feed-time">${timeAgo(ts)}</div>
