@@ -395,7 +395,7 @@ function renderAgentProfile(agent) {
   const tierHtml = `
     <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin-top:1rem;">
       ${TIERS.map(t => {
-        const earned = earnedTierId && TIERS.findIndex(x=>x.id===earnedTierId) >= TIERS.findIndex(x=>x.id===t.id);
+        const earned = earnedTierId && TIERS.findIndex(x=>x.id===t.id) >= TIERS.findIndex(x=>x.id===earnedTierId);
         return `<div style="
           background: var(--bg-2);
           border: 1px solid ${earned ? t.color : 'var(--border)'};
