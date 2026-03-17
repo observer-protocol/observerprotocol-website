@@ -10,11 +10,11 @@
   <style>
     /* Demo-specific styles */
     .demo-hero {
-      min-height: calc(70vh - var(--nav-h));
+      min-height: auto;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 4rem 2rem;
+      padding: 1.5rem 2rem 1rem 2rem;
       max-width: 1080px;
       margin: 0 auto;
       position: relative;
@@ -603,7 +603,7 @@ async function fetchFeed() {
     
     if (items.length === 0) {
       document.getElementById('feed-container').innerHTML = 
-        '<div class="feed-item" style="color:var(--text-dim);font-style:italic;">No events yet. Watch this space...</div>';
+        '<div class="feed-item" style="color:var(--text-dim);font-style:italic;">Feed live — no new transactions recently. Send a sat to trigger one ⚡</div>';
       return;
     }
     
@@ -863,6 +863,12 @@ function loadMoreTx() {
 function init() {
   fetchTrends();
   fetchFeed();
+
+  // Safety net: if feed still shows "Loading" after 5s, retry once
+  setTimeout(() => {
+    const fc = document.getElementById('feed-container');
+    if (fc && fc.innerText.trim().startsWith('Loading feed')) fetchFeed();
+  }, 5000);
 
   // Poll trends every 10s
   setInterval(fetchTrends, 10000);
