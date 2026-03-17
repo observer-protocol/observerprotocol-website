@@ -337,6 +337,16 @@
         <span style="color:var(--orange);">watch for the wow moment</span>.
       </p>
       
+      <!-- Filter bar -->
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center;">
+        <span style="font-size:11px;color:var(--text-dim);margin-right:0.25rem;">Filter:</span>
+        <button id="filter-all" onclick="setFilter('all')" style="background:var(--orange);color:#000;border:1px solid var(--orange);border-radius:9999px;padding:0.25rem 0.85rem;font-size:12px;font-weight:600;cursor:pointer;">All</button>
+        <button id="filter-lightning" onclick="setFilter('lightning')" style="background:var(--bg-2);color:var(--text-secondary);border:1px solid var(--border);border-radius:9999px;padding:0.25rem 0.85rem;font-size:12px;cursor:pointer;">⚡ Lightning</button>
+        <button id="filter-x402" onclick="setFilter('x402')" style="background:var(--bg-2);color:var(--text-secondary);border:1px solid var(--border);border-radius:9999px;padding:0.25rem 0.85rem;font-size:12px;cursor:pointer;">◈ x402</button>
+        <button id="filter-verified" onclick="setFilter('verified')" style="background:var(--bg-2);color:var(--text-secondary);border:1px solid var(--border);border-radius:9999px;padding:0.25rem 0.85rem;font-size:12px;cursor:pointer;">✓ Verified</button>
+        <span id="feed-count" style="margin-left:auto;font-size:11px;color:var(--text-dim);"></span>
+      </div>
+
       <div class="feed-container" id="feed-container">
         <div class="feed-item" style="color:var(--text-dim);font-style:italic;">
           Loading feed...
@@ -345,7 +355,7 @@
       
       <div style="margin-top:1rem;display:flex;align-items:center;gap:1rem;font-size:12px;color:var(--text-dim);">
         <span class="live-dot"></span>
-        <span>Auto-refreshing every 5 seconds</span>
+        <span>Auto-refreshing every 30 seconds</span>
         <span style="margin-left:auto;" id="last-updated">Last updated: —</span>
       </div>
     </div>
@@ -761,6 +771,92 @@ const API_BASE = 'https://api.observerprotocol.org';
 // Track seen transaction IDs to detect new items
 let seenTxIds = new Set();
 let feedData = [];
+let activeFilter = 'all';
+
+function setFilter(f) {
+  activeFilter = f;
+  // Update button styles
+  ['all','lightning','x402','verified'].forEach(id => {
+    const btn = document.getElementById('filter-' + id);
+    if (!btn) return;
+    if (id === f) {
+      btn.style.background = 'var(--orange)';
+      btn.style.color = '#000';
+      btn.style.borderColor = 'var(--orange)';
+      btn.style.fontWeight = '600';
+    } else {
+      btn.style.background = 'var(--bg-2)';
+      btn.style.color = 'var(--text-secondary)';
+      btn.style.borderColor = 'var(--border)';
+      btn.style.fontWeight = 'normal';
+    }
+  });
+  renderFeed(feedData);
+}
+
+function renderFeed(items) {
+  // Apply filter
+  let filtered = items;
+  if (activeFilter === 'lightning') filtered = items.filter(e => (e.protocol || '').toLowerCase() === 'lightning');
+  else if (activeFilter === 'x402') filtered = items.filter(e => ['x402','l402'].includes((e.protocol || '').toLowerCase()));
+  else if (activeFilter === 'verified') filtered = items.filter(e => e.verified);
+
+  const countEl = document.getElementById('feed-count');
+  if (countEl) countEl.textContent = filtered.length < items.length
+    ? `${filtered.length} of ${items.length} transactions`
+    : `${items.length} transaction${items.length !== 1 ? 's' : ''}`;
+
+  const container = document.getElementById('feed-container');
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="feed-item" style="color:var(--text-dim);font-style:italic;">No transactions match this filter.</div>';
+    return;
+  }
+
+  const eventKey = e => e.event_id || e.created_at || '';
+  container.innerHTML = filtered.map(event => {
+    const isNew = !feedData.find(e => eventKey(e) === eventKey(event));
+    const protocolClass = ['x402','l402'].includes((event.protocol||'').toLowerCase()) ? 'x402' : 'lightning';
+    const protocolIcon = protocolClass === 'x402' ? '◈' : '⚡';
+    const protocolName = protocolClass === 'x402' ? 'x402' : 'Lightning';
+    const verified = event.verified ? '✓' : '○';
+    const verifiedColor = event.verified ? 'color:var(--verified);' : 'color:var(--text-dim);';
+    const ts = event.created_at || event.timestamp || '';
+    const txHash = event.transaction_hash || '';
+    const txDisplay = txHash.length > 16 ? `${txHash.slice(0,8)}…${txHash.slice(-8)}` : (txHash || '—');
+    const agentLabel = event.agent_id || '—';
+    const dirIcon = event.direction === 'inbound' ? '↓' : '↑';
+    const preimage = event.preimage || '';
+    const proofId = `proof-${event.event_id}`;
+    const amountStr = (() => {
+      const protocol = (event.protocol||'').toLowerCase();
+      const amount = event.amount_sats;
+      if (amount === undefined || amount === null) return event.amount_bucket || '—';
+      if (protocol === 'x402' || protocol === 'l402') return (amount / 100).toFixed(2) + ' USDC';
+      return amount.toLocaleString() + ' sats';
+    })();
+    return `
+      <div class="feed-item ${isNew ? 'new' : ''}" style="flex-wrap:wrap;gap:4px;">
+        <div class="feed-protocol ${protocolClass}"><span>${protocolIcon}</span><span>${protocolName}</span></div>
+        <div class="feed-tx" title="${txHash}" style="font-family:monospace;font-size:11px;color:var(--text-dim);">${txDisplay}</div>
+        <div style="font-size:11px;color:var(--text-dim);min-width:80px;">${agentLabel} ${dirIcon}</div>
+        <div class="feed-amount" style="font-family:var(--font-mono);color:var(--orange);">${amountStr}</div>
+        <div class="feed-status" style="${verifiedColor}">${verified}</div>
+        <div class="feed-time">${timeAgo(ts)}</div>
+        ${preimage ? `
+        <div style="width:100%;margin-top:4px;">
+          <button onclick="document.getElementById('${proofId}').style.display='block';this.style.display='none'"
+            style="background:none;border:1px solid var(--orange);color:var(--orange);font-size:10px;padding:2px 8px;cursor:pointer;border-radius:3px;">
+            Verify Proof
+          </button>
+          <div id="${proofId}" style="display:none;font-family:monospace;font-size:10px;color:var(--text-dim);margin-top:4px;line-height:1.8;background:rgba(255,255,255,0.03);padding:6px;border-radius:4px;word-break:break-all;">
+            <div><span style="color:var(--text-light)">preimage:</span> ${preimage}</div>
+            <div><span style="color:var(--text-light)">sha256(↑):</span> ${txHash}</div>
+            <div style="color:var(--verified);margin-top:2px;">✓ SHA256(preimage) = payment_hash — cryptographic proof of receipt</div>
+          </div>
+        </div>` : ''}
+      </div>`;
+  }).join('');
+}
 
 // Format relative time
 function timeAgo(dateString) {
@@ -808,83 +904,25 @@ async function fetchTrends() {
 // Fetch and display feed — always shows last 5 transactions regardless of age
 async function fetchFeed() {
   try {
-    const res = await fetch(`${API_BASE}/observer/transactions?limit=5`);
+    const res = await fetch(`${API_BASE}/observer/transactions?limit=20`);
     const data = await res.json();
     const items = data.transactions || data.events || [];
-    
+
     if (items.length === 0) {
-      document.getElementById('feed-container').innerHTML = 
+      document.getElementById('feed-container').innerHTML =
         '<div class="feed-item" style="color:var(--text-dim);font-style:italic;">No transactions yet. Send a sat to be first ⚡</div>';
       return;
     }
-    
-    // Use event_id as stable key
+
     const eventKey = e => e.event_id || e.created_at || '';
-    const hasNewItems = items.some(e => !seenTxIds.has(eventKey(e)));
     items.forEach(e => seenTxIds.add(eventKey(e)));
-    
-    const container = document.getElementById('feed-container');
-    // Always re-render all items — never suppress based on newness
-    container.innerHTML = items.map(event => {
-      const isNew = hasNewItems && !feedData.find(e => eventKey(e) === eventKey(event));
-      const protocolClass = event.protocol === 'x402' ? 'x402' : 'lightning';
-      const protocolIcon = event.protocol === 'x402' ? '◈' : '⚡';
-      const protocolName = event.protocol === 'x402' ? 'x402' : 'Lightning';
-      const verified = event.verified ? '✓' : '○';
-      const verifiedColor = event.verified ? 'color:var(--verified);' : 'color:var(--text-dim);';
-      const ts = event.created_at || event.timestamp || '';
-      // Show truncated payment hash — the key proof element
-      const txHash = event.transaction_hash || '';
-      const txDisplay = txHash.length > 16
-        ? `${txHash.slice(0,8)}…${txHash.slice(-8)}`
-        : (txHash || '—');
-      const agentLabel = event.agent_id || '—';
-      const dirIcon = event.direction === 'inbound' ? '↓' : '↑';
-      const preimage = event.preimage || '';
-      const proofId = `proof-${event.event_id}`;
-      
-      return `
-        <div class="feed-item ${isNew && hasNewItems ? 'new' : ''}" style="flex-wrap:wrap;gap:4px;">
-          <div class="feed-protocol ${protocolClass}">
-            <span>${protocolIcon}</span>
-            <span>${protocolName}</span>
-          </div>
-          <div class="feed-tx" title="${txHash}" style="font-family:monospace;font-size:11px;color:var(--text-dim);">
-            ${txDisplay}
-          </div>
-          <div style="font-size:11px;color:var(--text-dim);min-width:80px;">${agentLabel} ${dirIcon}</div>
-          <div class="feed-amount" style="font-family:var(--font-mono);color:var(--orange);">${(() => {
-            const protocol = event.protocol?.toLowerCase() || '';
-            const amount = event.amount_sats;
-            if (amount === undefined || amount === null) return event.amount_bucket || '—';
-            if (protocol === 'x402' || protocol === 'l402') {
-              return (amount / 100).toFixed(2) + ' USDC';
-            }
-            return amount.toLocaleString() + ' sats';
-          })()}</div>
-          <div class="feed-status" style="${verifiedColor}">${verified}</div>
-          <div class="feed-time">${timeAgo(ts)}</div>
-          ${preimage ? `
-          <div style="width:100%;margin-top:4px;">
-            <button onclick="document.getElementById('${proofId}').style.display='block';this.style.display='none'"
-              style="background:none;border:1px solid var(--orange);color:var(--orange);font-size:10px;padding:2px 8px;cursor:pointer;border-radius:3px;">
-              Verify Proof
-            </button>
-            <div id="${proofId}" style="display:none;font-family:monospace;font-size:10px;color:var(--text-dim);margin-top:4px;line-height:1.8;background:rgba(255,255,255,0.03);padding:6px;border-radius:4px;word-break:break-all;">
-              <div><span style="color:var(--text-light)">preimage:</span> ${preimage}</div>
-              <div><span style="color:var(--text-light)">sha256(↑):</span> ${txHash}</div>
-              <div style="color:var(--verified);margin-top:2px;">✓ SHA256(preimage) = payment_hash — cryptographic proof of receipt</div>
-            </div>
-          </div>` : ''}
-        </div>
-      `;
-    }).join('');
-    
     feedData = items;
+
+    renderFeed(feedData);
     document.getElementById('last-updated').textContent = `Last updated: ${new Date().toLocaleTimeString()}`;
   } catch (e) {
     console.error('Failed to fetch feed:', e);
-    document.getElementById('feed-container').innerHTML = 
+    document.getElementById('feed-container').innerHTML =
       '<div class="feed-item" style="color:var(--text-dim);font-style:italic;">Unable to load feed. Retrying...</div>';
   }
 }
