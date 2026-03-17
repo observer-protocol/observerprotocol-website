@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quickstart — Observer Protocol</title>
+  <meta name="description" content="Get your agent a Lightning wallet and verified identity on Observer Protocol in 30 minutes.">
+  <link rel="stylesheet" href="shared-styles.css">
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="architecture.html">Architecture</a></li>
+    <li><a href="spec.html">Spec</a></li>
+    <li><a href="registry.html">Registry</a></li>
+    <li><a href="demo.html">Demo</a></li>
+    <li><a href="sdk.html">SDK</a></li>
+    <li><a href="api.html">API</a></li>
+    <li><a href="quickstart.html" class="active">Quickstart</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+  <section style="padding: 3rem 0 1rem;">
+    <div class="container">
+      <div class="section-label">Get Started</div>
+      <h1 style="font-size:clamp(1.6rem,4vw,2.4rem);font-weight:600;margin-bottom:1rem;">Add Your Agent in 30 Minutes</h1>
+      <p style="font-size:13px;color:var(--text-secondary);max-width:560px;font-family:var(--font-sans);line-height:1.8;">
+        Choose your path. Both give your agent a cryptographically verified identity and payment history on Observer Protocol.
+      </p>
+    </div>
+  </section>
+
+  <section style="padding: 2rem 0 4rem;">
+    <div class="container">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;max-width:800px;">
+
+        <!-- Lightning card -->
+        <a href="quickstart-lightning.html" style="text-decoration:none;display:block;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:2rem;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="font-size:2.5rem;margin-bottom:1.25rem;">⚡</div>
+          <div style="font-size:11px;color:var(--orange);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem;">Lightning Quickstart</div>
+          <h2 style="font-size:17px;color:var(--text-primary);margin-bottom:0.75rem;font-weight:600;">Your Agent Needs Money. And an Identity.</h2>
+          <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1.5rem;line-height:1.7;">
+            Deploy a self-custodial Lightning wallet via MDK-Cloudflare and register to Observer Protocol. No server required. ~30 minutes.
+          </p>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+            <span style="font-size:10px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:3px 10px;color:var(--text-secondary);">MDK-Cloudflare</span>
+            <span style="font-size:10px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:3px 10px;color:var(--text-secondary);">~30 min</span>
+            <span style="font-size:10px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:3px 10px;color:var(--text-secondary);">No server</span>
+          </div>
+          <span style="font-size:13px;color:var(--orange);font-weight:500;">Read the guide →</span>
+        </a>
+
+        <!-- x402 card -->
+        <a href="quickstart-x402.html" style="text-decoration:none;display:block;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:2rem;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="font-size:2.5rem;margin-bottom:1.25rem;">◈</div>
+          <div style="font-size:11px;color:var(--orange);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem;">x402 / L402 Quickstart</div>
+          <h2 style="font-size:17px;color:var(--text-primary);margin-bottom:0.75rem;font-weight:600;">HTTP-Native Machine Payments</h2>
+          <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1.5rem;line-height:1.7;">
+            Make your agent pay for data over HTTP/402 and attest every transaction to Observer Protocol. Any Lightning wallet works. ~20 minutes.
+          </p>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+            <span style="font-size:10px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:3px 10px;color:var(--text-secondary);">x402 + L402</span>
+            <span style="font-size:10px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:3px 10px;color:var(--text-secondary);">~20 min</span>
+            <span style="font-size:10px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:3px 10px;color:var(--text-secondary);">Live demo included</span>
+          </div>
+          <span style="font-size:13px;color:var(--orange);font-weight:500;">Read the guide →</span>
+        </a>
+
+        <!-- lnget card -->
+        <a href="quickstart-lnget.html" style="text-decoration:none;display:block;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:2rem;transition:border-color 0.2s;opacity:0.7;" onmouseover="this.style.borderColor='var(--orange)';this.style.opacity='1'" onmouseout="this.style.borderColor='var(--border)';this.style.opacity='0.7'">
+          <div style="font-size:2.5rem;margin-bottom:1.25rem;">🔗</div>
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
+            <span style="font-size:11px;color:var(--orange);letter-spacing:0.08em;text-transform:uppercase;">lnget + Observer Protocol</span>
+            <span style="font-size:10px;background:var(--orange);color:#000;border-radius:4px;padding:1px 6px;font-weight:600;">NEW</span>
+          </div>
+          <h2 style="font-size:17px;color:var(--text-primary);margin-bottom:0.75rem;font-weight:600;">Claim Your Existing L402 History</h2>
+          <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1.5rem;line-height:1.7;">
+            Already using lnget? Sync your existing L402 payment history to Observer Protocol automatically. Your reputation is already built — just claim it.
+          </p>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+            <span style="font-size:10px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:3px 10px;color:var(--text-secondary);">lnget users</span>
+            <span style="font-size:10px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:3px 10px;color:var(--text-secondary);">~5 min</span>
+            <span style="font-size:10px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:3px 10px;color:var(--text-secondary);">Retroactive</span>
+          </div>
+          <span style="font-size:13px;color:var(--orange);font-weight:500;">Read the guide →</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Observer Protocol</div>
+        <p style="font-size:12px;color:var(--text-dim);margin-top:0.5rem;font-family:var(--font-sans);">The trust layer for the agentic economy.</p>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;">Quickstart</div>
+        <ul style="list-style:none;">
+          <li><a href="quickstart-lightning.html" class="footer-link">⚡ Lightning Wallet</a></li>
+          <li><a href="quickstart-x402.html" class="footer-link">◈ x402 / L402</a></li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;">Docs</div>
+        <ul style="list-style:none;">
+          <li><a href="api.html" class="footer-link">API Reference</a></li>
+          <li><a href="sdk.html" class="footer-link">SDK</a></li>
+          <li><a href="architecture.html" class="footer-link">Architecture</a></li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;">Community</div>
+        <ul style="list-style:none;">
+          <li><a href="https://github.com/observer-protocol" target="_blank" class="footer-link">GitHub</a></li>
+          <li><a href="registry.html" class="footer-link">Registry</a></li>
+          <li><a href="demo.html" class="footer-link">Live Demo</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
