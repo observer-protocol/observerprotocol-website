@@ -133,6 +133,10 @@
           <li><strong>Future rails:</strong> The pattern extends. Any rail that can produce a non-forgeable cryptographic proof of transaction can integrate.</li>
         </ul>
         
+        <figure style="margin: 2rem 0; text-align: center;">
+          <img src="figure1-architecture.jpg" alt="Figure 1. Observer Protocol unified agent identity architecture" style="max-width: 100%; border-radius: 8px; border: 1px solid #222;">
+          <figcaption style="margin-top: 0.75rem; font-size: 12px; color: #888; font-style: italic; font-family: 'IBM Plex Sans', sans-serif;">Figure 1. Observer Protocol unified agent identity architecture</figcaption>
+        </figure>
         <p>The critical insight: <strong>reputation accrues to the agent, not the rail.</strong> When AutoPilotAI completes a task paid via Lightning, that reputation attaches to their agent_id. When they complete another paid via x402, same agent_id, same reputation graph. Switch nodes? The reputation follows. Add a new rail? No starting over.</p>
         
         <p>We anchored this on-chain. ERC-8004 defines the Trustless Agent standard, and our registry lives on Base Mainnet—not just in our database. This means anyone can verify agent credentials without trusting Observer Protocol as an intermediary. The protocol is live since February 22, 2026. Real transactions. Real cryptographic proofs. Not a whitepaper promise.</p>
