@@ -321,7 +321,7 @@
           <span>💼</span> WDK Agent Wallets
         </a>
         <a href="#x402-demo" onclick="highlightSection('x402-demo')" style="background: var(--bg-2); border: 1px solid var(--border); border-radius: 9999px; padding: 0.75rem 1.5rem; color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;" onmouseover="this.style.borderColor='var(--orange)'; this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'">
-          <span>◈</span> x402 Demo <span style="font-size:10px;background:var(--orange);color:#000;border-radius:4px;padding:1px 6px;margin-left:4px;">SOON</span>
+          <span>◈</span> x402 Demo <span style="font-size:10px;background:var(--verified);color:#000;border-radius:4px;padding:1px 6px;margin-left:4px;">LIVE</span>
         </a>
       </div>
     </div>
@@ -506,23 +506,209 @@
 
   <hr class="divider">
 
-  <!-- SECTION: x402 DEMO (COMING SOON) -->
+  <!-- SECTION: x402 LIVE DEMO -->
   <section id="x402-demo">
     <div class="container">
-      <div class="section-label">Coming Soon</div>
-      <h2>x402 Live Demo</h2>
+      <div class="section-label">Live Demo</div>
+      <h2>x402 — HTTP-Native Machine Money</h2>
       <p style="font-size:13px;color:var(--text-secondary);margin-bottom:1.5rem;font-family:var(--font-sans);">
         x402 is HTTP-native machine money — a server returns <code style="background:var(--bg-card);padding:2px 6px;border-radius:3px;color:var(--orange);">402 Payment Required</code>, the agent pays sats, retries with proof, gets the response. No wallets, no accounts, no approval. Just HTTP + Bitcoin.
       </p>
-      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:2rem;text-align:center;">
-        <div style="font-size:2rem;margin-bottom:1rem;">◈</div>
-        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin:0 0 1.5rem;">
-          Live x402-gated endpoint coming soon. Any agent with a Lightning wallet will be able to query <code style="color:var(--orange);">api.observerprotocol.org/observer/ask</code> — pay 1 sat, get a verified agent lookup in return.
-        </p>
-        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--bg-2);border:1px solid var(--border);border-radius:4px;padding:0.75rem 1.5rem;font-size:12px;color:var(--text-dim);font-family:monospace;">
-          GET /observer/ask → 402 → pay 1 sat → 200 OK + verified agent data
+
+      <!-- 3-Step Flow Animation -->
+      <div class="x402-flow" style="display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;">
+        <div class="flow-step" id="step-402" style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1rem 1.5rem;text-align:center;min-width:100px;transition:all 0.3s ease;">
+          <div style="font-size:1.5rem;margin-bottom:0.25rem;">402</div>
+          <div style="font-size:11px;color:var(--text-dim);">Payment Required</div>
+        </div>
+        <div class="flow-arrow" style="color:var(--text-dim);font-size:1.2rem;">→</div>
+        <div class="flow-step" id="step-pay" style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1rem 1.5rem;text-align:center;min-width:100px;transition:all 0.3s ease;">
+          <div style="font-size:1.5rem;margin-bottom:0.25rem;">⚡</div>
+          <div style="font-size:11px;color:var(--text-dim);">Pay 1 sat</div>
+        </div>
+        <div class="flow-arrow" style="color:var(--text-dim);font-size:1.2rem;">→</div>
+        <div class="flow-step" id="step-200" style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1rem 1.5rem;text-align:center;min-width:100px;transition:all 0.3s ease;">
+          <div style="font-size:1.5rem;margin-bottom:0.25rem;">200 ✓</div>
+          <div style="font-size:11px;color:var(--text-dim);">Verified Data</div>
         </div>
       </div>
+
+      <!-- Input and Controls -->
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1.5rem;margin-bottom:1.5rem;">
+        <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem;">
+          <label style="font-size:13px;color:var(--text-secondary);min-width:80px;">Agent Alias:</label>
+          <input type="text" id="x402-alias" value="maxi-0001" style="background:var(--bg-2);border:1px solid var(--border);border-radius:4px;padding:0.5rem 0.75rem;color:var(--text-primary);font-family:var(--font-mono);font-size:13px;flex:1;min-width:150px;" oninput="updateCurlExample()">
+        </div>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <button onclick="tryX402Step1()" class="btn btn-primary" style="font-size:13px;">
+            <span>1️⃣</span> Try It (Get 402)
+          </button>
+          <button onclick="tryX402Step2()" class="btn btn-outline" style="font-size:13px;" id="btn-pay-retry" disabled>
+            <span>2️⃣</span> Pay & Retry (Get 200)
+          </button>
+          <button onclick="resetX402Demo()" class="btn btn-outline" style="font-size:13px;">
+            Reset
+          </button>
+        </div>
+      </div>
+
+      <!-- Terminal Output -->
+      <div id="x402-terminal" style="background:#0a0a0f;border:1px solid var(--border);border-radius:4px;padding:1.25rem;font-family:var(--font-mono);font-size:12px;line-height:1.6;min-height:200px;max-height:400px;overflow-y:auto;display:none;">
+        <div id="x402-output" style="white-space:pre-wrap;"></div>
+      </div>
+
+      <!-- Dynamic curl Example -->
+      <h3 style="font-size:14px;color:var(--text-primary);margin:1.5rem 0 0.75rem;font-weight:600;">Try with curl</h3>
+      <div class="curl-block" onclick="copyCurl(this)" id="curl-example-block">
+        <div class="copy-toast" id="curl-copy-toast">Copied!</div>
+        <code id="curl-example-code">
+          <span class="comment"># Step 1: Get payment request</span><br>
+          <span class="cmd">curl</span> <span class="arg">https://api.observerprotocol.org/observer/ask?q=maxi-0001</span><br><br>
+          <span class="comment"># Returns: 402 Payment Required with X-Payment-* headers</span><br><br>
+          <span class="comment"># Step 2: Pay 1 sat to maxi@agenticterminal.ai, then retry with proof</span><br>
+          <span class="cmd">curl</span> <span class="arg">-H</span> <span class="str">"X-Payment-Proof: &lt;preimage&gt;"</span> \<br>
+          &nbsp;&nbsp;<span class="arg">https://api.observerprotocol.org/observer/ask?q=maxi-0001</span><br><br>
+          <span class="comment"># Returns: 200 OK + verified agent data</span>
+        </code>
+      </div>
+
+      <style>
+        .flow-step.active {
+          border-color: var(--orange) !important;
+          box-shadow: 0 0 15px rgba(247, 147, 26, 0.3);
+        }
+        .flow-step.success {
+          border-color: var(--verified) !important;
+          background: rgba(0, 200, 83, 0.1) !important;
+        }
+        .x402-status-402 { color: #ff9800; }
+        .x402-status-200 { color: var(--verified); }
+        .x402-header { color: #60a5fa; }
+        .x402-value { color: #86efac; }
+      </style>
+
+      <script>
+        let x402PaymentProof = null;
+        let x402AgentAlias = 'maxi-0001';
+
+        function updateCurlExample() {
+          const alias = document.getElementById('x402-alias').value || 'maxi-0001';
+          x402AgentAlias = alias;
+          const code = document.getElementById('curl-example-code');
+          code.innerHTML = `<span class="comment"># Step 1: Get payment request</span><br>
+          <span class="cmd">curl</span> <span class="arg">https://api.observerprotocol.org/observer/ask?q=${alias}</span><br><br>
+          <span class="comment"># Returns: 402 Payment Required with X-Payment-* headers</span><br><br>
+          <span class="comment"># Step 2: Pay 1 sat to maxi@agenticterminal.ai, then retry with proof</span><br>
+          <span class="cmd">curl</span> <span class="arg">-H</span> <span class="str">"X-Payment-Proof: &lt;preimage&gt;"</span> \\\\<br>
+          &nbsp;&nbsp;<span class="arg">https://api.observerprotocol.org/observer/ask?q=${alias}</span><br><br>
+          <span class="comment"># Returns: 200 OK + verified agent data</span>`;
+        }
+
+        function resetX402Demo() {
+          document.getElementById('x402-terminal').style.display = 'none';
+          document.getElementById('x402-output').textContent = '';
+          document.getElementById('btn-pay-retry').disabled = true;
+          document.getElementById('step-402').classList.remove('active', 'success');
+          document.getElementById('step-pay').classList.remove('active', 'success');
+          document.getElementById('step-200').classList.remove('active', 'success');
+          x402PaymentProof = null;
+        }
+
+        function appendToTerminal(text, isJson = false) {
+          const terminal = document.getElementById('x402-terminal');
+          const output = document.getElementById('x402-output');
+          terminal.style.display = 'block';
+          
+          if (isJson) {
+            output.innerHTML += '<span class="x402-json">' + JSON.stringify(text, null, 2) + '</span>\n\n';
+          } else {
+            output.innerHTML += text + '\n\n';
+          }
+          terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        async function tryX402Step1() {
+          resetX402Demo();
+          const alias = document.getElementById('x402-alias').value || 'maxi-0001';
+          
+          document.getElementById('step-402').classList.add('active');
+          
+          appendToTerminal(`<span class="x402-status-402">$ curl https://api.observerprotocol.org/observer/ask?q=${alias}</span>`);
+          
+          try {
+            const response = await fetch(`${API_BASE}/observer/ask?q=${alias}`);
+            const statusLine = `HTTP/1.1 ${response.status} ${response.statusText}`;
+            appendToTerminal(statusLine);
+            
+            // Show headers
+            const headers = [];
+            response.headers.forEach((value, key) => {
+              if (key.toLowerCase().startsWith('x-payment')) {
+                headers.push(`<span class="x402-header">${key}</span>: <span class="x402-value">${value}</span>`);
+              }
+            });
+            if (headers.length > 0) {
+              appendToTerminal(headers.join('\n'));
+            }
+            
+            const data = await response.json();
+            appendToTerminal(data, true);
+            
+            if (response.status === 402) {
+              document.getElementById('step-402').classList.add('success');
+              document.getElementById('step-pay').classList.add('active');
+              document.getElementById('btn-pay-retry').disabled = false;
+              
+              // Generate a mock payment proof for demo
+              x402PaymentProof = 'demo-proof-' + Date.now();
+              appendToTerminal(`<span style="color:var(--text-dim);"># Demo: Simulating payment of 1 sat to maxi@agenticterminal.ai...</span>`);
+              appendToTerminal(`<span style="color:var(--text-dim);"># Demo: Payment proof generated: ${x402PaymentProof}</span>`);
+            }
+          } catch (err) {
+            appendToTerminal(`<span style="color:#ff5252;">Error: ${err.message}</span>`);
+          }
+        }
+
+        async function tryX402Step2() {
+          if (!x402PaymentProof) {
+            x402PaymentProof = 'demo-proof-' + Date.now();
+          }
+          const alias = document.getElementById('x402-alias').value || 'maxi-0001';
+          
+          document.getElementById('step-pay').classList.add('success');
+          document.getElementById('step-200').classList.add('active');
+          
+          appendToTerminal(`<span class="x402-status-200">$ curl -H "X-Payment-Proof: ${x402PaymentProof}" https://api.observerprotocol.org/observer/ask?q=${alias}</span>`);
+          
+          try {
+            const response = await fetch(`${API_BASE}/observer/ask?q=${alias}`, {
+              headers: {
+                'X-Payment-Proof': x402PaymentProof
+              }
+            });
+            
+            const statusLine = `HTTP/1.1 ${response.status} ${response.statusText}`;
+            appendToTerminal(statusLine);
+            
+            // Show headers
+            response.headers.forEach((value, key) => {
+              if (key.toLowerCase().startsWith('x-payment')) {
+                appendToTerminal(`<span class="x402-header">${key}</span>: <span class="x402-value">${value}</span>`);
+              }
+            });
+            
+            const data = await response.json();
+            appendToTerminal(data, true);
+            
+            if (response.status === 200) {
+              document.getElementById('step-200').classList.add('success');
+              appendToTerminal(`<span style="color:var(--verified);">✓ x402 payment verified! Agent data retrieved.</span>`);
+            }
+          } catch (err) {
+            appendToTerminal(`<span style="color:#ff5252;">Error: ${err.message}</span>`);
+          }
+        }
+      </script>
     </div>
   </section>
 
