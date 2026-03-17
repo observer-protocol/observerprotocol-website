@@ -572,12 +572,14 @@ async function loadAgents() {
 }
 
 function createAgentCard(agent) {
+  // Fetch agent_id from the API if available, otherwise use hash-based lookup
+  const agentId = agent.agent_id || agent.hash.replace(/[^a-zA-Z0-9-]/g, '').substring(0, 32);
+  
   const card = document.createElement('a');
   card.className = `agent-card ${agent.is_genesis ? 'genesis' : ''}`;
-  card.href = '#';
+  card.href = `agent.html?id=${agentId}`;
   card.dataset.status = agent.status;
   card.dataset.rail = agent.rail ? agent.rail.toLowerCase() : '';
-  card.onclick = function() { return false; };
 
   const badgeClass = agent.status === 'verified' ? 'badge-verified' :
                      agent.status === 'pending' ? 'badge-pending' : 'badge-registered';

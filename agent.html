@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Profile — Observer Protocol</title>
+  <meta name="description" content="Observer Protocol verified agent profile.">
+  <link rel="stylesheet" href="shared-styles.css">
+  <style>
+    .page-hero {
+      padding: 3rem 0 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .agent-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .agent-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--orange) 0%, #c76b00 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+    .agent-title {
+      flex: 1;
+      min-width: 200px;
+    }
+    .agent-id {
+      font-family: var(--font-mono);
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+    .agent-alias {
+      font-size: 15px;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+    .verified-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(0, 200, 83, 0.15);
+      border: 1px solid rgba(0, 200, 83, 0.3);
+      color: #00c853;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      border-radius: 4px;
+    }
+    .registered-date {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 0.5rem;
+    }
+
+    /* Stats Row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      text-align: center;
+    }
+    .stat-value {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--orange);
+      margin-bottom: 0.25rem;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Badges Section */
+    .badges-section {
+      margin: 2rem 0;
+    }
+    .badges-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .badge-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      transition: all 0.2s;
+    }
+    .badge-card:hover {
+      border-color: var(--orange-dim);
+    }
+    .badge-card.unearned {
+      opacity: 0.5;
+      background: var(--bg-2);
+    }
+    .badge-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .badge-info {
+      flex: 1;
+    }
+    .badge-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+    .badge-desc {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    .badge-date {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 0.5rem;
+      font-family: var(--font-mono);
+    }
+
+    /* Transaction History */
+    .tx-section {
+      margin: 2rem 0;
+    }
+    .tx-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 1rem;
+    }
+    .tx-table th {
+      text-align: left;
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-dim);
+      font-weight: 500;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .tx-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .tx-table tr:hover td {
+      background: var(--bg-2);
+    }
+    .tx-hash {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+    .tx-amount {
+      color: var(--orange);
+      font-family: var(--font-mono);
+    }
+    .tx-protocol {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 11px;
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      background: var(--bg-2);
+    }
+    .tx-protocol.lightning { color: var(--orange); }
+    .tx-protocol.x402 { color: #60a5fa; }
+    .tx-protocol.l402 { color: #f59e0b; }
+
+    /* Identity Section */
+    .identity-section {
+      margin: 2rem 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.5rem;
+    }
+    .identity-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .identity-row:last-child {
+      border-bottom: none;
+    }
+    .identity-label {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+    .identity-value {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-align: right;
+      word-break: break-all;
+      max-width: 60%;
+    }
+    .identity-value a {
+      color: var(--orange);
+      text-decoration: none;
+    }
+    .identity-value a:hover {
+      text-decoration: underline;
+    }
+
+    /* Embed Section */
+    .embed-section {
+      margin: 2rem 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.5rem;
+    }
+    .embed-preview {
+      margin: 1rem 0;
+      padding: 1rem;
+      background: var(--bg-2);
+      border-radius: 4px;
+      text-align: center;
+    }
+    .embed-code {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+      word-break: break-all;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .embed-code:hover {
+      border-color: var(--orange-dim);
+    }
+
+    /* Loading State */
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-dim);
+    }
+    .error {
+      text-align: center;
+      padding: 3rem;
+      color: #ff5252;
+    }
+
+    /* Not Found */
+    .not-found {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    .not-found h2 {
+      font-size: 24px;
+      margin-bottom: 1rem;
+    }
+    .not-found p {
+      color: var(--text-secondary);
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="architecture.html">Architecture</a></li>
+    <li><a href="spec.html">Spec</a></li>
+    <li><a href="registry.html">Registry</a></li>
+    <li><a href="demo.html">Demo</a></li>
+    <li><a href="sdk.html">SDK</a></li>
+    <li><a href="api.html">API</a></li>
+    <li><a href="quickstart.html">Quickstart</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+  <div id="content">
+    <div class="loading">Loading agent profile...</div>
+  </div>
+
+  <footer class="footer container" style="margin-top: 4rem;">
+    <span>Observer Protocol v0.2 · CC BY 4.0</span>
+    <div class="footer-links">
+      <a href="architecture.html">Architecture</a>
+      <a href="spec.html">Spec</a>
+      <a href="registry.html">Registry</a>
+      <a href="demo.html">Demo</a>
+      <a href="sdk.html">SDK</a>
+      <a href="api.html">API</a>
+      <a href="https://github.com/observer-protocol" target="_blank">GitHub</a>
+    </div>
+    <span>the trust layer for the agentic economy</span>
+  </footer>
+</div>
+
+<script>
+const API_BASE = 'https://api.observerprotocol.org';
+
+// All possible badges with their definitions
+const ALL_BADGES = {
+  'first_payment': { label: 'First Payment', description: 'Completed first verified payment', icon: '⚡' },
+  'l402_verified': { label: 'L402 Verified', description: 'Verified L402 Lightning payment with preimage proof', icon: '🔐' },
+  'lnget_pioneer': { label: 'lnget Pioneer', description: 'Made a verified payment using lnget v1.0', icon: '🚀' },
+  'x402_active': { label: 'x402 Active', description: 'Completed verified x402 HTTP payment', icon: '◈' },
+  'multi_protocol': { label: 'Multi-Protocol', description: 'Used both Lightning and x402 payment rails', icon: '🔀' }
+};
+
+function getAgentIdFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('id');
+}
+
+function formatDate(dateString) {
+  if (!dateString) return '—';
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '—';
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function formatDateTime(dateString) {
+  if (!dateString) return '—';
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '—';
+  return date.toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+function timeAgo(dateString) {
+  if (!dateString) return '—';
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return '—';
+  const seconds = Math.floor((new Date() - date) / 1000);
+  if (seconds < 60) return 'just now';
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+  return `${Math.floor(seconds / 86400)}d ago`;
+}
+
+function truncateHash(hash) {
+  if (!hash) return '—';
+  if (hash.length <= 16) return hash;
+  return `${hash.slice(0, 8)}…${hash.slice(-8)}`;
+}
+
+function formatAmount(amount, protocol) {
+  if (amount === undefined || amount === null) return '—';
+  const proto = (protocol || '').toLowerCase();
+  if (proto === 'x402') {
+    return `${(amount / 100).toFixed(2)} USDC`;
+  }
+  return `${amount.toLocaleString()} sats`;
+}
+
+function renderAgentProfile(agent) {
+  const earnedBadgeIds = new Set(agent.badges.map(b => b.id));
+  
+  // Build earned badges HTML
+  const earnedBadgesHtml = agent.badges.map(badge => `
+    <div class="badge-card">
+      <div class="badge-icon">${badge.icon}</div>
+      <div class="badge-info">
+        <div class="badge-label">${badge.label}</div>
+        <div class="badge-desc">${badge.description}</div>
+        <div class="badge-date">Earned ${formatDate(badge.earned_at)}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Build unearned badges HTML
+  const unearnedBadgesHtml = Object.entries(ALL_BADGES)
+    .filter(([id]) => !earnedBadgeIds.has(id))
+    .map(([id, badge]) => `
+      <div class="badge-card unearned">
+        <div class="badge-icon">${badge.icon}</div>
+        <div class="badge-info">
+          <div class="badge-label">${badge.label}</div>
+          <div class="badge-desc">${badge.description}</div>
+        </div>
+      </div>
+    `).join('');
+
+  // Build protocols list
+  const protocolsHtml = agent.protocols.map(p => {
+    const proto = p.toLowerCase();
+    const icon = proto === 'x402' ? '◈' : '⚡';
+    return `<span class="tx-protocol ${proto}">${icon} ${p}</span>`;
+  }).join(' ');
+
+  // Build identity section
+  let identityHtml = '';
+  if (agent.erc8004 || agent.lightning) {
+    const erc8004Rows = agent.erc8004 ? `
+      <div class="identity-row">
+        <span class="identity-label">ERC-8004 Chain</span>
+        <span class="identity-value">${agent.erc8004.chain}</span>
+      </div>
+      <div class="identity-row">
+        <span class="identity-label">Identity Registry</span>
+        <span class="identity-value">
+          <a href="https://celo-sepolia.blockscout.com/address/${agent.erc8004.identity_registry}" target="_blank">
+            ${truncateHash(agent.erc8004.identity_registry)}
+          </a>
+        </span>
+      </div>
+      <div class="identity-row">
+        <span class="identity-label">Reputation Registry</span>
+        <span class="identity-value">
+          <a href="https://celo-sepolia.blockscout.com/address/${agent.erc8004.reputation_registry}" target="_blank">
+            ${truncateHash(agent.erc8004.reputation_registry)}
+          </a>
+        </span>
+      </div>
+    ` : '';
+    
+    const lightningRows = agent.lightning ? `
+      <div class="identity-row">
+        <span class="identity-label">Lightning Address</span>
+        <span class="identity-value">${agent.lightning.address}</span>
+      </div>
+      <div class="identity-row">
+        <span class="identity-label">Node Pubkey</span>
+        <span class="identity-value">${truncateHash(agent.lightning.node_pubkey)}</span>
+      </div>
+    ` : '';
+
+    identityHtml = `
+      <div class="identity-section">
+        <div class="section-label" style="margin-bottom: 1rem;">Identity</div>
+        ${erc8004Rows}
+        ${lightningRows}
+      </div>
+    `;
+  }
+
+  return `
+    <div class="page-hero">
+      <div class="container">
+        <div class="agent-header">
+          <div class="agent-avatar">${agent.alias.charAt(0).toUpperCase()}</div>
+          <div class="agent-title">
+            <div class="agent-id">${agent.agent_id}</div>
+            <div class="agent-alias">${agent.alias}</div>
+            <div class="verified-badge">
+              <span>✓</span>
+              <span>Observer Protocol Verified</span>
+            </div>
+            <div class="registered-date">Registered ${formatDate(agent.registered_at)}</div>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-value">${agent.total_transactions}</div>
+            <div class="stat-label">Total Transactions</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${agent.total_volume_sats.toLocaleString()}</div>
+            <div class="stat-label">Volume (sats)</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${agent.protocols.length}</div>
+            <div class="stat-label">Protocols</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${timeAgo(agent.last_active)}</div>
+            <div class="stat-label">Last Active</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1rem;">
+          ${protocolsHtml}
+        </div>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top: 2rem;">
+      <div class="badges-section">
+        <div class="section-label">Badges</div>
+        <div class="badges-grid">
+          ${earnedBadgesHtml}
+          ${unearnedBadgesHtml}
+        </div>
+      </div>
+
+      ${identityHtml}
+
+      <div class="tx-section">
+        <div class="section-label">Recent Transactions</div>
+        <div id="tx-container">
+          <div class="loading">Loading transactions...</div>
+        </div>
+      </div>
+
+      <div class="embed-section">
+        <div class="section-label">Embed Badge</div>
+        <p style="font-size: 13px; color: var(--text-secondary); margin: 0.5rem 0 1rem;">
+          Add this badge to your website or documentation to show your verified status.
+        </p>
+        <div class="embed-preview">
+          <img src="${agent.badge_url}" alt="Observer Protocol Verified" style="max-width: 100%; height: auto;">
+        </div>
+        <div class="embed-code" onclick="copyEmbedCode()">
+          &lt;img src="${agent.badge_url}" alt="Observer Protocol Verified"&gt;
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderTransactions(transactions) {
+  if (!transactions || transactions.length === 0) {
+    return '<div style="text-align: center; padding: 2rem; color: var(--text-dim);">No transactions yet.</div>';
+  }
+
+  const rows = transactions.map(tx => {
+    const proto = (tx.protocol || '').toLowerCase();
+    const protoClass = proto === 'x402' ? 'x402' : proto === 'l402' ? 'l402' : 'lightning';
+    const protoIcon = proto === 'x402' ? '◈' : '⚡';
+    const dirIcon = tx.direction === 'inbound' ? '↓' : '↑';
+    const dirColor = tx.direction === 'inbound' ? 'color: #00c853;' : '';
+
+    return `
+      <tr>
+        <td class="tx-hash" title="${tx.transaction_hash || ''}">${truncateHash(tx.transaction_hash)}</td>
+        <td><span class="tx-protocol ${protoClass}">${protoIcon} ${tx.protocol || '—'}</span></td>
+        <td style="${dirColor} font-weight: bold; text-align: center;">${dirIcon}</td>
+        <td class="tx-amount">${formatAmount(tx.amount_sats, tx.protocol)}</td>
+        <td style="text-align: center;">${tx.verified ? '<span style="color: #00c853;">✓</span>' : '<span style="color: var(--text-dim);">○</span>'}</td>
+        <td style="color: var(--text-dim); font-size: 11px;">${timeAgo(tx.created_at)}</td>
+      </tr>
+    `;
+  }).join('');
+
+  return `
+    <table class="tx-table">
+      <thead>
+        <tr>
+          <th>Transaction Hash</th>
+          <th>Protocol</th>
+          <th style="text-align: center;">Dir</th>
+          <th>Amount</th>
+          <th style="text-align: center;">✓</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderNotFound() {
+  return `
+    <div class="not-found">
+      <h2>Agent Not Found</h2>
+      <p>The agent you're looking for doesn't exist in the Observer Protocol registry.</p>
+      <a href="registry.html" class="btn btn-primary">View Registry</a>
+    </div>
+  `;
+}
+
+function renderError(message) {
+  return `
+    <div class="error">
+      <h2>Error Loading Profile</h2>
+      <p>${message}</p>
+      <button onclick="location.reload()" class="btn btn-outline" style="margin-top: 1rem;">Retry</button>
+    </div>
+  `;
+}
+
+function copyEmbedCode() {
+  const code = document.querySelector('.embed-code').textContent.trim();
+  navigator.clipboard.writeText(code).then(() => {
+    const el = document.querySelector('.embed-code');
+    const original = el.textContent;
+    el.textContent = 'Copied!';
+    el.style.borderColor = '#00c853';
+    setTimeout(() => {
+      el.textContent = original;
+      el.style.borderColor = '';
+    }, 2000);
+  });
+}
+
+async function loadAgentProfile() {
+  const agentId = getAgentIdFromUrl();
+  const contentEl = document.getElementById('content');
+
+  if (!agentId) {
+    contentEl.innerHTML = renderError('No agent ID specified. Use ?id=AGENT_ID');
+    return;
+  }
+
+  try {
+    // Load agent profile
+    const profileRes = await fetch(`${API_BASE}/observer/agents/${agentId}`);
+    if (profileRes.status === 404) {
+      contentEl.innerHTML = renderNotFound();
+      return;
+    }
+    if (!profileRes.ok) {
+      throw new Error('Failed to load agent profile');
+    }
+    const agent = await profileRes.json();
+
+    // Render profile
+    contentEl.innerHTML = renderAgentProfile(agent);
+
+    // Load transactions
+    const txRes = await fetch(`${API_BASE}/observer/transactions?agent_id=${agentId}&limit=10`);
+    if (txRes.ok) {
+      const txData = await txRes.json();
+      document.getElementById('tx-container').innerHTML = renderTransactions(txData.transactions);
+    } else {
+      document.getElementById('tx-container').innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-dim);">Unable to load transactions.</div>';
+    }
+
+  } catch (err) {
+    console.error('Error loading profile:', err);
+    contentEl.innerHTML = renderError(err.message);
+  }
+}
+
+// Load on page load
+document.addEventListener('DOMContentLoaded', loadAgentProfile);
+</script>
+
+</body>
+</html>
