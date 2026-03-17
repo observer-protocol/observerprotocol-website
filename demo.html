@@ -727,7 +727,7 @@ function renderFeed(items) {
       const protocol = (event.protocol||'').toLowerCase();
       const amount = event.amount_sats;
       if (amount === undefined || amount === null) return event.amount_bucket || '—';
-      if (protocol === 'x402' || protocol === 'l402') return (amount / 100).toFixed(2) + ' USDC';
+      if (protocol === 'x402') return (amount / 100).toFixed(2) + ' USDC'; // x402=USDC, L402=sats
       return amount.toLocaleString() + ' sats';
     })();
     return `
@@ -945,7 +945,7 @@ function renderTxRow(tx) {
         const protocol = tx.protocol?.toLowerCase() || '';
         const amount = tx.amount_sats;
         if (amount === undefined || amount === null) return tx.amount_bucket || '—';
-        if (protocol === 'x402' || protocol === 'l402') {
+        if (protocol === 'x402') {
           return (amount / 100).toFixed(2) + ' USDC';
         }
         return amount.toLocaleString() + ' sats';
