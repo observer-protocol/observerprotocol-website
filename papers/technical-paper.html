@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technical Paper — Observer Protocol</title>
+  <meta name="description" content="Multi-Rail Agent Credential Infrastructure: A Unified Identity Protocol for Autonomous Agents">
+  <link rel="stylesheet" href="../shared-styles.css">
+  <style>
+    /* Paper-specific styles */
+    .paper-container { max-width: 800px; margin: 0 auto; padding: 0 2rem 4rem; }
+    .back-link { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); text-decoration: none; font-size: 12px; margin: 2rem 0; transition: color 0.2s; }
+    .back-link:hover { color: var(--orange); }
+    .paper-header { padding: 2rem 0 3rem; border-bottom: 1px solid var(--border); margin-bottom: 3rem; }
+    .paper-tag { font-family: var(--font-mono); font-size: 10px; color: var(--orange); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; }
+    .paper-title { font-family: var(--font-mono); font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 600; line-height: 1.4; margin-bottom: 1.5rem; }
+    .paper-meta { color: var(--text-secondary); font-size: 13px; line-height: 1.8; }
+    .paper-meta strong { color: var(--text-primary); }
+    .paper-meta .affiliation { color: var(--text-dim); }
+    .paper-date { margin-top: 1rem; font-size: 12px; color: var(--text-dim); }
+    
+    /* Content styles */
+    .paper-content { font-family: var(--font-sans); font-size: 15px; line-height: 1.8; color: var(--text-primary); }
+    .paper-content h2 { font-family: var(--font-mono); font-size: 18px; font-weight: 600; margin: 3rem 0 1.25rem; color: var(--text-primary); }
+    .paper-content h3 { font-family: var(--font-mono); font-size: 14px; font-weight: 600; margin: 2rem 0 1rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+    .paper-content p { margin-bottom: 1.25rem; }
+    .paper-content strong { font-weight: 600; color: var(--text-primary); }
+    .paper-content em { font-style: italic; color: var(--text-secondary); }
+    .paper-content a { color: var(--orange); text-decoration: none; }
+    .paper-content a:hover { text-decoration: underline; }
+    .paper-content ul, .paper-content ol { margin: 1.25rem 0; padding-left: 1.5rem; }
+    .paper-content li { margin-bottom: 0.5rem; }
+    .paper-content blockquote { border-left: 2px solid var(--orange); padding-left: 1.5rem; margin: 1.5rem 0; color: var(--text-secondary); font-style: italic; }
+    
+    /* Code blocks */
+    .paper-content pre { background: #1a1a1a; border: 1px solid var(--border); border-radius: 4px; padding: 1.25rem 1.5rem; overflow-x: auto; margin: 1.5rem 0; }
+    .paper-content code { font-family: var(--font-mono); font-size: 13px; }
+    .paper-content pre code { color: var(--orange); }
+    .paper-content p code { background: var(--bg-2); padding: 0.15rem 0.4rem; border-radius: 3px; color: var(--orange); font-size: 12px; }
+    
+    /* Tables */
+    .paper-content table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: 13px; }
+    .paper-content th { font-family: var(--font-mono); text-align: left; padding: 0.75rem; border-bottom: 1px solid var(--border); color: var(--text-secondary); font-weight: 500; }
+    .paper-content td { padding: 0.75rem; border-bottom: 1px solid var(--border); }
+    .paper-content tr:last-child td { border-bottom: none; }
+    
+    /* Abstract */
+    .abstract { background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px; padding: 1.5rem; margin-bottom: 3rem; }
+    .abstract-label { font-family: var(--font-mono); font-size: 10px; color: var(--orange); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .abstract p { margin: 0; font-size: 14px; line-height: 1.7; }
+    
+    /* References */
+    .references { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+    .references h2 { font-family: var(--font-mono); font-size: 16px; margin-bottom: 1.5rem; }
+    .references ol { padding-left: 1.5rem; font-size: 13px; }
+    .references li { margin-bottom: 0.75rem; color: var(--text-secondary); }
+    .references li a { color: var(--orange); }
+    
+    /* Footer note */
+    .paper-footer { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-dim); }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="/" class="nav-logo">Observer Protocol</a>
+    <ul class="nav-links">
+      <li><a href="/demo.html">Demo</a></li>
+      <li><a href="/registry.html">Registry</a></li>
+      <li><a href="/quickstart.html">Quickstart</a></li>
+      <li><a href="/papers/" class="active">Papers</a></li>
+    </ul>
+  </nav>
+
+  <div class="page">
+    <div class="paper-container">
+      <a href="/papers/" class="back-link">← Back to Papers</a>
+      
+      <header class="paper-header">
+        <div class="paper-tag">Technical Paper</div>
+        <h1 class="paper-title">Multi-Rail Agent Credential Infrastructure: A Unified Identity Protocol for Autonomous Agents</h1>
+        <div class="paper-meta">
+          <strong>Maxi<sup>1</sup></strong> (lead author), <strong>Boyd Cohen<sup>2</sup></strong> (co-author)<br>
+          <span class="affiliation"><sup>1</sup>Observer Protocol, <sup>2</sup>ArcadiaB</span>
+          <div class="paper-date">March 17, 2026</div>
+        </div>
+      </header>
+
+      <div class="abstract">
+        <div class="abstract-label">Abstract</div>
+        <p>Autonomous agents increasingly transact across multiple payment rails—Lightning Network (L402), HTTP-native stablecoins (x402), and emerging protocols. Current identity solutions are rail-specific: Lightning node credentials, EVM wallets, and DID standards exist in isolation, creating fragmented reputation and preventing trustless agent-to-agent commerce at scale. We present Observer Protocol, a unified agent credential infrastructure that anchors identity above the transport layer using <code>agent_id = SHA256(primary_pubkey)</code>. We describe cryptographic verification mechanisms for two live production rails (L402 preimage verification and EVM EIP-191 key registration with on-chain <code>tx.from</code> matching), an ERC-8004 on-chain identity anchor on Base Mainnet, and a reputation model that accrues to the agent regardless of which rail was used. The system has been live on mainnet since February 22, 2026, with real verified transactions.</p>
+      </div>
+
+      <article class="paper-content">
+        <h2>1. Introduction</h2>
+        <p>The agentic economy has arrived. In its 2025 Annual Letter, Stripe outlined a framework for "Five Levels of Agentic Commerce," describing a progression from human-initiated payments to fully autonomous agent-to-agent transactions <a href="#ref1">[1]</a>. Catalini, Hui, and Wu's February 2026 paper on the economics of AGI formalizes this transition, noting that autonomous economic agents require infrastructure that enables trustless coordination without human intermediation <a href="#ref2">[2]</a>.</p>
+        <p>Yet a critical gap persists: the trust gap. Agents can complete work, but payments do not always flow. In March 2026, we observed a stark example on the Moltbook platform: AutoPilotAI had 142 accepted task claims but $0 in actual payments processed. The work was done; the payment infrastructure failed to connect.</p>
+        <p>Existing solutions do not address this problem adequately. ENS provides human-readable naming but is fundamentally human-first—it assumes a person behind the keyboard. DIDs (Decentralized Identifiers) are general-purpose and heavyweight, designed for any entity rather than optimized for autonomous agents. ERC-8004 establishes an on-chain identity standard for agents but does not specify how to cryptographically verify payment rail credentials.</p>
+        <p>What is missing is credential infrastructure that unifies identity across payment rails. Observer Protocol fills this gap by anchoring agent identity above the transport layer, enabling reputation to accrue to the agent regardless of whether they paid via Lightning, EVM, or future rails.</p>
+
+        <h2>2. Problem Formulation</h2>
+        <p>We begin with precise definitions:</p>
+        <ul>
+          <li><strong>agent_id</strong>: A canonical identifier derived as <code>SHA256(primary_pubkey)</code>, portable across all rails</li>
+          <li><strong>Payment rail</strong>: A protocol for value transfer (e.g., Lightning Network, Ethereum L1, L2s)</li>
+          <li><strong>Credential</strong>: A cryptographically verified binding between an agent_id and a public key on a specific rail</li>
+          <li><strong>Unified identity</strong>: A single agent_id with verified credentials across multiple rails</li>
+        </ul>
+
+        <h3>The Fragmentation Problem</h3>
+        <p>When the same agent transacts on different rails, current systems treat them as different identities. A Lightning node pubkey, an EVM address, and a Solana wallet each exist in isolation. Reputation earned on one rail does not transfer to another. An agent with 100 successful Lightning payments appears as a blank slate when they first use x402.</p>
+
+        <h3>The Attribution Problem</h3>
+        <p>Anyone can claim to have made a payment by citing a transaction hash. Proof of payment is not proof of control. True attribution requires cryptographic verification that the agent possesses the private key corresponding to the paying address.</p>
+
+        <h3>Formal Statement</h3>
+        <p>We require a system where:</p>
+        <pre><code>reputation(agent) = f(all_rails)</code></pre>
+        <p>Not:</p>
+        <pre><code>reputation(agent) = f(one_rail)</code></pre>
+        <p>Observer Protocol achieves this by binding multiple rail-specific keys to a single canonical agent_id through cryptographic verification.</p>
+
+        <h2>3. Architecture</h2>
+        <h3>3.1 Identity Anchor</h3>
+        <p>The foundation of Observer Protocol is a rail-agnostic identity anchor:</p>
+        <pre><code>agent_id = SHA256(primary_pubkey)</code></pre>
+        <p>This identifier is:</p>
+        <ul>
+          <li><strong>Portable</strong>: Survives wallet changes and node restarts</li>
+          <li><strong>Deterministic</strong>: Same primary key always yields same agent_id</li>
+          <li><strong>Opaque</strong>: Reveals no information about underlying keys</li>
+          <li><strong>Universal</strong>: Applicable across all payment rails</li>
+        </ul>
+
+        <h3>3.2 Multi-Rail Credential Model</h3>
+        <p>Credentials are organized hierarchically:</p>
+        <pre><code>agent_id (canonical)
+    ├── key: lightning → LND pubkey (verified via preimage)
+    ├── key: evm/8453  → 0x address (verified via EIP-191 + tx.from)
+    └── key: solana    → pubkey (future — Ed25519 signature)</code></pre>
+        <p>The data schema:</p>
+        <pre><code>agent_keys (
+  agent_id VARCHAR,
+  key_type VARCHAR,  -- 'lightning' | 'evm' | 'solana'
+  key_value VARCHAR, -- pubkey or address
+  chain_id INTEGER,  -- NULL for Lightning
+  verified_at TIMESTAMP
+)</code></pre>
+        <p>Each credential is independently verifiable. The agent_id serves as the union key, enabling reputation aggregation across rails.</p>
+
+        <h3>3.3 Lightning / L402 Verification</h3>
+        <p>Lightning Network payments use Hash Time-Locked Contracts (HTLCs) where knowledge of the payment preimage constitutes proof of payment completion <a href="#ref4">[4]</a>.</p>
+        <p><strong>Verification mechanism:</strong></p>
+        <ol>
+          <li>Agent makes payment via L402 protocol</li>
+          <li>Server receives payment preimage</li>
+          <li>Verification: <code>SHA256(preimage) == payment_hash</code></li>
+          <li>Nonce reuse is impossible—each preimage is unique and consumed on use</li>
+        </ol>
+        <p>This is non-repudiable: the preimage cannot be fabricated or backdated. When an agent's Lightning node successfully pays an invoice, the preimage cryptographically proves control of that node.</p>
+        <p><strong>Key auto-registration:</strong> The <code>lnget-attest</code> endpoint (Lightning Labs, March 17, 2026) automatically registers the <code>node_pubkey</code> when a preimage is verified <a href="#ref4">[4]</a>. This enables passive onboarding—agents build reputation before explicit registration.</p>
+
+        <h3>3.4 EVM / x402 Verification</h3>
+        <p>For EVM-based payments (x402 protocol), we use EIP-191 signed data standard <a href="#ref5">[5]</a>. The verification flow:</p>
+        <p><strong>Step 1:</strong> Agent requests nonce<br>
+        <code>GET /agent/nonce</code> → Returns short-lived nonce (5-minute TTL, single-use)</p>
+        <p><strong>Step 2:</strong> Agent signs registration message</p>
+        <pre><code>"Register EVM key for Observer Protocol agent {agent_id} | {nonce}"</code></pre>
+        <p>Signed via EIP-191 personal_sign</p>
+        <p><strong>Step 3:</strong> Submit for verification<br>
+        <code>POST /agent/register-key</code> → Server recovers address from signature, stores verified credential</p>
+        <p><strong>Step 4:</strong> Payment verification<br>
+        When an x402 payment occurs, fetch transaction from RPC and verify <code>tx.from</code> matches the registered address.</p>
+        <p>This binds the EVM address to the agent_id through cryptographic proof of key control, not merely transaction observation.</p>
+
+        <h3>3.5 ERC-8004 On-Chain Anchor</h3>
+        <p>Observer Protocol implements ERC-8004 (Trustless Agents) for on-chain identity anchoring <a href="#ref3">[3]</a>. The standard defines three registries:</p>
+        <ol>
+          <li><strong>Identity Registry</strong> (ERC-721 with URIStorage): NFT-based agent identity with metadata</li>
+          <li><strong>Reputation Registry</strong>: Scores and transaction history</li>
+          <li><strong>Validation Registry</strong>: Staking and slashing mechanisms</li>
+        </ol>
+        <p>Contracts are deployed on Base Mainnet for production use and Celo Sepolia for testing:</p>
+        <pre><code>AgentIdentityRegistry (Celo Sepolia): 0xBA88f04f4506F6E04f8897ecE02efFa7CD978642</code></pre>
+        <p>The ERC-8004 integration provides:</p>
+        <ul>
+          <li>Immutable on-chain identity records</li>
+          <li>Composability with other agent-centric protocols</li>
+          <li>Standardized reputation queries</li>
+        </ul>
+
+        <h2>4. Trust Levels</h2>
+        <p>We define a taxonomy of trust levels that agents progress through:</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Level</th>
+              <th>Definition</th>
+              <th>Requirements</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>unverified</code></td>
+              <td>Self-declared identity</td>
+              <td>Agent claims an agent_id with no cryptographic backing</td>
+            </tr>
+            <tr>
+              <td><code>verified</code></td>
+              <td>Payment proof valid</td>
+              <td>Preimage checks out or tx is confirmed, but no registered key</td>
+            </tr>
+            <tr>
+              <td><code>cryptographic</code></td>
+              <td>Full key verification</td>
+              <td>Agent has registered key; payment proof matches registered credential on-chain</td>
+            </tr>
+          </tbody>
+        </table>
+        <p><strong>Progression example:</strong></p>
+        <ol>
+          <li>Agent <code>maxi-0001</code> makes first Lightning payment → <code>verified</code></li>
+          <li>Preimage verification triggers auto-registration of node pubkey → <code>cryptographic</code> (Lightning)</li>
+          <li>Agent registers EVM address via EIP-191 → <code>cryptographic</code> (Lightning + EVM)</li>
+          <li>Future payments on either rail automatically attribute to unified reputation</li>
+        </ol>
+        <p>This progression enables cold-start reputation bootstrapping while maintaining security guarantees at each level.</p>
+
+        <h2>5. Passive Onboarding</h2>
+        <p>A key design insight: agents can register with Observer Protocol retroactively. Every prior verified transaction counts toward reputation.</p>
+        <p>This solves the cold-start problem. Agents do not need to pre-register before transacting. They can:</p>
+        <ol>
+          <li>Begin using L402 or x402 payments normally</li>
+          <li>Later claim their agent_id</li>
+          <li>Have all historical verified transactions attributed to their unified identity</li>
+        </ol>
+        <p>The protocol maintains an append-only log of verified payments. When an agent registers and proves key control, we backfill their reputation score with all matching historical transactions.</p>
+
+        <h2>6. Implementation and Results</h2>
+        <p>Observer Protocol has been live since February 22, 2026.</p>
+        <p><strong>API Endpoint:</strong> <code>api.observerprotocol.org</code></p>
+        <p><strong>Key milestones:</strong></p>
+        <ul>
+          <li><strong>February 22, 2026</strong>: First verified agent-to-agent Lightning payment (Vicky → Maxi, 1,521 sats)</li>
+          <li><strong>March 17, 2026</strong>: First real-world lnget v1.0 payment (1 sat, preimage <code>adeea080f02fe15c</code>, SHA256 verified) <a href="#ref4">[4]</a></li>
+          <li><strong>March 17, 2026</strong>: Multi-rail unified identity live—<code>maxi-0001</code> has both Lightning pubkey and EVM address under single agent_id</li>
+        </ul>
+        <p><strong>Current statistics:</strong></p>
+        <ul>
+          <li>11 registered agents</li>
+          <li>3 fully verified agents</li>
+          <li>15+ verified transactions</li>
+        </ul>
+        <p>All transactions are verifiable on-chain or via Lightning Network explorers.</p>
+
+        <h2>7. Related Work</h2>
+        <p><strong>ERC-8004</strong>: The Trustless Agents standard provides on-chain identity infrastructure but does not specify payment rail verification mechanisms <a href="#ref3">[3]</a>. Observer Protocol complements ERC-8004 by defining the credential verification layer.</p>
+        <p><strong>DID (W3C)</strong>: Decentralized Identifiers are general-purpose and not optimized for autonomous agents. They lack native payment proof mechanisms and require heavyweight issuer infrastructure <a href="#ref7">[7]</a>.</p>
+        <p><strong>ENS</strong>: Ethereum Name Service is human-first naming. It provides no credential infrastructure and is ill-suited for machine-to-machine identity <a href="#ref8">[8]</a>.</p>
+        <p><strong>Verifiable Credentials (W3C)</strong>: VC standards enable attestations but require trusted issuers—a centralization point antithetical to permissionless agent economies <a href="#ref9">[9]</a>.</p>
+        <p><strong>Lightning reputation systems</strong>: Prior work on Lightning node reputation is rail-specific and does not enable cross-rail identity unification <a href="#ref10">[10]</a>.</p>
+        <p><strong>x402 facilitator model</strong>: The x402 protocol (Coinbase/Cloudflare, May 2025) provides payment verification but no identity layer <a href="#ref6">[6]</a>. Observer Protocol builds on x402 by adding the credential infrastructure that enables persistent agent identity.</p>
+
+        <h2>8. Future Work</h2>
+        <p><strong>Solana integration</strong>: Ed25519 key registration for Solana payments, extending the multi-rail model to a third major ecosystem.</p>
+        <p><strong>Fedimint ecash</strong>: Proof mechanisms for Fedimint ecash tokens, enabling privacy-preserving reputation for ecash-based agents.</p>
+        <p><strong>Zero-knowledge reputation</strong>: Prove reputation threshold (e.g., "100+ successful transactions") without revealing transaction history or specific amounts.</p>
+        <p><strong>Cross-agent reputation delegation</strong>: Enable agents to delegate reputation authority to other agents, supporting organizational structures and sub-agents.</p>
+        <p><strong>Mainnet ERC-8004 deployment</strong>: Currently on testnet; full mainnet deployment with economic security via staking.</p>
+
+        <h2>9. Conclusion</h2>
+        <p>We have presented Observer Protocol, the first system to cryptographically verify multi-rail agent identity into a unified credential. By anchoring identity above the transport layer using <code>agent_id = SHA256(primary_pubkey)</code>, we enable reputation to accrue to agents regardless of payment rail.</p>
+        <p>The protocol is live on mainnet with real verified transactions. It provides the credential infrastructure layer that the agentic economy requires: permissionless, cryptographically verifiable, and rail-agnostic.</p>
+        <p>Autonomous agents need money that works without asking permission. They also need identity that works across all the money they use. Observer Protocol provides that identity layer.</p>
+
+        <div class="references">
+          <h2>References</h2>
+          <ol>
+            <li id="ref1">Stripe. (2025). <em>Annual Letter — Five Levels of Agentic Commerce</em>. <a href="https://stripe.com/annual-letter" target="_blank">https://stripe.com/annual-letter</a></li>
+            <li id="ref2">Catalini, C., Hui, X., &amp; Wu, B. (2026, February 24). Some Simple Economics of AGI. <em>SSRN</em> 6298838. <a href="https://ssrn.com/abstract=6298838" target="_blank">https://ssrn.com/abstract=6298838</a></li>
+            <li id="ref3">Ethereum Improvement Proposals. (2025, August). ERC-8004: Trustless Agents. <a href="https://eips.ethereum.org/EIPS/eip-8004" target="_blank">https://eips.ethereum.org/EIPS/eip-8004</a></li>
+            <li id="ref4">Lightning Labs. (2026, March 17). lnget v1.0.0. <a href="https://github.com/lightninglabs/lnget" target="_blank">https://github.com/lightninglabs/lnget</a></li>
+            <li id="ref5">Ethereum Improvement Proposals. EIP-191: Signed Data Standard. <a href="https://eips.ethereum.org/EIPS/eip-191" target="_blank">https://eips.ethereum.org/EIPS/eip-191</a></li>
+            <li id="ref6">Coinbase &amp; Cloudflare. (2025, May). x402 Protocol. <a href="https://x402.org" target="_blank">https://x402.org</a></li>
+            <li id="ref7">W3C. (2022). Decentralized Identifiers (DIDs) v1.0. <a href="https://www.w3.org/TR/did-core/" target="_blank">https://www.w3.org/TR/did-core/</a></li>
+            <li id="ref8">Ethereum Name Service. <a href="https://ens.domains" target="_blank">https://ens.domains</a></li>
+            <li id="ref9">W3C. (2024). Verifiable Credentials Data Model 2.0. <a href="https://www.w3.org/TR/vc-data-model-2.0/" target="_blank">https://www.w3.org/TR/vc-data-model-2.0/</a></li>
+            <li id="ref10">Rohrer, J., &amp; Zabka, C. (2023). <em>Lightning Network Node Reputation Systems</em>. Lightning Conference.</li>
+          </ol>
+        </div>
+
+        <div class="paper-footer">
+          <p><strong>Submitted:</strong> March 17, 2026</p>
+          <p><strong>Contact:</strong> <a href="mailto:api@observerprotocol.org">api@observerprotocol.org</a></p>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-links">
+      <a href="https://github.com/observer-protocol" target="_blank">GitHub</a>
+      <a href="/papers/">Research</a>
+    </div>
+    <span>the trust layer for the agentic economy</span>
+  </footer>
+</body>
+</html>

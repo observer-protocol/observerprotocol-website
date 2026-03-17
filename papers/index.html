@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Research Papers — Observer Protocol</title>
+  <meta name="description" content="Technical and positioning research on multi-rail agent credential infrastructure.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0a; --bg-2: #111; --bg-card: #141414;
+      --border: #222; --orange: #f7931a;
+      --text-primary: #f0f0f0; --text-secondary: #888; --text-dim: #555;
+      --verified: #00c853;
+      --font-mono: 'IBM Plex Mono', monospace;
+      --font-sans: 'IBM Plex Sans', sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text-primary); font-family: var(--font-sans); line-height: 1.6; }
+    nav { border-bottom: 1px solid var(--border); padding: 0 2rem; height: 56px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-brand { font-family: var(--font-mono); font-size: 14px; color: var(--orange); text-decoration: none; }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 13px; font-family: var(--font-mono); transition: color 0.2s; }
+    .nav-links a:hover { color: var(--orange); }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+    .hero { padding: 4rem 0 3rem; border-bottom: 1px solid var(--border); }
+    .section-label { font-family: var(--font-mono); font-size: 11px; color: var(--orange); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1rem; }
+    h1 { font-family: var(--font-mono); font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 600; margin-bottom: 1rem; }
+    .hero-sub { color: var(--text-secondary); font-size: 15px; max-width: 600px; }
+    .papers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 1.5rem; padding: 3rem 0; }
+    .paper-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; text-decoration: none; color: inherit; display: block; transition: border-color 0.2s; }
+    .paper-card:hover { border-color: var(--orange); }
+    .paper-tag { font-family: var(--font-mono); font-size: 10px; color: var(--orange); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .paper-title { font-family: var(--font-mono); font-size: 15px; font-weight: 600; margin-bottom: 0.75rem; line-height: 1.4; }
+    .paper-authors { font-size: 12px; color: var(--text-secondary); margin-bottom: 1rem; }
+    .paper-abstract { font-size: 13px; color: var(--text-secondary); line-height: 1.7; font-family: var(--font-sans); }
+    .paper-meta { margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .paper-date { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); }
+    .paper-read { font-family: var(--font-mono); font-size: 11px; color: var(--orange); }
+    footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="nav-brand">Observer Protocol</a>
+    <div class="nav-links">
+      <a href="/demo.html">Demo</a>
+      <a href="/registry.html">Registry</a>
+      <a href="/quickstart.html">Quickstart</a>
+      <a href="/papers/" style="color: var(--orange);">Papers</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="hero">
+      <div class="section-label">Research</div>
+      <h1>Papers</h1>
+      <p class="hero-sub">Technical and positioning research on agent credential infrastructure — the trust layer for the agentic economy.</p>
+    </div>
+
+    <div class="papers-grid">
+      <a href="technical-paper.html" class="paper-card">
+        <div class="paper-tag">Technical Paper</div>
+        <div class="paper-title">Multi-Rail Agent Credential Infrastructure: A Unified Identity Protocol for Autonomous Agents</div>
+        <div class="paper-authors">Maxi (lead author) · Boyd Cohen (co-author)</div>
+        <div class="paper-abstract">We present Observer Protocol, a unified agent credential infrastructure anchoring identity above the transport layer using agent_id = SHA256(primary_pubkey). Cryptographic verification for L402 Lightning and EVM x402, with ERC-8004 on-chain anchor on Base Mainnet.</div>
+        <div class="paper-meta">
+          <span class="paper-date">March 17, 2026</span>
+          <span class="paper-read">Read paper →</span>
+        </div>
+      </a>
+
+      <a href="positioning-paper.html" class="paper-card">
+        <div class="paper-tag">Vision Paper</div>
+        <div class="paper-title">Why Every Agent Needs One Identity: The Case for Agent Credential Infrastructure</div>
+        <div class="paper-authors">Boyd Cohen, PhD (lead author) · Maxi (co-author)</div>
+        <div class="paper-abstract">The agentic economy is here but fragmented identity is its core blocker. We make the case for agent credential infrastructure — the abstraction layer above all payment rails that lets agents prove they transact under one verifiable identity, regardless of which rail they use.</div>
+        <div class="paper-meta">
+          <span class="paper-date">March 17, 2026</span>
+          <span class="paper-read">Read paper →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <a href="https://github.com/observer-protocol" target="_blank" style="color: var(--text-dim); text-decoration: none;">GitHub</a>
+    &nbsp;·&nbsp;
+    <span>the trust layer for the agentic economy</span>
+  </footer>
+</body>
+</html>
