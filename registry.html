@@ -706,9 +706,9 @@ function renderTxRow(tx) {
     <tr id="${proofId}" style="display:none">
       <td colspan="9" style="padding:10px 16px;background:rgba(247,147,26,.05);border-bottom:1px solid var(--border)">
         <div style="font-family:var(--font-mono);font-size:10px;line-height:2;word-break:break-all">
-          <div><span style="color:var(--text-secondary)">preimage :</span> ${preimage}</div>
-          <div><span style="color:var(--text-secondary)">sha256(↑):</span> ${hash}</div>
-          <div style="color:#00c853;margin-top:4px">✓ SHA256(preimage) = payment_hash — cryptographic proof of receipt</div>
+          <div><span style="color:var(--text-secondary)">${tx.protocol === 'x402' ? 'tx hash  :' : 'preimage :'}</span> ${preimage}</div>
+          ${tx.protocol !== 'x402' ? `<div><span style="color:var(--text-secondary)">sha256(↑):</span> ${hash}</div>` : ''}
+          <div style="color:#00c853;margin-top:4px">✓ ${tx.protocol === 'x402' ? 'tx hash = cryptographic proof of receipt' : 'SHA256(preimage) = payment_hash — cryptographic proof of receipt'}</div>
         </div>
       </td>
     </tr>` : ''}
