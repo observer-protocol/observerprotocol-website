@@ -590,7 +590,7 @@ function createAgentCard(agent) {
     <div class="agent-header">
       <div class="agent-id-block">
         <span class="agent-number">AGENT #${String(agent.number).padStart(4, '0')}</span>
-        <span class="agent-alias">${escapeHtml(agent.alias)}</span>
+        <span class="agent-alias">${escapeHtml(agent.alias)} <span title="${getTierLabel(agent.total_transactions||0)}" style="font-size:14px;">${getTierEmoji(agent.total_transactions||0)}</span></span>
         <span class="agent-hash">${escapeHtml(agent.hash)}</span>
       </div>
       <div class="agent-badges">
@@ -630,6 +630,21 @@ function filterAgents(type, btn) {
 
 // ── Verified Transactions ─────────────────────────────────────────────────
 const API_BASE = 'https://api.observerprotocol.org';
+
+function getTierEmoji(txCount) {
+  if (txCount >= 1000) return '💎';
+  if (txCount >= 100)  return '🥇';
+  if (txCount >= 10)   return '🥈';
+  if (txCount >= 1)    return '🥉';
+  return '';
+}
+function getTierLabel(txCount) {
+  if (txCount >= 1000) return 'Platinum';
+  if (txCount >= 100)  return 'Gold';
+  if (txCount >= 10)   return 'Silver';
+  if (txCount >= 1)    return 'Bronze';
+  return '';
+}
 let txOffset = 0;
 const TX_PAGE = 50;
 

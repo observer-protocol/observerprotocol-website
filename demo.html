@@ -664,6 +664,21 @@
 <script>
 const API_BASE = 'https://api.observerprotocol.org';
 
+function getTierEmoji(txCount) {
+  if (txCount >= 1000) return '💎';
+  if (txCount >= 100)  return '🥇';
+  if (txCount >= 10)   return '🥈';
+  if (txCount >= 1)    return '🥉';
+  return '';
+}
+function getTierLabel(txCount) {
+  if (txCount >= 1000) return 'Platinum';
+  if (txCount >= 100)  return 'Gold';
+  if (txCount >= 10)   return 'Silver';
+  if (txCount >= 1)    return 'Bronze';
+  return '';
+}
+
 // Track seen transaction IDs to detect new items
 let seenTxIds = new Set();
 let feedData = [];
@@ -721,7 +736,9 @@ function renderFeed(items) {
     const txDisplay = txHash.length > 16 ? `${txHash.slice(0,8)}…${txHash.slice(-8)}` : (txHash || '—');
     const agentId = event.agent_id || '';
     const isVerified = event.verified;
-    const agentLink = agentId ? `<a href="agent.html?id=${agentId}" style="color: var(--orange); text-decoration: none;">${agentId}</a>` : '—';
+    const agentTxCount = agentTxCache[agentId] || 0;
+    const tierEmoji = agentId ? getTierEmoji(agentTxCount) : '';
+    const agentLink = agentId ? `<a href="agent.html?id=${agentId}" style="color: var(--orange); text-decoration: none;">${agentId}</a>${tierEmoji ? ` <span title="${getTierLabel(agentTxCount)}" style="font-size:13px;">${tierEmoji}</span>` : ''}` : '—';
     const verifiedIcon = isVerified ? '<span style="color: #00c853; margin-left: 4px;">✓</span>' : '';
     const dirIcon = event.direction === 'inbound' ? '↓' : '↑';
     const preimage = event.preimage || '';
@@ -809,6 +826,17 @@ async function fetchTrends() {
   }
 }
 
+// Agent tx count cache for tier badge display
+let agentTxCache = {};
+async function warmAgentCache() {
+  try {
+    const res = await fetch(`${API_BASE}/observer/agents`);
+    const data = await res.json();
+    const agents = data.agents || [];
+    agents.forEach(a => { agentTxCache[a.agent_id] = a.total_transactions || 0; });
+  } catch(e) { /* silent — tier badges just won't show */ }
+}
+
 // Fetch and display feed — always shows last 5 transactions regardless of age
 async function fetchFeed() {
   try {
@@ -874,7 +902,7 @@ async function _fetchRegistry_unused() {
             <div class="agent-cell">
               ${isMaxi ? `<img src="${badgeUrl}" alt="${agent.agent_id}" class="agent-badge">` : '<div style="width:24px;"></div>'}
               <div>
-                <div class="agent-name">${agent.alias || agent.agent_id}</div>
+                <div class="agent-name">${agent.alias || agent.agent_id} <span title="${getTierLabel(txns)}" style="font-size:13px;">${getTierEmoji(txns)}</span></div>
                 <div class="agent-id">${agent.agent_id}</div>
               </div>
             </div>
@@ -1034,7 +1062,7 @@ function highlightSection(id) {
 
 function init() {
   fetchTrends();
-  fetchFeed();
+  warmAgentCache().then(() => fetchFeed());
 
   // Safety net: if feed still shows "Loading" after 5s, retry once
   setTimeout(() => {
