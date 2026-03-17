@@ -711,9 +711,9 @@ function renderFeed(items) {
   const eventKey = e => e.event_id || e.created_at || '';
   container.innerHTML = filtered.map(event => {
     const isNew = !feedData.find(e => eventKey(e) === eventKey(event));
-    const protocolClass = ['x402','l402'].includes((event.protocol||'').toLowerCase()) ? 'x402' : 'lightning';
-    const protocolIcon = protocolClass === 'x402' ? '◈' : '⚡';
-    const protocolName = protocolClass === 'x402' ? 'x402' : 'Lightning';
+    const proto = (event.protocol||'').toLowerCase(); const protocolClass = proto === 'x402' ? 'x402' : proto === 'l402' ? 'l402' : 'lightning';
+    const protocolIcon = protocolClass === 'x402' ? '◈' : protocolClass === 'l402' ? '⚡' : '⚡';
+    const protocolName = protocolClass === 'x402' ? 'x402' : protocolClass === 'l402' ? 'L402' : 'Lightning';
     const verified = event.verified ? '✓' : '○';
     const verifiedColor = event.verified ? 'color:var(--verified);' : 'color:var(--text-dim);';
     const ts = event.created_at || event.timestamp || '';
@@ -929,8 +929,8 @@ function renderTxRow(tx) {
     : '<span style="color:var(--text-dim)">○</span>';
   const dirIcon = tx.direction === 'inbound' ? '↓' : '↑';
   const dirColor = tx.direction === 'inbound' ? 'color:var(--verified)' : 'color:var(--orange)';
-  const proto = tx.protocol === 'x402' ? '◈ x402' : '⚡ Lightning';
-  const protoClass = tx.protocol === 'x402' ? 'x402' : 'lightning';
+  const txProto = (tx.protocol||'').toLowerCase(); const proto = txProto === 'x402' ? '◈ x402' : txProto === 'l402' ? '⚡ L402' : '⚡ Lightning';
+  const protoClass = txProto === 'x402' ? 'x402' : txProto === 'l402' ? 'l402' : 'lightning';
   const proofId = `txproof-${tx.event_id}`;
   const preimage = tx.preimage || '';
 
