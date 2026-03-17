@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Observer Protocol — Live Demo</title>
-  <meta name="description" content="Live verification demo. Lightning transactions and WDK agent wallets — cryptographically verified in real time.">
+  <meta name="description" content="The trust layer for the agentic economy. Every transaction verified. Every agent accountable. See it live.">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="shared-styles.css">
   <style>
@@ -307,7 +307,7 @@
     <div class="hero-eyebrow fade-up">Live Demo</div>
     <h1 class="fade-up fade-up-1">Don't Trust, Verify</h1>
     <p class="hero-sub fade-up fade-up-2">
-      Cryptographic proof that an agent's payment claims are real. See it live — Lightning transactions and WDK agent wallets, verified in real time.
+      The trust layer for the agentic economy. Every transaction verified. Every agent accountable. See it live.
     </p>
   </div>
 
@@ -319,7 +319,7 @@
           <span>⚡</span> Lightning Demo
         </a>
         <a href="#wdk-integration" onclick="highlightSection('wdk-integration')" style="background: var(--bg-2); border: 1px solid var(--border); border-radius: 9999px; padding: 0.75rem 1.5rem; color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;" onmouseover="this.style.borderColor='var(--orange)'; this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'">
-          <span>💼</span> WDK Agent Wallets
+          <span>👤</span> Agent Profiles
         </a>
         <a href="#x402-demo" onclick="highlightSection('x402-demo')" style="background: var(--bg-2); border: 1px solid var(--border); border-radius: 9999px; padding: 0.75rem 1.5rem; color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;" onmouseover="this.style.borderColor='var(--orange)'; this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'">
           <span>◈</span> x402 Demo <span style="font-size:10px;background:var(--verified);color:#000;border-radius:4px;padding:1px 6px;margin-left:4px;">LIVE</span>
@@ -719,7 +719,10 @@ function renderFeed(items) {
     const ts = event.created_at || event.timestamp || '';
     const txHash = event.transaction_hash || '';
     const txDisplay = txHash.length > 16 ? `${txHash.slice(0,8)}…${txHash.slice(-8)}` : (txHash || '—');
-    const agentLabel = event.agent_id || '—';
+    const agentId = event.agent_id || '';
+    const isVerified = event.verified;
+    const agentLink = agentId ? `<a href="agent.html?id=${agentId}" style="color: var(--orange); text-decoration: none;">${agentId}</a>` : '—';
+    const verifiedIcon = isVerified ? '<span style="color: #00c853; margin-left: 4px;">✓</span>' : '';
     const dirIcon = event.direction === 'inbound' ? '↓' : '↑';
     const preimage = event.preimage || '';
     const proofId = `proof-${event.event_id}`;
@@ -743,7 +746,7 @@ function renderFeed(items) {
         <div class="feed-protocol ${protocolClass}"><span>${protocolIcon}</span><span>${protocolName}</span></div>
         ${lngetBadge}
         <div class="feed-tx" title="${txHash}" style="font-family:monospace;font-size:11px;color:var(--text-dim);">${txDisplay}</div>
-        <div style="font-size:11px;color:var(--text-dim);min-width:80px;">${lngetDomain || agentLabel} ${dirIcon}</div>
+        <div style="font-size:11px;color:var(--text-dim);min-width:80px;">${lngetDomain || agentLink}${verifiedIcon} ${dirIcon}</div>
         <div class="feed-amount" style="font-family:var(--font-mono);color:var(--orange);">${amountStr}</div>
         <div class="feed-status" style="${verifiedColor}">${verified}</div>
         <div class="feed-time">${timeAgo(ts)}</div>
