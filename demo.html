@@ -296,7 +296,7 @@
     <li><a href="demo.html" class="active">Demo</a></li>
     <li><a href="sdk.html">SDK</a></li>
     <li><a href="api.html">API</a></li>
-    <li><a href="quickstart-lightning.html">⚡ Quickstart</a></li>
+    <li class="nav-dropdown"><a href="quickstart-lightning.html" style="display:inline-flex;align-items:center;gap:4px;">⚡ Quickstart <span style="font-size:9px;opacity:0.6;">▾</span></a><ul class="nav-dropdown-menu"><li><a href="quickstart-lightning.html">⚡ Lightning Wallet</a></li><li><a href="quickstart-x402.html">◈ x402 / L402</a></li></ul></li>
   </ul>
 </nav>
 
@@ -364,153 +364,48 @@
 
   <hr class="divider">
 
-  <!-- SECTION 4: WDK INTEGRATION -->
-  <section id="wdk-integration">
+  <!-- SECTION 4: QUICKSTART CARDS -->
+  <section id="quickstart">
     <div class="container">
-      <div class="section-label">WDK Integration</div>
-      <h2>Agent Wallets via Tether WDK</h2>
-      <p style="color:var(--text-secondary); margin-bottom: 2rem;">
-        Observer Protocol integrates with <a href="https://wdk.tether.io" target="_blank" style="color:var(--orange);">Tether's Wallet Development Kit</a>
-        to give AI agents self-custodial Bitcoin and EVM wallets — with cryptographic identity baked in.
-        Every agent gets BOTH a verified identity (Observer Protocol) AND a verified wallet (WDK).
+      <div class="section-label">Get Started</div>
+      <h2>Add Your Agent in 30 Minutes</h2>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:2rem;font-family:var(--font-sans);">
+        Choose your path. Both give your agent a cryptographically verified identity on Observer Protocol.
       </p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;">
 
-      <div class="code-block">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-          <span style="font-size:12px;color:var(--text-secondary);">Quick Start — WDK + Observer Protocol</span>
-          <button class="btn btn-outline" style="font-size:11px;padding:0.3rem 0.75rem;" onclick="copyCode('wdk-code')">Copy</button>
-        </div>
-        <div id="wdk-code" style="font-size:12px;line-height:1.8;">
-<span class="comment">// 1. Create agent wallet via WDK</span>
-<span style="color:#60a5fa;">import</span> { createAgentWallet } <span style="color:#60a5fa;">from</span> <span style="color:#86efac;">'wdk-observer-protocol'</span>
+        <!-- Lightning card -->
+        <a href="quickstart-lightning.html" style="text-decoration:none;display:block;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:1.75rem;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="font-size:2rem;margin-bottom:1rem;">⚡</div>
+          <div style="font-size:11px;color:var(--orange);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem;">Lightning Quickstart</div>
+          <h3 style="font-size:16px;color:var(--text-primary);margin-bottom:0.75rem;font-weight:600;">Your Agent Needs Money. And an Identity.</h3>
+          <p style="font-size:12px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1.25rem;line-height:1.7;">
+            Deploy a self-custodial Lightning wallet via MDK-Cloudflare and register to Observer Protocol. No server required.
+          </p>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+            <span style="font-size:10px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:2px 10px;color:var(--text-secondary);">MDK-Cloudflare</span>
+            <span style="font-size:10px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:2px 10px;color:var(--text-secondary);">~30 min</span>
+            <span style="font-size:10px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:2px 10px;color:var(--text-secondary);">No server</span>
+          </div>
+          <span style="font-size:13px;color:var(--orange);font-weight:500;">Read the guide →</span>
+        </a>
 
-<span style="color:#60a5fa;">const</span> wallet = <span style="color:#60a5fa;">await</span> createAgentWallet()
-<span style="color:#60a5fa;">const</span> btcAddress = <span style="color:#60a5fa;">await</span> wallet.getBitcoinAddress()
-<span style="color:#60a5fa;">const</span> evmAddress = <span style="color:#60a5fa;">await</span> wallet.getEVMAddress()
+        <!-- x402 card -->
+        <a href="quickstart-x402.html" style="text-decoration:none;display:block;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:1.75rem;transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="font-size:2rem;margin-bottom:1rem;">◈</div>
+          <div style="font-size:11px;color:var(--orange);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem;">x402 / L402 Quickstart</div>
+          <h3 style="font-size:16px;color:var(--text-primary);margin-bottom:0.75rem;font-weight:600;">HTTP-Native Machine Payments</h3>
+          <p style="font-size:12px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1.25rem;line-height:1.7;">
+            Make your agent pay for data over HTTP/402 and attest every transaction to Observer Protocol. Any Lightning wallet works.
+          </p>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem;">
+            <span style="font-size:10px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:2px 10px;color:var(--text-secondary);">x402 + L402</span>
+            <span style="font-size:10px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:2px 10px;color:var(--text-secondary);">~20 min</span>
+            <span style="font-size:10px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:2px 10px;color:var(--text-secondary);">Live demo included</span>
+          </div>
+          <span style="font-size:13px;color:var(--orange);font-weight:500;">Read the guide →</span>
+        </a>
 
-<span class="comment">// 2. Register with Observer Protocol (identity + wallet together)</span>
-<span style="color:#60a5fa;">const</span> agent = <span style="color:#60a5fa;">await</span> wallet.register({
-  alias: <span style="color:#86efac;">'my-agent-001'</span>,
-  btcAddress,
-  evmAddress
-})
-
-<span class="comment">// 3. Send verified payment — both parties verified before funds move</span>
-<span style="color:#60a5fa;">await</span> wallet.verifiedSend({
-  recipientAlias: <span style="color:#86efac;">'maxi-0001'</span>,
-  amount: <span style="color:#86efac;">'0.001'</span>,
-  chain: <span style="color:#86efac;">'bitcoin'</span>
-})
-
-<span class="comment">// Result: Trust-bound payment — identity is inseparable from the transaction</span>
-        </div>
-      </div>
-
-      <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-        <a href="https://github.com/observer-protocol/wdk-observer-protocol" target="_blank" class="btn btn-primary">View WDK Repo</a>
-        <a href="https://wdk.tether.io" target="_blank" class="btn btn-outline">Tether WDK Docs</a>
-      </div>
-    </div>
-  </section>
-
-  <hr class="divider">
-
-  <!-- SECTION 5: GET VERIFIED CTA -->
-  <section>
-    <div class="container">
-      <div class="section-label">Integration</div>
-      <h2>Get Verified in 60 Seconds</h2>
-      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:1.5rem;font-family:var(--font-sans);">
-        Any L402-enabled agent can join the registry. No approval required. Just cryptographic proof.
-      </p>
-
-      <!-- Quick Test with curl -->
-      <h3 style="font-size:14px;color:var(--text-primary);margin:1.5rem 0 0.75rem;font-weight:600;">Quick Test (curl)</h3>
-      <div class="curl-block" onclick="copyCurl(this)">
-        <div class="copy-toast" id="copy-toast">Copied!</div>
-        <code>
-          <span class="comment"># Register your agent</span><br>
-          <span class="cmd">curl</span> <span class="arg">-X POST</span> <span class="arg">https://api.observerprotocol.org/observer/agents/register</span> \\<br>
-          &nbsp;&nbsp;<span class="arg">-H</span> <span class="str">"Content-Type: application/json"</span> \\<br>
-          &nbsp;&nbsp;<span class="arg">-d</span> <span class="str">'{"agent_id": "your-agent", "public_key": "02..."}'</span>
-        </code>
-      </div>
-
-      <!-- Python SDK -->
-      <h3 style="font-size:14px;color:var(--text-primary);margin:1.5rem 0 0.75rem;font-weight:600;">Python SDK</h3>
-      <p style="font-size:12px;color:var(--text-secondary);margin-bottom:0.75rem;font-family:var(--font-sans);">
-        Drop-in Python SDK for easy integration. Handles registration, signing, and submission.
-      </p>
-      
-      <!-- Collapsed State -->
-      <div id="sdk-collapsed" style="background:var(--bg-2);border:1px solid var(--border);border-radius:4px;padding:1.25rem;">
-        <p style="font-size:12px;color:var(--text-secondary);margin:0 0 1rem 0;font-family:var(--font-sans);">
-          Drop-in SDK for agents with Lightning nodes. Handles registration, signing, and submission.
-        </p>
-        <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
-          <button onclick="toggleSdkCode()" class="btn btn-outline" style="font-size:12px;display:inline-flex;align-items:center;gap:0.5rem;">
-            <span id="sdk-toggle-icon">▼</span> Show full implementation
-          </button>
-          <a href="observer-protocol-sdk.py" download class="btn btn-outline" style="font-size:12px;">📥 Download SDK</a>
-          <span style="font-size:11px;color:var(--text-dim);">Requires: <code style="background:var(--bg-card);padding:2px 6px;border-radius:3px;">pip install cryptography requests</code></span>
-        </div>
-      </div>
-      
-      <!-- Expanded State -->
-      <div id="sdk-expanded" style="display:none;">
-        <div class="curl-block" onclick="copyCurl(this)" style="margin-top:0;">
-          <div class="copy-toast" id="copy-toast-sdk">Copied!</div>
-          <code>
-            <span class="comment"># 1. Download the SDK</span><br>
-            <span class="cmd">wget</span> <span class="arg">https://observerprotocol.org/observer-protocol-sdk.py</span><br><br>
-            <span class="comment"># 2. Complete working implementation</span><br>
-            <span class="cmd">from</span> observer_protocol_sdk <span class="cmd">import</span> ObserverProtocolSDK<br><br>
-            <span class="comment"># Initialize SDK with your agent credentials</span><br>
-            <span class="comment"># agent_id: Your unique agent identifier (e.g., "my-agent-001")</span><br>
-            <span class="comment"># private_key: Your secp256k1 private key (32 bytes, hex-encoded)</span><br>
-            sdk = ObserverProtocolSDK(<br>
-            &nbsp;&nbsp;agent_id=<span class="str">"my-agent-001"</span>,<br>
-            &nbsp;&nbsp;private_key=<span class="str">"a1b2c3d4e5f6..."</span>&nbsp;&nbsp;<span class="comment"># Your secp256k1 private key (64 hex chars)</span><br>
-            )<br><br>
-            <span class="comment"># Register your agent with the Observer Protocol</span><br>
-            <span class="comment"># This creates your public key record on-chain</span><br>
-            sdk.register_agent(<br>
-            &nbsp;&nbsp;alias=<span class="str">"My Lightning Agent"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Human-readable name</span><br>
-            &nbsp;&nbsp;description=<span class="str">"Agent for processing Lightning payments"</span>,<br>
-            &nbsp;&nbsp;preferred_rail=<span class="str">"L402"</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Payment rail: "L402" or "x402"</span><br>
-            )<br><br>
-            <span class="comment"># Submit a verified transaction</span><br>
-            <span class="comment"># Required: payment_hash and preimage from a SETTLED Lightning invoice</span><br>
-            sdk.submit_transaction(<br>
-            &nbsp;&nbsp;transaction_hash=<span class="str">"a1b2c3d4e5f6..."</span>,&nbsp;&nbsp;<span class="comment"># payment_hash from your Lightning invoice (64 hex chars)</span><br>
-            &nbsp;&nbsp;amount_sats=<span class="arg">1000</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Amount in satoshis</span><br>
-            &nbsp;&nbsp;direction=<span class="str">"inbound"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># "inbound" (received) or "outbound" (sent)</span><br>
-            &nbsp;&nbsp;protocol=<span class="str">"lightning"</span>,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># Protocol: "lightning" or "x402"</span><br>
-            &nbsp;&nbsp;preimage=<span class="str">"f1e2d3c4b5a6..."</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment"># preimage that hashes to payment_hash (64 hex chars)</span><br>
-            )<br><br>
-            <span class="comment"># Where to get these values from your Lightning node:</span><br>
-            <span class="comment"># - payment_hash: invoice.r_hash (LND) or payment_hash from invoice</span><br>
-            <span class="comment"># - preimage: invoice.r_preimage (LND) after payment settles</span><br>
-            <span class="comment"># - private_key: Generate with: openssl ecparam -name secp256k1 -genkey -noout</span>
-          </code>
-        </div>
-        <button onclick="toggleSdkCode()" class="btn btn-outline" style="font-size:12px;margin-top:0.75rem;display:inline-flex;align-items:center;gap:0.5rem;">
-          <span>▲</span> Hide implementation
-        </button>
-      </div>
-
-      <!-- Node.js SDK -->
-      <h3 style="font-size:14px;color:var(--text-primary);margin:1.5rem 0 0.75rem;font-weight:600;">Node.js SDK</h3>
-      <div class="curl-block">
-        <code>
-          <span class="cmd">npm install</span> <span class="arg">@observerprotocol/sdk</span>  <span class="comment"># Coming soon!</span>
-        </code>
-      </div>
-
-      <div style="margin-top:1.5rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
-        <a href="api.html" class="btn btn-primary">API Documentation →</a>
-        <a href="sdk.html" class="btn btn-outline">SDK Guide</a>
-        <a href="https://github.com/observer-protocol" class="btn btn-outline" target="_blank">GitHub</a>
       </div>
     </div>
   </section>
