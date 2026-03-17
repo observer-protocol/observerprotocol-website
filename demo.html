@@ -693,8 +693,8 @@ function setFilter(f) {
 function renderFeed(items) {
   // Apply filter
   let filtered = items;
-  if (activeFilter === 'lightning') filtered = items.filter(e => (e.protocol || '').toLowerCase() === 'lightning');
-  else if (activeFilter === 'x402') filtered = items.filter(e => ['x402','l402'].includes((e.protocol || '').toLowerCase()));
+  if (activeFilter === 'lightning') filtered = items.filter(e => ['lightning','l402'].includes((e.protocol || '').toLowerCase()));
+  else if (activeFilter === 'x402') filtered = items.filter(e => (e.protocol || '').toLowerCase() === 'x402');
   else if (activeFilter === 'verified') filtered = items.filter(e => e.verified);
 
   const countEl = document.getElementById('feed-count');
