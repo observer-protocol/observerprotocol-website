@@ -314,11 +314,14 @@
   <section style="padding: 0 0 2rem 0; margin-top: -2rem;">
     <div class="container">
       <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-        <a href="#lightning-demo" style="background: var(--bg-2); border: 1px solid var(--border); border-radius: 9999px; padding: 0.75rem 1.5rem; color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;" onmouseover="this.style.borderColor='var(--orange)'; this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'">
+        <a href="#lightning-demo" onclick="highlightSection('lightning-demo')" style="background: var(--bg-2); border: 1px solid var(--border); border-radius: 9999px; padding: 0.75rem 1.5rem; color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;" onmouseover="this.style.borderColor='var(--orange)'; this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'">
           <span>⚡</span> Lightning Demo
         </a>
-        <a href="#wdk-integration" style="background: var(--bg-2); border: 1px solid var(--border); border-radius: 9999px; padding: 0.75rem 1.5rem; color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;" onmouseover="this.style.borderColor='var(--orange)'; this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'">
+        <a href="#wdk-integration" onclick="highlightSection('wdk-integration')" style="background: var(--bg-2); border: 1px solid var(--border); border-radius: 9999px; padding: 0.75rem 1.5rem; color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;" onmouseover="this.style.borderColor='var(--orange)'; this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'">
           <span>💼</span> WDK Agent Wallets
+        </a>
+        <a href="#x402-demo" onclick="highlightSection('x402-demo')" style="background: var(--bg-2); border: 1px solid var(--border); border-radius: 9999px; padding: 0.75rem 1.5rem; color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; display: inline-flex; align-items: center; gap: 0.5rem;" onmouseover="this.style.borderColor='var(--orange)'; this.style.color='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'; this.style.color='var(--text-secondary)'">
+          <span>◈</span> x402 Demo <span style="font-size:10px;background:var(--orange);color:#000;border-radius:4px;padding:1px 6px;margin-left:4px;">SOON</span>
         </a>
       </div>
     </div>
@@ -497,6 +500,28 @@
         <a href="api.html" class="btn btn-primary">API Documentation →</a>
         <a href="sdk.html" class="btn btn-outline">SDK Guide</a>
         <a href="https://github.com/observer-protocol" class="btn btn-outline" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- SECTION: x402 DEMO (COMING SOON) -->
+  <section id="x402-demo">
+    <div class="container">
+      <div class="section-label">Coming Soon</div>
+      <h2>x402 Live Demo</h2>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:1.5rem;font-family:var(--font-sans);">
+        x402 is HTTP-native machine money — a server returns <code style="background:var(--bg-card);padding:2px 6px;border-radius:3px;color:var(--orange);">402 Payment Required</code>, the agent pays sats, retries with proof, gets the response. No wallets, no accounts, no approval. Just HTTP + Bitcoin.
+      </p>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:2rem;text-align:center;">
+        <div style="font-size:2rem;margin-bottom:1rem;">◈</div>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin:0 0 1.5rem;">
+          Live x402-gated endpoint coming soon. Any agent with a Lightning wallet will be able to query <code style="color:var(--orange);">api.observerprotocol.org/observer/ask</code> — pay 1 sat, get a verified agent lookup in return.
+        </p>
+        <div style="display:inline-flex;align-items:center;gap:0.5rem;background:var(--bg-2);border:1px solid var(--border);border-radius:4px;padding:0.75rem 1.5rem;font-size:12px;color:var(--text-dim);font-family:monospace;">
+          GET /observer/ask → 402 → pay 1 sat → 200 OK + verified agent data
+        </div>
       </div>
     </div>
   </section>
@@ -860,6 +885,21 @@ function loadMoreTx() {
 }
 
 // Initialize and set up polling
+function highlightSection(id) {
+  setTimeout(() => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.style.transition = 'outline 0s';
+    el.style.outline = '2px solid var(--orange)';
+    el.style.borderRadius = '4px';
+    setTimeout(() => {
+      el.style.transition = 'outline 1.5s ease';
+      el.style.outline = '2px solid transparent';
+      setTimeout(() => { el.style.outline = ''; el.style.borderRadius = ''; }, 1600);
+    }, 600);
+  }, 100);
+}
+
 function init() {
   fetchTrends();
   fetchFeed();
