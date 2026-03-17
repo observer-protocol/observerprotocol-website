@@ -594,16 +594,16 @@ async function fetchTrends() {
   }
 }
 
-// Fetch and display feed — uses /observer/transactions for full detail
+// Fetch and display feed — always shows last 5 transactions regardless of age
 async function fetchFeed() {
   try {
-    const res = await fetch(`${API_BASE}/observer/transactions?limit=20`);
+    const res = await fetch(`${API_BASE}/observer/transactions?limit=5`);
     const data = await res.json();
     const items = data.transactions || data.events || [];
     
     if (items.length === 0) {
       document.getElementById('feed-container').innerHTML = 
-        '<div class="feed-item" style="color:var(--text-dim);font-style:italic;">Feed live — no new transactions recently. Send a sat to trigger one ⚡</div>';
+        '<div class="feed-item" style="color:var(--text-dim);font-style:italic;">No transactions yet. Send a sat to be first ⚡</div>';
       return;
     }
     
@@ -613,8 +613,9 @@ async function fetchFeed() {
     items.forEach(e => seenTxIds.add(eventKey(e)));
     
     const container = document.getElementById('feed-container');
+    // Always re-render all items — never suppress based on newness
     container.innerHTML = items.map(event => {
-      const isNew = !feedData.find(e => eventKey(e) === eventKey(event));
+      const isNew = hasNewItems && !feedData.find(e => eventKey(e) === eventKey(event));
       const protocolClass = event.protocol === 'x402' ? 'x402' : 'lightning';
       const protocolIcon = event.protocol === 'x402' ? '◈' : '⚡';
       const protocolName = event.protocol === 'x402' ? 'x402' : 'Lightning';
