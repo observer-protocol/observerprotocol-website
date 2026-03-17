@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>lnget + Observer Protocol Quickstart</title>
+  <meta name="description" content="Already using lnget? Sync your L402 payment history to Observer Protocol in 5 minutes.">
+  <link rel="stylesheet" href="shared-styles.css">
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="architecture.html">Architecture</a></li>
+    <li><a href="spec.html">Spec</a></li>
+    <li><a href="registry.html">Registry</a></li>
+    <li><a href="demo.html">Demo</a></li>
+    <li><a href="sdk.html">SDK</a></li>
+    <li><a href="api.html">API</a></li>
+    <li><a href="quickstart.html" class="active">Quickstart</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+  <section style="padding:3rem 0 1rem;">
+    <div class="container">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+        <a href="quickstart.html" style="font-size:12px;color:var(--text-dim);text-decoration:none;">← Quickstart</a>
+      </div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <span style="font-size:11px;background:var(--orange);color:#000;border-radius:9999px;padding:3px 12px;font-weight:600;">🔗 lnget</span>
+        <span style="font-size:11px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:3px 12px;color:var(--text-secondary);">~5 minutes</span>
+        <span style="font-size:11px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:3px 12px;color:var(--text-secondary);">Retroactive</span>
+      </div>
+      <h1 style="font-size:clamp(1.6rem,4vw,2.4rem);font-weight:600;margin-bottom:1rem;">Claim Your L402 Payment History</h1>
+      <p style="font-size:13px;color:var(--text-secondary);max-width:600px;font-family:var(--font-sans);line-height:1.8;margin-bottom:0.75rem;">
+        Already using <a href="https://github.com/lightninglabs/lnget" target="_blank" style="color:var(--orange);">lnget</a> from Lightning Labs? Every L402 payment you've made is sitting in <code style="background:var(--bg-card);padding:2px 6px;border-radius:3px;font-size:12px;">~/.lnget/events.db</code> — cryptographically verifiable, waiting to become your agent's reputation.
+      </p>
+      <p style="font-size:13px;color:var(--text-secondary);max-width:600px;font-family:var(--font-sans);line-height:1.8;">
+        <strong style="color:var(--text-primary);">lnget-observer</strong> syncs that history to Observer Protocol. Register once, claim everything.
+      </p>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section style="padding:1.5rem 0;">
+    <div class="container">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;max-width:700px;">
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">📂</div>
+          <div style="font-size:11px;color:var(--text-dim);font-family:var(--font-sans);">lnget stores every payment in <code style="font-size:10px;">events.db</code></div>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">✓</div>
+          <div style="font-size:11px;color:var(--text-dim);font-family:var(--font-sans);">SHA256(preimage) = payment_hash — trustless proof</div>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">🔗</div>
+          <div style="font-size:11px;color:var(--text-dim);font-family:var(--font-sans);">Posted to Observer Protocol as verified reputation</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- STEP 1 -->
+  <section style="padding:2rem 0 1rem;">
+    <div class="container">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--orange);color:#000;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">1</div>
+        <h2 style="font-size:18px;font-weight:600;">Install lnget-observer</h2>
+      </div>
+      <div class="code-block" style="max-width:700px;">
+        <div style="font-size:12px;line-height:1.9;">
+<span style="color:#8a8a8a;"># Clone and install</span>
+<span style="color:#60a5fa;">git clone</span> <span style="color:#86efac;">https://github.com/observer-protocol/lnget-observer</span>
+<span style="color:#60a5fa;">cd</span> lnget-observer
+<span style="color:#60a5fa;">npm install</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section style="padding:1.5rem 0 1rem;">
+    <div class="container">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--orange);color:#000;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">2</div>
+        <h2 style="font-size:18px;font-weight:600;">Sync your payment history</h2>
+      </div>
+      <div class="code-block" style="max-width:700px;">
+        <div style="font-size:12px;line-height:1.9;">
+<span style="color:#8a8a8a;"># Dry run first — see what will be synced</span>
+<span style="color:#60a5fa;">node</span> lnget-observer.mjs <span style="color:#86efac;">--dry-run</span>
+
+<span style="color:#8a8a8a;"># Sync with your agent ID</span>
+<span style="color:#60a5fa;">node</span> lnget-observer.mjs <span style="color:#86efac;">--agent-id</span> your-agent-001
+
+<span style="color:#8a8a8a;"># Watch mode — auto-sync new payments as they arrive</span>
+<span style="color:#60a5fa;">node</span> lnget-observer.mjs <span style="color:#86efac;">--agent-id</span> your-agent-001 <span style="color:#86efac;">--watch</span>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--text-secondary);margin-top:0.75rem;font-family:var(--font-sans);">
+        Default DB path: <code style="background:var(--bg-card);padding:2px 6px;border-radius:3px;font-size:11px;">~/.lnget/events.db</code> · Override: <code style="background:var(--bg-card);padding:2px 6px;border-radius:3px;font-size:11px;">--db /path/to/events.db</code>
+      </p>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section style="padding:1.5rem 0 1rem;">
+    <div class="container">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--orange);color:#000;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">3</div>
+        <h2 style="font-size:18px;font-weight:600;">Verify your agent is live</h2>
+      </div>
+      <div class="code-block" style="max-width:700px;">
+        <div style="font-size:12px;line-height:1.9;">
+<span style="color:#60a5fa;">curl</span> https://api.observerprotocol.org/observer/agents/your-agent-001
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--text-secondary);margin-top:0.75rem;font-family:var(--font-sans);">
+        Or browse the live registry: <a href="registry.html" style="color:var(--orange);">observerprotocol.org/registry</a>
+      </p>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- API: DIRECT ATTESTATION -->
+  <section style="padding:2rem 0;">
+    <div class="container">
+      <div class="section-label">Direct API</div>
+      <h2 style="font-size:18px;font-weight:600;margin-bottom:0.75rem;">Attest any L402 payment directly</h2>
+      <p style="font-size:12px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1.25rem;">
+        Don't need the CLI? Post directly to the <code style="background:var(--bg-card);padding:2px 6px;border-radius:3px;">/observer/lnget-attest</code> endpoint. No signature required — the preimage is the proof.
+      </p>
+      <div class="curl-block" style="max-width:700px;" onclick="copyCurl(this)">
+        <div class="copy-toast">Copied!</div>
+        <code>
+<span class="cmd">curl</span> <span class="arg">-X POST</span> https://api.observerprotocol.org/observer/lnget-attest \<br>
+&nbsp;&nbsp;<span class="arg">-H</span> <span class="str">"Content-Type: application/json"</span> \<br>
+&nbsp;&nbsp;<span class="arg">-d</span> <span class="str">'{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"payment_hash": "&lt;hex&gt;",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"preimage": "&lt;hex&gt;",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"domain": "api.example.com",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"amount_sats": 100,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"agent_id": "your-agent-001",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;"source": "lnget"<br>
+&nbsp;&nbsp;}'</span>
+        </code>
+      </div>
+      <p style="font-size:11px;color:var(--text-dim);margin-top:0.75rem;font-family:var(--font-sans);">Returns <code style="font-size:10px;">{"verified": true, "event_id": "..."}</code> if SHA256(preimage) = payment_hash. Returns 400 if verification fails.</p>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="padding:2rem 0 4rem;">
+    <div class="container">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:2rem;max-width:600px;">
+        <h3 style="font-size:16px;font-weight:600;margin-bottom:0.75rem;">Your agent's reputation is already built.</h3>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1.5rem;line-height:1.7;">
+          Every L402 payment in your lnget database is cryptographically provable. lnget-observer makes it public, portable, and verifiable by anyone.
+        </p>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <a href="registry.html" class="btn btn-primary">View Registry →</a>
+          <a href="https://github.com/observer-protocol/lnget-observer" target="_blank" class="btn btn-outline">GitHub</a>
+          <a href="quickstart.html" class="btn btn-outline">← All Quickstarts</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Observer Protocol</div>
+        <p style="font-size:12px;color:var(--text-dim);margin-top:0.5rem;font-family:var(--font-sans);">The trust layer for the agentic economy.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+<script>
+function copyCurl(el) {
+  const toast = el.querySelector('.copy-toast');
+  navigator.clipboard?.writeText(el.querySelector('code').innerText).then(() => {
+    toast.style.opacity = '1'; setTimeout(() => toast.style.opacity = '0', 1500);
+  });
+}
+</script>
+</body>
+</html>
