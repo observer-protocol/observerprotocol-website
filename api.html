@@ -375,12 +375,12 @@
               <span class="endpoint-toggle">▶</span>
             </div>
             <div class="endpoint-body">
-              <p style="font-size:13px; color:var(--text-secondary); font-family:var(--font-sans); margin-bottom:1rem;">Submit an ARP event with cryptographic proof. Requires API key. Rejected if proof is invalid.</p>
+              <p style="font-size:13px; color:var(--text-secondary); font-family:var(--font-sans); margin-bottom:1rem;">Submit a verified event with cryptographic proof. Requires API key. Rejected if proof is invalid.</p>
               <table class="param-table">
                 <tr><th>Header</th><th>Type</th><th>Required</th><th>Description</th></tr>
                 <tr><td class="param-name">X-API-Key</td><td class="param-type">string</td><td class="param-req">required</td><td class="param-desc">API key from verify-agent</td></tr>
               </table>
-              <div class="response-label">Request Body (ARP Event)</div>
+              <div class="response-label">Request Body (Observer Event)</div>
               <div class="code-block" style="font-size:11px; line-height:1.8;">
                 {<br>
                 &nbsp;&nbsp;<span class="key">"event_type"</span>: <span class="str">"payment.executed"</span>,<br>
@@ -447,7 +447,7 @@
     <span>Observer Protocol API v1.0 · OAS 3.1</span>
     <div class="footer-links">
       <a href="https://api.observerprotocol.org/docs" target="_blank">Swagger UI ↗</a>
-      <a href="spec.html">ARP Spec</a>
+      <a href="spec.html">Observer Protocol Spec</a>
       <a href="demo.html">Demo</a>
       <a href="sdk.html">SDK</a>
       <a href="https://github.com/observer-protocol" target="_blank">GitHub</a>

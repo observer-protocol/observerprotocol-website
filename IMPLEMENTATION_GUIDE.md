@@ -81,7 +81,7 @@ The existing site used the default Swagger UI (white background, generic styling
 - Matches the site aesthetic fully
 - Links to the live Swagger UI at `api.observerprotocol.org/docs` for those who want interactive testing
 - Documents all 13 endpoints with expandable cards
-- Shows real request/response schemas from the ARP spec
+- Shows real request/response schemas from the Observer Protocol spec
 - Includes "Try it ↗" links that hit live endpoints directly
 
 No backend changes required. The Swagger UI can remain at `/docs` as a secondary reference.

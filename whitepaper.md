@@ -67,7 +67,7 @@ Observer Protocol addresses this missing layer.
 
 ## 2. Protocol Architecture
 
-Observer Protocol operates as a three-layer verification stack: identity, attestation, and reputation. The formal attestation specification is called **ARP (Agent Reporting Protocol)** — ARP defines the attestation format and verification procedures, while Observer Protocol refers to the broader system including the ARP spec, REST API, SDK, and reputation graph.
+Observer Protocol operates as a three-layer verification stack: identity, attestation, and reputation. The formal attestation specification is part of the **Observer Protocol** — it defines the attestation format and verification procedures, while Observer Protocol refers to the broader system including the specification, REST API, SDK, and reputation graph.
 
 ### 2.1 Identity Layer
 
@@ -331,7 +331,7 @@ Platforms can query Observer Protocol to enrich their own trust decisions:
 ## 8. Roadmap
 
 ### Built (Q1 2026)
-- ✅ Protocol specification (ARP — Agent Reporting Protocol)
+- ✅ Protocol specification (Observer Protocol)
 - ✅ REST API (live, mainnet)
 - ✅ JavaScript SDK
 - ✅ Agent #0001 (Maxi) — sovereign Lightning node, L402 endpoint, bidirectional payments
@@ -383,7 +383,7 @@ Cohen, B. (2025). *Bitcoin Singularity*. [Publisher].
 
 ## Appendix A: Glossary
 
-**ARP (Agent Reporting Protocol):** The formal specification for Observer Protocol's attestation format and verification procedures.
+**Observer Protocol Specification:** The formal specification for attestation format and verification procedures.
 
 **Attestation:** A cryptographically signed record of an agent's economic activity, the atomic unit of Observer Protocol.
 

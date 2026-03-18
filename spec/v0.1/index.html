@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARP Specification v0.1 — Observer Protocol</title>
+    <title>Observer Protocol Specification v0.1 — Observer Protocol</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="../../shared-styles.css">
@@ -140,8 +140,8 @@
     </nav>
 
     <div class="spec-header">
-        <h1>ARP Specification v0.1</h1>
-        <p style="color: var(--text-secondary); font-size: 15px; margin-top: 8px;">Agent Reporting Protocol — Open standard for verified agent economic activity</p>
+        <h1>Observer Protocol Specification v0.1</h1>
+        <p style="color: var(--text-secondary); font-size: 15px; margin-top: 8px;">Open standard for verified agent economic activity</p>
         <div class="spec-meta">
             <div class="meta-item">Status: <span class="status-badge">Draft</span></div>
             <div class="meta-item">Version: <span>0.1</span></div>
@@ -167,12 +167,12 @@
     </div>
 
     <h2 id="abstract">Abstract</h2>
-    <p>The Agent Reporting Protocol (ARP) defines a standardized, privacy-preserving schema for AI agents to report verified economic activity. It provides cryptographic verification mechanisms to ensure that submitted events represent real autonomous agent behavior, not human-originated or fabricated claims.</p>
-    <p>ARP is protocol-neutral. It accepts verifiable activity from Lightning Network, Bitcoin on-chain, x402/USDC, Fedimint, Ark, and any settlement rail that produces cryptographically verifiable proof.</p>
+    <p>The Observer Protocol defines a standardized, privacy-preserving schema for AI agents to report verified economic activity. It provides cryptographic verification mechanisms to ensure that submitted events represent real autonomous agent behavior, not human-originated or fabricated claims.</p>
+    <p>Observer Protocol is protocol-neutral. It accepts verifiable activity from Lightning Network, Bitcoin on-chain, x402/USDC, Fedimint, Ark, and any settlement rail that produces cryptographically verifiable proof.</p>
 
     <h2 id="motivation">1. Motivation</h2>
     <p>As AI agents begin to transact economically, no shared standard exists for measuring or verifying that activity. Platforms claim agent participation. Agents claim capabilities. Without a verification layer, the agent economy is built on unverifiable assertions.</p>
-    <p>ARP solves three problems:</p>
+    <p>Observer Protocol solves three problems:</p>
     <ul>
         <strong>Identity without custodians</strong> — Agent identity is a public key hash, not a platform account
         <strong>Activity without trust</strong> — Economic events require cryptographic proof, not self-reporting
@@ -182,7 +182,7 @@
     <h2 id="identity">2. Identity Model</h2>
     <h3>2.1 Canonical Identity</h3>
     <pre><code>public_key_hash = SHA256(agent_public_key)</code></pre>
-    <p><code>public_key_hash</code> is the canonical, immutable identity for any agent in the ARP registry. <code>alias</code> is a human-readable convenience label. Two agents may share an alias — no two agents may share a <code>public_key_hash</code>.</p>
+    <p><code>public_key_hash</code> is the canonical, immutable identity for any agent in the Observer Protocol registry. <code>alias</code> is a human-readable convenience label. Two agents may share an alias — no two agents may share a <code>public_key_hash</code>.</p>
     <div class="note">Design rationale: This is the Bitcoin-native identity model. The key is the identity. Alias is UX. Verification always checks the key, never the alias.</div>
 
     <h3>2.2 Agent Registration</h3>
@@ -198,7 +198,7 @@
     <pre><code>{
   "event_id":     "string",
   "event_type":   "string",
-  "arp_version":  "0.1",
+  "op_version":  "0.1",
   "agent_id":     "string (public_key_hash)",
   "alias":        "string (optional)",
   "protocol":     "string",
@@ -212,7 +212,7 @@
         <tbody>
             <tr><td><code>event_id</code></td><td>string</td><td>✅</td><td>Unique identifier. Format: <code>evt_{prefix}_{seq}</code></td></tr>
             <tr><td><code>event_type</code></td><td>string</td><td>✅</td><td>See §3.2 for valid types</td></tr>
-            <tr><td><code>arp_version</code></td><td>string</td><td>✅</td><td>Must be <code>"0.1"</code></td></tr>
+            <tr><td><code>op_version</code></td><td>string</td><td>✅</td><td>Must be <code>"0.1"</code></td></tr>
             <tr><td><code>agent_id</code></td><td>string</td><td>✅</td><td>SHA256 of agent public key — canonical identity</td></tr>
             <tr><td><code>alias</code></td><td>string</td><td>❌</td><td>Human-readable label. Non-unique. Never used for verification.</td></tr>
             <tr><td><code>protocol</code></td><td>string</td><td>✅</td><td>Settlement rail. See §4.</td></tr>
@@ -226,7 +226,7 @@
     <pre><code>{
   "event_id":            "evt_a1b2c3_0004",
   "event_type":          "payment.executed",
-  "arp_version":         "0.1",
+  "op_version":         "0.1",
   "agent_id":            "sha256:a3f9c2...",
   "alias":               "maxi-0001",
   "protocol":            "lightning",
@@ -269,7 +269,7 @@
     <h2 id="verification">5. Verification</h2>
     <h3>5.1 Lightning</h3>
     <pre><code>SHA256(preimage) == payment_hash</code></pre>
-    <p>The ARP server verifies this cryptographically. Events with invalid references are rejected with <code>verified: false</code>.</p>
+    <p>The Observer Protocol server verifies this cryptographically. Events with invalid references are rejected with <code>verified: false</code>.</p>
 
     <h3>5.2 Verification Levels</h3>
     <table>
@@ -282,7 +282,7 @@
     </table>
 
     <h2 id="privacy">6. Privacy Model</h2>
-    <p>ARP is designed to be useful without being invasive. The public registry exposes only <code>public_key_hash</code> — pseudonymous by design, like a Bitcoin address.</p>
+    <p>Observer Protocol is designed to be useful without being invasive. The public registry exposes only <code>public_key_hash</code> — pseudonymous by design, like a Bitcoin address.</p>
 
     <table>
         <thead><tr><th>Column</th><th>Public by default</th></tr></thead>
@@ -309,7 +309,7 @@
         <tbody>
             <tr><td>POST</td><td><code>/register</code></td><td>None</td><td>Register agent, receive challenge</td></tr>
             <tr><td>POST</td><td><code>/verify</code></td><td>None</td><td>Submit signed challenge, receive API key</td></tr>
-            <tr><td>POST</td><td><code>/events</code></td><td>API key</td><td>Submit ARP event</td></tr>
+            <tr><td>POST</td><td><code>/events</code></td><td>API key</td><td>Submit verified event</td></tr>
             <tr><td>GET</td><td><code>/feed</code></td><td>None</td><td>Public anonymized event feed</td></tr>
             <tr><td>GET</td><td><code>/stats</code></td><td>None</td><td>Aggregate protocol statistics</td></tr>
             <tr><td>GET</td><td><code>/agents/{id}</code></td><td>None</td><td>Public agent profile</td></tr>
@@ -336,7 +336,7 @@
     </div>
 
     <footer>
-        <p>ARP v0.1 — February 2026 &nbsp;·&nbsp; License: <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a> &nbsp;·&nbsp; <a href="https://github.com/observer-protocol" target="_blank">GitHub</a> &nbsp;·&nbsp; <a href="https://observerprotocol.org">observerprotocol.org</a></p>
+        <p>Observer Protocol v0.1 — February 2026 &nbsp;·&nbsp; License: <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a> &nbsp;·&nbsp; <a href="https://github.com/observer-protocol" target="_blank">GitHub</a> &nbsp;·&nbsp; <a href="https://observerprotocol.org">observerprotocol.org</a></p>
     </footer>
 </div>
 </body>
