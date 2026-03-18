@@ -122,6 +122,7 @@
     }
     .feed-protocol.lightning { color: var(--orange); }
     .feed-protocol.x402 { color: #60a5fa; }
+    .feed-protocol.x402_stripe { color: #a78bfa; }
     .feed-tx {
       font-family: var(--font-mono);
       color: var(--text-secondary);
@@ -711,9 +712,9 @@ function renderFeed(items) {
   const eventKey = e => e.event_id || e.created_at || '';
   container.innerHTML = filtered.map(event => {
     const isNew = !feedData.find(e => eventKey(e) === eventKey(event));
-    const proto = (event.protocol||'').toLowerCase(); const protocolClass = proto === 'x402' ? 'x402' : proto === 'l402' ? 'l402' : 'lightning';
-    const protocolIcon = protocolClass === 'x402' ? '◈' : protocolClass === 'l402' ? '⚡' : '⚡';
-    const protocolName = protocolClass === 'x402' ? 'x402' : protocolClass === 'l402' ? 'L402' : 'Lightning';
+    const proto = (event.protocol||'').toLowerCase(); const protocolClass = proto === 'x402' ? 'x402' : proto === 'x402_stripe' ? 'x402_stripe' : proto === 'l402' ? 'l402' : 'lightning';
+    const protocolIcon = protocolClass === 'x402' ? '◈' : protocolClass === 'x402_stripe' ? '💳' : protocolClass === 'l402' ? '⚡' : '⚡';
+    const protocolName = protocolClass === 'x402' ? 'x402' : protocolClass === 'x402_stripe' ? 'x402 / MPP' : protocolClass === 'l402' ? 'L402' : 'Lightning';
     const verified = event.verified ? '✓' : '○';
     const verifiedColor = event.verified ? 'color:var(--verified);' : 'color:var(--text-dim);';
     const ts = event.created_at || event.timestamp || '';
@@ -743,10 +744,16 @@ function renderFeed(items) {
       ? `<span title="Paid via lnget CLI" style="font-size:9px;background:#1a2a1a;border:1px solid #2a4a2a;color:#4ade80;border-radius:3px;padding:1px 6px;letter-spacing:0.05em;">lnget</span>
          <span title="${lngetClaimed ? 'Claimed by verified agent' : 'Unclaimed — no agent registered yet'}" style="font-size:9px;background:${lngetClaimed ? '#1a2a1a' : '#2a1a0a'};border:1px solid ${lngetClaimed ? '#2a4a2a' : '#4a3a0a'};color:${lngetClaimed ? '#4ade80' : '#f59e0b'};border-radius:3px;padding:1px 6px;">${lngetClaimed ? '✓ claimed' : '○ unclaimed'}</span>`
       : '';
+    // Stripe source badge for x402_stripe protocol
+    const serviceDesc = event.service_description || '';
+    const isStripe = serviceDesc.startsWith('x402_stripe:');
+    const stripeBadge = isStripe
+      ? `<span title="Paid via Stripe" style="font-size:9px;background:#1a1040;border:1px solid #635bff;color:#a78bfa;border-radius:3px;padding:1px 6px;letter-spacing:0.05em;">stripe</span>`
+      : '';
     return `
       <div class="feed-item ${isNew ? 'new' : ''}" style="flex-wrap:wrap;gap:4px;">
         <div class="feed-protocol ${protocolClass}"><span>${protocolIcon}</span><span>${protocolName}</span></div>
-        ${lngetBadge}
+        ${stripeBadge}${lngetBadge}
         <div class="feed-tx" title="${txHash}" style="font-family:monospace;font-size:11px;color:var(--text-dim);">${txDisplay}</div>
         <div style="font-size:11px;color:var(--text-dim);min-width:80px;">${lngetDomain || agentLink}${verifiedIcon} ${dirIcon}</div>
         <div class="feed-amount" style="font-family:var(--font-mono);color:var(--orange);">${amountStr}</div>
