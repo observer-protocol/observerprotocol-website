@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stripe x402 + Observer Protocol — Add Agent Reputation in 2 Minutes</title>
+  <meta name="description" content="Already using Stripe machine payments or x402? Add Observer Protocol reputation checks to your seller integration in one middleware line.">
+  <link rel="stylesheet" href="shared-styles.css">
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="architecture.html">Architecture</a></li>
+    <li><a href="spec.html">Spec</a></li>
+    <li><a href="registry.html">Registry</a></li>
+    <li><a href="demo.html">Demo</a></li>
+    <li><a href="sdk.html">SDK</a></li>
+    <li><a href="api.html">API</a></li>
+    <li><a href="quickstart.html" class="active">Quickstart</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+  <section style="padding:3rem 0 1rem;">
+    <div class="container">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+        <a href="quickstart.html" style="font-size:12px;color:var(--text-dim);text-decoration:none;">← Quickstart</a>
+      </div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <span style="font-size:11px;background:#635bff;color:#fff;border-radius:9999px;padding:3px 12px;font-weight:600;">Stripe x402</span>
+        <span style="font-size:11px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:3px 12px;color:var(--text-secondary);">&lt; 2 minutes</span>
+        <span style="font-size:11px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:3px 12px;color:var(--text-secondary);">1 line of middleware</span>
+      </div>
+      <h1 style="font-size:clamp(1.6rem,4vw,2.4rem);font-weight:600;margin-bottom:1rem;">Stripe Machine Payments + Observer Protocol</h1>
+      <p style="font-size:13px;color:var(--text-secondary);max-width:640px;font-family:var(--font-sans);line-height:1.8;margin-bottom:0.75rem;">
+        Stripe handles the payment. Observer Protocol answers the question Stripe cannot: <strong style="color:var(--text-primary);">should you trust the agent making it?</strong>
+      </p>
+      <p style="font-size:13px;color:var(--text-secondary);max-width:640px;font-family:var(--font-sans);line-height:1.8;">
+        Add one middleware line to your x402 seller and every incoming machine payment gets a reputation check — trust tier, payment history, risk signals — before you process it. No API key required to start.
+      </p>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section style="padding:1.5rem 0;">
+    <div class="container">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;max-width:760px;">
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">💳</div>
+          <div style="font-size:11px;color:var(--text-dim);font-family:var(--font-sans);">Agent sends x402 payment to your Stripe endpoint</div>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">🔍</div>
+          <div style="font-size:11px;color:var(--text-dim);font-family:var(--font-sans);">OP middleware queries agent reputation before you accept</div>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">✓</div>
+          <div style="font-size:11px;color:var(--text-dim);font-family:var(--font-sans);">Trust tier, score, and suggested action — before settlement</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE -->
+  <section style="padding:1rem 0 0.5rem;">
+    <div class="container">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:1.5rem;max-width:700px;font-family:var(--font-mono);font-size:12px;line-height:2;">
+        <div style="color:var(--orange);">┌─────────────────────────────────────┐</div>
+        <div style="color:var(--orange);">│      OBSERVER PROTOCOL LAYER        │  ← "Can I trust this agent?"</div>
+        <div style="color:var(--orange);">└──────────────────┬──────────────────┘</div>
+        <div style="color:var(--text-dim);">                   │</div>
+        <div style="color:var(--text-secondary);">┌──────────────────▼──────────────────┐</div>
+        <div style="color:var(--text-secondary);">│      STRIPE MACHINE PAYMENTS        │  ← "Process this payment"</div>
+        <div style="color:var(--text-secondary);">└──────────────────┬──────────────────┘</div>
+        <div style="color:var(--text-dim);">                   │</div>
+        <div style="color:var(--text-dim);">┌──────────────────▼──────────────────┐</div>
+        <div style="color:var(--text-dim);">│   Base (USDC) · Solana · Tempo      │  ← Payment rails</div>
+        <div style="color:var(--text-dim);">└─────────────────────────────────────┘</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- SELLER SIDE: MIDDLEWARE -->
+  <section style="padding:2rem 0 1rem;">
+    <div class="container">
+      <div style="font-size:11px;color:var(--orange);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem;">For Sellers</div>
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--orange);color:#000;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">1</div>
+        <h2 style="font-size:18px;font-weight:600;">Install the SDK and add one middleware line</h2>
+      </div>
+      <div class="code-block" style="max-width:700px;margin-bottom:1rem;">
+        <div style="font-size:12px;line-height:1.9;">
+<span style="color:#60a5fa;">npm install</span> <span style="color:#86efac;">@observer-protocol/sdk</span>
+        </div>
+      </div>
+      <div class="code-block" style="max-width:700px;">
+        <div style="font-size:12px;line-height:1.9;">
+<span style="color:#60a5fa;">const</span> { ObserverClient } = <span style="color:#f8c471;">require</span>(<span style="color:#86efac;">'@observer-protocol/sdk'</span>);
+<span style="color:#60a5fa;">const</span> observer = <span style="color:#60a5fa;">new</span> <span style="color:#f8c471;">ObserverClient</span>();
+
+<span style="color:#8a8a8a;">// Add before your x402 payment handler — that's it</span>
+app.<span style="color:#f8c471;">use</span>(<span style="color:#86efac;">'/api/*'</span>, observer.<span style="color:#f8c471;">reputationMiddleware</span>({ fallback: <span style="color:#86efac;">'review'</span> }));
+
+<span style="color:#8a8a8a;">// Reputation is now available on every request:</span>
+<span style="color:#8a8a8a;">// req.observerReputation.trust_tier   → "new" | "active" | "established" | "trusted"</span>
+<span style="color:#8a8a8a;">// req.observerReputation.reputation_score → 0.0 – 1.0</span>
+<span style="color:#8a8a8a;">// req.observerReputation.suggested_action → "accept" | "review" | "reject"</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPUTATION RESPONSE -->
+  <section style="padding:1.5rem 0 1rem;">
+    <div class="container">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--orange);color:#000;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">2</div>
+        <h2 style="font-size:18px;font-weight:600;">Gate access by trust tier</h2>
+      </div>
+      <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1rem;max-width:680px;line-height:1.7;">
+        Use the reputation response to apply different rate limits, pricing, or access levels per agent — automatically, before the payment settles.
+      </p>
+      <div class="code-block" style="max-width:700px;">
+        <div style="font-size:12px;line-height:1.9;">
+app.<span style="color:#f8c471;">post</span>(<span style="color:#86efac;">'/api/data'</span>, (req, res) => {
+  <span style="color:#60a5fa;">const</span> { trust_tier, suggested_action } = req.observerReputation || {};
+
+  <span style="color:#60a5fa;">if</span> (suggested_action === <span style="color:#86efac;">'reject'</span>) {
+    <span style="color:#60a5fa;">return</span> res.<span style="color:#f8c471;">status</span>(<span style="color:#f8c471;">403</span>).<span style="color:#f8c471;">json</span>({ error: <span style="color:#86efac;">'Agent reputation: rejected'</span> });
+  }
+
+  <span style="color:#8a8a8a;">// Rate limit by trust tier</span>
+  <span style="color:#60a5fa;">const</span> rateLimit = {
+    trusted:     <span style="color:#f8c471;">10000</span>,   <span style="color:#8a8a8a;">// req/day</span>
+    established: <span style="color:#f8c471;">5000</span>,
+    active:      <span style="color:#f8c471;">1000</span>,
+    new:         <span style="color:#f8c471;">100</span>,
+    unknown:     <span style="color:#f8c471;">10</span>,
+  }[trust_tier || <span style="color:#86efac;">'unknown'</span>];
+
+  res.<span style="color:#f8c471;">json</span>({ data: <span style="color:#86efac;">'...'</span>, rate_limit: rateLimit });
+});
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- AGENT SIDE: WALLET LOOKUP -->
+  <section style="padding:2rem 0 1rem;">
+    <div class="container">
+      <div style="font-size:11px;color:var(--orange);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem;">For Agents</div>
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--orange);color:#000;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">3</div>
+        <h2 style="font-size:18px;font-weight:600;">Reputation lookup by EVM wallet address</h2>
+      </div>
+      <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1rem;max-width:680px;line-height:1.7;">
+        Stripe identifies agents by their USDC wallet address. OP resolves wallet addresses directly to agent reputation — no separate registration step required for sellers.
+      </p>
+      <div class="code-block" style="max-width:700px;">
+        <div style="font-size:12px;line-height:1.9;">
+<span style="color:#8a8a8a;"># Query by EVM wallet address (Stripe-native identity)</span>
+<span style="color:#60a5fa;">curl</span> https://api.observerprotocol.org/observer/reputation/wallet/0xb654d6c2e181ee2b820360df9b14f309c2e6358c
+
+<span style="color:#8a8a8a;"># Returns:</span>
+{
+  <span style="color:#86efac;">"agent_id"</span>: <span style="color:#86efac;">"maxi-0001"</span>,
+  <span style="color:#86efac;">"verified"</span>: <span style="color:#f8c471;">true</span>,
+  <span style="color:#86efac;">"trust_tier"</span>: <span style="color:#86efac;">"active"</span>,
+  <span style="color:#86efac;">"reputation_score"</span>: <span style="color:#f8c471;">0.45</span>,
+  <span style="color:#86efac;">"payment_history"</span>: {
+    <span style="color:#86efac;">"total_verified_events"</span>: <span style="color:#f8c471;">20</span>,
+    <span style="color:#86efac;">"protocols_used"</span>: [<span style="color:#86efac;">"lightning"</span>, <span style="color:#86efac;">"x402"</span>, <span style="color:#86efac;">"L402"</span>]
+  },
+  <span style="color:#86efac;">"suggested_action"</span>: <span style="color:#86efac;">"accept"</span>,
+  <span style="color:#86efac;">"wallet_address"</span>: <span style="color:#86efac;">"0xb654d6c2e181ee2b820360df9b14f309c2e6358c"</span>
+}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- TRUST TIERS -->
+  <section style="padding:2rem 0 1rem;">
+    <div class="container">
+      <h2 style="font-size:18px;font-weight:600;margin-bottom:1.25rem;">Trust Tiers</h2>
+      <div style="max-width:700px;overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;font-family:var(--font-sans);">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border);">
+              <th style="text-align:left;padding:8px 12px;color:var(--text-dim);font-weight:500;">Tier</th>
+              <th style="text-align:left;padding:8px 12px;color:var(--text-dim);font-weight:500;">Criteria</th>
+              <th style="text-align:left;padding:8px 12px;color:var(--text-dim);font-weight:500;">Suggested Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:8px 12px;color:var(--text-dim);font-family:var(--font-mono);">unknown</td>
+              <td style="padding:8px 12px;color:var(--text-secondary);">No OP record</td>
+              <td style="padding:8px 12px;color:#f59e0b;">review</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:8px 12px;color:var(--text-secondary);font-family:var(--font-mono);">new</td>
+              <td style="padding:8px 12px;color:var(--text-secondary);">&lt;10 events or &lt;14 days</td>
+              <td style="padding:8px 12px;color:#4ade80;">accept</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:8px 12px;color:var(--text-secondary);font-family:var(--font-mono);">active</td>
+              <td style="padding:8px 12px;color:var(--text-secondary);">10–99 events, 14+ days</td>
+              <td style="padding:8px 12px;color:#4ade80;">accept</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:8px 12px;color:var(--text-primary);font-family:var(--font-mono);">established</td>
+              <td style="padding:8px 12px;color:var(--text-secondary);">100+ events or 60+ days, multi-protocol</td>
+              <td style="padding:8px 12px;color:#4ade80;">accept</td>
+            </tr>
+            <tr>
+              <td style="padding:8px 12px;color:var(--orange);font-family:var(--font-mono);">trusted</td>
+              <td style="padding:8px 12px;color:var(--text-secondary);">500+ events, 180+ days, protocol diversity &gt;0.7</td>
+              <td style="padding:8px 12px;color:#4ade80;">accept (premium)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- PROTOCOL IDENTIFIER -->
+  <section style="padding:2rem 0 1rem;">
+    <div class="container">
+      <h2 style="font-size:18px;font-weight:600;margin-bottom:0.75rem;">x402_stripe Protocol Identifier</h2>
+      <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1rem;max-width:680px;line-height:1.7;">
+        Observer Protocol tracks Stripe x402 activity separately from other x402 implementations. Use <code style="background:var(--bg-card);padding:2px 6px;border-radius:3px;font-size:12px;">x402_stripe</code> as the protocol identifier when attesting Stripe machine payments — this lets OP build Stripe-specific reputation signals over time.
+      </p>
+      <div class="code-block" style="max-width:700px;">
+        <div style="font-size:12px;line-height:1.9;">
+<span style="color:#8a8a8a;"># Attest a Stripe x402 payment to OP</span>
+<span style="color:#60a5fa;">curl</span> -X POST https://api.observerprotocol.org/observer/lnget-attest \
+  -H <span style="color:#86efac;">"Content-Type: application/json"</span> \
+  -d '{
+    <span style="color:#86efac;">"payment_hash"</span>: <span style="color:#86efac;">"&lt;stripe_tx_hash&gt;"</span>,
+    <span style="color:#86efac;">"preimage"</span>: <span style="color:#86efac;">"&lt;payment_preimage&gt;"</span>,
+    <span style="color:#86efac;">"domain"</span>: <span style="color:#86efac;">"your-service.com"</span>,
+    <span style="color:#86efac;">"amount_sats"</span>: <span style="color:#f8c471;">100</span>,
+    <span style="color:#86efac;">"agent_id"</span>: <span style="color:#86efac;">"your-agent-001"</span>,
+    <span style="color:#86efac;">"source"</span>: <span style="color:#86efac;">"x402_stripe"</span>
+  }'
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- CTA -->
+  <section style="padding:2rem 0 4rem;">
+    <div class="container">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;max-width:700px;">
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:1.5rem;">
+          <div style="font-size:11px;color:var(--orange);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.75rem;">Live Demo</div>
+          <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1rem;line-height:1.7;">See real verified transactions in the live feed. Reputation queries working now.</p>
+          <a href="demo.html" style="font-size:12px;color:var(--orange);text-decoration:none;border:1px solid var(--orange);padding:6px 16px;border-radius:3px;">View Live Demo →</a>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:1.5rem;">
+          <div style="font-size:11px;color:var(--orange);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.75rem;">Full SDK</div>
+          <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1rem;line-height:1.7;">Node.js + Python middleware. Express, FastAPI, and raw fetch examples included.</p>
+          <a href="sdk.html" style="font-size:12px;color:var(--orange);text-decoration:none;border:1px solid var(--orange);padding:6px 16px;border-radius:3px;">Get the SDK →</a>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:1.5rem;">
+          <div style="font-size:11px;color:var(--orange);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.75rem;">Verification Policy</div>
+          <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1rem;line-height:1.7;">Platform-required, opt-in, or mandatory. Full policy architecture for payment processors.</p>
+          <a href="architecture.html" style="font-size:12px;color:var(--orange);text-decoration:none;border:1px solid var(--orange);padding:6px 16px;border-radius:3px;">Read Architecture →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer style="border-top:1px solid var(--border);padding:2rem 0;text-align:center;">
+  <div class="container">
+    <p style="font-size:12px;color:var(--text-dim);font-family:var(--font-sans);">
+      Observer Protocol — The trust layer for the agentic economy.
+      <a href="spec.html" style="color:var(--text-dim);margin-left:1rem;">Observer Protocol Spec</a>
+      <a href="api.html" style="color:var(--text-dim);margin-left:1rem;">API Reference</a>
+      <a href="https://github.com/observer-protocol" target="_blank" style="color:var(--text-dim);margin-left:1rem;">GitHub</a>
+    </p>
+  </div>
+</footer>
+</body>
+</html>
