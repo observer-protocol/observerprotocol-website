@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Already Have L402? Add OP Reputation — Observer Protocol</title>
+  <meta name="description" content="Already have L402 working? Add Observer Protocol reputation to your agent in under 2 minutes — 3 lines of code.">
+  <link rel="stylesheet" href="shared-styles.css">
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="architecture.html">Architecture</a></li>
+    <li><a href="spec.html">Spec</a></li>
+    <li><a href="registry.html">Registry</a></li>
+    <li><a href="demo.html">Demo</a></li>
+    <li><a href="sdk.html">SDK</a></li>
+    <li><a href="api.html">API</a></li>
+    <li><a href="quickstart.html" class="active">Quickstart</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+  <section style="padding:3rem 0 1rem;">
+    <div class="container">
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+        <a href="quickstart.html" style="font-size:12px;color:var(--text-dim);text-decoration:none;">← Quickstart</a>
+      </div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <span style="font-size:11px;background:var(--orange);color:#000;border-radius:9999px;padding:3px 12px;font-weight:600;">⚡ L402</span>
+        <span style="font-size:11px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:3px 12px;color:var(--text-secondary);">&lt; 2 minutes</span>
+        <span style="font-size:11px;background:var(--bg-2);border:1px solid var(--border);border-radius:9999px;padding:3px 12px;color:var(--text-secondary);">3 lines of code</span>
+      </div>
+      <h1 style="font-size:clamp(1.6rem,4vw,2.4rem);font-weight:600;margin-bottom:1rem;">Already Have L402? Add Reputation in 2 Minutes.</h1>
+      <p style="font-size:13px;color:var(--text-secondary);max-width:600px;font-family:var(--font-sans);line-height:1.8;margin-bottom:0.75rem;">
+        If your agent already pays L402 endpoints, you already have everything you need. Every Lightning payment comes with a <code style="background:var(--bg-card);padding:2px 6px;border-radius:3px;font-size:12px;">preimage</code> — cryptographic proof that the payment happened. Observer Protocol turns that proof into portable reputation.
+      </p>
+      <p style="font-size:13px;color:var(--text-secondary);max-width:600px;font-family:var(--font-sans);line-height:1.8;">
+        No new wallet. No new keys. No registration required to start. Just one API call after each payment.
+      </p>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section style="padding:1.5rem 0;">
+    <div class="container">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;max-width:700px;">
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">⚡</div>
+          <div style="font-size:11px;color:var(--text-dim);font-family:var(--font-sans);">Your agent pays an L402 endpoint and receives a <code style="font-size:10px;">preimage</code></div>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">✓</div>
+          <div style="font-size:11px;color:var(--text-dim);font-family:var(--font-sans);">SHA256(preimage) = payment_hash — trustless cryptographic proof</div>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1.25rem;text-align:center;">
+          <div style="font-size:1.5rem;margin-bottom:0.5rem;">🔗</div>
+          <div style="font-size:11px;color:var(--text-dim);font-family:var(--font-sans);">One POST to OP — verified event recorded, reputation builds</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- STEP 1 -->
+  <section style="padding:2rem 0 1rem;">
+    <div class="container">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--orange);color:#000;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">1</div>
+        <h2 style="font-size:18px;font-weight:600;">After each L402 payment, post to Observer Protocol</h2>
+      </div>
+      <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1rem;max-width:680px;line-height:1.7;">
+        When your agent successfully pays an L402 invoice, you have the <code style="background:var(--bg-card);padding:2px 6px;border-radius:3px;font-size:12px;">payment_hash</code> and <code style="background:var(--bg-card);padding:2px 6px;border-radius:3px;font-size:12px;">preimage</code>. That's all you need.
+      </p>
+
+      <!-- Python -->
+      <div style="margin-bottom:1.5rem;max-width:700px;">
+        <div style="font-size:11px;color:var(--text-dim);margin-bottom:0.5rem;font-family:var(--font-sans);">Python</div>
+        <div class="code-block">
+          <div style="font-size:12px;line-height:1.9;">
+<span style="color:#8a8a8a;"># After your L402 payment succeeds:</span>
+<span style="color:#60a5fa;">import</span> requests
+
+requests.<span style="color:#f8c471;">post</span>(<span style="color:#86efac;">"https://api.agenticterminal.ai/observer/lnget-attest"</span>, json={
+    <span style="color:#86efac;">"payment_hash"</span>: payment_hash,   <span style="color:#8a8a8a;"># hex string</span>
+    <span style="color:#86efac;">"preimage"</span>: preimage,           <span style="color:#8a8a8a;"># hex string — SHA256(preimage) = payment_hash</span>
+    <span style="color:#86efac;">"domain"</span>: <span style="color:#86efac;">"api.example.com"</span>,    <span style="color:#8a8a8a;"># the endpoint you paid</span>
+    <span style="color:#86efac;">"amount_sats"</span>: amount_sats,     <span style="color:#8a8a8a;"># integer</span>
+    <span style="color:#86efac;">"agent_id"</span>: <span style="color:#86efac;">"your-agent-001"</span>   <span style="color:#8a8a8a;"># optional — omit to start anonymously</span>
+})
+          </div>
+        </div>
+      </div>
+
+      <!-- JavaScript -->
+      <div style="margin-bottom:1.5rem;max-width:700px;">
+        <div style="font-size:11px;color:var(--text-dim);margin-bottom:0.5rem;font-family:var(--font-sans);">JavaScript / Node.js</div>
+        <div class="code-block">
+          <div style="font-size:12px;line-height:1.9;">
+<span style="color:#8a8a8a;">// After your L402 payment succeeds:</span>
+<span style="color:#60a5fa;">await</span> fetch(<span style="color:#86efac;">"https://api.agenticterminal.ai/observer/lnget-attest"</span>, {
+  method: <span style="color:#86efac;">"POST"</span>,
+  headers: { <span style="color:#86efac;">"Content-Type"</span>: <span style="color:#86efac;">"application/json"</span> },
+  body: JSON.stringify({
+    payment_hash,    <span style="color:#8a8a8a;">// hex string</span>
+    preimage,        <span style="color:#8a8a8a;">// hex string</span>
+    domain: <span style="color:#86efac;">"api.example.com"</span>,
+    amount_sats,
+    agent_id: <span style="color:#86efac;">"your-agent-001"</span>  <span style="color:#8a8a8a;">// optional</span>
+  })
+});
+          </div>
+        </div>
+      </div>
+
+      <!-- Go -->
+      <div style="max-width:700px;">
+        <div style="font-size:11px;color:var(--text-dim);margin-bottom:0.5rem;font-family:var(--font-sans);">Go</div>
+        <div class="code-block">
+          <div style="font-size:12px;line-height:1.9;">
+<span style="color:#8a8a8a;">// After your L402 payment succeeds:</span>
+body, _ := json.Marshal(map[string]interface{}{
+    <span style="color:#86efac;">"payment_hash"</span>: paymentHash,
+    <span style="color:#86efac;">"preimage"</span>:     preimage,
+    <span style="color:#86efac;">"domain"</span>:       <span style="color:#86efac;">"api.example.com"</span>,
+    <span style="color:#86efac;">"amount_sats"</span>:  amountSats,
+    <span style="color:#86efac;">"agent_id"</span>:     <span style="color:#86efac;">"your-agent-001"</span>, <span style="color:#8a8a8a;">// optional</span>
+})
+http.Post(<span style="color:#86efac;">"https://api.agenticterminal.ai/observer/lnget-attest"</span>,
+    <span style="color:#86efac;">"application/json"</span>, bytes.NewBuffer(body))
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- STEP 2 — Response -->
+  <section style="padding:2rem 0 1rem;">
+    <div class="container">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--orange);color:#000;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">2</div>
+        <h2 style="font-size:18px;font-weight:600;">OP verifies and responds</h2>
+      </div>
+      <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1rem;max-width:680px;line-height:1.7;">
+        Observer Protocol recomputes <code style="background:var(--bg-card);padding:2px 6px;border-radius:3px;font-size:12px;">SHA256(preimage)</code> server-side. If it matches <code style="background:var(--bg-card);padding:2px 6px;border-radius:3px;font-size:12px;">payment_hash</code>, the event is recorded as <code style="background:var(--bg-card);padding:2px 6px;border-radius:3px;font-size:12px;">verified: true</code>. No trust required — the math is the proof.
+      </p>
+      <div class="code-block" style="max-width:700px;">
+        <div style="font-size:12px;line-height:1.9;">
+{
+  <span style="color:#86efac;">"verified"</span>: <span style="color:#f8c471;">true</span>,
+  <span style="color:#86efac;">"event_id"</span>: <span style="color:#86efac;">"event-your-agent-001-0001"</span>,
+  <span style="color:#86efac;">"agent_id"</span>: <span style="color:#86efac;">"your-agent-001"</span>,
+  <span style="color:#86efac;">"message"</span>: <span style="color:#86efac;">"Payment verified: SHA256(preimage) = payment_hash"</span>
+}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- STEP 3 — Check reputation -->
+  <section style="padding:2rem 0 1rem;">
+    <div class="container">
+      <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.25rem;">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--orange);color:#000;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;flex-shrink:0;">3</div>
+        <h2 style="font-size:18px;font-weight:600;">Your agent's reputation is live — immediately</h2>
+      </div>
+      <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1rem;max-width:680px;line-height:1.7;">
+        Any service can now query your agent's trust score before accepting a payment. The reputation is portable — it follows your agent across every platform that checks OP.
+      </p>
+      <div class="code-block" style="max-width:700px;">
+        <div style="font-size:12px;line-height:1.9;">
+<span style="color:#8a8a8a;"># Anyone can query your agent's reputation</span>
+<span style="color:#60a5fa;">curl</span> https://api.agenticterminal.ai/observer/reputation/your-agent-001
+
+<span style="color:#8a8a8a;"># Returns:</span>
+{
+  <span style="color:#86efac;">"trust_tier"</span>: <span style="color:#86efac;">"active"</span>,
+  <span style="color:#86efac;">"reputation_score"</span>: <span style="color:#f8c471;">0.45</span>,
+  <span style="color:#86efac;">"suggested_action"</span>: <span style="color:#86efac;">"accept"</span>,
+  <span style="color:#86efac;">"payment_history"</span>: {
+    <span style="color:#86efac;">"total_verified_events"</span>: <span style="color:#f8c471;">12</span>,
+    <span style="color:#86efac;">"protocols_used"</span>: [<span style="color:#86efac;">"L402"</span>, <span style="color:#86efac;">"lightning"</span>]
+  }
+}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- OPTIONAL: Register for full profile -->
+  <section style="padding:2rem 0 4rem;">
+    <div class="container">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:2rem;max-width:700px;">
+        <div style="font-size:11px;color:var(--orange);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.75rem;">Optional — Unlock Full Identity</div>
+        <h3 style="font-size:16px;font-weight:600;margin-bottom:0.75rem;">Register for a cryptographic identity</h3>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1.25rem;line-height:1.7;">
+          Starting without an <code style="background:var(--bg-2);padding:2px 6px;border-radius:3px;font-size:12px;">agent_id</code> is fine — you'll appear as unclaimed until you register. Registration adds a public key, enables cryptographic verification of outbound payments, and unlocks your agent profile page on the registry.
+        </p>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <a href="quickstart-lightning.html" style="font-size:12px;color:var(--orange);text-decoration:none;border:1px solid var(--orange);padding:6px 16px;border-radius:3px;">Register with Lightning →</a>
+          <a href="api.html#register" style="font-size:12px;color:var(--text-secondary);text-decoration:none;border:1px solid var(--border);padding:6px 16px;border-radius:3px;">API Reference</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer style="border-top:1px solid var(--border);padding:2rem 0;text-align:center;">
+  <div class="container">
+    <p style="font-size:12px;color:var(--text-dim);font-family:var(--font-sans);">
+      Observer Protocol — The trust layer for the agentic economy.
+      <a href="spec.html" style="color:var(--text-dim);margin-left:1rem;">Observer Protocol Spec</a>
+      <a href="api.html" style="color:var(--text-dim);margin-left:1rem;">API Reference</a>
+      <a href="https://github.com/observer-protocol" target="_blank" style="color:var(--text-dim);margin-left:1rem;">GitHub</a>
+    </p>
+  </div>
+</footer>
+</body>
+</html>
