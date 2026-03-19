@@ -695,7 +695,7 @@ function renderFeed(items) {
   // Apply filter
   let filtered = items;
   if (activeFilter === 'lightning') filtered = items.filter(e => ['lightning','l402'].includes((e.protocol || '').toLowerCase()));
-  else if (activeFilter === 'x402') filtered = items.filter(e => (e.protocol || '').toLowerCase() === 'x402');
+  else if (activeFilter === 'x402') filtered = items.filter(e => ['x402','x402_stripe'].includes((e.protocol || '').toLowerCase()));
   else if (activeFilter === 'verified') filtered = items.filter(e => e.verified);
 
   const countEl = document.getElementById('feed-count');
@@ -766,9 +766,15 @@ function renderFeed(items) {
             Verify Proof
           </button>
           <div id="${proofId}" style="display:none;font-family:monospace;font-size:10px;color:var(--text-dim);margin-top:4px;line-height:1.8;background:rgba(255,255,255,0.03);padding:6px;border-radius:4px;word-break:break-all;">
-            <div><span style="color:var(--text-light)">${proto === 'x402' ? 'tx hash:' : 'preimage:'}</span> ${preimage}</div>
-            ${proto !== 'x402' ? `<div><span style="color:var(--text-light)">sha256(↑):</span> ${txHash}</div>` : ''}
-            <div style="color:var(--verified);margin-top:2px;">✓ ${proto === 'x402' ? 'tx hash = cryptographic proof of receipt' : 'SHA256(preimage) = payment_hash — cryptographic proof of receipt'}</div>
+            ${['x402','x402_stripe'].includes(proto) ? `
+            <div><span style="color:var(--text-light)">transaction_hash:</span> ${preimage}</div>
+            <div style="color:var(--verified);margin-top:2px;">✓ On-chain transaction — verify on block explorer</div>
+            <div style="margin-top:4px;"><a href="https://basescan.org/tx/${preimage}" target="_blank" style="color:var(--orange);text-decoration:none;">View on Basescan ↗</a></div>
+            ` : `
+            <div><span style="color:var(--text-light)">preimage:</span> ${preimage}</div>
+            <div><span style="color:var(--text-light)">sha256(↑):</span> ${txHash}</div>
+            <div style="color:var(--verified);margin-top:2px;">✓ SHA256(preimage) = payment_hash — cryptographic proof of receipt</div>
+            `}
           </div>
         </div>` : ''}
       </div>`;
@@ -994,9 +1000,15 @@ function renderTxRow(tx) {
     <tr id="${proofId}" style="display:none">
       <td colspan="9" style="padding:8px 12px;background:rgba(247,147,26,0.05);border-bottom:1px solid var(--border)">
         <div style="font-family:var(--font-mono);font-size:10px;line-height:2;word-break:break-all">
-          <div><span style="color:var(--text-secondary)">${txProto === 'x402' ? 'tx hash  :' : 'preimage :'}</span> ${preimage}</div>
-          ${txProto !== 'x402' ? `<div><span style="color:var(--text-secondary)">sha256(↑):</span> ${hash}</div>` : ''}
-          <div style="color:var(--verified);margin-top:4px">✓ ${txProto === 'x402' ? 'tx hash = cryptographic proof of receipt' : 'SHA256(preimage) = payment_hash — cryptographic proof of receipt'}</div>
+          ${['x402','x402_stripe'].includes(txProto) ? `
+          <div><span style="color:var(--text-secondary)">transaction_hash:</span> ${preimage}</div>
+          <div style="color:var(--verified);margin-top:4px">✓ On-chain transaction — verify on block explorer</div>
+          <div style="margin-top:4px;"><a href="https://basescan.org/tx/${preimage}" target="_blank" style="color:var(--orange);text-decoration:none;">View on Basescan ↗</a></div>
+          ` : `
+          <div><span style="color:var(--text-secondary)">preimage:</span> ${preimage}</div>
+          <div><span style="color:var(--text-secondary)">sha256(↑):</span> ${hash}</div>
+          <div style="color:var(--verified);margin-top:4px">✓ SHA256(preimage) = payment_hash — cryptographic proof of receipt</div>
+          `}
         </div>
       </td>
     </tr>` : ''}
