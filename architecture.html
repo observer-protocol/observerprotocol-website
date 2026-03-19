@@ -382,8 +382,8 @@
   <!-- ARCHITECTURE DIAGRAM -->
   <div class="diagram-container">
     <img
-      src="https://agenticterminal.ai/assets/observer-protocol-architecture.png"
-      alt="Observer Protocol Architecture — full flow from agent keypair generation through payment, cryptographic verification, and intelligence output"
+      src="op-architecture-diagram.jpg"
+      alt="Observer Protocol — verification layer for the agentic economy"
     >
     <div class="diagram-caption">
       Figure 1 — Observer Protocol: Full transaction verification flow. Agent #0001 (Maxi) and Agent #0002 (Vicky). World's first formalized A2A verified agent payment. February 22, 2026.
@@ -475,7 +475,7 @@
       <div class="layer-card">
         <div class="layer-num">Layer 3</div>
         <h4>Verification</h4>
-        <p>Two checks: (1) Challenge-response filter — agent must sign programmatically, proving autonomy at scale. (2) Proof verification — preimage is checked against the payment hash. Cryptographic, not policy.</p>
+        <p>Two checks: (1) Challenge-response filter — agent must sign programmatically, proving autonomy at scale. (2) Proof verification — payment proof is verified cryptographically against the transaction reference. For Lightning/L402: SHA256(preimage) = payment_hash. For x402/MPP/EVM: ECDSA signature over transaction hash. Cryptographic, not policy.</p>
       </div>
       <div class="layer-card">
         <div class="layer-num">Layer 4</div>
