@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tether WDK Quickstart — Observer Protocol</title>
+  <meta name="description" content="Add Tether WDK self-custodial wallets to your agent with Observer Protocol identity verification in 25 minutes.">
+  <link rel="stylesheet" href="shared-styles.css">
+  <style>
+    .quickstart-steps {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    
+    .step {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    
+    .step-number {
+      position: absolute;
+      left: -12px;
+      top: 1.5rem;
+      width: 24px;
+      height: 24px;
+      background: var(--orange);
+      color: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .step h3 {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+      color: var(--text-primary);
+    }
+    
+    .step p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+    
+    .step pre {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 12px;
+      margin-bottom: 1rem;
+    }
+    
+    .step code {
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+    }
+    
+    .step .inline-code {
+      background: var(--bg-2);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+    
+    .info-box {
+      background: rgba(38, 161, 123, 0.08);
+      border-left: 2px solid #26A17B;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .info-box p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .warning-box {
+      background: rgba(247, 147, 26, 0.08);
+      border-left: 2px solid var(--orange);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .warning-box p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .supported-chains {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    
+    .chain-card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1rem;
+      text-align: center;
+    }
+    
+    .chain-icon {
+      font-size: 24px;
+      margin-bottom: 0.5rem;
+    }
+    
+    .chain-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+    
+    .chain-token {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 0.25rem;
+    }
+    
+    .cta-box {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.5rem;
+      text-align: center;
+      margin-top: 2rem;
+    }
+    
+    .cta-box h3 {
+      font-size: 15px;
+      margin-bottom: 0.5rem;
+    }
+    
+    .cta-box p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="architecture.html">Architecture</a></li>
+    <li><a href="spec.html">Spec</a></li>
+    <li><a href="registry.html">Registry</a></li>
+    <li><a href="demo.html">Demo</a></li>
+    <li><a href="sdk.html">SDK</a></li>
+    <li><a href="api.html">API</a></li>
+    <li><a href="quickstart.html" class="active">Quickstart</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+  <section style="padding: 3rem 0 1rem;">
+    <div class="container">
+      <div class="section-label">Quickstart</div>
+      <h1 style="font-size:clamp(1.6rem,4vw,2.4rem);font-weight:600;margin-bottom:1rem;">Tether WDK + Observer Protocol</h1>
+      <p style="font-size:14px;color:var(--text-secondary);max-width:600px;font-family:var(--font-sans);line-height:1.8;">
+        Add self-custodial USDT (Ethereum/Polygon) and Bitcoin wallets to your agent with full Observer Protocol identity verification. ~25 minutes.
+      </p>
+    </div>
+  </section>
+
+  <section style="padding: 2rem 0;">
+    <div class="container">
+      <div class="supported-chains" style="max-width: 600px; margin: 0 auto 2rem;">
+        <div class="chain-card">
+          <div class="chain-icon">⟠</div>
+          <div class="chain-name">Ethereum</div>
+          <div class="chain-token">USDT</div>
+        </div>
+        <div class="chain-card">
+          <div class="chain-icon">⬡</div>
+          <div class="chain-name">Polygon</div>
+          <div class="chain-token">USDT</div>
+        </div>
+        <div class="chain-card">
+          <div class="chain-icon">₿</div>
+          <div class="chain-name">Bitcoin</div>
+          <div class="chain-token">BTC</div>
+        </div>
+      </div>
+
+      <div class="quickstart-steps">
+        
+        <!-- Step 1 -->
+        <div class="step">
+          <div class="step-number">1</div>
+          <h3>Install Dependencies</h3>
+          <p>Install the WDK packages and Observer Protocol SDK:</p>
+          <pre><code>npm install @tetherto/wdk @tetherto/wdk-wallet-evm @tetherto/wdk-wallet-btc
+npm install @observerprotocol/sdk</code></pre>
+          
+          <div class="info-box">
+            <p><strong>Note:</strong> The WDK uses native modules for cryptography. Make sure you have Python and build tools installed. On most systems: <code class="inline-code">npm install -g node-gyp</code></p>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step">
+          <div class="step-number">2</div>
+          <h3>Generate or Import Seed Phrase</h3>
+          <p>The WDK uses BIP-39 seed phrases for deterministic key generation. You can generate a new one or import an existing mnemonic:</p>
+          <pre><code>import { AgentWallet } from '@observerprotocol/sdk';
+
+// Generate new seed phrase (save this securely!)
+const seedPhrase = AgentWallet.generateSeedPhrase();
+console.log('Seed phrase:', seedPhrase);
+// → "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
+
+// Or use existing seed
+const wallet = new AgentWallet({
+  seedPhrase: process.env.WDK_SEED_PHRASE,
+  agentId: 'my-agent-001',
+  alias: 'trading-bot-alpha'
+});</code></pre>
+          
+          <div class="warning-box">
+            <p><strong>⚠️ Security:</strong> Store your seed phrase in a secure environment variable. Never commit it to code. The WDK keeps private keys in memory only — no external storage.</p>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step">
+          <div class="step-number">3</div>
+          <h3>Initialize Wallets</h3>
+          <p>Initialize wallets for the chains you need. Each chain is initialized on-demand:</p>
+          <pre><code>// Initialize WDK
+await wallet.initializeWDK();
+
+// Initialize Ethereum wallet (for USDT on Ethereum)
+const ethWallet = await wallet.initWallet('ethereum', {
+  provider: process.env.ETHEREUM_RPC_URL // Optional, defaults to public RPC
+});
+
+// Initialize Polygon wallet (for USDT on Polygon - lower fees!)
+const polyWallet = await wallet.initWallet('polygon', {
+  provider: process.env.POLYGON_RPC_URL
+});
+
+// Initialize Bitcoin wallet
+const btcWallet = await wallet.initWallet('bitcoin', {
+  host: 'bitcoin.lukechilds.co',
+  port: 50001,
+  protocol: 'tcp'
+});
+
+console.log('ETH address:', ethWallet.address);
+console.log('BTC address:', btcWallet.address);</code></pre>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step">
+          <div class="step-number">4</div>
+          <h3>Register with Observer Protocol</h3>
+          <p>Register your agent to establish identity and enable bilateral verification:</p>
+          <pre><code>import crypto from 'crypto';
+
+// Generate a keypair for Observer Protocol identity
+// (This is separate from your wallet keys for security isolation)
+const identityKey = crypto.generateKeyPairSync('ec', { namedCurve: 'secp256k1' });
+const publicKeyHash = crypto
+  .createHash('sha256')
+  .update(identityKey.publicKey.export({ format: 'der', type: 'spki' }))
+  .digest('hex');
+
+// Register agent
+await wallet.register({
+  alias: 'trading-bot-alpha',
+  publicKeyHash: publicKeyHash,
+  metadata: {
+    description: 'USDT payment agent',
+    supportedChains: ['ethereum', 'polygon', 'bitcoin'],
+    wdkEnabled: true
+  }
+});
+
+console.log('✅ Agent registered on Observer Protocol');</code></pre>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step">
+          <div class="step-number">5</div>
+          <h3>Send Verified Payments</h3>
+          <p>Send payments with automatic bilateral identity verification. Both sender and recipient must be registered on Observer Protocol:</p>
+          <pre><code>// Check if recipient is verified
+const recipientCheck = await wallet.checkRecipient('merchant-bot-beta');
+console.log('Recipient verified:', recipientCheck.verified);
+console.log('Reputation score:', recipientCheck.reputationScore);
+
+// Send USDT on Polygon (fast, cheap)
+const payment = await wallet.verifiedSend({
+  recipientAlias: 'merchant-bot-beta',
+  amount: '10.00',  // 10 USDT
+  chain: 'polygon',
+  token: 'USDT'
+});
+
+console.log('Payment result:', payment);
+// {
+//   success: true,
+//   verification: { alias, publicKeyHash, reputationScore, ... },
+//   payment: { txid, status, amount, recipient, chain, ... }
+// }</code></pre>
+          
+          <div class="info-box">
+            <p><strong>Bilateral Verification:</strong> The recipient's identity is verified before payment executes. The payment object includes both the transaction hash and the verification proof.</p>
+          </div>
+        </div>
+
+        <!-- Step 6 -->
+        <div class="step">
+          <div class="step-number">6</div>
+          <h3>Verify and Submit to ARP</h3>
+          <p>Verify the transaction on-chain and submit to the Agent Reporting Protocol for reputation tracking:</p>
+          <pre><code>import { WDKVerificationAdapter } from '@observerprotocol/sdk';
+
+const adapter = new WDKVerificationAdapter();
+
+// Verify transaction on-chain
+const verification = await adapter.verifyTransaction(
+  'polygon',
+  payment.payment.txid,
+  {
+    recipient: '0x...', // Expected recipient
+    amount: '10.00',
+    token: 'USDT'
+  }
+);
+
+console.log('Verified:', verification.verified);
+console.log('Confirmations:', verification.confirmations);
+
+// Format for ARP
+const arpEvent = adapter.formatForARP(verification, {
+  amount: '10.00',
+  token: 'USDT',
+  recipient: '0x...'
+});
+
+// Submit to Observer Protocol
+await adapter.submitToObserver(agentId, apiKey, arpEvent);
+console.log('✅ Transaction attested on Observer Protocol');</code></pre>
+        </div>
+
+        <!-- Step 7 -->
+        <div class="step">
+          <div class="step-number">7</div>
+          <h3>Direct Send (No Verification)</h3>
+          <p>For payments to non-registered addresses, use direct send:</p>
+          <pre><code>// Send to any address (no OP verification)
+const result = await wallet.send({
+  to: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
+  amount: '5.00',
+  chain: 'ethereum',
+  token: 'USDT'
+});
+
+console.log('Transaction hash:', result.hash);
+
+// Send Bitcoin
+const btcResult = await wallet.send({
+  to: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+  amount: '0.001',
+  chain: 'bitcoin'
+});
+
+console.log('BTC txid:', btcResult.txid);</code></pre>
+        </div>
+
+        <!-- Step 8 -->
+        <div class="step">
+          <div class="step-number">8</div>
+          <h3>Production Checklist</h3>
+          <p>Before deploying to production:</p>
+          <ul style="font-size: 13px; color: var(--text-secondary); line-height: 1.8; margin-left: 1.5rem;">
+            <li>Use your own RPC endpoints (avoid public nodes for production)</li>
+            <li>Get API keys from Etherscan/Polygonscan for verification</li>
+            <li>Store seed phrases in secure environment variables or KMS</li>
+            <li>Set up monitoring for transaction status</li>
+            <li>Implement retry logic for failed transactions</li>
+            <li>Consider using Polygon for USDT (much lower fees than Ethereum)</li>
+            <li>Test on Sepolia testnet first: <code class="inline-code">USDT_CONTRACTS.sepolia</code></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="cta-box">
+        <h3>Need Help?</h3>
+        <p>Join the Observer Protocol community for support, share your implementation, or contribute to the SDK.</p>
+        <div style="display: flex; gap: 1rem; justify-content: center;">
+          <a href="https://github.com/observer-protocol" class="btn btn-primary" target="_blank">GitHub →</a>
+          <a href="demo.html" class="btn btn-outline">Try Live Demo</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Observer Protocol</div>
+        <p style="font-size:12px;color:var(--text-dim);margin-top:0.5rem;font-family:var(--font-sans);">The trust layer for the agentic economy.</p>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;">Quickstart</div>
+        <ul style="list-style:none;">
+          <li><a href="quickstart-lightning.html" class="footer-link">⚡ Lightning Wallet</a></li>
+          <li><a href="quickstart-tether.html" class="footer-link">₮ Tether WDK</a></li>
+          <li><a href="quickstart-x402.html" class="footer-link">◈ x402 / L402</a></li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;">Docs</div>
+        <ul style="list-style:none;">
+          <li><a href="api.html" class="footer-link">API Reference</a></li>
+          <li><a href="sdk.html" class="footer-link">SDK</a></li>
+          <li><a href="architecture.html" class="footer-link">Architecture</a></li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;">Community</div>
+        <ul style="list-style:none;">
+          <li><a href="https://github.com/observer-protocol" target="_blank" class="footer-link">GitHub</a></li>
+          <li><a href="registry.html" class="footer-link">Registry</a></li>
+          <li><a href="demo.html" class="footer-link">Live Demo</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
