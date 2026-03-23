@@ -363,7 +363,7 @@
   </div>
 
   <div class="page-header">
-    <div class="doc-type">Canonical Reference — v0.2 — March 2026</div>
+    <div class="doc-type">Canonical Reference — v0.3 — March 2026</div>
     <h1>Observer Protocol<br>Verification Layer for the Agentic Economy</h1>
     <div class="page-meta">
       <span>Published: February 24, 2026</span>
@@ -470,17 +470,17 @@
       <div class="layer-card">
         <div class="layer-num">Layer 2</div>
         <h4>Payment Rail</h4>
-        <p><strong>LIVE:</strong> Lightning (L402) and EVM chains (x402). <strong>Coming:</strong> Solana. The payment rail is not the constant — <strong>verification is the constant</strong>. The protocol is settlement-agnostic by design.</p>
+        <p><strong>LIVE:</strong> Lightning (L402), EVM chains (x402), Solana (Ed25519), Tether WDK, and Stripe MPP. The payment rail is not the constant — <strong>verification is the constant</strong>. The protocol is settlement-agnostic by design.</p>
       </div>
       <div class="layer-card">
         <div class="layer-num">Layer 3</div>
-        <h4>Verification</h4>
-        <p>Two checks: (1) Challenge-response filter — agent must sign programmatically, proving autonomy at scale. (2) Proof verification — payment proof is verified cryptographically against the transaction reference. For Lightning/L402: SHA256(preimage) = payment_hash. For x402/MPP/EVM: ECDSA signature over transaction hash. Cryptographic, not policy.</p>
+        <h4>Verification & VAC Issuance</h4>
+        <p>Two checks: (1) Challenge-response — agent signs programmatically, proving key control. (2) Proof verification — cryptographic validation of payment proof. Output: a <strong>Verified Agent Credential (VAC)</strong> — signed, portable, containing verified facts plus Extensions for third-party attestations.</p>
       </div>
       <div class="layer-card">
         <div class="layer-num">Layer 4</div>
-        <h4>Intelligence</h4>
-        <p>Verified events flow into PostgreSQL — immutable, timestamped, permanent. Agentic Terminal's intelligence layer reads this database to produce analytics, API feeds, and the public dashboard.</p>
+        <h4>Extensions & Intelligence</h4>
+        <p>The <strong>Extensions</strong> layer allows anyone to cryptographically attest to facts within a VAC — legal entity verification, dispute rates, behavioral scores. Permissionless. Agentic Terminal and other services read VACs (core + extensions) to produce analytics, scoring, and dashboards.</p>
       </div>
     </div>
   </div>
