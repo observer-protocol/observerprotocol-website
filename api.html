@@ -230,6 +230,13 @@
           <a href="#agent-events" class="sidebar-link"><span class="method-tag get">GET</span>/agent-events</a>
         </div>
         <div class="sidebar-group">
+          <div class="sidebar-group-label">Verified Agent Credentials</div>
+          <a href="#vac-get" class="sidebar-link active"><span class="method-tag get">GET</span>/vac/{agent_id}</a>
+          <a href="#vac-refresh" class="sidebar-link"><span class="method-tag post">POST</span>/vac/{agent_id}/refresh</a>
+          <a href="#vac-history" class="sidebar-link"><span class="method-tag get">GET</span>/vac/{agent_id}/history</a>
+          <a href="#vac-revoke" class="sidebar-link"><span class="method-tag post">POST</span>/vac/{credential_id}/revoke</a>
+        </div>
+        <div class="sidebar-group">
           <div class="sidebar-group-label">Observer Protocol</div>
           <a href="#register" class="sidebar-link"><span class="method-tag post">POST</span>/register-agent</a>
           <a href="#verify" class="sidebar-link"><span class="method-tag post">POST</span>/verify-agent</a>
@@ -311,6 +318,95 @@
                 <tr><td class="param-name">since</td><td class="param-type">string</td><td class="param-opt">optional</td><td class="param-desc">ISO date filter</td></tr>
               </table>
               <a href="https://api.observerprotocol.org/api/v1/agent-events" target="_blank" class="try-it-link">Try it ↗</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- VERIFIED AGENT CREDENTIALS GROUP -->
+        <div class="endpoint-section">
+          <div class="endpoint-section-title">Verified Agent Credentials (VAC) · v0.3</div>
+
+          <div class="endpoint" id="vac-get">
+            <div class="endpoint-header" onclick="toggle(this)">
+              <span class="method-tag get">GET</span>
+              <span class="endpoint-path">/vac/{agent_id}</span>
+              <span class="endpoint-summary">Get Verified Agent Credential</span>
+              <span class="endpoint-toggle">▶</span>
+            </div>
+            <div class="endpoint-body">
+              <p style="font-size:13px; color:var(--text-secondary); font-family:var(--font-sans); margin-bottom:1rem;">
+                Retrieve the active VAC for an agent. Returns a cryptographically-signed credential containing verified facts, partner attestations, and metadata. 
+                VACs expire after 7 days and refresh automatically every 24 hours.
+              </p>
+              <div class="response-label">Response 200 — VAC Structure</div>
+              <div class="code-block" style="font-size:11px; line-height:1.7;">
+                {<br>
+                &nbsp;&nbsp;<span class="key">"version"</span>: <span class="str">"1.0.0"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"issued_at"</span>: <span class="str">"2026-03-23T21:37:41-04:00"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"expires_at"</span>: <span class="str">"2026-03-30T21:37:41-04:00"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"credential_id"</span>: <span class="str">"3b43dca6-864a-44ea-b8e7-d4182e5c5e11"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"core"</span>: {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"agent_id"</span>: <span class="str">"maxi-0001"</span>,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"total_transactions"</span>: <span class="val">26</span>,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"total_volume_sats"</span>: <span class="val">1523000000</span>,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"unique_counterparties"</span>: <span class="val">12</span>,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"rails_used"</span>: [<span class="str">"x402"</span>, <span class="str">"L402"</span>, <span class="str">"lightning"</span>],<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"first_transaction_at"</span>: <span class="str">"2026-02-22T18:25:01-05:00"</span>,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"last_transaction_at"</span>: <span class="str">"2026-03-19T00:01:27-04:00"</span><br>
+                &nbsp;&nbsp;},<br>
+                &nbsp;&nbsp;<span class="key">"extensions"</span>: {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"partner_attestations"</span>: [<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"partner_name"</span>: <span class="str">"corpo"</span>,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="key">"claims"</span>: { <span class="key">"legal_entity_id"</span>: <span class="str">"WYO-12345"</span> }<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;]<br>
+                &nbsp;&nbsp;},<br>
+                &nbsp;&nbsp;<span class="key">"signature"</span>: <span class="str">"c5f30317c2616370cf62d628797e53d55d2437d2..."</span><br>
+                }
+              </div>
+              <a href="https://api.observerprotocol.org/vac/maxi-0001" target="_blank" class="try-it-link">Try it ↗</a>
+            </div>
+          </div>
+
+          <div class="endpoint" id="vac-refresh">
+            <div class="endpoint-header" onclick="toggle(this)">
+              <span class="method-tag post">POST</span>
+              <span class="endpoint-path">/vac/{agent_id}/refresh</span>
+              <span class="endpoint-summary">Refresh VAC Credential</span>
+              <span class="endpoint-toggle">▶</span>
+            </div>
+            <div class="endpoint-body">
+              <p style="font-size:13px; color:var(--text-secondary); font-family:var(--font-sans); margin-bottom:1rem;">
+                Force generation of a new VAC with the latest transaction data. Normally automatic every 24 hours, but can be triggered on-demand.
+              </p>
+              <div class="response-label">Response 201</div>
+              <div class="code-block" style="font-size:12px;">
+                {<br>
+                &nbsp;&nbsp;<span class="key">"credential_id"</span>: <span class="str">"new-uuid"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"issued_at"</span>: <span class="str">"2026-03-23T21:45:00Z"</span>,<br>
+                &nbsp;&nbsp;<span class="key">"status"</span>: <span class="str">"refreshed"</span><br>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="endpoint" id="vac-history">
+            <div class="endpoint-header" onclick="toggle(this)">
+              <span class="method-tag get">GET</span>
+              <span class="endpoint-path">/vac/{agent_id}/history</span>
+              <span class="endpoint-summary">Get VAC History</span>
+              <span class="endpoint-toggle">▶</span>
+            </div>
+            <div class="endpoint-body">
+              <p style="font-size:13px; color:var(--text-secondary); font-family:var(--font-sans); margin-bottom:1rem;">
+                Retrieve historical VAC credentials for an agent. Useful for tracking reputation evolution over time.
+              </p>
+              <table class="param-table">
+                <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Description</th></tr>
+                <tr><td class="param-name">limit</td><td class="param-type">integer</td><td class="param-opt">optional</td><td class="param-desc">Max results. Default: 10</td></tr>
+                <tr><td class="param-name">include_revoked</td><td class="param-type">boolean</td><td class="param-opt">optional</td><td class="param-desc">Include revoked credentials. Default: false</td></tr>
+              </table>
             </div>
           </div>
         </div>
