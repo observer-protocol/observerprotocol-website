@@ -501,10 +501,10 @@
   <!-- HERO -->
   <div class="hero">
     <div class="hero-left">
-      <div class="hero-eyebrow fade-up">Protocol v0.2 — Live</div>
-      <h1 class="fade-up fade-up-1">The <span>trust layer</span><br>for the agentic economy.</h1>
+      <div class="hero-eyebrow fade-up">Protocol v0.3 — Live</div>
+      <h1 class="fade-up fade-up-1">The <span>credential layer</span><br>for the agentic economy.</h1>
       <p class="hero-sub fade-up fade-up-2">
-        Autonomous agents are transacting without human mediation.<br>Observer Protocol is the trust layer for the agentic economy — the only protocol that turns verified cross-rail payments into portable agent reputation.
+        Autonomous agents are transacting without human mediation.<br>Observer Protocol issues <strong>Verified Agent Credentials (VACs)</strong> — portable, structured, cryptographically-grounded identity artifacts that travel with your agent across any rail, any platform, any OWS wallet.
       </p>
 
       <div class="install-block fade-up fade-up-3" onclick="copyInstall(this)" title="Click to copy">
@@ -524,7 +524,7 @@
     <div class="op-integrations-panel fade-up fade-up-2">
       <div class="int-header">
         <span class="int-label">Live Integrations</span>
-        <span class="int-count">6 RAILS</span>
+        <span class="int-count">8 RAILS</span>
       </div>
 
       <div class="int-grid">
@@ -556,12 +556,13 @@
         </div>
 
         <!-- Tether WDK -->
-        <div class="int-card">
+        <div class="int-card featured">
           <div class="int-icon" style="background: #001a0a;">
             <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" fill="#26A17B"/><text x="16" y="22" text-anchor="middle" fill="white" font-size="16" font-weight="bold" font-family="monospace">₮</text></svg>
           </div>
           <div class="int-name">Tether</div>
           <div class="int-sig">WDK</div>
+          <span class="int-new-tag">NEW</span>
         </div>
 
         <!-- Stripe MPP -->
@@ -582,6 +583,16 @@
           <div class="int-sig">Ed25519</div>
           <span class="int-new-tag">NEW</span>
         </div>
+
+        <!-- EVM — NEW (featured) -->
+        <div class="int-card featured">
+          <div class="int-icon" style="background: #0a1a2a;">
+            <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" fill="#627EEA"/><path d="M16 7l-7 12 7 4 7-4-7-12z" fill="white" opacity="0.9"/><path d="M9 19l7 6 7-6-7 4-7-4z" fill="white" opacity="0.6"/></svg>
+          </div>
+          <div class="int-name">EVM</div>
+          <div class="int-sig">Ethereum + L2s</div>
+          <span class="int-new-tag">NEW</span>
+        </div>
       </div>
 
       <div class="int-footer">ALL RAILS LIVE ON MAINNET</div>
@@ -591,9 +602,9 @@
   <!-- STATUS BAR -->
   <div class="status-bar">
     <div class="status-item"><span class="live-dot"></span><strong>network:</strong> active</div>
-    <div class="status-item"><strong>protocol:</strong> v0.2</div>
+    <div class="status-item"><strong>protocol:</strong> v0.3</div>
     <div class="status-item"><strong>genesis:</strong> OP-000001 · 2026-02-22</div>
-    <div class="status-item"><strong>rails:</strong> Lightning · Solana · x402</div>
+    <div class="status-item"><strong>rails:</strong> Lightning · Solana · EVM · x402</div>
     <div class="status-item"><strong>verification:</strong> online</div>
     <div class="status-item"><a href="https://api.observerprotocol.org/api/v1/health" target="_blank" style="color:var(--orange); text-decoration:none;">api.observerprotocol.org ↗</a></div>
   </div>
@@ -657,32 +668,37 @@
   <!-- WHAT IT ANSWERS -->
   <section>
     <div class="container">
-      <div class="section-label">What Observer Protocol Answers</div>
-      <h2>Before you delegate economic authority<br>to an unknown agent, you need facts.</h2>
+      <div class="section-label">What a VAC Contains</div>
+      <h2>A Verified Agent Credential attests to the facts<br>that matter before you delegate economic authority.</h2>
       <div class="answers-grid">
         <div class="answer-cell">
           <div class="answer-num">01</div>
-          <h3>How long has this agent been economically active?</h3>
+          <h3>Economic Activity History</h3>
           <p>Not since account creation. Since first cryptographically verified transaction. A tamper-proof track record the agent cannot inflate.</p>
         </div>
         <div class="answer-cell">
           <div class="answer-num">02</div>
-          <h3>What is this agent's payment reliability rate?</h3>
-          <p>Successful settlements vs. failed attempts — across all rails. Queryable, auditable, objective.</p>
+          <h3>Payment Reliability Across Rails</h3>
+          <p>Successful settlements vs. failed attempts — across Lightning, Solana, EVM, and more. Queryable, auditable, objective.</p>
         </div>
         <div class="answer-cell">
           <div class="answer-num">03</div>
-          <h3>What is this agent's verified economic network?</h3>
-          <p>The counterparty graph reveals real economic relationships — cryptographically confirmed, pseudonymous by default.</p>
+          <h3>Verified Counterparty Network</h3>
+          <p>The economic graph reveals real relationships — cryptographically confirmed, pseudonymous by default.</p>
         </div>
         <div class="answer-cell">
           <div class="answer-num">04</div>
-          <h3>How much capital has this agent committed?</h3>
-          <p>Cumulative settled volume is skin in the game. A verified payment history cannot be faked at scale. This is Sybil resistance without a gatekeeper.</p>
+          <h3>Capital Commitment & Volume</h3>
+          <p>Cumulative settled volume is skin in the game. A verified payment history cannot be faked at scale. Sybil resistance without gatekeepers.</p>
+        </div>
+        <div class="answer-cell">
+          <div class="answer-num">05</div>
+          <h3>Partner Attestations</h3>
+          <p>Off-chain facts that partners can cryptographically attest to within the VAC structure — legal entity verification, dispute rates, service quality, and more.</p>
         </div>
       </div>
       <p style="margin-top:1.5rem; font-size:12px; color:var(--text-dim); font-family:var(--font-sans);">
-        These are not scores. They are facts derived from cryptographic proof. No authority assigns them. No operator can inflate them. The math is the record.
+        A VAC is not a score. It is a credential — cryptographically signed, portable across platforms, extensible via partner attestations. The math is the record.
       </p>
     </div>
   </section>
@@ -727,13 +743,18 @@
         </div>
         <div class="rail-card live">
           <div class="rail-name">x402 / EVM</div>
-          <div class="rail-desc">ECDSA signature verification across Base and EVM-compatible chains. Full cross-library validation live.</div>
+          <div class="rail-desc">ECDSA signature verification across Base, Ethereum, Polygon, and EVM-compatible chains. Full cross-library validation live.</div>
           <div class="rail-status live"><span class="live-dot"></span>Live in v0.2</div>
         </div>
-        <div class="rail-card coming">
-          <div class="rail-name">Solana · Ark · Fedimint</div>
-          <div class="rail-desc">Additional settlement rails in active development. Protocol-neutral schema accepts any cryptographically verifiable proof.</div>
-          <div class="rail-status coming">Coming in v0.3</div>
+        <div class="rail-card live">
+          <div class="rail-name">Solana</div>
+          <div class="rail-desc">Ed25519 signature verification for Solana-native agents. Fast finality, sub-cent fees, growing agent ecosystem.</div>
+          <div class="rail-status live"><span class="live-dot"></span>Live in v0.3</div>
+        </div>
+        <div class="rail-card live">
+          <div class="rail-name">Tether WDK / Stripe MPP</div>
+          <div class="rail-desc">Stablecoin and traditional finance rails with cryptographic settlement verification. Bridge between crypto and fiat.</div>
+          <div class="rail-status live"><span class="live-dot"></span>Live in v0.3</div>
         </div>
       </div>
     </div>
@@ -745,7 +766,7 @@
   <section>
     <div class="container">
       <div class="section-label">Integrate in 5 Minutes</div>
-      <h2>Three steps to verified agent identity.</h2>
+      <h2>Three steps to your Verified Agent Credential.</h2>
       <div class="integrate-steps">
         <div class="step-card">
           <div class="step-num">STEP 01</div>
@@ -755,12 +776,12 @@
         <div class="step-card">
           <div class="step-num">STEP 02</div>
           <h3>Register + Verify</h3>
-          <p>Submit your agent's public key. Sign the challenge. Receive your API key and badge URL.</p>
+          <p>Submit your agent's public key. Sign the challenge. Prove cryptographic control of your identity.</p>
         </div>
         <div class="step-card">
           <div class="step-num">STEP 03</div>
-          <h3>Submit Events</h3>
-          <p>Record transactions with cryptographic proof. Each verified event builds your agent's permanent on-chain reputation.</p>
+          <h3>Receive Your VAC</h3>
+          <p>Record transactions with cryptographic proof. Each verified event contributes to your portable, signed credential that travels with your agent across any platform.</p>
         </div>
       </div>
       <div class="code-block">
