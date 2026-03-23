@@ -10,14 +10,17 @@
     /* ── HERO ──────────────────────────────────────────── */
     .hero {
       min-height: calc(100vh - var(--nav-h));
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
       padding: 5rem 2rem 4rem;
-      max-width: 1080px;
+      max-width: 1200px;
       margin: 0 auto;
       position: relative;
     }
+    @media(max-width:900px){ .hero { grid-template-columns: 1fr; } }
+    .hero-left { position: relative; z-index: 1; }
     .hero::before {
       content: '';
       position: absolute;
@@ -247,6 +250,120 @@
       font-family: var(--font-sans);
     }
 
+    /* ── INTEGRATIONS PANEL ───────────────────────────── */
+    .op-integrations-panel {
+      position: relative;
+      z-index: 1;
+      border-left: 1px solid var(--border);
+      padding-left: 2.5rem;
+      display: flex;
+      flex-direction: column;
+    }
+    @media(max-width:900px){
+      .op-integrations-panel {
+        border-left: none;
+        border-top: 1px solid var(--border);
+        padding-left: 0;
+        padding-top: 2rem;
+      }
+    }
+    .int-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+    .int-label {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .int-count {
+      font-size: 10px;
+      color: var(--orange);
+      letter-spacing: 0.1em;
+      background: var(--orange-glow2);
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+    .int-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .int-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 14px 8px 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      transition: border-color 0.2s;
+    }
+    .int-card:hover { border-color: var(--border-bright); }
+    .int-card.featured {
+      border-color: rgba(247,147,26,0.25);
+      background: var(--orange-glow2);
+    }
+    .int-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .int-name {
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+    .int-card.featured .int-name { color: var(--orange); }
+    .int-sig {
+      font-size: 8px;
+      color: var(--text-dim);
+      text-align: center;
+      letter-spacing: 0.06em;
+    }
+    .int-card.featured .int-sig { color: rgba(247,147,26,0.5); }
+    .int-new-tag {
+      display: inline-block;
+      font-size: 7px;
+      color: var(--orange);
+      background: var(--orange-glow);
+      padding: 2px 6px;
+      border-radius: 2px;
+      letter-spacing: 0.1em;
+    }
+    .int-footer {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 9px;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .int-footer::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--verified);
+      animation: live-pulse 2.4s ease-in-out infinite;
+    }
+    @keyframes live-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.7); }
+    }
+
     /* ── RAILS ─────────────────────────────────────────── */
     .rails-grid {
       display: grid;
@@ -371,22 +488,91 @@
 
   <!-- HERO -->
   <div class="hero">
-    <div class="hero-eyebrow fade-up">Protocol v0.2 — Live</div>
-    <h1 class="fade-up fade-up-1">The <span>trust layer</span><br>for the agentic economy.</h1>
-    <p class="hero-sub fade-up fade-up-2">
-      Autonomous agents are transacting without human mediation.<br>Observer Protocol is the trust layer for the agentic economy — the only protocol that turns verified cross-rail payments into portable agent reputation.
-    </p>
+    <div class="hero-left">
+      <div class="hero-eyebrow fade-up">Protocol v0.2 — Live</div>
+      <h1 class="fade-up fade-up-1">The <span>trust layer</span><br>for the agentic economy.</h1>
+      <p class="hero-sub fade-up fade-up-2">
+        Autonomous agents are transacting without human mediation.<br>Observer Protocol is the trust layer for the agentic economy — the only protocol that turns verified cross-rail payments into portable agent reputation.
+      </p>
 
-    <div class="install-block fade-up fade-up-3" onclick="copyInstall(this)" title="Click to copy">
-      <code id="install-cmd">npm install @observerprotocol/sdk</code>
-      <span class="copy-hint">click to copy</span>
+      <div class="install-block fade-up fade-up-3" onclick="copyInstall(this)" title="Click to copy">
+        <code id="install-cmd">npm install @observerprotocol/sdk</code>
+        <span class="copy-hint">click to copy</span>
+      </div>
+
+      <div class="hero-actions fade-up fade-up-4">
+        <a href="demo.html" class="btn btn-primary">Live Demo ↗</a>
+        <a href="sdk.html" class="btn btn-outline">Get Started →</a>
+        <a href="architecture.html" class="btn btn-outline">Architecture</a>
+        <a href="https://github.com/observer-protocol" class="btn btn-outline" target="_blank">GitHub</a>
+      </div>
     </div>
 
-    <div class="hero-actions fade-up fade-up-4">
-      <a href="demo.html" class="btn btn-primary">Live Demo ↗</a>
-      <a href="sdk.html" class="btn btn-outline">Get Started →</a>
-      <a href="architecture.html" class="btn btn-outline">Architecture</a>
-      <a href="https://github.com/observer-protocol" class="btn btn-outline" target="_blank">GitHub</a>
+    <!-- INTEGRATIONS PANEL -->
+    <div class="op-integrations-panel fade-up fade-up-2">
+      <div class="int-header">
+        <span class="int-label">Live Integrations</span>
+        <span class="int-count">6 RAILS</span>
+      </div>
+
+      <div class="int-grid">
+        <!-- Bitcoin -->
+        <div class="int-card">
+          <div class="int-icon" style="background: #1a1200;">
+            <svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" fill="#F7931A"/><path d="M21.5 14.2c.3-2-1.2-3.1-3.3-3.8l.7-2.7-1.7-.4-.7 2.6c-.4-.1-.9-.2-1.3-.3l.7-2.6-1.7-.4-.7 2.7c-.3-.1-.7-.2-1-.2l-2.2-.5-.4 1.8s1.2.3 1.2.3c.7.2.8.7.8 1l-.8 3.2c.1 0 .2.1.3.1l-1.2 4.6c-.1.2-.3.5-.8.4l-1.2-.3-.8 2 2.1.5c.4.1.8.2 1.2.3l-.7 2.8 1.7.4.7-2.7c.4.1.9.2 1.4.3l-.7 2.7 1.7.4.7-2.7c2.8.5 4.9.3 5.8-2.2.7-2-.1-3.2-1.5-3.9 1.1-.2 1.9-1 2.1-2.4zm-3.8 5.3c-.5 2-3.9.9-5 .6l.9-3.5c1.1.3 4.6.8 4.1 2.9zm.5-5.4c-.5 1.8-3.4.9-4.3.7l.8-3.2c1 .2 3.9.7 3.5 2.5z" fill="white"/></svg>
+          </div>
+          <div class="int-name">Bitcoin</div>
+          <div class="int-sig">secp256k1</div>
+        </div>
+
+        <!-- Lightning -->
+        <div class="int-card">
+          <div class="int-icon" style="background: #120d24;">
+            <svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" fill="#8B5CF6"/><path d="M16 7l-7 9 7 4 7-4-7-9z" fill="white" opacity="0.9"/><path d="M9 16l7 9 7-9-7 4-7-4z" fill="white" opacity="0.5"/></svg>
+          </div>
+          <div class="int-name">Lightning</div>
+          <div class="int-sig">L402</div>
+        </div>
+
+        <!-- x402 -->
+        <div class="int-card">
+          <div class="int-icon" style="background: #001a0d;">
+            <svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" fill="#00DC82"/><path d="M10 16h3l2-6 2 12 2-8 1 2h2" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          </div>
+          <div class="int-name">x402</div>
+          <div class="int-sig">HTTP pay</div>
+        </div>
+
+        <!-- Tether WDK -->
+        <div class="int-card">
+          <div class="int-icon" style="background: #001a0a;">
+            <svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" fill="#26A17B"/><text x="16" y="21" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="monospace">₮</text></svg>
+          </div>
+          <div class="int-name">Tether</div>
+          <div class="int-sig">WDK</div>
+        </div>
+
+        <!-- Stripe MPP -->
+        <div class="int-card">
+          <div class="int-icon" style="background: #0d0a1a;">
+            <svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" fill="#635BFF"/><path d="M15.5 11c-2 .5-3 1.5-3 3 0 2.5 3.5 2.5 3.5 4.5 0 .8-.6 1.3-1.5 1.3-1.2 0-2.1-.8-2.5-2l-1.5.8c.5 1.7 2 2.9 4 2.9 2.2 0 3.5-1.2 3.5-3 0-2.6-3.5-2.8-3.5-4.5 0-.7.5-1.1 1.3-1.1 1 0 1.8.6 2.1 1.6l1.5-.8C18.4 12 17 11 15.5 11z" fill="white"/></svg>
+          </div>
+          <div class="int-name">Stripe MPP</div>
+          <div class="int-sig">machine pay</div>
+        </div>
+
+        <!-- Solana — NEW (featured) -->
+        <div class="int-card featured">
+          <div class="int-icon" style="background: #1a0a2a;">
+            <svg width="20" height="20" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" fill="#9945FF"/><path d="M11 12.5l2 7 2-4.5 2 4.5 2-7" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          </div>
+          <div class="int-name">Solana</div>
+          <div class="int-sig">Ed25519</div>
+          <span class="int-new-tag">NEW</span>
+        </div>
+      </div>
+
+      <div class="int-footer">ALL RAILS LIVE ON MAINNET</div>
     </div>
   </div>
 
@@ -395,7 +581,7 @@
     <div class="status-item"><span class="live-dot"></span><strong>network:</strong> active</div>
     <div class="status-item"><strong>protocol:</strong> v0.2</div>
     <div class="status-item"><strong>genesis:</strong> OP-000001 · 2026-02-22</div>
-    <div class="status-item"><strong>rails:</strong> L402 · x402</div>
+    <div class="status-item"><strong>rails:</strong> Lightning · Solana · x402</div>
     <div class="status-item"><strong>verification:</strong> online</div>
     <div class="status-item"><a href="https://api.observerprotocol.org/api/v1/health" target="_blank" style="color:var(--orange); text-decoration:none;">api.observerprotocol.org ↗</a></div>
   </div>
