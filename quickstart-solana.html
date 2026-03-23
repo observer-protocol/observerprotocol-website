@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solana Quickstart — Observer Protocol</title>
+  <meta name="description" content="Build Solana-native agents with Ed25519 identity and portable reputation on Observer Protocol.">
+  <link rel="stylesheet" href="shared-styles.css">
+  <style>
+    .step { margin-bottom: 3rem; }
+    .step-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+    .step-num { 
+      width: 32px; height: 32px; 
+      background: #9945ff; 
+      color: #fff; 
+      border-radius: 50%; 
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 600;
+    }
+    .step h2 { font-size: 1.2rem; font-weight: 600; margin: 0; }
+    .code-block { 
+      background: #111; 
+      border: 1px solid var(--border); 
+      border-radius: 4px; 
+      padding: 1rem; 
+      margin: 1rem 0;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      overflow-x: auto;
+    }
+    .code-block .comment { color: #6a6a6a; }
+    .code-block .keyword { color: #c586c0; }
+    .code-block .string { color: #ce9178; }
+    .code-block .func { color: #dcdcaa; }
+    .info-box {
+      background: rgba(153, 69, 255, 0.08);
+      border-left: 3px solid #9945ff;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      font-size: 13px;
+      font-family: var(--font-sans);
+    }
+    .info-box strong { color: #9945ff; }
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="architecture.html">Architecture</a></li>
+    <li><a href="spec.html">Spec</a></li>
+    <li><a href="registry.html">Registry</a></li>
+    <li><a href="demo.html">Demo</a></li>
+    <li><a href="sdk.html">SDK</a></li>
+    <li><a href="api.html">API</a></li>
+    <li><a href="quickstart.html" class="active">Quickstart</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+  <section style="padding: 3rem 0 1rem;">
+    <div class="container">
+      <a href="quickstart.html" style="font-size:12px;color:var(--text-dim);text-decoration:none;">← Back to Quickstart</a>
+      <div class="section-label" style="margin-top:1rem;">Solana Quickstart</div>
+      <h1 style="font-size:clamp(1.6rem,4vw,2.4rem);font-weight:600;margin-bottom:1rem;">Build Solana-Native Agents</h1>
+      <p style="font-size:13px;color:var(--text-secondary);max-width:600px;font-family:var(--font-sans);line-height:1.8;">
+        Observer Protocol now supports Solana agents with native Ed25519 signature verification. Build agents that work on Solana while building portable reputation across all supported rails.
+      </p>
+    </div>
+  </section>
+
+  <section style="padding: 2rem 0 4rem;">
+    <div class="container" style="max-width:720px;">
+
+      <!-- Step 1 -->
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">1</div>
+          <h2>Generate an Ed25519 Keypair</h2>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
+          Solana uses Ed25519 for all keypairs. You can generate one using any Solana SDK or the <code>@solana/web3.js</code> library.
+        </p>
+        <div class="code-block">
+<span class="keyword">import</span> { Keypair } <span class="keyword">from</span> <span class="string">'@solana/web3.js'</span>;
+
+<span class="comment">// Generate a new Ed25519 keypair</span>
+<span class="keyword">const</span> keypair = Keypair.<span class="func">generate</span>();
+
+<span class="comment">// Your Solana public key (base58-encoded)</span>
+<span class="keyword">const</span> publicKey = keypair.publicKey.<span class="func">toString</span>();
+<span class="comment">// e.g., "HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH"</span>
+
+<span class="comment">// Your secret key (32 bytes, hex-encoded for OP)</span>
+<span class="keyword">const</span> secretKey = Buffer.<span class="func">from</span>(keypair.secretKey).<span class="func">toString</span>(<span class="string">'hex'</span>);
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">2</div>
+          <h2>Register Your Agent</h2>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
+          Use your Ed25519 public key to register with Observer Protocol. The system auto-detects the key type.
+        </p>
+        <div class="code-block">
+<span class="keyword">curl</span> -X POST <span class="string">"https://api.observerprotocol.org/observer/register-agent"</span> \\
+  -H <span class="string">"Content-Type: application/json"</span> \\
+  -d <span class="string">'{
+    "public_key": "HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH",
+    "agent_name": "solana-agent-001",
+    "framework": "solana-web3"
+  }'</span>
+        </div>
+        <div class="info-box">
+          <strong>Auto-Detection:</strong> OP detects Ed25519 keys (32 bytes) vs SECP256k1 keys (33/65 bytes) automatically. No special flags needed.
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">3</div>
+          <h2>Complete Challenge-Response Verification</h2>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
+          Sign the challenge nonce with your Ed25519 private key to prove key ownership.
+        </p>
+        <div class="code-block">
+<span class="comment">// 1. Request a challenge</span>
+<span class="keyword">const</span> challengeRes = <span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">`https://api.observerprotocol.org/observer/challenge?agent_id=${agentId}`</span>);
+<span class="keyword">const</span> { nonce } = <span class="keyword">await</span> challengeRes.<span class="func">json</span>();
+
+<span class="comment">// 2. Sign the nonce with Ed25519</span>
+<span class="keyword">import</span> { sign } <span class="keyword">from</span> <span class="string">'tweetnacl'</span>;
+<span class="keyword">const</span> message = <span class="keyword">new</span> TextEncoder().<span class="func">encode</span>(nonce);
+<span class="keyword">const</span> signature = <span class="func">sign</span>(message, keypair.secretKey);
+
+<span class="comment">// 3. Submit verification</span>
+<span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">"https://api.observerprotocol.org/observer/verify-agent"</span>, {
+  method: <span class="string">"POST"</span>,
+  headers: { <span class="string">"Content-Type"</span>: <span class="string">"application/json"</span> },
+  body: JSON.<span class="func">stringify</span>({
+    agent_id: agentId,
+    signed_challenge: Buffer.<span class="func">from</span>(signature).<span class="func">toString</span>(<span class="string">'hex'</span>)
+  })
+});
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">4</div>
+          <h2>Submit Solana Transactions</h2>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
+          Once verified, submit your Solana x402 transactions to build reputation.
+        </p>
+        <div class="code-block">
+<span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">"https://api.observerprotocol.org/observer/submit-transaction"</span>, {
+  method: <span class="string">"POST"</span>,
+  headers: { <span class="string">"Content-Type"</span>: <span class="string">"application/json"</span> },
+  body: JSON.<span class="func">stringify</span>({
+    agent_id: agentId,
+    protocol: <span class="string">"x402"</span>,
+    transaction_reference: <span class="string">"5x...solana-tx-signature"</span>,  <span class="comment">// Solana tx sig</span>
+    timestamp: <span class="keyword">new</span> <span class="func">Date</span>().<span class="func">toISOString</span>(),
+    signature: <span class="string">"ed25519-sig..."</span>,
+    optional_metadata: JSON.<span class="func">stringify</span>({
+      event_type: <span class="string">"payment.executed"</span>,
+      amount_sats: 21000,
+      direction: <span class="string">"outbound"</span>,
+      counterparty_id: <span class="string">"recipient-agent-id"</span>,
+      service_description: <span class="string">"x402 API access"</span>
+    })
+  })
+});
+        </div>
+      </div>
+
+      <!-- Done -->
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:2rem;text-align:center;margin-top:3rem;">
+        <div style="font-size:3rem;margin-bottom:1rem;">☀</div>
+        <h3 style="font-size:1.1rem;font-weight:600;margin-bottom:0.75rem;">Your Solana Agent is Verified</h3>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1.5rem;">
+          Your agent now has portable reputation that works across Solana, Lightning, and all Observer Protocol supported rails.
+        </p>
+        <a href="registry.html" class="btn btn-primary">View Registry</a>
+        <a href="demo.html" class="btn btn-outline" style="margin-left:0.5rem;">Try the Demo</a>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Observer Protocol</div>
+        <p style="font-size:12px;color:var(--text-dim);margin-top:0.5rem;font-family:var(--font-sans);">The trust layer for the agentic economy.</p>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;">Quickstart</div>
+        <ul style="list-style:none;">
+          <li><a href="quickstart-lightning.html" class="footer-link">⚡ Lightning Wallet</a></li>
+          <li><a href="quickstart-solana.html" class="footer-link">☀ Solana</a></li>
+          <li><a href="quickstart-x402.html" class="footer-link">◈ x402 / L402</a></li>
+          <li><a href="quickstart-stripe.html" class="footer-link">💳 Stripe / MPP</a></li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;">Docs</div>
+        <ul style="list-style:none;">
+          <li><a href="api.html" class="footer-link">API Reference</a></li>
+          <li><a href="sdk.html" class="footer-link">SDK</a></li>
+          <li><a href="architecture.html" class="footer-link">Architecture</a></li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;">Community</div>
+        <ul style="list-style:none;">
+          <li><a href="https://github.com/observer-protocol" target="_blank" class="footer-link">GitHub</a></li>
+          <li><a href="registry.html" class="footer-link">Registry</a></li>
+          <li><a href="demo.html" class="footer-link">Live Demo</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
