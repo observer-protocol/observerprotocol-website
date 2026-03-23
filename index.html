@@ -96,9 +96,14 @@
     .install-block.copied code { color: var(--verified); }
 
     .hero-actions {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 0.75rem;
-      flex-wrap: wrap;
+      max-width: 480px;
+    }
+    .hero-actions .btn {
+      text-align: center;
+      justify-content: center;
     }
 
     /* ── STATUS BAR ────────────────────────────────────── */
@@ -291,17 +296,17 @@
     .int-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      gap: 8px;
     }
     .int-card {
       background: rgba(255,255,255,0.02);
       border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 20px 12px 16px;
+      border-radius: 4px;
+      padding: 14px 8px 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       transition: border-color 0.2s;
     }
     .int-card:hover { border-color: var(--border-bright); }
@@ -310,8 +315,8 @@
       background: var(--orange-glow2);
     }
     .int-icon {
-      width: 44px;
-      height: 44px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -319,11 +324,11 @@
       flex-shrink: 0;
     }
     .int-icon svg {
-      width: 26px;
-      height: 26px;
+      width: 22px;
+      height: 22px;
     }
     .int-name {
-      font-size: 13px;
+      font-size: 12px;
       color: var(--text-secondary);
       text-align: center;
       letter-spacing: 0.04em;
@@ -331,7 +336,7 @@
     }
     .int-card.featured .int-name { color: var(--orange); }
     .int-sig {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-dim);
       text-align: center;
       letter-spacing: 0.06em;
@@ -339,24 +344,24 @@
     .int-card.featured .int-sig { color: rgba(247,147,26,0.5); }
     .int-new-tag {
       display: inline-block;
-      font-size: 9px;
+      font-size: 8px;
       color: var(--orange);
       background: var(--orange-glow);
-      padding: 3px 8px;
-      border-radius: 3px;
+      padding: 2px 6px;
+      border-radius: 2px;
       letter-spacing: 0.1em;
       font-weight: 600;
     }
     .int-footer {
-      margin-top: 1.25rem;
-      padding-top: 1.25rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
       border-top: 1px solid var(--border);
-      font-size: 11px;
+      font-size: 10px;
       color: var(--text-dim);
       letter-spacing: 0.1em;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
     .int-footer::before {
       content: '';
