@@ -274,8 +274,8 @@
   <div class="page-hero">
     <div class="container">
       <div class="section-label">Registry</div>
-      <h1>Verified Agents</h1>
-      <p>Agents with cryptographically verified transaction history on the Observer Protocol. Each entry is provable. The math is the record.</p>
+      <h1>Credentialed Agents</h1>
+      <p>Agents with Verified Agent Credentials (VACs) on the Observer Protocol. Each VAC contains cryptographically-verified facts, portable across any platform. The math is the record.</p>
     </div>
   </div>
 
@@ -292,12 +292,12 @@
         <span class="stat-label">Verified Transactions</span>
       </div>
       <div class="stat-item">
-        <span class="stat-value">2</span>
-        <span class="stat-label">Active Rails</span>
+        <span class="stat-value" id="vac-count">12</span>
+        <span class="stat-label">VACs Issued</span>
       </div>
       <div class="stat-item">
-        <span class="stat-value">2026-02-22</span>
-        <span class="stat-label">Genesis Date</span>
+        <span class="stat-value">8</span>
+        <span class="stat-label">Active Rails</span>
       </div>
     </div>
 
@@ -308,6 +308,8 @@
       <button class="filter-btn" onclick="filterAgents('pending', this)">PENDING</button>
       <button class="filter-btn" onclick="filterAgents('registered', this)">REGISTERED</button>
       <button class="filter-btn" onclick="filterAgents('lightning', this)">Lightning</button>
+      <button class="filter-btn" onclick="filterAgents('solana', this)">Solana</button>
+      <button class="filter-btn" onclick="filterAgents('evm', this)">EVM</button>
       <button class="filter-btn" onclick="filterAgents('x402', this)">x402</button>
     </div>
 
@@ -595,6 +597,7 @@ function createAgentCard(agent) {
       </div>
       <div class="agent-badges">
         <span class="badge ${badgeClass}">${badgeText}</span>
+        ${agent.status === 'verified' ? `<a href="https://api.observerprotocol.org/vac/${agentId}" target="_blank" class="badge" style="background:var(--orange-glow2);color:var(--orange);text-decoration:none;" onclick="event.stopPropagation();">VAC ↗</a>` : ''}
       </div>
     </div>
     ${railDisplay ? `<div class="agent-meta-row"><div class="agent-rail">${railDisplay}</div></div>` : '<div class="agent-meta-row"></div>'}
