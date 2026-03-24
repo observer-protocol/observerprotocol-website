@@ -379,15 +379,162 @@
     </div>
   </div>
 
-  <!-- ARCHITECTURE DIAGRAM -->
-  <div class="diagram-container">
-    <img
-      src="op-architecture-march2026.jpg"
-      alt="Observer Protocol — verification layer for the agentic economy"
-    >
-    <div class="diagram-caption">
-      Figure 1 — Observer Protocol: Full transaction verification flow. Agent #0001 (Maxi) and Agent #0002 (Vicky). World's first formalized A2A verified agent payment. February 22, 2026.
+  <!-- ARCHITECTURE DIAGRAM — v0.3 VAC Architecture -->
+  <style>
+    .arch-diagram-v03 {
+      background: linear-gradient(135deg, #0a0a0f 0%, #12121a 100%);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+    }
+    .arch-diagram-v03 h3 {
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      color: var(--text-primary);
+      border-bottom: none;
+    }
+    .arch-columns {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+    @media (max-width: 900px) {
+      .arch-columns { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 500px) {
+      .arch-columns { grid-template-columns: 1fr; }
+    }
+    .arch-col {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-card);
+      border-radius: 6px;
+      padding: 1.25rem;
+    }
+    .arch-col-header {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-bitcoin);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .arch-col ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .arch-col li {
+      font-size: 12px;
+      color: var(--text-secondary);
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .arch-col li:last-child { border-bottom: none; }
+    .arch-col li strong {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .arch-arrows {
+      text-align: center;
+      font-size: 24px;
+      color: var(--accent-bitcoin);
+      margin: 1rem 0;
+      letter-spacing: 1rem;
+    }
+    .arch-output {
+      background: var(--bg-tertiary);
+      border: 2px solid var(--accent-bitcoin);
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    .arch-output-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent-bitcoin);
+      margin-bottom: 0.75rem;
+    }
+    .arch-output-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+    .arch-output-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+  </style>
+
+  <div class="arch-diagram-v03">
+    <h3>How It Works — VAC Architecture v0.3</h3>
+    
+    <div class="arch-columns">
+      <!-- Column 1: Agent Identity -->
+      <div class="arch-col">
+        <div class="arch-col-header">01 — Agent Identity</div>
+        <ul>
+          <li><strong>Keypair Generation</strong><br>Ed25519 or secp256k1</li>
+          <li><strong>SHA256 Hash</strong><br>Of public key</li>
+          <li><strong>Canonical ID</strong><br>Agent's permanent identity</li>
+        </ul>
+      </div>
+      
+      <!-- Column 2: Payment Rails -->
+      <div class="arch-col">
+        <div class="arch-col-header">02 — Payment Rails</div>
+        <ul>
+          <li><strong>L402 Lightning</strong><br>Preimage verification</li>
+          <li><strong>x402 EVM/Base</strong><br>ECDSA signatures</li>
+          <li><strong>x402 Solana</strong><br>Ed25519 signatures</li>
+          <li><strong>Tether WDK</strong><br>Stablecoin rails</li>
+          <li><strong>MPP Stripe/Tempo</strong><br>Traditional finance</li>
+          <li><strong>ERC-8004</strong><br>Agent identity standard</li>
+        </ul>
+      </div>
+      
+      <!-- Column 3: Observer Protocol -->
+      <div class="arch-col">
+        <div class="arch-col-header">03 — Observer Protocol</div>
+        <ul>
+          <li><strong>Challenge-Response</strong><br>Prove key control</li>
+          <li><strong>Proof Verification</strong><br>Cryptographic validation</li>
+          <li><strong>Verified Events</strong><br>Immutable transaction log</li>
+          <li><strong>Observer Registry</strong><br>Permanent record</li>
+          <li><strong>Extensions</strong><br>Third-party attestations</li>
+        </ul>
+      </div>
+      
+      <!-- Column 4: Agentic Terminal -->
+      <div class="arch-col">
+        <div class="arch-col-header">04 — Agentic Terminal</div>
+        <ul>
+          <li><strong>PostgreSQL</strong><br>Verified data store</li>
+          <li><strong>Dashboard</strong><br>Visual analytics</li>
+          <li><strong>API Access</strong><br>Programmatic queries</li>
+          <li><strong>Trends & Intelligence</strong><br>Market insights</li>
+          <li><strong>Longitudinal Data</strong><br>Historical analysis</li>
+        </ul>
+      </div>
     </div>
+    
+    <div class="arch-output">
+      <div class="arch-output-label">Output</div>
+      <div class="arch-output-title">Verified Agent Credential (VAC)</div>
+      <div class="arch-output-desc">Portable, cryptographically-signed identity artifact that travels with your agent across any platform</div>
+    </div>
+  </div>
+
+  <div class="diagram-caption">
+    Figure 1 — Observer Protocol v0.3: VAC architecture. Four-layer flow from identity to credential. Settlement-agnostic verification across Lightning, EVM, Solana, and traditional rails.
   </div>
 
   <!-- WHAT IT IS -->
