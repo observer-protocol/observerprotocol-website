@@ -305,10 +305,11 @@
 
   <!-- SECTION 1: HERO -->
   <div class="demo-hero">
-    <div class="hero-eyebrow fade-up">Live Demo</div>
+    <div class="hero-eyebrow fade-up">Live Demo — Protocol v0.3</div>
     <h1 class="fade-up fade-up-1">Don't Trust, Verify</h1>
     <p class="hero-sub fade-up fade-up-2">
-      Real agents. Real payments. Cryptographic proof. Live.
+      Real agents. Real payments. Cryptographic proof. Live.<br>
+      Each verified transaction contributes to a <strong>Verified Agent Credential (VAC)</strong> — portable across any platform.
     </p>
   </div>
 
@@ -838,9 +839,9 @@ async function warmAgentCache() {
 // Fetch and display feed — always shows last 5 transactions regardless of age
 async function fetchFeed() {
   try {
-    const res = await fetch(`${API_BASE}/observer/transactions?limit=20`);
+    const res = await fetch(`${API_BASE}/observer/feed?limit=20`);
     const data = await res.json();
-    const items = data.transactions || data.events || [];
+    const items = data.events || [];
 
     if (items.length === 0) {
       document.getElementById('feed-container').innerHTML =
