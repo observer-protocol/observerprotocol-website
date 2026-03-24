@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OWS Quickstart — Observer Protocol</title>
+  <meta name="description" content="Register your OWS-provisioned agent on Observer Protocol in 5 minutes with BIP-44 derivation paths.">
+  <link rel="stylesheet" href="shared-styles.css">
+  <style>
+    .step { margin-bottom: 3rem; }
+    .step-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+    .step-num { 
+      width: 32px; height: 32px; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff; 
+      border-radius: 50%; 
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 600;
+    }
+    .step h2 { font-size: 1.2rem; font-weight: 600; margin: 0; }
+    .code-block { 
+      background: #111; 
+      border: 1px solid var(--border); 
+      border-radius: 4px; 
+      padding: 1rem; 
+      margin: 1rem 0;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      overflow-x: auto;
+    }
+    .code-block .comment { color: #6a6a6a; }
+    .code-block .keyword { color: #c586c0; }
+    .code-block .string { color: #ce9178; }
+    .code-block .func { color: #dcdcaa; }
+    .info-box {
+      background: rgba(102, 126, 234, 0.08);
+      border-left: 3px solid #667eea;
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+      font-size: 13px;
+      font-family: var(--font-sans);
+    }
+    .info-box strong { color: #667eea; }
+    .derivation-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 13px;
+      font-family: var(--font-mono);
+    }
+    .derivation-table th,
+    .derivation-table td {
+      text-align: left;
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .derivation-table th {
+      color: var(--text-dim);
+      font-weight: 600;
+      font-family: var(--font-sans);
+    }
+    .ows-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="architecture.html">Architecture</a></li>
+    <li><a href="spec.html">Spec</a></li>
+    <li><a href="registry.html">Registry</a></li>
+    <li><a href="demo.html">Demo</a></li>
+    <li><a href="sdk.html">SDK</a></li>
+    <li><a href="api.html">API</a></li>
+    <li><a href="quickstart.html" class="active">Quickstart</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+  <section style="padding: 3rem 0 1rem;">
+    <div class="container">
+      <a href="quickstart.html" style="font-size:12px;color:var(--text-dim);text-decoration:none;">← Back to Quickstart</a>
+      <div class="section-label" style="margin-top:1rem;">OWS Quickstart</div>
+      <h1 style="font-size:clamp(1.6rem,4vw,2.4rem);font-weight:600;margin-bottom:1rem;">Open Wallet Standard + Observer Protocol</h1>
+      <p style="font-size:13px;color:var(--text-secondary);max-width:600px;font-family:var(--font-sans);line-height:1.8;">
+        Already using OWS? Register your OWS-provisioned agent on Observer Protocol in under 5 minutes. One vault, one identity, portable reputation across every chain.
+      </p>
+      <div class="ows-badge" style="margin-top:1rem;">
+        <span>🔐</span>
+        <span>OWS Compatible</span>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding: 2rem 0 4rem;">
+    <div class="container" style="max-width:720px;">
+
+      <!-- Step 1 -->
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">1</div>
+          <h2>Install OWS</h2>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
+          If you haven't already, install the Open Wallet Standard CLI:
+        </p>
+        <div class="code-block">
+<span class="comment"># Install OWS</span>
+curl -fsSL https://openwallet.sh/install.sh | bash
+
+<span class="comment"># Create your agent treasury vault</span>
+ows wallet create --name <span class="string">"agent-treasury"</span>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">2</div>
+          <h2>Install OP SDK</h2>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
+          Add the Observer Protocol SDK to your project:
+        </p>
+        <div class="code-block">
+npm install @observerprotocol/sdk
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">3</div>
+          <h2>Register Your Agent</h2>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
+          Use your OWS-derived keys to register on Observer Protocol:
+        </p>
+        <div class="code-block">
+<span class="keyword">import</span> { ObserverClient } <span class="keyword">from</span> <span class="string">'@observerprotocol/sdk'</span>;
+<span class="keyword">import</span> { OWSWallet } <span class="keyword">from</span> <span class="string">'@openwallet/sdk'</span>;
+
+<span class="comment">// Load your OWS vault</span>
+<span class="keyword">const</span> wallet = <span class="keyword">await</span> OWSWallet.<span class="func">load</span>(<span class="string">'agent-treasury'</span>);
+
+<span class="comment">// Derive Solana key for OP registration</span>
+<span class="keyword">const</span> solanaKey = <span class="keyword">await</span> wallet.<span class="func">derivePath</span>(<span class="string">"m/44'/501'/0'/0'"</span>);
+
+<span class="comment">// Create OP client</span>
+<span class="keyword">const</span> client = <span class="keyword">new</span> <span class="func">ObserverClient</span>({
+  baseUrl: <span class="string">'https://api.observerprotocol.org'</span>,
+  agentId: <span class="string">'my-ows-agent'</span>,
+  publicKey: solanaKey.publicKey,
+  privateKey: solanaKey.privateKey
+});
+
+<span class="comment">// Register with OWS metadata</span>
+<span class="keyword">await</span> client.<span class="func">register</span>({
+  solanaAddress: solanaKey.address,
+  walletStandard: <span class="string">'ows'</span>,
+  owsVaultName: <span class="string">'agent-treasury'</span>,
+  chains: [<span class="string">'evm'</span>, <span class="string">'solana'</span>, <span class="string">'bitcoin'</span>],
+  alias: <span class="string">'My OWS Agent'</span>
+});
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">4</div>
+          <h2>Sign the Challenge</h2>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
+          Complete registration by signing the verification challenge:
+        </p>
+        <div class="code-block">
+<span class="comment">// Get challenge from server</span>
+<span class="keyword">const</span> challenge = <span class="keyword">await</span> client.<span class="func">getChallenge</span>();
+
+<span class="comment">// Sign with OWS-derived key</span>
+<span class="keyword">const</span> signature = <span class="keyword">await</span> solanaKey.<span class="func">sign</span>(challenge.message);
+
+<span class="comment">// Verify registration</span>
+<span class="keyword">await</span> client.<span class="func">verifyChallenge</span>({
+  signature: signature,
+  challengeId: challenge.id
+});
+        </div>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">5</div>
+          <h2>View Your VAC</h2>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
+          Your Verifiable Agent Credential is now live:
+        </p>
+        <div class="code-block">
+<span class="comment">// Get your VAC</span>
+<span class="keyword">const</span> vac = <span class="keyword">await</span> client.<span class="func">getVAC</span>();
+console.<span class="func">log</span>(<span class="string">'VAC URL:'</span>, <span class="string">`https://observerprotocol.org/vac/</span>${client.agentId}<span class="string">`</span>);
+
+<span class="comment">// Response includes:</span>
+<span class="comment">// - OWS badge</span>
+<span class="comment">// - Supported chains</span>
+<span class="comment">// - Reputation score</span>
+<span class="comment">// - Vault name</span>
+        </div>
+
+        <div class="info-box">
+          <strong>🔑 OWS Derivation Paths:</strong> Use these BIP-44 paths for deriving chain-specific keys from your OWS vault.
+        </div>
+
+        <table class="derivation-table">
+          <thead>
+            <tr>
+              <th>Chain</th>
+              <th>Derivation Path</th>
+              <th>Curve</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>EVM</td>
+              <td>m/44'/60'/0'/0/0</td>
+              <td>secp256k1</td>
+            </tr>
+            <tr>
+              <td>Solana</td>
+              <td>m/44'/501'/0'/0'</td>
+              <td>Ed25519</td>
+            </tr>
+            <tr>
+              <td>Bitcoin</td>
+              <td>m/84'/0'/0'/0/0</td>
+              <td>secp256k1</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Done -->
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:6px;padding:2rem;text-align:center;margin-top:3rem;">
+        <div style="font-size:3rem;margin-bottom:1rem;">🔐</div>
+        <h3 style="font-size:1.1rem;font-weight:600;margin-bottom:0.75rem;">Your OWS Agent is Verified</h3>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1.5rem;">
+          Your OWS-provisioned agent can now attest payments across all supported chains with portable reputation.
+        </p>
+        <a href="registry.html" class="btn btn-primary">View Registry</a>
+        <a href="demo.html" class="btn btn-outline" style="margin-left:0.5rem;">Try the Demo</a>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">Observer Protocol</div>
+        <p style="font-size:12px;color:var(--text-dim);margin-top:0.5rem;font-family:var(--font-sans);">The trust layer for the agentic economy.</p>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;">Quickstart</div>
+        <ul style="list-style:none;">
+          <li><a href="quickstart-lightning.html" class="footer-link">⚡ Lightning Wallet</a></li>
+          <li><a href="quickstart-ows.html" class="footer-link">🔐 OWS</a></li>
+          <li><a href="quickstart-x402.html" class="footer-link">◈ x402 / L402</a></li>
+          <li><a href="quickstart-stripe.html" class="footer-link">💳 Stripe / MPP</a></li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;">Docs</div>
+        <ul style="list-style:none;">
+          <li><a href="api.html" class="footer-link">API Reference</a></li>
+          <li><a href="sdk.html" class="footer-link">SDK</a></li>
+          <li><a href="architecture.html" class="footer-link">Architecture</a></li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.75rem;">Community</div>
+        <ul style="list-style:none;">
+          <li><a href="https://github.com/observer-protocol" target="_blank" class="footer-link">GitHub</a></li>
+          <li><a href="registry.html" class="footer-link">Registry</a></li>
+          <li><a href="demo.html" class="footer-link">Live Demo</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+</body>
+</html>
