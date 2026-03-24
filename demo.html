@@ -330,6 +330,7 @@
         <span style="font-size:11px;color:var(--text-dim);margin-right:0.25rem;">Filter:</span>
         <button id="filter-all" onclick="setFilter('all')" style="background:var(--orange);color:#000;border:1px solid var(--orange);border-radius:9999px;padding:0.25rem 0.85rem;font-size:12px;font-weight:600;cursor:pointer;">All</button>
         <button id="filter-lightning" onclick="setFilter('lightning')" style="background:var(--bg-2);color:var(--text-secondary);border:1px solid var(--border);border-radius:9999px;padding:0.25rem 0.85rem;font-size:12px;cursor:pointer;">⚡ Lightning</button>
+        <button id="filter-solana" onclick="setFilter('solana')" style="background:var(--bg-2);color:var(--text-secondary);border:1px solid var(--border);border-radius:9999px;padding:0.25rem 0.85rem;font-size:12px;cursor:pointer;">☀ Solana</button>
         <button id="filter-x402" onclick="setFilter('x402')" style="background:var(--bg-2);color:var(--text-secondary);border:1px solid var(--border);border-radius:9999px;padding:0.25rem 0.85rem;font-size:12px;cursor:pointer;">◈ x402</button>
         <button id="filter-verified" onclick="setFilter('verified')" style="background:var(--bg-2);color:var(--text-secondary);border:1px solid var(--border);border-radius:9999px;padding:0.25rem 0.85rem;font-size:12px;cursor:pointer;">✓ Verified</button>
         <span id="feed-count" style="margin-left:auto;font-size:11px;color:var(--text-dim);"></span>
@@ -696,7 +697,8 @@ function renderFeed(items) {
   // Apply filter
   let filtered = items;
   if (activeFilter === 'lightning') filtered = items.filter(e => ['lightning','l402'].includes((e.protocol || '').toLowerCase()));
-  else if (activeFilter === 'x402') filtered = items.filter(e => ['x402','x402_stripe'].includes((e.protocol || '').toLowerCase()));
+  else if (activeFilter === 'solana') filtered = items.filter(e => ['solana','x402_solana'].includes((e.protocol || '').toLowerCase()));
+  else if (activeFilter === 'x402') filtered = items.filter(e => ['x402','x402_stripe','x402_evm'].includes((e.protocol || '').toLowerCase()));
   else if (activeFilter === 'verified') filtered = items.filter(e => e.verified);
 
   const countEl = document.getElementById('feed-count');
