@@ -604,29 +604,34 @@ async function loadAgents() {
 }
 
 function createAgentCard(agent) {
-  const agentId = agent.agent_id;
-  const agentNumber = agent.sequence_number || 1;
-  const isGenesis = agentNumber === 1;
-  const isVerified = agent.verified === true || agent.verified === 'true';
+  // Map API fields to expected fields
+  const agentId = agent.alias || agent.agent_id || 'unknown';
+  const agentNumber = agent.number || agent.sequence_number || 1;
+  const isGenesis = agent.is_genesis || agentNumber === 1;
+  const isVerified = agent.status === 'verified' || agent.verified === true || agent.verified === 'true';
+  const rail = agent.rail || agent.last_rail || 'L402';
+  const since = agent.since || agent.first_seen || '2026.02.21';
+  const txCount = agent.transaction_count || agent.verified_tx_count || 0;
+  const successRate = agent.success_rate || (isVerified ? '100%' : '0%');
   
   const card = document.createElement('a');
   card.className = `agent-card ${isGenesis ? 'genesis' : ''}`;
   card.href = `agent.html?id=${agentId}`;
   card.dataset.status = isVerified ? 'verified' : 'pending';
-  card.dataset.rail = agent.last_rail ? agent.last_rail.toLowerCase() : 'l402';
+  card.dataset.rail = rail ? rail.toLowerCase() : 'l402';
   const badgeClass = isVerified ? 'badge-verified' : 'badge-pending';
   const badgeText = isVerified ? 'VERIFIED' : 'PENDING';
-  const railDisplay = agent.last_rail ? `⚡ ${agent.last_rail}` : '';
+  const railDisplay = rail ? `⚡ ${rail}` : '';
   
   // Format date
-  const since = agent.first_seen ? new Date(agent.first_seen).toISOString().split('T')[0].replace(/-/g, '.') : '2026.02.22';
+  const sinceFormatted = since ? since.replace(/-/g, '.') : '2026.02.21';
 
   card.innerHTML = `
     <div class="agent-header">
       <div class="agent-id-block">
         <span class="agent-number">AGENT #${String(agentNumber).padStart(4, '0')}</span>
-        <span class="agent-alias">${escapeHtml(agent.alias || agent.agent_name || 'Unknown')} <span title="Genesis Agent" style="font-size:14px;">${isGenesis ? '👑' : ''}</span></span>
-        <span class="agent-hash">${escapeHtml(agentId.substring(0, 16))}...</span>
+        <span class="agent-alias">${escapeHtml(agent.alias || 'Unknown')} <span title="Genesis Agent" style="font-size:14px;">${isGenesis ? '👑' : ''}</span></span>
+        <span class="agent-hash">${escapeHtml(String(agentId).substring(0, 16))}...</span>
       </div>
       <div class="agent-badges">
         <span class="badge ${badgeClass}">${badgeText}</span>
@@ -635,9 +640,9 @@ function createAgentCard(agent) {
     </div>
     ${railDisplay ? `<div class="agent-meta-row"><div class="agent-rail">${railDisplay}</div></div>` : '<div class="agent-meta-row"></div>'}
     <div class="agent-stats">
-      <div class="astat"><span class="astat-val">${agent.verified_tx_count || 0}</span><span class="astat-key">Txns</span></div>
-      <div class="astat"><span class="astat-val">${isVerified ? '100%' : '0%'}</span><span class="astat-key">Success</span></div>
-      <div class="astat"><span class="astat-val">${since}</span><span class="astat-key">Since</span></div>
+      <div class="astat"><span class="astat-val">${txCount}</span><span class="astat-key">Txns</span></div>
+      <div class="astat"><span class="astat-val">${successRate}</span><span class="astat-key">Success</span></div>
+      <div class="astat"><span class="astat-val">${sinceFormatted}</span><span class="astat-key">Since</span></div>
     </div>
   `;
 
