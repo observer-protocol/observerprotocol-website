@@ -518,18 +518,34 @@ function closeModal(e) {
     document.getElementById('modal-overlay').classList.remove('open');
 }
 
-// Live registry stats from feed
+// Live registry stats from API
 async function refreshRegistryStats() {
   try {
-    const res = await fetch('https://api.observerprotocol.org/observer/feed');
-    const data = await res.json();
-    const events = data.events || [];
-    const verified = events.filter(e => e.verified).length;
-    if (verified > 0) {
-      const el = document.getElementById('verified-count');
-      if (el) el.textContent = verified;
-    }
-  } catch(e) { /* fail silently */ }
+    // Get trends for verified transactions
+    const trendsRes = await fetch('https://api.observerprotocol.org/observer/trends');
+    const trendsData = await trendsRes.json();
+    const totalEvents = trendsData.total_events || 0;
+    const verifiedAgents = trendsData.total_verified_agents || 0;
+    
+    // Get agents list for registered count
+    const agentsRes = await fetch('https://api.observerprotocol.org/observer/agents/list');
+    const agentsData = await agentsRes.json();
+    const totalAgents = agentsData.total || agentsData.agents?.length || 0;
+    const verifiedCount = agentsData.verified || agentsData.agents?.filter(a => a.verified).length || 0;
+    
+    // Update stats
+    const totalEl = document.getElementById('total-agents');
+    const verifiedTxEl = document.getElementById('verified-count');
+    const vacEl = document.getElementById('vac-count');
+    
+    if (totalEl) totalEl.textContent = totalAgents;
+    if (verifiedTxEl) verifiedTxEl.textContent = totalEvents;
+    if (vacEl) vacEl.textContent = verifiedCount;
+    
+  } catch(e) { 
+    console.error('Failed to load stats:', e);
+    // Fail silently - keep default values
+  }
 }
 refreshRegistryStats();
 
@@ -546,13 +562,9 @@ async function loadAgents() {
     const data = await res.json();
     agentsData = data.agents || [];
     
-    // Update stats
+    // Update total agents count only (other stats come from trends API)
     const totalEl = document.getElementById('total-agents');
-    const verifiedEl = document.getElementById('verified-count');
-    const vacEl = document.getElementById('vac-count');
-    if (totalEl) totalEl.textContent = agentsData.length || 0;
-    if (verifiedEl) verifiedEl.textContent = agentsData.filter(a => a.verified).length || 0;
-    if (vacEl) vacEl.textContent = agentsData.filter(a => a.verified).length || 0;
+    if (totalEl) totalEl.textContent = data.total || agentsData.length || 0;
     
     // Remove loading state
     if (loading) loading.style.display = 'none';
@@ -579,15 +591,15 @@ function createAgentCard(agent) {
   const agentId = agent.agent_id;
   const agentNumber = agent.sequence_number || 1;
   const isGenesis = agentNumber === 1;
+  const isVerified = agent.verified === true || agent.verified === 'true';
   
   const card = document.createElement('a');
   card.className = `agent-card ${isGenesis ? 'genesis' : ''}`;
   card.href = `agent.html?id=${agentId}`;
-  card.dataset.status = agent.verified ? 'verified' : 'pending';
+  card.dataset.status = isVerified ? 'verified' : 'pending';
   card.dataset.rail = agent.last_rail ? agent.last_rail.toLowerCase() : 'l402';
-
-  const badgeClass = agent.verified ? 'badge-verified' : 'badge-pending';
-  const badgeText = agent.verified ? 'VERIFIED' : 'PENDING';
+  const badgeClass = isVerified ? 'badge-verified' : 'badge-pending';
+  const badgeText = isVerified ? 'VERIFIED' : 'PENDING';
   const railDisplay = agent.last_rail ? `⚡ ${agent.last_rail}` : '';
   
   // Format date
@@ -602,13 +614,13 @@ function createAgentCard(agent) {
       </div>
       <div class="agent-badges">
         <span class="badge ${badgeClass}">${badgeText}</span>
-        ${agent.verified ? `<a href="https://api.observerprotocol.org/vac/${agentId}" target="_blank" class="badge" style="background:var(--orange-glow2);color:var(--orange);text-decoration:none;" onclick="event.stopPropagation();">VAC ↗</a>` : ''}
+        ${isVerified ? `<a href="https://api.observerprotocol.org/vac/${agentId}" target="_blank" class="badge" style="background:var(--orange-glow2);color:var(--orange);text-decoration:none;" onclick="event.stopPropagation();">VAC ↗</a>` : ''}
       </div>
     </div>
     ${railDisplay ? `<div class="agent-meta-row"><div class="agent-rail">${railDisplay}</div></div>` : '<div class="agent-meta-row"></div>'}
     <div class="agent-stats">
       <div class="astat"><span class="astat-val">${agent.verified_tx_count || 0}</span><span class="astat-key">Txns</span></div>
-      <div class="astat"><span class="astat-val">${agent.verified ? '100%' : '0%'}</span><span class="astat-key">Success</span></div>
+      <div class="astat"><span class="astat-val">${isVerified ? '100%' : '0%'}</span><span class="astat-key">Success</span></div>
       <div class="astat"><span class="astat-val">${since}</span><span class="astat-key">Since</span></div>
     </div>
   `;
