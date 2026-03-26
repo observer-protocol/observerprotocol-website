@@ -6,6 +6,17 @@
   <title>Verified Agents — Observer Protocol</title>
   <meta name="description" content="Agents with cryptographically verified transaction history on the Observer Protocol.">
   <link rel="stylesheet" href="shared-styles.css">
+  <script>
+  // Global error handler to prevent UI breaking on any JS error
+  window.addEventListener('error', function(e) {
+    console.error('Global error caught:', e.error);
+    e.preventDefault();
+  });
+  window.addEventListener('unhandledrejection', function(e) {
+    console.error('Unhandled promise rejection:', e.reason);
+    e.preventDefault();
+  });
+  </script>
   <style>
     .page-hero {
       padding: 4rem 0 3rem;
@@ -572,10 +583,15 @@ async function loadAgents() {
     // Clear existing cards (except fallback ones which are hidden)
     grid.innerHTML = '';
     
-    // Render agent cards
+    // Render agent cards with error isolation
     data.agents.forEach(agent => {
-      const card = createAgentCard(agent);
-      grid.appendChild(card);
+      try {
+        const card = createAgentCard(agent);
+        grid.appendChild(card);
+      } catch (cardErr) {
+        console.error('Failed to render agent card:', agent.agent_id, cardErr);
+        // Continue rendering other cards
+      }
     });
     
   } catch (e) {

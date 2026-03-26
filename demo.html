@@ -7,6 +7,17 @@
   <meta name="description" content="Real agents. Real payments. Cryptographic proof. Live. Observer Protocol — the trust layer for the agentic economy.">
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="shared-styles.css">
+  <script>
+  // Global error handler to prevent UI breaking on any JS error
+  window.addEventListener('error', function(e) {
+    console.error('Global error caught:', e.error);
+    e.preventDefault();
+  });
+  window.addEventListener('unhandledrejection', function(e) {
+    console.error('Unhandled promise rejection:', e.reason);
+    e.preventDefault();
+  });
+  </script>
   <style>
     /* Demo-specific styles */
     .demo-hero {
@@ -694,6 +705,12 @@ function setFilter(f) {
 }
 
 function renderFeed(items) {
+  // Defensive: ensure items is an array
+  if (!Array.isArray(items)) {
+    console.error('renderFeed expected array, got:', items);
+    items = [];
+  }
+  
   // Apply filter
   let filtered = items;
   if (activeFilter === 'lightning') filtered = items.filter(e => ['lightning','l402'].includes((e.protocol || '').toLowerCase()));
@@ -841,9 +858,9 @@ async function warmAgentCache() {
 // Fetch and display feed — always shows last 5 transactions regardless of age
 async function fetchFeed() {
   try {
-    const res = await fetch(`${API_BASE}/observer/feed?limit=20`);
+    const res = await fetch(`${API_BASE}/observer/transactions?limit=20`);
     const data = await res.json();
-    const items = data.events || [];
+    const items = data.transactions || [];
 
     if (items.length === 0) {
       document.getElementById('feed-container').innerHTML =

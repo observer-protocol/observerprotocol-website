@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sovereign Dashboard — Your Agent. Your Keys. Your Rules.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-base: #07070C;
+  --bg-surface: #0E0E16;
+  --bg-elevated: #16161F;
+  --bg-border: #22222E;
+  --text-primary: #EEEEF5;
+  --text-secondary: #7A7A92;
+  --text-tertiary: #44445A;
+  --accent: #6B5CE7;
+  --accent-dim: rgba(107, 92, 231, 0.15);
+  --teal: #1DB584;
+  --teal-dim: rgba(29, 181, 132, 0.12);
+  --amber: #E87D20;
+  --red: #E84040;
+  --mono: 'DM Mono', monospace;
+  --display: 'Syne', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--display);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Top Navigation */
+.top-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 32px;
+  background: rgba(7, 7, 12, 0.95);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--bg-border);
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-logo {
+  width: 28px;
+  height: 32px;
+}
+
+.nav-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.nav-subtitle {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.05em;
+}
+
+.nav-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-tab {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  background: transparent;
+}
+
+.nav-tab:hover {
+  color: var(--text-primary);
+  background: var(--bg-surface);
+}
+
+.nav-tab.active {
+  color: var(--teal);
+  background: var(--teal-dim);
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.nav-user-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--teal);
+  border-radius: 50%;
+  animation: pulse 2s ease infinite;
+}
+
+/* Main Content */
+.main-content {
+  padding: 100px 32px 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Identity Card */
+.identity-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-border);
+  border-left: 3px solid var(--teal);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.identity-main {
+  flex: 1;
+}
+
+.identity-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.identity-key {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  word-break: break-all;
+}
+
+.identity-meta {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 8px;
+}
+
+.identity-badge {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--teal);
+  background: var(--teal-dim);
+  padding: 6px 12px;
+  border-radius: 2px;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--teal);
+  border-radius: 50%;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-border);
+  padding: 20px;
+}
+
+.stat-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat-value {
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.stat-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin-top: 4px;
+}
+
+.stat-sub.up { color: var(--teal); }
+.stat-sub.down { color: var(--red); }
+
+.live-indicator {
+  width: 6px;
+  height: 6px;
+  background: var(--teal);
+  border-radius: 50%;
+  animation: pulse 1.5s ease infinite;
+}
+
+/* Tab Content */
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Transaction Feed */
+.feed-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.feed-title {
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.feed-live-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--teal);
+}
+
+.feed-table {
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-border);
+}
+
+.feed-table-header {
+  display: grid;
+  grid-template-columns: 160px 80px 1fr 100px 120px 100px;
+  gap: 12px;
+  padding: 12px 20px;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--bg-border);
+}
+
+.feed-row {
+  display: grid;
+  grid-template-columns: 160px 80px 1fr 100px 120px 100px;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--bg-border);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.feed-row:hover {
+  background: var(--bg-elevated);
+}
+
+.feed-row:last-child {
+  border-bottom: none;
+}
+
+.feed-timestamp {
+  color: var(--text-tertiary);
+  font-size: 11px;
+}
+
+.feed-type {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 2px;
+  text-align: center;
+}
+
+.type-inbound {
+  background: var(--teal-dim);
+  color: var(--teal);
+}
+
+.type-outbound {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+.feed-counterparty {
+  color: var(--text-primary);
+}
+
+.feed-counterparty.human {
+  color: var(--teal);
+}
+
+.feed-rail {
+  font-size: 11px;
+}
+
+.feed-amount {
+  text-align: right;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.feed-status {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--teal);
+  font-size: 10px;
+}
+
+/* Loading State */
+.loading-row {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-tertiary);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+/* Empty State */
+.empty-state {
+  padding: 60px;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.empty-text {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* Delegation Panel */
+.delegation-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-border);
+  padding: 32px;
+  max-width: 800px;
+}
+
+.delegation-header {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--bg-border);
+}
+
+.delegation-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--bg-border);
+}
+
+.delegation-row:last-child {
+  border-bottom: none;
+}
+
+.delegation-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.delegation-value {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-primary);
+  text-align: right;
+}
+
+.delegation-value.mono {
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.delegation-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--bg-border);
+}
+
+.btn {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  border: none;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.btn-primary {
+  background: var(--teal);
+  color: var(--bg-base);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--bg-border);
+}
+
+.btn-danger {
+  background: transparent;
+  color: var(--red);
+  border: 1px solid rgba(232, 64, 64, 0.3);
+}
+
+.btn-danger:hover {
+  background: rgba(232, 64, 64, 0.1);
+}
+
+/* Settings Panel */
+.settings-section {
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-border);
+  padding: 24px;
+  margin-bottom: 16px;
+}
+
+.settings-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.settings-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--bg-border);
+}
+
+.settings-row:last-child {
+  border-bottom: none;
+}
+
+.settings-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .feed-table-header,
+  .feed-row { grid-template-columns: 120px 70px 1fr 80px 100px 80px; }
+}
+
+@media (max-width: 768px) {
+  .top-nav { padding: 12px 16px; }
+  .nav-tabs { display: none; }
+  .main-content { padding: 80px 16px 16px; }
+  .stats-grid { grid-template-columns: 1fr; }
+  .identity-card { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .feed-table-header,
+  .feed-row { grid-template-columns: 100px 60px 1fr 60px 80px 60px; font-size: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Top Navigation -->
+<nav class="top-nav">
+  <div class="nav-brand">
+    <svg class="nav-logo" viewBox="0 0 32 36" fill="none">
+      <path d="M16 1L2 6.5V18C2 25.5 8.5 32.5 16 35C23.5 32.5 30 25.5 30 18V6.5L16 1Z" fill="rgba(29,181,132,0.15)" stroke="#1DB584" stroke-width="1.5"/>
+      <path d="M11 18L14.5 21.5L21 14" stroke="#1DB584" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div>
+      <div class="nav-title">Sovereign</div>
+      <div class="nav-subtitle">by Agentic Terminal</div>
+    </div>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-tab="transactions">Transactions</button>
+    <button class="nav-tab" data-tab="delegation">Delegation</button>
+    <button class="nav-tab" data-tab="identity">Identity</button>
+    <button class="nav-tab" data-tab="settings">Settings</button>
+  </div>
+  <div class="nav-user">
+    <div class="nav-user-dot"></div>
+    Boyd Cohen
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="main-content">
+  
+  <!-- Identity Card -->
+  <div class="identity-card">
+    <div class="identity-main">
+      <div class="identity-name">Boyd Cohen</div>
+      <div class="identity-key">pub: 020e1929292ad47f1ca34297320ba1a9263ab3d1559a0827a2e9c1be4fd456f673</div>
+      <div class="identity-meta">Registered: 2026-03-25 · 1 active delegation</div>
+    </div>
+    <div class="identity-badge">
+      <div class="badge-dot"></div>
+      VERIFIED ON OP
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">Active delegations</div>
+      <div class="stat-value" id="stat-delegations">1</div>
+      <div class="stat-sub">maxi-0001 active</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Transactions (30d)</div>
+      <div class="stat-value" id="stat-transactions">—</div>
+      <div class="stat-sub up" id="stat-transactions-sub">↑ — this week</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Volume (30d) <span class="live-indicator"></span></div>
+      <div class="stat-value" id="stat-volume">—</div>
+      <div class="stat-sub" id="stat-volume-sub">≈ $—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Rep score</div>
+      <div class="stat-value" id="stat-rep">—</div>
+      <div class="stat-sub up" id="stat-rep-sub">↑ — this month</div>
+    </div>
+  </div>
+
+  <!-- Transactions Tab -->
+  <div class="tab-content active" id="tab-transactions">
+    <div class="feed-header">
+      <div class="feed-title">
+        <svg width="18" height="20" viewBox="0 0 32 36" fill="none" style="margin-right:8px;">
+          <path d="M16 1L2 6.5V18C2 25.5 8.5 32.5 16 35C23.5 32.5 30 25.5 30 18V6.5L16 1Z" fill="rgba(29,181,132,0.15)" stroke="#1DB584" stroke-width="1.5"/>
+        </svg>
+        Live Transaction Feed
+      </div>
+      <div class="feed-live-badge">
+        <div class="live-indicator"></div>
+        LIVE · maxi-0001
+      </div>
+    </div>
+    <div class="feed-table">
+      <div class="feed-table-header">
+        <div>Timestamp (UTC)</div>
+        <div>Type</div>
+        <div>Counterparty</div>
+        <div>Rail</div>
+        <div style="text-align:right">Amount</div>
+        <div>Status</div>
+      </div>
+      <div id="feed-container">
+        <div class="loading-row">Loading transactions...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delegation Tab -->
+  <div class="tab-content" id="tab-delegation">
+    <div class="delegation-card">
+      <div class="delegation-header">SOVEREIGN DELEGATION CREDENTIAL</div>
+      <div class="delegation-row">
+        <div class="delegation-label">Issued by</div>
+        <div class="delegation-value">Boyd Cohen<br><span style="color:var(--text-tertiary);font-size:11px;">bc1q…3f7a</span></div>
+      </div>
+      <div class="delegation-row">
+        <div class="delegation-label">Delegates to</div>
+        <div class="delegation-value">maxi-0001<br><span style="color:var(--text-tertiary);font-size:11px;">sha256:9c4b…a21f</span></div>
+      </div>
+      <div class="delegation-row">
+        <div class="delegation-label">Constraints</div>
+        <div class="delegation-value">50,000 sat/txn · 500,000 sat/mo<br>Lightning · x402 · Solana</div>
+      </div>
+      <div class="delegation-row">
+        <div class="delegation-label">Issued</div>
+        <div class="delegation-value">2026-03-25T14:32:00Z</div>
+      </div>
+      <div class="delegation-row">
+        <div class="delegation-label">Expires</div>
+        <div class="delegation-value">2026-06-23T14:32:00Z</div>
+      </div>
+      <div class="delegation-row">
+        <div class="delegation-label">Status</div>
+        <div class="delegation-value" style="color:var(--teal);">● Active</div>
+      </div>
+      <div class="delegation-actions">
+        <button class="btn btn-secondary">Edit constraints</button>
+        <button class="btn btn-secondary">Renew</button>
+        <button class="btn btn-danger" onclick="revokeDelegation()">Revoke delegation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Identity Tab -->
+  <div class="tab-content" id="tab-identity">
+    <div class="settings-section">
+      <div class="settings-title">Your Identity</div>
+      <div class="settings-row">
+        <div class="settings-label">Display Name</div>
+        <div>Boyd Cohen</div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-label">Public Key</div>
+        <div style="font-family:var(--mono);font-size:11px;color:var(--text-secondary);">020e1929292ad47f1ca34297320ba1a9263ab3d1559a0827a2e9c1be4fd456f673</div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-label">Registered on Observer Protocol</div>
+        <div>2026-03-25</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Tab -->
+  <div class="tab-content" id="tab-settings">
+    <div class="settings-section">
+      <div class="settings-title">Notifications</div>
+      <div class="settings-row">
+        <div class="settings-label">Email alerts for anomalous transactions</div>
+        <button class="btn btn-secondary" style="padding:8px 16px;font-size:11px;">Configure</button>
+      </div>
+    </div>
+    <div class="settings-section">
+      <div class="settings-title" style="color:var(--red);">Danger Zone</div>
+      <div class="settings-row">
+        <div class="settings-label">Revoke all delegations immediately</div>
+        <button class="btn btn-danger" onclick="revokeDelegation()">Revoke all</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// API Configuration
+const API_BASE = 'https://api.observerprotocol.org';
+const AGENT_ID = 'maxi-0001';
+
+// Tab Switching
+const tabs = document.querySelectorAll('.nav-tab');
+const contents = document.querySelectorAll('.tab-content');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const target = tab.dataset.tab;
+    tabs.forEach(t => t.classList.remove('active'));
+    contents.forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(`tab-${target}`).classList.add('active');
+  });
+});
+
+// Format timestamp
+function formatTime(dateString) {
+  if (!dateString) return '—';
+  const date = new Date(dateString);
+  return date.toISOString().slice(0, 19).replace('T', ' ');
+}
+
+// Time ago
+function timeAgo(dateString) {
+  if (!dateString) return '—';
+  const date = new Date(dateString);
+  const now = new Date();
+  const seconds = Math.floor((now - date) / 1000);
+  if (seconds < 60) return 'just now';
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+  return `${Math.floor(seconds / 86400)}d ago`;
+}
+
+// Format amount
+function formatAmount(amount, protocol) {
+  if (amount === undefined || amount === null) return '—';
+  if (protocol?.includes('x402')) {
+    return (amount / 100).toFixed(2) + ' USDC';
+  }
+  return amount.toLocaleString() + ' sats';
+}
+
+// Fetch and render transactions
+async function fetchTransactions() {
+  try {
+    const res = await fetch(`${API_BASE}/observer/transactions?limit=20&agent_id=${AGENT_ID}`);
+    const data = await res.json();
+    const transactions = data.transactions || [];
+    
+    renderTransactions(transactions);
+    updateStats(transactions);
+  } catch (e) {
+    console.error('Failed to fetch transactions:', e);
+    document.getElementById('feed-container').innerHTML = 
+      '<div class="loading-row">Unable to load transactions. Retrying...</div>';
+  }
+}
+
+// Render transaction feed
+function renderTransactions(transactions) {
+  const container = document.getElementById('feed-container');
+  
+  if (transactions.length === 0) {
+    container.innerHTML = '<div class="loading-row">No transactions yet.</div>';
+    return;
+  }
+  
+  container.innerHTML = transactions.map(tx => {
+    const isInbound = tx.direction === 'inbound';
+    const isHuman = tx.counterparty === 'Boyd Cohen' || tx.payer_alias === 'Boyd Cohen' || tx.payee_alias === 'Boyd Cohen';
+    const typeClass = isInbound ? 'type-inbound' : 'type-outbound';
+    const typeText = isInbound ? 'inbound' : 'outbound';
+    const counterparty = tx.payer_alias || tx.payee_alias || tx.counterparty || 'unknown';
+    
+    return `
+      <div class="feed-row" onclick="showTxDetail('${tx.event_id}')">
+        <div class="feed-timestamp">${formatTime(tx.created_at)}</div>
+        <div><span class="feed-type ${typeClass}">${typeText}</span></div>
+        <div class="feed-counterparty ${isHuman ? 'human' : ''}">${counterparty}</div>
+        <div class="feed-rail">${tx.protocol || '—'}</div>
+        <div class="feed-amount">${formatAmount(tx.amount_sats, tx.protocol)}</div>
+        <div class="feed-status">● Verified</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Update stats
+function updateStats(transactions) {
+  const count = transactions.length;
+  const volume = transactions.reduce((sum, tx) => sum + (tx.amount_sats || 0), 0);
+  const repScore = Math.floor(volume / 1000) + count * 10;
+  
+  document.getElementById('stat-transactions').textContent = count;
+  document.getElementById('stat-volume').textContent = formatAmount(volume, 'lightning');
+  document.getElementById('stat-rep').textContent = repScore;
+  
+  // Calculate USD equivalent (rough: 1 BTC = $70k)
+  const btcPrice = 70000;
+  const usdValue = (volume / 100000000 * btcPrice).toFixed(0);
+  document.getElementById('stat-volume-sub').textContent = `≈ $${usdValue}`;
+}
+
+// Show transaction detail
+function showTxDetail(eventId) {
+  alert(`Transaction detail: ${eventId}\n\nFull detail drawer would open here showing:\n- Complete transaction hash\n- Cryptographic signature\n- Delegation credential referenced\n- Link to OP verification`);
+}
+
+// Revoke delegation
+function revokeDelegation() {
+  if (confirm('Revoke delegation to maxi-0001? This will take effect immediately.')) {
+    alert('Delegation revoked. Maxi will no longer be able to transact on your behalf.');
+  }
+}
+
+// Initial load
+fetchTransactions();
+
+// Auto-refresh every 30 seconds
+setInterval(fetchTransactions, 30000);
+</script>
+
+</body>
+</html>
