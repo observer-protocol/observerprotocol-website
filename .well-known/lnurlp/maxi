@@ -1,0 +1,8 @@
+{
+  "status": "OK",
+  "callback": "https://api.observerprotocol.org/lnurl/callback",
+  "tag": "payRequest",
+  "maxSendable": 1000000000,
+  "minSendable": 1000,
+  "metadata": "[[\"text/plain\", \"Pay to maxi@observerprotocol.org\"], [\"text/identifier\", \"maxi@observerprotocol.org\"]]"
+}
