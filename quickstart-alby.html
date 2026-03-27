@@ -99,7 +99,7 @@
             <span style="color:#60a5fa;">const</span> signature = <span style="color:#60a5fa;">await</span> provider.signMessage(challenge);<br><br>
             <span style="color:#8a8a8a;">// Submit to OP for verification</span><br>
             <span style="color:#60a5fa;">const</span> verification = <span style="color:#60a5fa;">await</span> fetch(<br>
-            &nbsp;&nbsp;<span style="color:#86efac;">`https://observerprotocol.org/api/v1/agents/${agent_id}/verify`</span>,<br>
+            &nbsp;&nbsp;<span style="color:#86efac;">`https://observerprotocol.org/observer/agents/${agent_id}/verify`</span>,<br>
             &nbsp;&nbsp;{ method: <span style="color:#86efac;">'POST'</span>, headers: { <span style="color:#86efac;">'Content-Type'</span>: <span style="color:#86efac;">'application/json'</span> },<br>
             &nbsp;&nbsp;&nbsp;&nbsp;body: JSON.stringify({ signature: signature.signature, message: signature.message }) }<br>
             );
@@ -127,13 +127,13 @@
         const lnAddress = await alby.getAddress();
         const lnPubkey = await alby.getPublicKey();
         const opPubkey = prompt("Enter your OP pubkey:");
-        const reg = await fetch('https://observerprotocol.org/api/v1/agents', {
+        const reg = await fetch('https://observerprotocol.org/observer/agents', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ op_pubkey: opPubkey, ln_pubkey: lnPubkey, ln_address: lnAddress, agent_type: 'custom' })
         });
         const { agent_id, challenge } = await reg.json();
         const sig = await alby.signMessage(challenge);
-        const verify = await fetch(`https://observerprotocol.org/api/v1/agents/${agent_id}/verify`, {
+        const verify = await fetch(`https://observerprotocol.org/observer/agents/${agent_id}/verify`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ signature: sig.signature, message: sig.message })
         });

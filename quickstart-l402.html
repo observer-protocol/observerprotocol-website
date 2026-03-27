@@ -84,7 +84,7 @@
 <span style="color:#8a8a8a;"># After your L402 payment succeeds:</span>
 <span style="color:#60a5fa;">import</span> requests
 
-requests.<span style="color:#f8c471;">post</span>(<span style="color:#86efac;">"https://api.agenticterminal.ai/observer/lnget-attest"</span>, json={
+requests.<span style="color:#f8c471;">post</span>(<span style="color:#86efac;">"http://localhost:8000/observer/lnget-attest"</span>, json={
     <span style="color:#86efac;">"payment_hash"</span>: payment_hash,   <span style="color:#8a8a8a;"># hex string</span>
     <span style="color:#86efac;">"preimage"</span>: preimage,           <span style="color:#8a8a8a;"># hex string — SHA256(preimage) = payment_hash</span>
     <span style="color:#86efac;">"domain"</span>: <span style="color:#86efac;">"api.example.com"</span>,    <span style="color:#8a8a8a;"># the endpoint you paid</span>
@@ -101,7 +101,7 @@ requests.<span style="color:#f8c471;">post</span>(<span style="color:#86efac;">"
         <div class="code-block">
           <div style="font-size:12px;line-height:1.9;">
 <span style="color:#8a8a8a;">// After your L402 payment succeeds:</span>
-<span style="color:#60a5fa;">await</span> fetch(<span style="color:#86efac;">"https://api.agenticterminal.ai/observer/lnget-attest"</span>, {
+<span style="color:#60a5fa;">await</span> fetch(<span style="color:#86efac;">"http://localhost:8000/observer/lnget-attest"</span>, {
   method: <span style="color:#86efac;">"POST"</span>,
   headers: { <span style="color:#86efac;">"Content-Type"</span>: <span style="color:#86efac;">"application/json"</span> },
   body: JSON.stringify({
@@ -129,7 +129,7 @@ body, _ := json.Marshal(map[string]interface{}{
     <span style="color:#86efac;">"amount_sats"</span>:  amountSats,
     <span style="color:#86efac;">"agent_id"</span>:     <span style="color:#86efac;">"your-agent-001"</span>, <span style="color:#8a8a8a;">// optional</span>
 })
-http.Post(<span style="color:#86efac;">"https://api.agenticterminal.ai/observer/lnget-attest"</span>,
+http.Post(<span style="color:#86efac;">"http://localhost:8000/observer/lnget-attest"</span>,
     <span style="color:#86efac;">"application/json"</span>, bytes.NewBuffer(body))
           </div>
         </div>
@@ -177,7 +177,7 @@ http.Post(<span style="color:#86efac;">"https://api.agenticterminal.ai/observer/
       <div class="code-block" style="max-width:700px;">
         <div style="font-size:12px;line-height:1.9;">
 <span style="color:#8a8a8a;"># Anyone can query your agent's reputation</span>
-<span style="color:#60a5fa;">curl</span> https://api.agenticterminal.ai/observer/reputation/your-agent-001
+<span style="color:#60a5fa;">curl</span> http://localhost:8000/observer/reputation/your-agent-001
 
 <span style="color:#8a8a8a;"># Returns:</span>
 {

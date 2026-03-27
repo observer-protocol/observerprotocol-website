@@ -606,7 +606,7 @@
     <div class="status-item"><strong>genesis:</strong> OP-000001 · 2026-02-22</div>
     <div class="status-item"><strong>rails:</strong> Lightning · Solana · EVM · x402</div>
     <div class="status-item"><strong>verification:</strong> online</div>
-    <div class="status-item"><a href="https://api.observerprotocol.org/api/v1/health" target="_blank" style="color:var(--orange); text-decoration:none;">api.observerprotocol.org ↗</a></div>
+    <div class="status-item"><a href="https://api.observerprotocol.org/observer/health" target="_blank" style="color:var(--orange); text-decoration:none;">api.observerprotocol.org ↗</a></div>
   </div>
 
   <!-- GENESIS BLOCK -->
@@ -856,7 +856,7 @@ function copyInstall(el) {
 async function refreshStatus() {
   try {
     const [statsRes, feedRes] = await Promise.all([
-      fetch('https://api.observerprotocol.org/api/v1/stats'),
+      fetch('https://api.observerprotocol.org/observer/stats'),
       fetch('https://api.observerprotocol.org/observer/feed')
     ]);
     const stats = await statsRes.json();
