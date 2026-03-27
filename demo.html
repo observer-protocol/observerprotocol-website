@@ -912,9 +912,9 @@ async function _fetchRegistry_original() {
     tbody.innerHTML = sortedAgents.map(agent => {
       const isMaxi = agent.agent_id === 'maxi-0001';
       const badgeUrl = `https://api.observerprotocol.org/observer/badge/${agent.agent_id}.svg`;
-      const rail = agent.rail || agent.preferred_rail || 'L402';
-      const txns = agent.total_transactions || agent.tx_count || 0;
-      const successRate = agent.success_rate !== undefined ? `${(agent.success_rate * 100).toFixed(0)}%` : '—';
+      const rail = agent.framework || 'L402';
+      const txns = 0;  // Not available in API
+      const successRate = agent.verified ? '100%' : '0%';
       const status = agent.verified 
         ? '<span class="badge badge-verified">✓ Verified</span>' 
         : '<span class="badge badge-registered">Registered</span>';

@@ -661,7 +661,7 @@ async function loadAgentProfile() {
 
   try {
     // Load agent profile
-    const profileRes = await fetch(`${API_BASE}/observer/agents/${agentId}`);
+    const profileRes = await fetch(`${API_BASE}/observer/agent/${agentId}`);
     if (profileRes.status === 404) {
       contentEl.innerHTML = renderNotFound();
       return;
