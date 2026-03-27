@@ -578,9 +578,9 @@ async function loadAgents() {
     grid.innerHTML = '';
     
     // Render agent cards with error isolation
-    data.agents.forEach(agent => {
+    data.agents.forEach((agent, index) => {
       try {
-        const card = createAgentCard(agent);
+        const card = createAgentCard(agent, index);
         grid.appendChild(card);
       } catch (cardErr) {
         console.error('Failed to render agent card:', agent.agent_id, cardErr);
@@ -597,15 +597,15 @@ async function loadAgents() {
   }
 }
 
-function createAgentCard(agent) {
+function createAgentCard(agent, index = 0) {
   // Map API fields to expected fields
   const agentId = agent.alias || agent.agent_id || 'unknown';
-  const agentNumber = agent.number || agent.sequence_number || 1;
-  const isGenesis = agent.is_genesis || agentNumber === 1;
+  const agentNumber = index + 1; // Use array index for sequence
+  const isGenesis = agentNumber === 1; // First agent is genesis
   const isVerified = agent.status === 'verified' || agent.verified === true || agent.verified === 'true';
-  const rail = agent.rail || agent.last_rail || 'L402';
-  const since = agent.since || agent.first_seen || '2026.02.21';
-  const txCount = agent.transaction_count || agent.verified_tx_count || 0;
+  const rail = agent.framework || agent.rail || 'L402';
+  const since = agent.created_at || agent.since || '2026.02.21';
+  const txCount = agent.transaction_count || agent.tx_count || 0;
   const successRate = agent.success_rate || (isVerified ? '100%' : '0%');
   
   const card = document.createElement('a');
