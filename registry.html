@@ -295,19 +295,19 @@
     <!-- STATS -->
     <div class="registry-stats">
       <div class="stat-item">
-        <span class="stat-value" id="total-agents">12</span>
+        <span class="stat-value" id="total-agents">—</span>
         <span class="stat-label">Registered Agents</span>
       </div>
       <div class="stat-item">
-        <span class="stat-value" id="verified-count">9</span>
+        <span class="stat-value" id="verified-count">—</span>
         <span class="stat-label">Verified Transactions</span>
       </div>
       <div class="stat-item">
-        <span class="stat-value" id="vac-count">12</span>
+        <span class="stat-value" id="vac-count">—</span>
         <span class="stat-label">VACs Issued</span>
       </div>
       <div class="stat-item">
-        <span class="stat-value">8</span>
+        <span class="stat-value" id="rails-count">—</span>
         <span class="stat-label">Active Rails</span>
       </div>
     </div>
@@ -532,30 +532,24 @@ function closeModal(e) {
 // Live registry stats from API
 async function refreshRegistryStats() {
   try {
-    // Get trends for verified transactions
-    const trendsRes = await fetch('https://api.observerprotocol.org/observer/trends');
-    const trendsData = await trendsRes.json();
-    const totalEvents = trendsData.total_events || 0;
-    const verifiedAgents = trendsData.total_verified_agents || 0;
-    
-    // Get agents list for registered count
-    const agentsRes = await fetch('https://api.observerprotocol.org/observer/agents/list');
-    const agentsData = await agentsRes.json();
-    const totalAgents = agentsData.total || agentsData.agents?.length || 0;
-    const verifiedCount = agentsData.verified || agentsData.agents?.filter(a => a.verified).length || 0;
+    // Get stats from the dedicated stats endpoint
+    const statsRes = await fetch('https://api.observerprotocol.org/api/v1/stats');
+    const statsData = await statsRes.json();
     
     // Update stats
     const totalEl = document.getElementById('total-agents');
     const verifiedTxEl = document.getElementById('verified-count');
     const vacEl = document.getElementById('vac-count');
+    const railsEl = document.getElementById('rails-count');
     
-    if (totalEl) totalEl.textContent = totalAgents;
-    if (verifiedTxEl) verifiedTxEl.textContent = totalEvents;
-    if (vacEl) vacEl.textContent = verifiedCount;
+    if (totalEl) totalEl.textContent = statsData.total_agents || '—';
+    if (verifiedTxEl) verifiedTxEl.textContent = statsData.total_transactions || '—';
+    if (vacEl) vacEl.textContent = statsData.total_vacs || '—';
+    if (railsEl) railsEl.textContent = statsData.active_rails || '—';
     
   } catch(e) { 
     console.error('Failed to load stats:', e);
-    // Fail silently - keep default values
+    // Fail silently - keep default values showing "—"
   }
 }
 refreshRegistryStats();

@@ -470,7 +470,7 @@
           <span class="comment"># Step 1: Get payment request</span><br>
           <span class="cmd">curl</span> <span class="arg">https://api.observerprotocol.org/observer/ask?q=maxi-0001</span><br><br>
           <span class="comment"># Returns: 402 Payment Required with X-Payment-* headers</span><br><br>
-          <span class="comment"># Step 2: Pay 1 sat to maxi@agenticterminal.ai, then retry with proof</span><br>
+          <span class="comment"># Step 2: Pay 1 sat to maxi@observerprotocol.org, then retry with proof</span><br>
           <span class="cmd">curl</span> <span class="arg">-H</span> <span class="str">"X-Payment-Proof: &lt;preimage&gt;"</span> \<br>
           &nbsp;&nbsp;<span class="arg">https://api.observerprotocol.org/observer/ask?q=maxi-0001</span><br><br>
           <span class="comment"># Returns: 200 OK + verified agent data</span>
@@ -503,7 +503,7 @@
           code.innerHTML = `<span class="comment"># Step 1: Get payment request</span><br>
           <span class="cmd">curl</span> <span class="arg">https://api.observerprotocol.org/observer/ask?q=${alias}</span><br><br>
           <span class="comment"># Returns: 402 Payment Required with X-Payment-* headers</span><br><br>
-          <span class="comment"># Step 2: Pay 1 sat to maxi@agenticterminal.ai, then retry with proof</span><br>
+          <span class="comment"># Step 2: Pay 1 sat to maxi@observerprotocol.org, then retry with proof</span><br>
           <span class="cmd">curl</span> <span class="arg">-H</span> <span class="str">"X-Payment-Proof: &lt;preimage&gt;"</span> \\\\<br>
           &nbsp;&nbsp;<span class="arg">https://api.observerprotocol.org/observer/ask?q=${alias}</span><br><br>
           <span class="comment"># Returns: 200 OK + verified agent data</span>`;
@@ -566,7 +566,7 @@
               
               // Generate a mock payment proof for demo
               x402PaymentProof = 'demo-proof-' + Date.now();
-              appendToTerminal(`<span style="color:var(--text-dim);"># Demo: Simulating payment of 1 sat to maxi@agenticterminal.ai...</span>`);
+              appendToTerminal(`<span style="color:var(--text-dim);"># Demo: Simulating payment of 1 sat to maxi@observerprotocol.org...</span>`);
               appendToTerminal(`<span style="color:var(--text-dim);"># Demo: Payment proof generated: ${x402PaymentProof}</span>`);
             }
           } catch (err) {
@@ -629,7 +629,7 @@
       </p>
       
       <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:2rem;text-align:center;max-width:480px;margin:0 auto;">
-        <img src="maxi-lightning-qr-v2.png" alt="Lightning Address QR Code" style="max-width:200px;height:auto;margin:0 auto 1.5rem auto;border-radius:4px;display:block;">
+        <img src="maxi-lightning-qr-v3.png" alt="Lightning Address QR Code" style="max-width:200px;height:auto;margin:0 auto 1.5rem auto;border-radius:4px;display:block;">
         <div style="font-family:var(--font-mono);font-size:18px;color:var(--orange);font-weight:600;margin-bottom:0.5rem;">
           maxi@observerprotocol.org
         </div>
@@ -834,7 +834,7 @@ async function fetchTrends() {
     const verifiedCount = data.total_verified_agents ?? data.verified_agents;
     const totalEvents = data.total_events ?? data.total_verifications;
     if (verifiedCount !== undefined) {
-      document.getElementById('verified-count').textContent = verifiedCount;
+      // document.getElementById('verified-count').textContent = verifiedCount;
     }
     if (totalEvents !== undefined) {
       document.getElementById('verification-count').textContent = totalEvents.toLocaleString();
@@ -881,9 +881,14 @@ async function fetchFeed() {
   }
 }
 
-// Registry moved to registry.html — stub kept to avoid init() errors
-async function fetchRegistry() { return; }
-async function _fetchRegistry_unused() {
+// Registry function - disabled on demo page (moved to registry.html)
+async function fetchRegistry() {
+  // This function is kept to avoid init() errors but does nothing on demo page
+  return;
+}
+
+// Original registry function (for reference):
+async function _fetchRegistry_original() {
   try {
     const res = await fetch(`${API_BASE}/observer/agents/list`);
     const data = await res.json();
