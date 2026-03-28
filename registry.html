@@ -542,10 +542,12 @@ async function refreshRegistryStats() {
     const vacEl = document.getElementById('vac-count');
     const railsEl = document.getElementById('rails-count');
     
-    if (totalEl) totalEl.textContent = statsData.total_agents || '—';
-    if (verifiedTxEl) verifiedTxEl.textContent = statsData.total_transactions || '—';
-    if (vacEl) vacEl.textContent = statsData.total_vacs || '—';
-    if (railsEl) railsEl.textContent = statsData.active_rails || '—';
+    // API returns { stats: { total_agents, total_transactions, ... } }
+    const stats = statsData.stats || statsData;
+    if (totalEl) totalEl.textContent = stats.total_agents || '—';
+    if (verifiedTxEl) verifiedTxEl.textContent = stats.total_transactions || '—';
+    if (vacEl) vacEl.textContent = stats.total_vacs || '—';
+    if (railsEl) railsEl.textContent = stats.active_rails || '—';
     
   } catch(e) { 
     console.error('Failed to load stats:', e);
