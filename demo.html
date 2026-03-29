@@ -134,6 +134,7 @@
     .feed-protocol.lightning { color: var(--orange); }
     .feed-protocol.x402 { color: #60a5fa; }
     .feed-protocol.x402_stripe { color: #a78bfa; }
+    .feed-protocol.x402_stacks { color: #ff6b35; }
     .feed-tx {
       font-family: var(--font-mono);
       color: var(--text-secondary);
@@ -732,9 +733,9 @@ function renderFeed(items) {
   const eventKey = e => e.event_id || e.created_at || '';
   container.innerHTML = filtered.map(event => {
     const isNew = !feedData.find(e => eventKey(e) === eventKey(event));
-    const proto = (event.protocol||'').toLowerCase(); const protocolClass = proto === 'x402' ? 'x402' : proto === 'x402_stripe' ? 'x402_stripe' : proto === 'l402' ? 'l402' : 'lightning';
-    const protocolIcon = protocolClass === 'x402' ? '◈' : protocolClass === 'x402_stripe' ? '💳' : protocolClass === 'l402' ? '⚡' : '⚡';
-    const protocolName = protocolClass === 'x402' ? 'x402' : protocolClass === 'x402_stripe' ? 'x402 / MPP' : protocolClass === 'l402' ? 'L402' : 'Lightning';
+    const proto = (event.protocol||'').toLowerCase(); const protocolClass = proto === 'x402' ? 'x402' : proto === 'x402_stripe' ? 'x402_stripe' : proto === 'x402_stacks' ? 'x402_stacks' : proto === 'l402' ? 'l402' : 'lightning';
+    const protocolIcon = protocolClass === 'x402' ? '◈' : protocolClass === 'x402_stripe' ? '💳' : protocolClass === 'x402_stacks' ? '₿' : protocolClass === 'l402' ? '⚡' : '⚡';
+    const protocolName = protocolClass === 'x402' ? 'x402' : protocolClass === 'x402_stripe' ? 'x402 / MPP' : protocolClass === 'x402_stacks' ? 'sBTC' : protocolClass === 'l402' ? 'L402' : 'Lightning';
     const verified = event.verified ? '✓' : '○';
     const verifiedColor = event.verified ? 'color:var(--verified);' : 'color:var(--text-dim);';
     const ts = event.created_at || event.timestamp || '';
@@ -992,8 +993,8 @@ function renderTxRow(tx) {
     : '<span style="color:var(--text-dim)">○</span>';
   const dirIcon = tx.direction === 'inbound' ? '↓' : '↑';
   const dirColor = tx.direction === 'inbound' ? 'color:var(--verified)' : 'color:var(--orange)';
-  const txProto = (tx.protocol||'').toLowerCase(); const proto = txProto === 'x402' ? '◈ x402' : txProto === 'l402' ? '⚡ L402' : '⚡ Lightning';
-  const protoClass = txProto === 'x402' ? 'x402' : txProto === 'l402' ? 'l402' : 'lightning';
+  const txProto = (tx.protocol||'').toLowerCase(); const proto = txProto === 'x402' ? '◈ x402' : txProto === 'x402_stacks' ? '₿ sBTC' : txProto === 'l402' ? '⚡ L402' : '⚡ Lightning';
+  const protoClass = txProto === 'x402' ? 'x402' : txProto === 'x402_stacks' ? 'x402_stacks' : txProto === 'l402' ? 'l402' : 'lightning';
   const proofId = `txproof-${tx.event_id}`;
   const preimage = tx.preimage || '';
 
@@ -1015,13 +1016,13 @@ function renderTxRow(tx) {
       })()}</td>
       <td style="text-align:center">${verified}</td>
       <td style="font-size:10px;color:var(--text-dim)">${timeAgo(tx.created_at)}</td>
-      <td>${preimage ? `
+      <td>${preimage || txProto === 'x402_stacks' ? `
         <button onclick="toggleProof('${proofId}')"
           style="background:none;border:1px solid var(--orange);color:var(--orange);font-size:9px;padding:2px 6px;cursor:pointer;border-radius:3px;white-space:nowrap">
           Verify
         </button>` : ''}</td>
     </tr>
-    ${preimage ? `
+    ${preimage || txProto === 'x402_stacks' ? `
     <tr id="${proofId}" style="display:none">
       <td colspan="9" style="padding:8px 12px;background:rgba(247,147,26,0.05);border-bottom:1px solid var(--border)">
         <div style="font-family:var(--font-mono);font-size:10px;line-height:2;word-break:break-all">
@@ -1029,6 +1030,10 @@ function renderTxRow(tx) {
           <div><span style="color:var(--text-secondary)">transaction_hash:</span> ${preimage}</div>
           <div style="color:var(--verified);margin-top:4px">✓ On-chain transaction — verify on block explorer</div>
           <div style="margin-top:4px;"><a href="https://basescan.org/tx/${preimage}" target="_blank" style="color:var(--orange);text-decoration:none;">View on Basescan ↗</a></div>
+          ` : txProto === 'x402_stacks' ? `
+          <div><span style="color:var(--text-secondary)">transaction_hash:</span> ${tx.transaction_hash}</div>
+          <div style="color:var(--verified);margin-top:4px">✓ On-chain sBTC transaction — verified on Stacks</div>
+          <div style="margin-top:4px;"><a href="https://explorer.hiro.so/txid/${tx.transaction_hash}?chain=mainnet" target="_blank" style="color:var(--orange);text-decoration:none;">View on Stacks Explorer ↗</a></div>
           ` : `
           <div><span style="color:var(--text-secondary)">preimage:</span> ${preimage}</div>
           <div><span style="color:var(--text-secondary)">sha256(↑):</span> ${hash}</div>
