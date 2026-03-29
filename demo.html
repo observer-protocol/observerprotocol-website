@@ -998,6 +998,9 @@ function renderTxRow(tx) {
   const proofId = `txproof-${tx.event_id}`;
   const preimage = tx.preimage || '';
 
+  // DEBUG: Check protocol
+  console.log('txProto:', txProto, 'preimage:', preimage, 'showVerify:', !!preimage || txProto === 'x402_stacks');
+  
   return `
     <tr>
       <td style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">${tx.event_id || '—'}</td>
@@ -1016,7 +1019,7 @@ function renderTxRow(tx) {
       })()}</td>
       <td style="text-align:center">${verified}</td>
       <td style="font-size:10px;color:var(--text-dim)">${timeAgo(tx.created_at)}</td>
-      <td>${preimage || txProto === 'x402_stacks' ? `
+      <td>${(preimage || txProto === 'x402_stacks') ? `
         <button onclick="toggleProof('${proofId}')"
           style="background:none;border:1px solid var(--orange);color:var(--orange);font-size:9px;padding:2px 6px;cursor:pointer;border-radius:3px;white-space:nowrap">
           Verify
