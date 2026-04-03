@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Observer Protocol × OWS — Know Your Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080C10;
+    --surface: #0D1219;
+    --surface2: #121A24;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #E8EDF2;
+    --muted: #6B7A8D;
+    --accent: #00D4FF;
+    --accent2: #7B61FF;
+    --green: #00E5A0;
+    --red: #FF4D6A;
+    --amber: #FFB547;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .container { max-width: 900px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+  nav {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0;
+    background: rgba(8,12,16,0.92);
+    backdrop-filter: blur(12px);
+    z-index: 100;
+  }
+  nav .inner { max-width: 900px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-logo { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-family: var(--mono); }
+  .nav-badge { font-family: var(--mono); font-size: 11px; padding: 4px 10px; border: 1px solid rgba(0,212,255,0.3); border-radius: 2px; color: var(--accent); letter-spacing: 0.06em; }
+  .hero { padding: 80px 0 64px; text-align: center; }
+  .hero-tag { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 28px; }
+  .hero-tag span { display: inline-block; width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  h1 { font-size: clamp(36px, 6vw, 64px); font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 24px; }
+  h1 .accent { color: var(--accent); }
+  h1 .accent2 { color: var(--accent2); }
+  .hero-sub { font-size: 18px; color: var(--muted); max-width: 560px; margin: 0 auto 40px; line-height: 1.6; font-weight: 400; }
+  .hero-badges { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 48px; }
+  .badge { font-family: var(--mono); font-size: 11px; padding: 6px 14px; border-radius: 2px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .badge-green { background: rgba(0,229,160,0.1); border: 1px solid rgba(0,229,160,0.3); color: var(--green); }
+  .badge-blue { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: var(--accent); }
+  .badge-purple { background: rgba(123,97,255,0.1); border: 1px solid rgba(123,97,255,0.3); color: var(--accent2); }
+  .video-wrap { border: 1px solid var(--border2); border-radius: 4px; overflow: hidden; background: var(--surface); margin-bottom: 80px; }
+  .video-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+  .video-label::before { content: ''; display: inline-block; width: 6px; height: 6px; background: var(--red); border-radius: 50%; }
+  iframe.video-embed { width: 100%; aspect-ratio: 16/9; border: none; display: block; }
+  .section-label { font-family: var(--mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
+  h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 8px; }
+  h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .section-intro { color: var(--muted); font-size: 15px; margin-bottom: 40px; max-width: 600px; }
+  section { margin-bottom: 80px; }
+  .beats { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+  .beat { display: grid; grid-template-columns: 48px 1fr; border-bottom: 1px solid var(--border); }
+  .beat:last-child { border-bottom: none; }
+  .beat-num { background: var(--surface2); border-right: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 11px; color: var(--muted); padding: 20px 0; }
+  .beat-content { padding: 20px 24px; background: var(--surface); transition: background 0.15s; }
+  .beat-content:hover { background: var(--surface2); }
+  .beat-title { font-family: var(--mono); font-size: 13px; font-weight: 500; margin-bottom: 6px; color: var(--text); }
+  .beat-desc { font-size: 14px; color: var(--muted); line-height: 1.5; }
+  .beat-outcome { margin-top: 8px; font-family: var(--mono); font-size: 11px; }
+  .outcome-deny { color: var(--red); }
+  .outcome-pass { color: var(--green); }
+  .outcome-info { color: var(--amber); }
+  .terminal { background: #060A0D; border: 1px solid var(--border2); border-radius: 4px; overflow: hidden; margin-top: 14px; }
+  .terminal-bar { background: var(--surface2); padding: 8px 14px; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--border); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #FF5F57; } .dot-y { background: #FFBD2E; } .dot-g { background: #28CA42; }
+  .terminal-body { padding: 16px 20px; font-family: var(--mono); font-size: 12px; line-height: 1.8; overflow-x: auto; }
+  .t-green { color: var(--green); } .t-red { color: var(--red); } .t-blue { color: var(--accent); }
+  .t-amber { color: var(--amber); } .t-muted { color: var(--muted); } .t-white { color: var(--text); }
+  .stack-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 600px) { .stack-grid { grid-template-columns: 1fr; } }
+  .stack-item { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 20px; display: flex; gap: 14px; align-items: flex-start; }
+  .stack-check { width: 20px; height: 20px; background: rgba(0,229,160,0.15); border: 1px solid rgba(0,229,160,0.4); border-radius: 2px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; font-size: 11px; color: var(--green); }
+  .stack-item-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .stack-item-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .steps { display: flex; flex-direction: column; }
+  .step { display: grid; grid-template-columns: 40px 1fr; position: relative; }
+  .step:not(:last-child) .step-line { position: absolute; left: 19px; top: 32px; bottom: 0; width: 1px; background: var(--border2); }
+  .step-num-wrap { padding-top: 2px; display: flex; flex-direction: column; align-items: center; position: relative; }
+  .step-num { width: 28px; height: 28px; border: 1px solid var(--border2); border-radius: 2px; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 11px; color: var(--accent); background: var(--surface2); flex-shrink: 0; z-index: 1; }
+  .step-body { padding: 0 0 40px 20px; }
+  .step-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; padding-top: 4px; }
+  .step-desc { font-size: 14px; color: var(--muted); margin-bottom: 14px; line-height: 1.6; }
+  pre { background: #060A0D; border: 1px solid var(--border2); border-radius: 4px; padding: 16px 18px; font-family: var(--mono); font-size: 12px; line-height: 1.7; overflow-x: auto; color: var(--text); }
+  .comment { color: var(--muted); } .keyword { color: var(--accent2); } .string { color: var(--green); } .cmd { color: var(--accent); }
+  table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 12px; }
+  th { text-align: left; padding: 10px 16px; color: var(--muted); border-bottom: 1px solid var(--border2); font-weight: 500; letter-spacing: 0.06em; font-size: 10px; text-transform: uppercase; }
+  td { padding: 10px 16px; border-bottom: 1px solid var(--border); color: var(--text); font-size: 12px; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--surface2); }
+  .table-wrap { border: 1px solid var(--border2); border-radius: 4px; overflow: hidden; background: var(--surface); margin-top: 20px; }
+  .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 32px; }
+  .btn { font-family: var(--mono); font-size: 12px; padding: 12px 24px; border-radius: 2px; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.15s; border: none; }
+  .btn-primary { background: var(--accent); color: #000; font-weight: 600; }
+  .btn-primary:hover { background: #33DEFF; }
+  .btn-secondary { background: transparent; border: 1px solid var(--border2); color: var(--text); }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  footer { border-top: 1px solid var(--border); padding: 40px 0; text-align: center; font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; }
+  footer a { color: var(--accent); text-decoration: none; }
+  .divider { height: 1px; background: var(--border); margin: 0 0 80px; }
+  code { font-family: var(--mono); font-size: 11px; color: var(--accent); }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <div class="nav-logo">Observer Protocol</div>
+    <div class="nav-badge">OWS Hackathon 2026</div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="hero">
+    <div class="hero-tag"><span></span>Open beta · Mainnet DIDs live · Not a prototype</div>
+    <h1><span class="accent">Know Your Agent</span><br>Trust infrastructure for<br>the <span class="accent2">OWS</span> ecosystem</h1>
+    <p class="hero-sub">Observer Protocol adds cryptographic identity, verifiable attestation, and human-in-the-loop compliance to every OWS-provisioned agent — from first transaction to full audit trail.</p>
+    <div class="hero-badges">
+      <span class="badge badge-green">✓ W3C DID/VC</span>
+      <span class="badge badge-blue">✓ OWS Policy Engine</span>
+      <span class="badge badge-purple">✓ MoonPay KYB</span>
+      <span class="badge badge-green">✓ x402 Settlement</span>
+      <span class="badge badge-blue">✓ Bilateral Attestation</span>
+    </div>
+  </div>
+
+  <div class="video-wrap">
+    <div class="video-label">Live demo — 8-beat bilateral trust flow</div>
+    <iframe class="video-embed" src="https://www.youtube.com/embed/eYAEFt4KsK0" allowfullscreen></iframe>
+  </div>
+
+  <section>
+    <div class="section-label">The Demo</div>
+    <h2>8-beat bilateral trust flow</h2>
+    <p class="section-intro">Two OWS agents. One denied, one approved. Watch autonomous remediation, human oversight, and cryptographic settlement — live on mainnet.</p>
+    <div class="beats">
+      <div class="beat">
+        <div class="beat-num">01</div>
+        <div class="beat-content">
+          <div class="beat-title">Bilateral Handshake</div>
+          <div class="beat-desc">Agent A and Agent B initiate contact. Observer Protocol resolves both W3C DIDs on mainnet via <code>did:web</code>, establishing cryptographic identity for both parties before any transaction is attempted.</div>
+          <div class="beat-outcome outcome-pass">✓ Both DIDs resolved on mainnet</div>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">02</div>
+        <div class="beat-content">
+          <div class="beat-title">Organisation Validation</div>
+          <div class="beat-desc">OP checks Delegation VCs for both agents. Agent B (service provider) holds a valid org attestation. Agent A (client) does not — missing KYB linkage to a verified organisation.</div>
+          <div class="beat-outcome outcome-info">⚠ Agent A: no Delegation VC · Agent B: verified</div>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">03</div>
+        <div class="beat-content">
+          <div class="beat-title">Trust Score Verification</div>
+          <div class="beat-desc">VAC credentials are read and trust scores computed. Agent A scores 58. Agent B scores 82. The MoonPay threshold is 75. Only one agent clears it.</div>
+          <div class="beat-outcome outcome-deny">✗ Agent A: 58 / 75 · Agent B: 82 / 75 ✓</div>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">04</div>
+        <div class="beat-content">
+          <div class="beat-title">Two-Sided Denial</div>
+          <div class="beat-desc">Agent A initiates a 21,000 sat payment via <code>ows.payment.execute</code>. Both Agent B and the OWS Policy Engine independently deny the transaction — trust score insufficient, Delegation VC absent.</div>
+          <div class="terminal">
+            <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+            <div class="terminal-body">
+              <span class="t-red">✗</span> <span class="t-white">Agent A trust score (58) below threshold (75)</span><br>
+              <span class="t-red">✗</span> <span class="t-white">Agent B REFUSES the transaction</span><br>
+              <span class="t-red">✗</span> <span class="t-white">OWS DENIES: Counterparty trust score insufficient</span><br>
+              <span class="t-red">✗</span> <span class="t-white">OWS DENIES: No delegation attestation for Agent A</span><br>
+              <span class="t-amber">💥</span> <span class="t-white">Transaction DENIED by both Agent B and OWS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">05</div>
+        <div class="beat-content">
+          <div class="beat-title">Autonomous Remediation</div>
+          <div class="beat-desc">Agent A self-diagnoses. It identifies the fastest remediation path — <code>request_delegation_vc</code> — and autonomously submits the request without human instruction. AIP (Agent Interaction Protocol) structures the remediation schema.</div>
+          <div class="beat-outcome outcome-info">⏳ Delegation request submitted · Awaiting admin approval</div>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">06</div>
+        <div class="beat-content">
+          <div class="beat-title">Human Approval & Trust Score Update</div>
+          <div class="beat-desc">The AT enterprise dashboard surfaces a pending Delegation VC request. A compliance officer reviews and approves via the Agentic Terminal dashboard. The Delegation VC is issued, KYB org linkage confirmed, and the trust score recomputes: 58 → 83 (+25 org bonus).</div>
+          <div class="beat-outcome outcome-pass">✓ Trust score: 58 → 83 · Delegation VC issued · Admin: admin@acme.com</div>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">07</div>
+        <div class="beat-content">
+          <div class="beat-title">Transaction Resolution</div>
+          <div class="beat-desc">Agent A retries. OWS re-verifies both agents via the Signing Core. Trust score 83 clears threshold 75. Delegation VC verified. The x402 payment executes and settles.</div>
+          <div class="terminal">
+            <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+            <div class="terminal-body">
+              <span class="t-green">✓</span> <span class="t-white">Agent A trust score (83) meets threshold (75)</span><br>
+              <span class="t-green">✓</span> <span class="t-white">Agent A Delegation VC verified — Org: did:web:acmecorp.com</span><br>
+              <span class="t-green">✓</span> <span class="t-white">OWS Signing Core verifies both agents</span><br>
+              <span class="t-green">✓</span> <span class="t-white">x402 payment EXECUTED — 21,000 sats</span><br>
+              <span class="t-green">✓</span> <span class="t-white">Payment attested by Observer Protocol</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">08</div>
+        <div class="beat-content">
+          <div class="beat-title">Audit Trail Complete</div>
+          <div class="beat-desc">The AT enterprise dashboard records a full append-only cryptographic audit trail — handshake, denial, remediation, approval, score update, and settlement. Every event signed and verifiable on-chain via Observer Protocol's W3C DID infrastructure and OWS Vault.</div>
+          <div class="beat-outcome outcome-pass">✓ 8 events logged · Cryptographically anchored · Append-only</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section>
+    <div class="section-label">Hackathon Requirements</div>
+    <h2>Required stack — all verified</h2>
+    <p class="section-intro">Track 05 — The Observatory. Every required component is live, not mocked.</p>
+    <div class="stack-grid">
+      <div class="stack-item">
+        <div class="stack-check">✓</div>
+        <div>
+          <div class="stack-item-title">OWS CLI + MoonPay agent skill</div>
+          <div class="stack-item-desc">OWS Policy Engine gates every transaction pre-signing. MoonPay Trust Score threshold (75) enforced at the wallet layer before any key material is touched.</div>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-check">✓</div>
+        <div>
+          <div class="stack-item-title">Onchain intelligence layer</div>
+          <div class="stack-item-desc">VAC credentials carry verifiable onchain attestation history. Trust scores computed from a 5-factor weighted formula across behavioural and organisational signals.</div>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-check">✓</div>
+        <div>
+          <div class="stack-item-title">x402 monetisation per call</div>
+          <div class="stack-item-desc">x402 payment executes post-attestation. 21,000 sat settlement in Beat 7. Multi-rail support: Lightning, x402, MPP — same agent identity across all rails.</div>
+        </div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-check">✓</div>
+        <div>
+          <div class="stack-item-title">Real data — not mocked</div>
+          <div class="stack-item-desc">W3C DIDs live on mainnet. OP attestation infra running on dedicated node. AT dashboard deployed at agenticterminal.ai. Real credential issuance throughout.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section>
+    <div class="section-label">Integration</div>
+    <h2>OWS Quickstart</h2>
+    <p class="section-intro">Already using OWS? Register your OWS-provisioned agent on Observer Protocol in under 5 minutes. One vault, one identity, portable reputation across every chain.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num-wrap"><div class="step-num">1</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-title">Install OWS</div>
+          <div class="step-desc">Install the Open Wallet Standard CLI and create your agent vault.</div>
+          <pre><span class="comment"># Install OWS</span>
+<span class="cmd">curl -fsSL https://openwallet.sh/install.sh | bash</span>
+
+<span class="comment"># Create your agent treasury vault</span>
+<span class="cmd">ows wallet create --name "agent-treasury"</span></pre>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num-wrap"><div class="step-num">2</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-title">Install OP SDK</div>
+          <div class="step-desc">Add the Observer Protocol SDK to your project.</div>
+          <pre><span class="cmd">npm install @observerprotocol/sdk</span></pre>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num-wrap"><div class="step-num">3</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-title">Register Your Agent</div>
+          <div class="step-desc">Use your OWS-derived keys to register on Observer Protocol. Your OWS vault is your identity source of truth.</div>
+          <pre><span class="keyword">import</span> { ObserverClient } <span class="keyword">from</span> <span class="string">'@observerprotocol/sdk'</span>;
+<span class="keyword">import</span> { OWSWallet } <span class="keyword">from</span> <span class="string">'@openwallet/sdk'</span>;
+
+<span class="comment">// Load your OWS vault</span>
+<span class="keyword">const</span> wallet = <span class="keyword">await</span> OWSWallet.load(<span class="string">'agent-treasury'</span>);
+<span class="keyword">const</span> key = <span class="keyword">await</span> wallet.derivePath(<span class="string">"m/44'/501'/0'/0'"</span>);
+
+<span class="keyword">const</span> client = <span class="keyword">new</span> ObserverClient({
+  baseUrl: <span class="string">'https://api.observerprotocol.org'</span>,
+  agentId: <span class="string">'my-ows-agent'</span>,
+  publicKey: key.publicKey,
+  privateKey: key.privateKey
+});
+
+<span class="keyword">await</span> client.register({
+  walletStandard: <span class="string">'ows'</span>,
+  owsVaultName: <span class="string">'agent-treasury'</span>,
+  chains: [<span class="string">'evm'</span>, <span class="string">'solana'</span>, <span class="string">'bitcoin'</span>],
+  alias: <span class="string">'My OWS Agent'</span>
+});</pre>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num-wrap"><div class="step-num">4</div><div class="step-line"></div></div>
+        <div class="step-body">
+          <div class="step-title">Sign the Challenge</div>
+          <div class="step-desc">Complete registration by signing the verification challenge with your OWS-derived key.</div>
+          <pre><span class="keyword">const</span> challenge = <span class="keyword">await</span> client.getChallenge();
+<span class="keyword">const</span> signature = <span class="keyword">await</span> key.sign(challenge.message);
+<span class="keyword">await</span> client.verifyChallenge({ signature, challengeId: challenge.id });</pre>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num-wrap"><div class="step-num">5</div></div>
+        <div class="step-body">
+          <div class="step-title">View Your VAC</div>
+          <div class="step-desc">Your Verifiable Agent Credential is now live — OWS badge, supported chains (CAIP-2), trust score, and portable reputation across every OWS-compatible service.</div>
+          <pre><span class="keyword">const</span> vac = <span class="keyword">await</span> client.getVAC();
+console.log(<span class="string">'VAC URL:'</span>, `https://observerprotocol.org/vac/${client.agentId}`);
+
+<span class="comment">// - OWS badge + CAIP-2 chain addresses</span>
+<span class="comment">// - Trust score + Delegation VC status</span>
+<span class="comment">// - Verifiable Presentation (W3C VC format)</span>
+<span class="comment">// - Append-only attestation history</span></pre>
+          <div class="table-wrap">
+            <table>
+              <tr><th>Chain</th><th>Derivation Path</th><th>Curve</th></tr>
+              <tr><td>EVM</td><td>m/44'/60'/0'/0/0</td><td>secp256k1</td></tr>
+              <tr><td>Solana</td><td>m/44'/501'/0'/0'</td><td>Ed25519</td></tr>
+              <tr><td>Bitcoin</td><td>m/84'/0'/0'/0/0</td><td>secp256k1</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section style="text-align:center; padding-bottom: 40px;">
+    <div class="section-label" style="display:flex;justify-content:center;">Built by</div>
+    <h2 style="margin-bottom:16px;">Observer Protocol + Agentic Terminal</h2>
+    <p class="section-intro" style="margin: 0 auto 32px;">Know Your Agent (KYA) — the identity and trust layer the agentic economy was missing. Open beta. Mainnet DIDs live. Not a prototype.</p>
+    <div class="cta-row" style="justify-content:center;">
+      <a href="https://observerprotocol.org" class="btn btn-primary">View Registry →</a>
+      <a href="https://agenticterminal.ai/enterprise" class="btn btn-secondary">AT Dashboard</a>
+      <a href="https://github.com/observer-protocol" class="btn btn-secondary">GitHub</a>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <p>Observer Protocol · OWS Hackathon 2026 · <a href="https://observerprotocol.org">observerprotocol.org</a> · <a href="https://agenticterminal.ai">agenticterminal.ai</a></p>
+</footer>
+
+</body>
+</html>
