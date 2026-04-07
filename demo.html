@@ -317,12 +317,17 @@
 
   <!-- SECTION 1: HERO -->
   <div class="demo-hero">
-    <div class="hero-eyebrow fade-up">Live Demo — Protocol v0.3</div>
+    <div class="hero-eyebrow fade-up">Live Demo — Protocol v1.1</div>
     <h1 class="fade-up fade-up-1">Don't Trust, Verify</h1>
     <p class="hero-sub fade-up fade-up-2">
       Real agents. Real payments. Cryptographic proof. Live.<br>
-      Each verified transaction contributes to a <strong>Verified Agent Credential (VAC)</strong> — portable across any platform.
+      Each verified transaction is issued as a W3C Verifiable Credential. Agents carry their credentials as a W3C Verifiable Presentation — portable across any platform, verifiable by anyone with HTTPS access, no query to OP required.
     </p>
+    <div style="margin-top:1.5rem;padding:1rem 1.25rem;background:rgba(247,147,26,0.08);border:1px solid rgba(247,147,26,0.3);border-radius:4px;max-width:700px;">
+      <p style="font-size:13px;color:var(--text-secondary);margin:0;font-family:var(--font-sans);line-height:1.6;">
+        <strong style="color:var(--orange);">What's new in v1.1:</strong> W3C Verifiable Credentials & Verifiable Presentations, did:web identities, DID Document resolution at <code style="background:var(--bg-card);padding:2px 6px;border-radius:3px;">/agents/{id}/did.json</code>, key rotation support, and the OP/AT architecture split.
+      </p>
+    </div>
   </div>
 
   
@@ -630,7 +635,11 @@
       </p>
       
       <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:2rem;text-align:center;max-width:480px;margin:0 auto;">
-        <img src="maxi-lightning-qr-v5.png" alt="Lightning Address QR Code" style="max-width:200px;height:auto;margin:0 auto 1.5rem auto;border-radius:4px;display:block;">
+        <img src="maxi-lightning-qr-v6.png" alt="Lightning Address QR Code" style="max-width:200px;height:auto;margin:0 auto 1.5rem auto;border-radius:4px;display:block;" onerror="this.style.display='none'; document.getElementById('qr-fallback').style.display='block';">
+        <div id="qr-fallback" style="display:none;background:var(--bg-2);border:1px solid var(--border);border-radius:4px;padding:1rem;margin-bottom:1rem;">
+          <div style="font-size:11px;color:var(--text-dim);margin-bottom:0.5rem;">Scan or copy:</div>
+          <div style="font-family:var(--font-mono);font-size:14px;color:var(--orange);word-break:break-all;">maxi@observerprotocol.org</div>
+        </div>
         <div style="font-family:var(--font-mono);font-size:18px;color:var(--orange);font-weight:600;margin-bottom:0.5rem;">
           maxi@observerprotocol.org
         </div>
@@ -646,7 +655,7 @@
 
   <!-- FOOTER -->
   <footer class="footer container">
-    <span>Observer Protocol v0.2 · CC BY 4.0</span>
+    <span>Observer Protocol v1.1 · CC BY 4.0</span>
     <div class="footer-links">
       <a href="architecture.html">Architecture</a>
       <a href="spec.html">Spec</a>
@@ -665,18 +674,18 @@
 const API_BASE = 'https://api.observerprotocol.org';
 
 function getTierEmoji(txCount) {
-  if (txCount >= 1000) return '💎';
-  if (txCount >= 100)  return '🥇';
-  if (txCount >= 10)   return '🥈';
-  if (txCount >= 1)    return '🥉';
-  return '';
+  if (txCount >= 1000) return '◓';
+  if (txCount >= 100)  return '◒';
+  if (txCount >= 10)   return '◑';
+  if (txCount >= 1)    return '○';
+  return '◉';
 }
 function getTierLabel(txCount) {
-  if (txCount >= 1000) return 'Platinum';
-  if (txCount >= 100)  return 'Gold';
-  if (txCount >= 10)   return 'Silver';
-  if (txCount >= 1)    return 'Bronze';
-  return '';
+  if (txCount >= 1000) return 'Scope 5: Institutional';
+  if (txCount >= 100)  return 'Scope 4: Verified';
+  if (txCount >= 10)   return 'Scope 3: Active';
+  if (txCount >= 1)    return 'Scope 1: Recognized';
+  return 'Scope 0: Anonymous';
 }
 
 // Track seen transaction IDs to detect new items
