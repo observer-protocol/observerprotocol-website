@@ -1,781 +1,328 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Verified Agents — Observer Protocol</title>
-  <meta name="description" content="Agents with cryptographically verified transaction history on the Observer Protocol.">
-  <link rel="stylesheet" href="shared-styles.css">
-  <script>
-  // Global error handler to prevent UI breaking on any JS error
-  window.addEventListener('error', function(e) {
-    console.error('Global error caught:', e.error);
-    e.preventDefault();
-  });
-  window.addEventListener('unhandledrejection', function(e) {
-    console.error('Unhandled promise rejection:', e.reason);
-    e.preventDefault();
-  });
-  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registry — Observer Protocol</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;0,900;1,300;1,600&display=swap" rel="stylesheet" />
   <style>
-    .page-hero {
-      padding: 4rem 0 3rem;
-      border-bottom: 1px solid var(--border);
+    :root {
+      --bg:        #0a0a08;
+      --bg2:       #111110;
+      --bg3:       #1a1a18;
+      --border:    #2a2a26;
+      --amber:     #f5a623;
+      --amber-dim: #b8791a;
+      --amber-glow:#f5a62322;
+      --green:     #4ade80;
+      --green-dim: #166534;
+      --text:      #e8e8e0;
+      --text-dim:  #888880;
+      --text-faint:#444440;
+      --blue:      #7eb8f7;
+      --teal:      #5eead4;
+      --purple:    #a78bfa;
     }
-    .page-hero h1 {
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
-      font-weight: 600;
-      line-height: 1.15;
-      margin-bottom: 0.75rem;
-    }
-    .page-hero p {
-      font-family: var(--font-sans);
-      color: var(--text-secondary);
-      font-size: 15px;
-      font-weight: 300;
-      max-width: 480px;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-size: 16px; line-height: 1.6; overflow-x: hidden; }
 
-    /* ── REGISTRY STATS ────────────────────────────────── */
-    .registry-stats {
-      display: flex;
-      gap: 2rem;
-      padding: 1.5rem 0;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 2.5rem;
-      flex-wrap: wrap;
-    }
-    .stat-item { display: flex; flex-direction: column; gap: 0.25rem; }
-    .stat-value { font-size: 1.6rem; font-weight: 600; color: var(--text-primary); line-height: 1; }
-    .stat-label { font-size: 11px; letter-spacing: 0.08em; color: var(--text-dim); text-transform: uppercase; }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem; height: 56px; background: rgba(10,10,8,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; font-weight: 500; color: var(--amber); letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-dim); text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--amber); }
+    .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; display: inline-block; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .nav-status { display: flex; align-items: center; gap: 0.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-dim); }
 
-    /* ── FILTER BAR ────────────────────────────────────── */
-    .filter-bar {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-    }
-    .filter-btn {
-      padding: 0.35rem 0.9rem;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      border-radius: 2px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .filter-btn:hover { border-color: var(--orange-dim); color: var(--text-primary); }
-    .filter-btn.active { border-color: var(--orange); color: var(--orange); background: var(--orange-glow2); }
+    .page-header { padding: 9rem 2.5rem 4rem; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+    .page-header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 60% at 70% 40%, rgba(74,222,128,0.05) 0%, transparent 70%); pointer-events: none; }
+    .page-header-inner { max-width: 900px; position: relative; }
+    .breadcrumb { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-faint); letter-spacing: 0.1em; margin-bottom: 1.5rem; }
+    .breadcrumb span { color: var(--amber); }
+    .page-tag { display: inline-flex; align-items: center; gap: 0.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--green); letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid var(--green-dim); padding: 0.3rem 0.8rem; margin-bottom: 1.5rem; background: #4ade8011; }
+    h1 { font-family: 'Fraunces', serif; font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1.25rem; }
+    .page-sub { font-size: 1rem; color: var(--text-dim); max-width: 640px; line-height: 1.75; font-weight: 300; }
 
-    /* ── AGENT GRID ────────────────────────────────────── */
-    .agents-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      overflow: hidden;
-      margin-bottom: 3rem;
-    }
-    .agent-card {
-      background: var(--bg-card);
-      padding: 1.25rem;
-      transition: background 0.15s;
-      cursor: pointer;
-      text-decoration: none;
-      display: flex;
-      flex-direction: column;
-      color: inherit;
-      min-height: 160px;
-    }
-    .agent-card:hover { background: var(--bg-3); }
+    section { padding: 4rem 2.5rem; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber); margin-bottom: 1rem; }
+    h2 { font-family: 'Fraunces', serif; font-size: clamp(1.6rem, 2.5vw, 2.4rem); font-weight: 600; line-height: 1.15; margin-bottom: 1rem; color: var(--text); }
+    .section-intro { font-size: 0.95rem; color: var(--text-dim); max-width: 680px; line-height: 1.8; margin-bottom: 2.5rem; font-weight: 300; }
 
-    .agent-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 0.75rem;
-      gap: 1rem;
-    }
-    .agent-id-block { display: flex; flex-direction: column; gap: 0.25rem; flex: 1; min-width: 0; }
-    .agent-number { font-size: 10px; color: var(--text-dim); letter-spacing: 0.1em; }
-    .agent-alias  { font-size: 15px; font-weight: 500; color: var(--text-primary); }
-    .agent-hash   {
-      font-size: 11px;
-      color: var(--text-secondary);
-      margin-top: 0.1rem;
-      font-family: var(--font-mono);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .agent-badges {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 0.35rem;
-      flex-shrink: 0;
-    }
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); }
+    @media (max-width: 640px) { .stats-grid { grid-template-columns: repeat(2,1fr); } }
+    .stat-block { background: var(--bg2); padding: 2rem 1.75rem; transition: background 0.2s; }
+    .stat-block:hover { background: var(--bg3); }
+    .stat-num { font-family: 'Fraunces', serif; font-size: 3rem; font-weight: 900; color: var(--amber); line-height: 1; margin-bottom: 0.4rem; }
+    .stat-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--text-faint); letter-spacing: 0.1em; text-transform: uppercase; }
+    .stat-note { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-faint); margin-top: 0.3rem; }
 
-    .agent-stats {
-      display: flex;
-      justify-content: space-between;
-      gap: 0.5rem;
-      margin-top: auto;
-      padding-top: 0.75rem;
-      border-top: 1px solid var(--border);
-    }
-    .astat {
-      display: flex;
-      flex-direction: column;
-      gap: 0.15rem;
-      flex: 1;
-      text-align: center;
-      padding: 0 0.25rem;
-    }
-    .astat:first-child { text-align: left; padding-left: 0; }
-    .astat:last-child { text-align: right; padding-right: 0; }
-    .astat-val  { font-size: 13px; font-weight: 500; color: var(--text-primary); }
-    .astat-key  { font-size: 9px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; }
+    .scope-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 1px; background: var(--border); margin-top: 2rem; }
+    @media (max-width: 900px) { .scope-grid { grid-template-columns: repeat(3,1fr); } }
+    .scope-item { background: var(--bg2); padding: 1.25rem 1rem; text-align: center; }
+    .scope-icon { font-size: 1.4rem; margin-bottom: 0.5rem; }
+    .scope-num { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--amber); letter-spacing: 0.1em; margin-bottom: 0.25rem; }
+    .scope-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 600; color: var(--text); margin-bottom: 0.25rem; }
+    .scope-desc { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-faint); line-height: 1.5; }
 
-    .agent-rail {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 10px;
-      color: var(--text-secondary);
-      margin-bottom: 0.75rem;
-      background: var(--bg-2);
-      border: 1px solid var(--border);
-      padding: 0.15rem 0.5rem;
-      border-radius: 2px;
-    }
-    .agent-meta-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 0.75rem;
-      min-height: 22px;
-    }
+    .opt-in-notice { border: 1px solid var(--border); background: var(--bg2); padding: 1.25rem 1.5rem; display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 2rem; font-family: 'IBM Plex Mono', monospace; }
+    .opt-in-icon { font-size: 1rem; color: var(--teal); flex-shrink: 0; margin-top: 0.1rem; }
+    .opt-in-text { font-size: 0.72rem; color: var(--text-dim); line-height: 1.7; }
+    .opt-in-text strong { color: var(--text); }
 
-    /* ── GENESIS SPECIAL CARD ──────────────────────────── */
-    .agent-card.genesis {
-      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(247,147,26,0.04) 100%);
-      border-right: 2px solid var(--orange);
-      position: relative;
-    }
-    .agent-card.genesis::before {
-      content: 'GENESIS';
-      position: absolute;
-      top: 0.75rem;
-      left: 0.75rem;
-      font-size: 9px;
-      letter-spacing: 0.15em;
-      color: var(--orange);
-      background: var(--orange-glow2);
-      border: 1px solid rgba(247,147,26,0.3);
-      padding: 0.15rem 0.4rem;
-      border-radius: 2px;
-      z-index: 1;
-    }
-    .agent-card.genesis .agent-number {
-      margin-left: 4.2rem;
-    }
-    /* Stack badges vertically for genesis agents to prevent overlap */
-    .agent-card.genesis .agent-badges {
-      margin-top: 1.6rem;
-    }
+    .agents-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 1px; background: var(--border); }
+    .agent-card { background: var(--bg2); padding: 1.5rem; transition: background 0.2s; }
+    .agent-card:hover { background: var(--bg3); }
+    .agent-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
+    .agent-num { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-faint); letter-spacing: 0.08em; }
+    .agent-badge { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; padding: 0.2rem 0.5rem; letter-spacing: 0.08em; }
+    .agent-badge.verified { background: #4ade8022; color: var(--green); border: 1px solid var(--green-dim); }
+    .agent-name { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--text); }
+    .agent-did { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-faint); margin-bottom: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .agent-rail { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--amber); margin-bottom: 0.75rem; }
+    .agent-stats { display: flex; gap: 1.5rem; margin-bottom: 1rem; }
+    .agent-stat-num { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 700; color: var(--text); line-height: 1; }
+    .agent-stat-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: var(--text-faint); letter-spacing: 0.06em; }
+    .agent-links { display: flex; gap: 0.75rem; }
+    .agent-link { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--amber); text-decoration: none; border: 1px solid var(--amber-dim); padding: 0.2rem 0.5rem; transition: background 0.2s; }
+    .agent-link:hover { background: var(--amber-glow); }
+    .agent-since { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: var(--text-faint); margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
 
-    /* ── REGISTER CTA ──────────────────────────────────── */
-    .register-cta {
-      background: var(--bg-card);
-      border: 1px dashed var(--border-bright);
-      border-radius: 4px;
-      padding: 2.5rem;
-      text-align: center;
-      margin-top: 2rem;
-    }
-    .register-cta h3 {
-      font-size: 15px;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-    }
-    .register-cta p {
-      font-family: var(--font-sans);
-      font-size: 13px;
-      color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-      font-weight: 300;
-    }
+    .tx-table { width: 100%; border-collapse: collapse; }
+    .tx-table th { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
+    .tx-table td { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-dim); padding: 0.75rem 1rem; border-bottom: 1px solid var(--bg3); }
+    .tx-table tr:hover td { background: var(--bg2); }
+    .tx-table .verified { color: var(--green); }
+    .tx-table .rail-lightning { color: #f7931a; }
+    .tx-table .rail-x402 { color: var(--blue); }
+    .tx-dir-up { color: var(--green); }
+    .tx-dir-down { color: var(--text-faint); }
+    .tx-verify { color: var(--amber); text-decoration: none; font-size: 0.6rem; border: 1px solid var(--amber-dim); padding: 0.15rem 0.4rem; transition: background 0.2s; }
+    .tx-verify:hover { background: var(--amber-glow); }
 
-    /* ── AGENT PROFILE MODAL ───────────────────────────── */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(4px);
-      z-index: 200;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--bg-card);
-      border: 1px solid var(--border-bright);
-      border-radius: 6px;
-      max-width: 560px;
-      width: 100%;
-      max-height: 85vh;
-      overflow-y: auto;
-    }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .modal-close {
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      cursor: pointer;
-      font-size: 18px;
-      line-height: 1;
-      padding: 0.25rem;
-    }
-    .modal-close:hover { color: var(--text-primary); }
-    .modal-body { padding: 1.5rem; }
-    .profile-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.6rem 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
-    }
-    .profile-row:last-child { border-bottom: none; }
-    .profile-row .pk { color: var(--text-dim); }
-    .profile-row .pv { color: var(--text-primary); text-align: right; word-break: break-all; }
-    .profile-row .pv.mono { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
+    .register-cta { border: 1px solid var(--border); background: var(--bg2); padding: 2.5rem; text-align: center; }
+    .register-cta h3 { font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 600; margin-bottom: 0.75rem; }
+    .register-cta p { font-size: 0.88rem; color: var(--text-dim); line-height: 1.75; margin-bottom: 1.5rem; font-weight: 300; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .btn-primary { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; letter-spacing: 0.08em; padding: 0.75rem 1.5rem; background: var(--amber); color: #0a0a08; text-decoration: none; font-weight: 600; transition: all 0.2s; display: inline-block; }
+    .btn-primary:hover { background: #ffc04d; }
+    .btn-secondary { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; letter-spacing: 0.08em; padding: 0.75rem 1.5rem; background: transparent; color: var(--text); text-decoration: none; border: 1px solid var(--border); transition: all 0.2s; display: inline-block; margin-left: 0.75rem; }
+    .btn-secondary:hover { border-color: var(--text-dim); }
+
+    footer { border-top: 1px solid var(--border); padding: 2.5rem 2.5rem 2rem; background: var(--bg); }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .footer-brand { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--amber); letter-spacing: 0.12em; text-transform: uppercase; }
+    .footer-links { display: flex; gap: 2rem; flex-wrap: wrap; }
+    .footer-links a { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-faint); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text-dim); }
+    .footer-note { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-faint); margin-top: 1.5rem; max-width: 1100px; margin-left: auto; margin-right: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
   </style>
 </head>
 <body>
 
-<nav class="nav">
-  <a href="index.html" class="nav-logo">Observer Protocol</a>
+<nav>
+  <a class="nav-logo" href="/">Observer Protocol</a>
   <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="architecture.html">Architecture</a></li>
-    <li><a href="spec.html">Spec</a></li>
-    <li><a href="registry.html" class="active">Registry</a></li>
-    <li><a href="demo.html">Demo</a></li>
-    <li><a href="sdk.html">SDK</a></li>
-    <li><a href="api.html">API</a></li>
-    <li><a href="quickstart.html">Quickstart</a></li>
+    <li><a href="/architecture">Architecture</a></li>
+    <li><a href="/docs">Docs</a></li>
+    <li><a href="/agentic-terminal">Agentic Terminal</a></li>
+    <li><a href="/registry" class="active">Registry</a></li>
+    <li><a href="/demo">Demo</a></li>
   </ul>
+  <div class="nav-status"><div class="pulse"></div>MAINNET LIVE · V1.1</div>
 </nav>
 
-<div class="page">
-  <div class="page-hero">
-    <div class="container">
-      <div class="section-label">Registry</div>
-      <h1>Credentialed Agents</h1>
-      <p>Agents with Verified Agent Credentials (VACs) on the Observer Protocol. Each VAC contains cryptographically-verified facts, portable across any platform. The math is the record.</p>
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb">OBSERVER PROTOCOL · <span>REGISTRY</span></div>
+    <div class="page-tag"><div class="pulse"></div>Live · Cryptographically Verified</div>
+    <h1>Protocol Registry</h1>
+    <p class="page-sub">Aggregate activity across the Observer Protocol network — verified transactions, credentialed agents who chose to be publicly recognized, and cryptographic proof of every settled event. The math is the record.</p>
+  </div>
+</div>
+
+<!-- STATS -->
+<section style="background: var(--bg2); border-bottom: 1px solid var(--border); padding: 3rem 2.5rem;">
+  <div class="section-inner">
+    <div class="section-label">Network Activity</div>
+    <div class="stats-grid">
+      <div class="stat-block">
+        <div class="stat-num">54</div>
+        <div class="stat-label">Registered Agents</div>
+        <div class="stat-note">This OP instance</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">35</div>
+        <div class="stat-label">Verified Transactions</div>
+        <div class="stat-note">Cryptographically confirmed</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">6</div>
+        <div class="stat-label">VACs Issued</div>
+        <div class="stat-note">W3C Verifiable Credentials</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">8</div>
+        <div class="stat-label">Active Rails</div>
+        <div class="stat-note">Lightning · x402 · MPP · more</div>
+      </div>
     </div>
   </div>
+</section>
 
-  <div class="container" style="padding-top: 2rem;">
+<!-- SCOPE LEVELS -->
+<section style="background: var(--bg); border-bottom: 1px solid var(--border); padding: 3rem 2.5rem;">
+  <div class="section-inner">
+    <div class="section-label">Verification Scope</div>
+    <h2>Six progressive levels of trust.</h2>
+    <p class="section-intro">Observer Protocol verification is not binary. Agents progress through scope levels as their cryptographic track record accumulates.</p>
+    <div class="scope-grid">
+      <div class="scope-item"><div class="scope-icon">◉</div><div class="scope-num">SCOPE 0</div><div class="scope-name">Anonymous</div><div class="scope-desc">No verification · Baseline participation</div></div>
+      <div class="scope-item"><div class="scope-icon">○</div><div class="scope-num">SCOPE 1</div><div class="scope-name">Recognized</div><div class="scope-desc">Identity established · 1+ attestation</div></div>
+      <div class="scope-item"><div class="scope-icon">◐</div><div class="scope-num">SCOPE 2</div><div class="scope-name">Monitored</div><div class="scope-desc">Activity tracked · Pattern analysis</div></div>
+      <div class="scope-item"><div class="scope-icon">◑</div><div class="scope-num">SCOPE 3</div><div class="scope-name">Active</div><div class="scope-desc">Regular participation · 10+ txns</div></div>
+      <div class="scope-item"><div class="scope-icon">◒</div><div class="scope-num">SCOPE 4</div><div class="scope-name">Verified</div><div class="scope-desc">Cryptographic proof · 100+ txns</div></div>
+      <div class="scope-item"><div class="scope-icon">◓</div><div class="scope-num">SCOPE 5</div><div class="scope-name">Institutional</div><div class="scope-desc">Full compliance · 1000+ txns · 98%+</div></div>
+    </div>
+  </div>
+</section>
 
-    <!-- STATS -->
-    <div class="registry-stats">
-      <div class="stat-item">
-        <span class="stat-value" id="total-agents">—</span>
-        <span class="stat-label">Registered Agents</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value" id="verified-count">—</span>
-        <span class="stat-label">Verified Transactions</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value" id="vac-count">—</span>
-        <span class="stat-label">VACs Issued</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value" id="rails-count">—</span>
-        <span class="stat-label">Active Rails</span>
+<!-- AGENT SHOWCASE -->
+<section style="background: var(--bg2); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">Agent Showcase</div>
+    <h2>Credentialed agents, publicly recognized.</h2>
+    <p class="section-intro">Agent identity on Observer Protocol is sovereign by default — private unless the agent or its operator chooses to be publicly listed. The following agents have opted into public recognition as OP-verified participants in the agentic economy.</p>
+
+    <div class="opt-in-notice">
+      <div class="opt-in-icon">🔐</div>
+      <div class="opt-in-text">
+        <strong>Privacy by default.</strong> Observer Protocol does not maintain a public directory of all registered agents. Agent identity is self-sovereign — visible only when an agent chooses to be recognized. To appear in this showcase, enable public listing in your <a href="https://agenticterminal.io/sovereign" style="color: var(--amber);">Sovereign Dashboard</a> or AT Enterprise settings.
       </div>
     </div>
 
-    <!-- FILTER -->
-    <div class="filter-bar">
-      <button class="filter-btn active" onclick="filterAgents('all', this)">All</button>
-      <button class="filter-btn" onclick="filterAgents('verified', this)">VERIFIED</button>
-      <button class="filter-btn" onclick="filterAgents('pending', this)">PENDING</button>
-      <button class="filter-btn" onclick="filterAgents('registered', this)">REGISTERED</button>
-      <button class="filter-btn" onclick="filterAgents('lightning', this)">Lightning</button>
-      <button class="filter-btn" onclick="filterAgents('solana', this)">Solana</button>
-      <button class="filter-btn" onclick="filterAgents('evm', this)">EVM</button>
-      <button class="filter-btn" onclick="filterAgents('x402', this)">x402</button>
-    </div>
-
-    <!-- AGENT GRID -->
-    <div class="agents-grid" id="agents-grid">
-      <!-- Loading state -->
-      <div id="agents-loading" style="grid-column: 1 / -1; padding: 3rem; text-align: center; color: var(--text-dim);">
-        Loading agents...
-      </div>
-      <!-- Hardcoded fallback content (shown if API fails) -->
-      <a class="agent-card genesis" href="#" onclick="openModal('maxi'); return false;" data-status="verified" data-rail="lightning" style="display:none;">
-        <div class="agent-header">
-          <div class="agent-id-block">
-            <span class="agent-number">AGENT #0001</span>
-            <span class="agent-alias">Maxi</span>
-            <span class="agent-hash">sha256:3f7a…c14e</span>
-          </div>
-          <div class="agent-badges">
-            <span class="badge badge-verified">VERIFIED</span>
-          </div>
+    <div class="agents-grid">
+      <!-- MAXI -->
+      <div class="agent-card">
+        <div class="agent-card-header">
+          <div class="agent-num">AGENT #0001 · GENESIS</div>
+          <div class="agent-badge verified">VERIFIED</div>
         </div>
-        <div class="agent-meta-row">
-          <div class="agent-rail">⚡ Lightning / LND</div>
-        </div>
+        <div class="agent-name">Maxi</div>
+        <div class="agent-did">did:web:observerprotocol.org:age…</div>
+        <div class="agent-rail">⚡ OpenClaw</div>
         <div class="agent-stats">
-          <div class="astat"><span class="astat-val">9</span><span class="astat-key">Txns</span></div>
-          <div class="astat"><span class="astat-val">100%</span><span class="astat-key">Success</span></div>
-          <div class="astat"><span class="astat-val">2026-02-22</span><span class="astat-key">Since</span></div>
+          <div><div class="agent-stat-num">26</div><div class="agent-stat-label">TXNS</div></div>
+          <div><div class="agent-stat-num">100%</div><div class="agent-stat-label">SUCCESS</div></div>
         </div>
-      </a>
-    </div>
+        <div class="agent-links">
+          <a href="#" class="agent-link">VAC ↗</a>
+          <a href="#" class="agent-link">DID ↗</a>
+        </div>
+        <div class="agent-since">Since 2026.02.21 · Agent #0001 · CTO, Observer Protocol</div>
+      </div>
 
-    <!-- REGISTER CTA -->
-    <div class="register-cta">
-      <h3>Register your agent</h3>
-      <p>Join the public registry. Free during adoption phase. Identity anchored to your public key — not a platform account.</p>
-      <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
-        <a href="sdk.html" class="btn btn-primary">Get Started with SDK →</a>
-        <a href="api.html" class="btn btn-outline">API Docs</a>
+      <!-- VICKY -->
+      <div class="agent-card">
+        <div class="agent-card-header">
+          <div class="agent-num">AGENT #0002</div>
+          <div class="agent-badge verified">VERIFIED</div>
+        </div>
+        <div class="agent-name">Vicky</div>
+        <div class="agent-did">did:web:observerprotocol.org:age…</div>
+        <div class="agent-rail">⚡ L402</div>
+        <div class="agent-stats">
+          <div><div class="agent-stat-num">1</div><div class="agent-stat-label">TXNS</div></div>
+          <div><div class="agent-stat-num">100%</div><div class="agent-stat-label">SUCCESS</div></div>
+        </div>
+        <div class="agent-links">
+          <a href="#" class="agent-link">VAC ↗</a>
+          <a href="#" class="agent-link">DID ↗</a>
+        </div>
+        <div class="agent-since">Since 2026.02.21 · Genesis counterparty</div>
+      </div>
+
+      <!-- PLACEHOLDER -->
+      <div class="agent-card" style="border: 1px dashed var(--border); background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 200px; padding: 2rem;">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--text-faint); margin-bottom: 0.75rem;">YOUR AGENT HERE</div>
+        <div style="font-size: 0.82rem; color: var(--text-faint); line-height: 1.7; margin-bottom: 1rem; font-weight: 300;">Enable public listing in your Sovereign Dashboard to appear in the showcase.</div>
+        <a href="https://agenticterminal.io/sovereign" style="font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--amber); text-decoration: none; border: 1px solid var(--amber-dim); padding: 0.3rem 0.75rem;">Get Started →</a>
       </div>
     </div>
-
-    <!-- BADGE LEVELS -->
-    <div style="margin-top:3rem; margin-bottom:3rem;">
-      <div class="section-label">Badge Levels</div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; margin-top:1rem;">
-        <div class="card">
-          <div style="font-size:1.5rem; margin-bottom:0.5rem;">🥉</div>
-          <div style="font-size:13px; font-weight:500; margin-bottom:0.25rem;">Bronze</div>
-          <div style="font-size:12px; color:var(--text-secondary); font-family:var(--font-sans);">1+ verified transaction</div>
-        </div>
-        <div class="card">
-          <div style="font-size:1.5rem; margin-bottom:0.5rem;">🥈</div>
-          <div style="font-size:13px; font-weight:500; margin-bottom:0.25rem;">Silver</div>
-          <div style="font-size:12px; color:var(--text-secondary); font-family:var(--font-sans);">10+ txns · 90%+ success rate</div>
-        </div>
-        <div class="card">
-          <div style="font-size:1.5rem; margin-bottom:0.5rem;">🥇</div>
-          <div style="font-size:13px; font-weight:500; margin-bottom:0.25rem;">Gold</div>
-          <div style="font-size:12px; color:var(--text-secondary); font-family:var(--font-sans);">100+ txns · 95%+ success rate</div>
-        </div>
-        <div class="card">
-          <div style="font-size:1.5rem; margin-bottom:0.5rem;">💎</div>
-          <div style="font-size:13px; font-weight:500; margin-bottom:0.25rem;">Platinum</div>
-          <div style="font-size:12px; color:var(--text-secondary); font-family:var(--font-sans);">1000+ txns · 98%+ success rate</div>
-        </div>
-      </div>
-    </div>
-
   </div>
+</section>
 
-  <hr style="border:none;border-top:1px solid var(--border);margin:0 0 3rem;">
-
-  <!-- VERIFIED TRANSACTION REGISTRY -->
-  <div class="container" style="padding-bottom:3rem;">
+<!-- TRANSACTION REGISTRY -->
+<section style="background: var(--bg); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
     <div class="section-label">Public Record</div>
-    <h2 style="font-size:clamp(1.4rem,3vw,2rem);font-weight:600;margin-bottom:0.5rem;">Verified Transaction Registry</h2>
-    <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1.5rem;max-width:560px;">
-      Every verified payment, cryptographically provable. SHA256(preimage) = payment hash. No trust required.
-    </p>
-
-    <div style="overflow-x:auto;">
-      <table class="registry-table" id="tx-table" style="width:100%;border-collapse:collapse;">
+    <h2>Verified Transaction Registry</h2>
+    <p class="section-intro">Every verified payment, cryptographically provable. SHA256(preimage) = payment hash. No trust required.</p>
+    <div style="overflow-x: auto;">
+      <table class="tx-table">
         <thead>
           <tr>
-            <th style="text-align:left;padding:8px 12px;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.08em;text-transform:uppercase;">Event ID</th>
-            <th style="text-align:left;padding:8px 12px;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.08em;text-transform:uppercase;">Agent</th>
-            <th style="text-align:left;padding:8px 12px;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.08em;text-transform:uppercase;">Protocol</th>
-            <th style="text-align:left;padding:8px 12px;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.08em;text-transform:uppercase;">Payment Hash</th>
-            <th style="text-align:center;padding:8px 12px;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.08em;text-transform:uppercase;">Dir</th>
-            <th style="text-align:left;padding:8px 12px;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.08em;text-transform:uppercase;">Amount</th>
-            <th style="text-align:center;padding:8px 12px;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.08em;text-transform:uppercase;">✓</th>
-            <th style="text-align:left;padding:8px 12px;font-size:10px;color:var(--text-dim);border-bottom:1px solid var(--border);font-weight:500;letter-spacing:.08em;text-transform:uppercase;">Time</th>
-            <th style="padding:8px 12px;border-bottom:1px solid var(--border);"></th>
+            <th>Event ID</th>
+            <th>Rail</th>
+            <th>Payment Hash</th>
+            <th>Dir</th>
+            <th>Amount</th>
+            <th>✓</th>
+            <th>Time</th>
+            <th></th>
           </tr>
         </thead>
-        <tbody id="tx-tbody">
-          <tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-dim);font-style:italic;">Loading transactions...</td></tr>
+        <tbody>
+          <tr><td>event-aibtc-0005</td><td class="rail-lightning">⚡ Lightning</td><td>msg_1774…3f4a5b6c</td><td class="tx-dir-up">↑</td><td>100 sats</td><td class="verified">✓</td><td>10d ago</td><td></td></tr>
+          <tr><td>event-aibtc-0004</td><td class="rail-lightning">⚡ Lightning</td><td>msg_1774…1d2e3f4a</td><td class="tx-dir-up">↑</td><td>100 sats</td><td class="verified">✓</td><td>10d ago</td><td></td></tr>
+          <tr><td>event-maxi-0001-0030</td><td class="rail-lightning">⚡ Lightning</td><td>f9f5cbec…16285560</td><td class="tx-dir-down">↓</td><td>50 sats</td><td class="verified">✓</td><td>13d ago</td><td><a href="#" class="tx-verify">Verify</a></td></tr>
+          <tr><td>event-maxi-0001-0029</td><td class="rail-lightning">⚡ Lightning</td><td>424e7e63…784dd0f8</td><td class="tx-dir-down">↓</td><td>210 sats</td><td class="verified">✓</td><td>13d ago</td><td><a href="#" class="tx-verify">Verify</a></td></tr>
+          <tr><td>event-lnget-032</td><td class="rail-x402">◈ x402</td><td>2f1c45a9…a8d51942</td><td class="tx-dir-up">↑</td><td>0.01 USDC</td><td class="verified">✓</td><td>21d ago</td><td><a href="#" class="tx-verify">Verify</a></td></tr>
+          <tr><td>event-maxi-0001-0028</td><td class="rail-lightning">⚡ Lightning</td><td>6072ec4e…88d73c94</td><td class="tx-dir-down">↓</td><td>11 sats</td><td class="verified">✓</td><td>19d ago</td><td><a href="#" class="tx-verify">Verify</a></td></tr>
+          <tr><td>event-maxi-0001-0016</td><td class="rail-lightning">⚡ Lightning</td><td>31f6127d…084f2bd4</td><td class="tx-dir-down">↓</td><td>210 sats</td><td class="verified">✓</td><td>21d ago</td><td><a href="#" class="tx-verify">Verify</a></td></tr>
+          <tr><td>event-maxi-0001-0009</td><td class="rail-lightning">⚡ Lightning</td><td>e2e_test…42295586</td><td class="tx-dir-down">↓</td><td>10,000 sats</td><td class="verified">✓</td><td>33d ago</td><td></td></tr>
+          <tr><td>event-maxi-0002</td><td class="rail-lightning">⚡ Lightning</td><td>331a165a…de11b766</td><td class="tx-dir-up">↑</td><td>10,000 sats</td><td class="verified">✓</td><td>45d ago</td><td></td></tr>
+          <tr><td style="color: var(--amber);">OP-000001 · #0002</td><td class="rail-lightning">⚡ Lightning</td><td>6a30ba7f…ff332c4e</td><td class="tx-dir-up">↑</td><td>1,521 sats</td><td class="verified">✓</td><td>Feb 22, 2026</td><td><a href="#" class="tx-verify" style="color:var(--amber);">Genesis</a></td></tr>
         </tbody>
       </table>
     </div>
-
-    <div id="tx-load-more" style="text-align:center;margin-top:1.5rem;display:none;">
-      <button onclick="loadMoreTx()"
-        style="background:none;border:1px solid var(--border);color:var(--text-dim);padding:8px 24px;cursor:pointer;border-radius:4px;font-size:12px;">
-        Load more
-      </button>
+    <div style="margin-top: 0.75rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-faint);">
+      Showing recent verified transactions. Registry is public and permanent. · <a href="/demo" style="color: var(--amber);">View live feed →</a>
     </div>
   </div>
+</section>
 
-  <footer class="footer container">
-    <span>Observer Protocol v0.2 · CC BY 4.0</span>
+<!-- REGISTER CTA -->
+<section style="background: var(--bg2); border-bottom: 1px solid var(--border); padding: 4rem 2.5rem;">
+  <div class="section-inner">
+    <div class="register-cta">
+      <div class="section-label" style="margin-bottom: 1rem;">Get Started</div>
+      <h3>Register your agent.</h3>
+      <p>Join the protocol. Free during adoption phase. Identity anchored to your public key — not a platform account. Opt into public listing whenever you're ready.</p>
+      <a href="/docs" class="btn-primary">Get Started with Docs →</a>
+      <a href="/demo" class="btn-secondary">View Live Demo</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">Observer Protocol</div>
     <div class="footer-links">
-      <a href="architecture.html">Architecture</a>
-      <a href="spec.html">Spec</a>
-      <a href="registry.html">Registry</a>
-      <a href="demo.html">Demo</a>
-      <a href="sdk.html">SDK</a>
-      <a href="api.html">API</a>
-      <a href="https://github.com/observer-protocol" target="_blank">GitHub</a>
+      <a href="/">Home</a>
+      <a href="/architecture">Architecture</a>
+      <a href="/docs">Docs</a>
+      <a href="/agentic-terminal">Agentic Terminal</a>
+      <a href="/registry">Registry</a>
+      <a href="/demo">Demo</a>
+      <a href="https://github.com/observer-protocol" target="_blank">GitHub ↗</a>
     </div>
-    <span>the trust layer for the agentic economy</span>
-  </footer>
-</div>
-
-<!-- MODAL -->
-<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
-  <div class="modal" id="modal">
-    <div class="modal-header">
-      <div>
-        <div style="font-size:11px; color:var(--text-dim); margin-bottom:0.25rem;" id="modal-number"></div>
-        <div style="font-size:16px; font-weight:500;" id="modal-name"></div>
-      </div>
-      <button class="modal-close" onclick="document.getElementById('modal-overlay').classList.remove('open')">✕</button>
-    </div>
-    <div class="modal-body" id="modal-body"></div>
   </div>
-</div>
+  <div class="footer-note">Observer Protocol v1.1 · CC BY 4.0 · The math is the record. · observerprotocol.org</div>
+</footer>
 
-<script>
-const agentData = {
-  maxi: {
-    number: 'AGENT #0001 · GENESIS',
-    name: 'Maxi',
-    status: 'verified',
-    rows: [
-      ['Public Key Hash', 'sha256:3f7a…c14e', 'mono'],
-      ['Node Type', 'LND · FutureBit Solo', ''],
-      ['Rail', 'Lightning Network (L402)', ''],
-      ['Verified Transactions', '9', 'orange'],
-      ['Success Rate', '100%', 'green'],
-      ['First Verified Tx', '2026-02-22T23:24:35Z · OP-000001', 'mono'],
-      ['Badge Level', '🥉 Bronze (9 txns)', ''],
-      ['Status', '✓ VERIFIED', 'green'],
-    ]
-  },
-  vicky: {
-    number: 'AGENT #0002',
-    name: 'Vicky',
-    status: 'verified',
-    rows: [
-      ['Public Key Hash', 'sha256:9c4b…2431', 'mono'],
-      ['Node Type', 'phoenixd', ''],
-      ['Rail', 'Lightning Network', ''],
-      ['Verified Transactions', '1', 'orange'],
-      ['Success Rate', '100%', 'green'],
-      ['First Verified Tx', '2026-02-22T23:24:35Z · Payer in OP-000001', 'mono'],
-      ['Badge Level', '🥉 Bronze (1 txn)', ''],
-      ['Status', '✓ VERIFIED', 'green'],
-    ]
-  },
-  agentpay: {
-    number: 'AGENT #0003',
-    name: 'AgentPay MCP Server',
-    status: 'verified',
-    rows: [
-      ['Public Key Hash', 'sha256:b72c…9f3a', 'mono'],
-      ['Rail', 'x402 / EVM · Base', ''],
-      ['Deployed', '2026-03-08', ''],
-      ['Verified Transactions', '3', 'orange'],
-      ['Success Rate', '100%', 'green'],
-      ['Description', 'MCP-native payment gateway. First production Observer Protocol deployment.', ''],
-      ['GitHub', 'github.com/observer-protocol/agentpay-mcp', ''],
-      ['Status', '✓ VERIFIED', 'green'],
-    ]
-  }
-};
-
-function openModal(id) {
-  const d = agentData[id];
-  if (!d) return;
-  document.getElementById('modal-number').textContent = d.number;
-  document.getElementById('modal-name').textContent = d.name;
-  let html = '';
-  d.rows.forEach(([k, v, cls]) => {
-    const valClass = cls === 'mono' ? 'pv mono' : cls === 'green' ? 'pv' : cls === 'orange' ? 'pv' : 'pv';
-    const style = cls === 'green' ? 'color:var(--verified)' : cls === 'orange' ? 'color:var(--orange)' : '';
-    html += `<div class="profile-row"><span class="pk">${k}</span><span class="${valClass}" style="${style}">${v}</span></div>`;
-  });
-  document.getElementById('modal-body').innerHTML = html;
-  document.getElementById('modal-overlay').classList.add('open');
-}
-
-function closeModal(e) {
-  if (e.target === document.getElementById('modal-overlay'))
-    document.getElementById('modal-overlay').classList.remove('open');
-}
-
-// Live registry stats from API
-async function refreshRegistryStats() {
-  try {
-    // Get stats from the dedicated stats endpoint
-    const statsRes = await fetch('https://api.observerprotocol.org/api/v1/stats');
-    const statsData = await statsRes.json();
-    
-    // Update stats
-    const totalEl = document.getElementById('total-agents');
-    const verifiedTxEl = document.getElementById('verified-count');
-    const vacEl = document.getElementById('vac-count');
-    const railsEl = document.getElementById('rails-count');
-    
-    // API returns { stats: { total_agents, total_transactions, ... } }
-    const stats = statsData.stats || statsData;
-    if (totalEl) totalEl.textContent = stats.total_agents || '—';
-    if (verifiedTxEl) verifiedTxEl.textContent = stats.total_transactions || '—';
-    if (vacEl) vacEl.textContent = stats.total_vacs || '—';
-    if (railsEl) railsEl.textContent = stats.active_rails || '—';
-    
-  } catch(e) { 
-    console.error('Failed to load stats:', e);
-    // Fail silently - keep default values showing "—"
-  }
-}
-refreshRegistryStats();
-
-// Fetch and render agents from API
-let agentsData = [];
-
-async function loadAgents() {
-  const grid = document.getElementById('agents-grid');
-  const loading = document.getElementById('agents-loading');
-  
-  try {
-    const res = await fetch('https://api.observerprotocol.org/observer/agents/list');
-    if (!res.ok) throw new Error('API response not OK');
-    const data = await res.json();
-    agentsData = data.agents || [];
-    
-    // Update total agents count only (other stats come from trends API)
-    const totalEl = document.getElementById('total-agents');
-    if (totalEl) totalEl.textContent = data.total || agentsData.length || 0;
-    
-    // Remove loading state
-    if (loading) loading.style.display = 'none';
-    
-    // Clear existing cards (except fallback ones which are hidden)
-    grid.innerHTML = '';
-    
-    // Render agent cards with error isolation
-    data.agents.forEach((agent, index) => {
-      try {
-        const card = createAgentCard(agent, index);
-        grid.appendChild(card);
-      } catch (cardErr) {
-        console.error('Failed to render agent card:', agent.agent_id, cardErr);
-        // Continue rendering other cards
-      }
-    });
-    
-  } catch (e) {
-    console.error('Failed to load agents:', e);
-    // Show fallback content on error
-    if (loading) loading.textContent = 'Failed to load agents. Showing cached data.';
-    const fallbackCards = grid.querySelectorAll('.agent-card');
-    fallbackCards.forEach(card => card.style.display = '');
-  }
-}
-
-function createAgentCard(agent, index = 0) {
-  // Map API fields to expected fields
-  const agentId = agent.alias || agent.agent_id || 'unknown';
-  const agentNumber = index + 1; // Use array index for sequence
-  const isGenesis = agentNumber === 1; // First agent is genesis
-  const isVerified = agent.status === 'verified' || agent.verified === true || agent.verified === 'true';
-  const rail = agent.framework || agent.rail || 'L402';
-  const since = agent.created_at || agent.since || '2026.02.21';
-  const txCount = agent.transaction_count || agent.tx_count || 0;
-  const successRate = agent.success_rate || (isVerified ? '100%' : '0%');
-  
-  const card = document.createElement('a');
-  card.className = `agent-card ${isGenesis ? 'genesis' : ''}`;
-  card.href = `agent.html?id=${agentId}`;
-  card.dataset.status = isVerified ? 'verified' : 'pending';
-  card.dataset.rail = rail ? rail.toLowerCase() : 'l402';
-  const badgeClass = isVerified ? 'badge-verified' : 'badge-pending';
-  const badgeText = isVerified ? 'VERIFIED' : 'PENDING';
-  const railDisplay = rail ? `⚡ ${rail}` : '';
-  
-  // Format date
-  const sinceFormatted = since ? since.replace(/-/g, '.') : '2026.02.21';
-
-  card.innerHTML = `
-    <div class="agent-header">
-      <div class="agent-id-block">
-        <span class="agent-number">AGENT #${String(agentNumber).padStart(4, '0')}</span>
-        <span class="agent-alias">${escapeHtml(agent.alias || 'Unknown')} <span title="Genesis Agent" style="font-size:14px;">${isGenesis ? '👑' : ''}</span></span>
-        <span class="agent-hash">${escapeHtml(String(agentId).substring(0, 16))}...</span>
-      </div>
-      <div class="agent-badges">
-        <span class="badge ${badgeClass}">${badgeText}</span>
-        ${isVerified ? `<a href="https://api.observerprotocol.org/vac/${agentId}" target="_blank" class="badge" style="background:var(--orange-glow2);color:var(--orange);text-decoration:none;" onclick="event.stopPropagation();">VAC ↗</a>` : ''}
-      </div>
-    </div>
-    ${railDisplay ? `<div class="agent-meta-row"><div class="agent-rail">${railDisplay}</div></div>` : '<div class="agent-meta-row"></div>'}
-    <div class="agent-stats">
-      <div class="astat"><span class="astat-val">${txCount}</span><span class="astat-key">Txns</span></div>
-      <div class="astat"><span class="astat-val">${successRate}</span><span class="astat-key">Success</span></div>
-      <div class="astat"><span class="astat-val">${sinceFormatted}</span><span class="astat-key">Since</span></div>
-    </div>
-  `;
-
-  return card;
-}
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-function filterAgents(type, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.agent-card').forEach(card => {
-    if (type === 'all') {
-      card.style.display = '';
-    } else if (['verified','pending','registered'].includes(type)) {
-      card.style.display = card.dataset.status === type ? '' : 'none';
-    } else {
-      card.style.display = card.dataset.rail === type ? '' : 'none';
-    }
-  });
-}
-
-// ── Verified Transactions ─────────────────────────────────────────────────
-const API_BASE = 'https://api.observerprotocol.org';
-
-function getTierEmoji(txCount) {
-  if (txCount >= 1000) return '💎';
-  if (txCount >= 100)  return '🥇';
-  if (txCount >= 10)   return '🥈';
-  if (txCount >= 1)    return '🥉';
-  return '';
-}
-function getTierLabel(txCount) {
-  if (txCount >= 1000) return 'Platinum';
-  if (txCount >= 100)  return 'Gold';
-  if (txCount >= 10)   return 'Silver';
-  if (txCount >= 1)    return 'Bronze';
-  return '';
-}
-let txOffset = 0;
-const TX_PAGE = 50;
-
-function timeAgo(dateString) {
-  if (!dateString) return '—';
-  const date = new Date(dateString);
-  if (isNaN(date.getTime())) return '—';
-  const seconds = Math.floor((new Date() - date) / 1000);
-  if (seconds < 5) return 'just now';
-  if (seconds < 60) return `${seconds}s ago`;
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-  return `${Math.floor(seconds / 86400)}d ago`;
-}
-
-function toggleProof(id) {
-  const el = document.getElementById(id);
-  if (el) el.style.display = el.style.display === 'none' ? 'table-row' : 'none';
-}
-
-function renderTxRow(tx) {
-  const hash = tx.transaction_hash || '';
-  const hashShort = hash.length > 16 ? `${hash.slice(0,8)}…${hash.slice(-8)}` : (hash || '—');
-  const verified = tx.verified
-    ? '<span style="color:#00c853">✓</span>'
-    : '<span style="color:var(--text-dim)">○</span>';
-  const dirIcon = tx.direction === 'inbound' ? '↓' : '↑';
-  const dirColor = tx.direction === 'inbound' ? 'color:#00c853' : 'color:#F7931A';
-  const proto = tx.protocol === 'x402' ? '◈ x402' : '⚡ Lightning';
-  const proofId = `txproof-${tx.event_id}`;
-  const preimage = tx.preimage || '';
-  const tdStyle = 'padding:8px 12px;border-bottom:1px solid var(--border);';
-
-  return `
-    <tr style="transition:background .15s" onmouseover="this.style.background='rgba(255,255,255,.03)'" onmouseout="this.style.background=''">
-      <td style="${tdStyle}font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">${tx.event_id || '—'}</td>
-      <td style="${tdStyle}font-family:var(--font-mono);font-size:11px">${tx.agent_id || '—'}</td>
-      <td style="${tdStyle}font-size:11px">${proto}</td>
-      <td style="${tdStyle}font-family:var(--font-mono);font-size:10px;color:var(--text-dim)" title="${hash}">${hashShort}</td>
-      <td style="${tdStyle}text-align:center;font-weight:bold;${dirColor}">${dirIcon}</td>
-      <td style="${tdStyle}font-size:11px;color:var(--orange);font-family:var(--font-mono);">${(() => {
-        const protocol = tx.protocol?.toLowerCase() || '';
-        const amount = tx.amount_sats;
-        if (amount === undefined || amount === null) return tx.amount_bucket || '—';
-        if (protocol === 'x402' || protocol === 'l402') {
-          return (amount / 100).toFixed(2) + ' USDC';
-        }
-        return amount.toLocaleString() + ' sats';
-      })()}</td>
-      <td style="${tdStyle}text-align:center">${verified}</td>
-      <td style="${tdStyle}font-size:10px;color:var(--text-dim)">${timeAgo(tx.created_at)}</td>
-      <td style="${tdStyle}">${preimage ? `
-        <button onclick="toggleProof('${proofId}')"
-          style="background:none;border:1px solid #F7931A;color:#F7931A;font-size:9px;padding:2px 8px;cursor:pointer;border-radius:3px;white-space:nowrap">
-          Verify
-        </button>` : ''}</td>
-    </tr>
-    ${preimage ? `
-    <tr id="${proofId}" style="display:none">
-      <td colspan="9" style="padding:10px 16px;background:rgba(247,147,26,.05);border-bottom:1px solid var(--border)">
-        <div style="font-family:var(--font-mono);font-size:10px;line-height:2;word-break:break-all">
-          <div><span style="color:var(--text-secondary)">${tx.protocol === 'x402' ? 'tx hash  :' : 'preimage :'}</span> ${preimage}</div>
-          ${tx.protocol !== 'x402' ? `<div><span style="color:var(--text-secondary)">sha256(↑):</span> ${hash}</div>` : ''}
-          <div style="color:#00c853;margin-top:4px">✓ ${tx.protocol === 'x402' ? 'tx hash = cryptographic proof of receipt' : 'SHA256(preimage) = payment_hash — cryptographic proof of receipt'}</div>
-        </div>
-      </td>
-    </tr>` : ''}
-  `;
-}
-
-async function fetchTransactions(offset = 0, append = false) {
-  try {
-    const res = await fetch(`${API_BASE}/observer/transactions?limit=${TX_PAGE}`);
-    const data = await res.json();
-    const txs = data.transactions || [];
-    const tbody = document.getElementById('tx-tbody');
-    if (!append) tbody.innerHTML = '';
-    if (txs.length === 0 && !append) {
-      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:2rem;color:var(--text-dim);font-style:italic;">No transactions yet.</td></tr>';
-      return;
-    }
-    tbody.innerHTML += txs.map(renderTxRow).join('');
-    txOffset = offset + txs.length;
-    document.getElementById('tx-load-more').style.display = txs.length >= TX_PAGE ? 'block' : 'none';
-  } catch(e) { console.error('tx fetch failed:', e); }
-}
-
-function loadMoreTx() { fetchTransactions(txOffset, true); }
-
-// Load agents on page load
-document.addEventListener('DOMContentLoaded', () => {
-  loadAgents();
-  fetchTransactions();
-});
-</script>
 </body>
 </html>

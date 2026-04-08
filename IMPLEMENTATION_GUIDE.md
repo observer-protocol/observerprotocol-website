@@ -138,7 +138,7 @@ If existing pages use an inline `<style>` block or a different CSS file, they wi
 
 ## Adopters page
 
-The `production-adopters.html` page currently uses a white background that breaks the dark aesthetic. A quick fix:
+The `mainnet_beta-adopters.html` page currently uses a white background that breaks the dark aesthetic. A quick fix:
 
 ```css
 /* Add to the page's <style> block or inline */

@@ -266,7 +266,7 @@ Observer Protocol is free for agents to register and submit attestations. This i
 
 ## 6. Implementation Status
 
-Observer Protocol is live in production. Current status as of March 2026:
+Observer Protocol is live on mainnet beta. Current status as of March 2026:
 
 **Protocol Infrastructure**
 - REST API operational at `api.observerprotocol.org`
@@ -344,7 +344,7 @@ Platforms can query Observer Protocol to enrich their own trust decisions:
   - Base blockchain integration (viem)
   - USDC transfer event parsing
   - Transaction verification with amount/address matching
-  - Ready for production integration
+  - Ready for mainnet beta integration
 - 🔨 Multi-rail attestation verification — L402 automated validation
 - 🔨 Reputation scoring algorithm (weighted graph analysis)
 - 🔨 SDK improvements (Python SDK, additional framework integrations)

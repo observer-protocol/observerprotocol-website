@@ -65,7 +65,7 @@
       <div class="section-label" style="margin-top:1rem;">Solana Quickstart</div>
       <h1 style="font-size:clamp(1.6rem,4vw,2.4rem);font-weight:600;margin-bottom:1rem;">Build Solana-Native Agents</h1>
       <p style="font-size:13px;color:var(--text-secondary);max-width:600px;font-family:var(--font-sans);line-height:1.8;">
-        Observer Protocol now supports Solana agents with native Ed25519 signature verification. Build agents that work on Solana while building portable reputation across all supported rails.
+        Observer Protocol now supports Solana agents with native Ed25519 signature verification and DID-based identity. Build agents that work on Solana while building portable reputation across all supported rails.
       </p>
     </div>
   </section>
@@ -80,7 +80,7 @@
           <h2>Generate an Ed25519 Keypair</h2>
         </div>
         <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
-          Solana uses Ed25519 for all keypairs. You can generate one using any Solana SDK or the <code>@solana/web3.js</code> library.
+          Solana uses Ed25519 for all keypairs. Generate one and derive your Agent DID from the public key.
         </p>
         <div class="code-block">
 <span class="keyword">import</span> { Keypair } <span class="keyword">from</span> <span class="string">'@solana/web3.js'</span>;
@@ -91,6 +91,10 @@
 <span class="comment">// Your Solana public key (base58-encoded)</span>
 <span class="keyword">const</span> publicKey = keypair.publicKey.<span class="func">toString</span>();
 <span class="comment">// e.g., "HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH"</span>
+
+<span class="comment">// Derive your Agent DID from the public key</span>
+<span class="keyword">const</span> agentDID = <span class="string">`did:web:observerprotocol.org:agents:${publicKey}`</span>;
+<span class="comment">// e.g., "did:web:observerprotocol.org:agents:HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH"</span>
 
 <span class="comment">// Your secret key (32 bytes, hex-encoded for OP)</span>
 <span class="keyword">const</span> secretKey = Buffer.<span class="func">from</span>(keypair.secretKey).<span class="func">toString</span>(<span class="string">'hex'</span>);
@@ -104,19 +108,22 @@
           <h2>Register Your Agent</h2>
         </div>
         <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
-          Use your Ed25519 public key to register with Observer Protocol. The system auto-detects the key type.
+          Register your agent using your DID and Ed25519 public key. The response includes your VAC (Verifiable Agent Credential) URL.
         </p>
         <div class="code-block">
-<span class="keyword">curl</span> -X POST <span class="string">"https://api.observerprotocol.org/observer/register-agent"</span> \\
-  -H <span class="string">"Content-Type: application/json"</span> \\
+<span class="keyword">curl</span> -X POST <span class="string">"https://api.observerprotocol.org/observer/register"</span> \
+  -H <span class="string">"Content-Type: application/json"</span> \
   -d <span class="string">'{
+    "did": "did:web:observerprotocol.org:agents:HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH",
     "public_key": "HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH",
-    "agent_name": "solana-agent-001",
-    "framework": "solana-web3"
+    "key_type": "Ed25519",
+    "chain": "solana",
+    "wallet_standard": "ows",
+    "caip2_chain": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
   }'</span>
         </div>
         <div class="info-box">
-          <strong>Auto-Detection:</strong> OP detects Ed25519 keys (32 bytes) vs SECP256k1 keys (33/65 bytes) automatically. No special flags needed.
+          <strong>Response:</strong> Returns <code>{ did, vac_url, created_at }</code>. Save the <code>did</code> and <code>vac_url</code> — you'll need them for verification and transactions.
         </div>
       </div>
 
@@ -127,25 +134,26 @@
           <h2>Complete Challenge-Response Verification</h2>
         </div>
         <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
-          Sign the challenge nonce with your Ed25519 private key to prove key ownership.
+          Sign the challenge message with your Ed25519 private key to prove DID ownership.
         </p>
         <div class="code-block">
-<span class="comment">// 1. Request a challenge</span>
-<span class="keyword">const</span> challengeRes = <span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">`https://api.observerprotocol.org/observer/challenge?agent_id=${agentId}`</span>);
-<span class="keyword">const</span> { nonce } = <span class="keyword">await</span> challengeRes.<span class="func">json</span>();
+<span class="comment">// 1. Request a challenge using your DID</span>
+<span class="keyword">const</span> challengeRes = <span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">`https://api.observerprotocol.org/observer/challenge?did=${encodeURIComponent(agentDID)}`</span>);
+<span class="keyword">const</span> { challenge_id, message } = <span class="keyword">await</span> challengeRes.<span class="func">json</span>();
 
-<span class="comment">// 2. Sign the nonce with Ed25519</span>
+<span class="comment">// 2. Sign the message with Ed25519</span>
 <span class="keyword">import</span> { sign } <span class="keyword">from</span> <span class="string">'tweetnacl'</span>;
-<span class="keyword">const</span> message = <span class="keyword">new</span> TextEncoder().<span class="func">encode</span>(nonce);
-<span class="keyword">const</span> signature = <span class="func">sign</span>(message, keypair.secretKey);
+<span class="keyword">const</span> messageBytes = <span class="keyword">new</span> TextEncoder().<span class="func">encode</span>(message);
+<span class="keyword">const</span> signature = <span class="func">sign</span>(messageBytes, keypair.secretKey);
 
-<span class="comment">// 3. Submit verification</span>
-<span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">"https://api.observerprotocol.org/observer/verify-agent"</span>, {
+<span class="comment">// 3. Submit verification with challenge_id</span>
+<span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">"https://api.observerprotocol.org/observer/verify"</span>, {
   method: <span class="string">"POST"</span>,
   headers: { <span class="string">"Content-Type"</span>: <span class="string">"application/json"</span> },
   body: JSON.<span class="func">stringify</span>({
-    agent_id: agentId,
-    signed_challenge: Buffer.<span class="func">from</span>(signature).<span class="func">toString</span>(<span class="string">'hex'</span>)
+    did: agentDID,
+    challenge_id: challenge_id,
+    signature: Buffer.<span class="func">from</span>(signature).<span class="func">toString</span>(<span class="string">'hex'</span>)
   })
 });
         </div>
@@ -158,14 +166,16 @@
           <h2>Submit Solana Transactions</h2>
         </div>
         <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
-          Once verified, submit your Solana x402 transactions to build reputation.
+          Once verified, submit your Solana x402 transactions with your DID and VAC reference to build reputation.
         </p>
         <div class="code-block">
 <span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">"https://api.observerprotocol.org/observer/submit-transaction"</span>, {
   method: <span class="string">"POST"</span>,
   headers: { <span class="string">"Content-Type"</span>: <span class="string">"application/json"</span> },
   body: JSON.<span class="func">stringify</span>({
-    agent_id: agentId,
+    did: agentDID,
+    caip2_chain: <span class="string">"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"</span>,
+    vac_presentation: agentDID + <span class="string">"/vac"</span>,
     protocol: <span class="string">"x402"</span>,
     transaction_reference: <span class="string">"5x...solana-tx-signature"</span>,  <span class="comment">// Solana tx sig</span>
     timestamp: <span class="keyword">new</span> <span class="func">Date</span>().<span class="func">toISOString</span>(),
@@ -174,11 +184,34 @@
       event_type: <span class="string">"payment.executed"</span>,
       amount_sats: 21000,
       direction: <span class="string">"outbound"</span>,
-      counterparty_id: <span class="string">"recipient-agent-id"</span>,
+      counterparty_did: <span class="string">"did:web:observerprotocol.org:agents:..."</span>,
       service_description: <span class="string">"x402 API access"</span>
     })
   })
 });
+        </div>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">5</div>
+          <h2>Get Your VAC (Verifiable Agent Credential)</h2>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
+          Retrieve your W3C Verifiable Presentation containing your VAC. This credential proves your agent's verified status and can be presented to counterparties.
+        </p>
+        <div class="code-block">
+<span class="comment">// Fetch your Verifiable Presentation</span>
+<span class="keyword">const</span> vacRes = <span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">`https://api.observerprotocol.org/vac/${encodeURIComponent(agentDID)}`</span>);
+<span class="keyword">const</span> presentation = <span class="keyword">await</span> vacRes.<span class="func">json</span>();
+
+<span class="comment">// The presentation contains your VAC as a verifiable credential</span>
+<span class="comment">// with cryptographic proof of your verified agent status</span>
+console.<span class="func">log</span>(presentation.verifiableCredential);
+        </div>
+        <div class="info-box">
+          <strong>VAC Usage:</strong> Present this credential to services that require verified agent status. The VAC is a W3C-standard Verifiable Credential signed by Observer Protocol.
         </div>
       </div>
 
@@ -187,7 +220,7 @@
         <div style="font-size:3rem;margin-bottom:1rem;">☀</div>
         <h3 style="font-size:1.1rem;font-weight:600;margin-bottom:0.75rem;">Your Solana Agent is Verified</h3>
         <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1.5rem;">
-          Your agent now has portable reputation that works across Solana, Lightning, and all Observer Protocol supported rails.
+          Your agent now has a DID-based portable reputation that works across Solana, Lightning, and all Observer Protocol supported rails.
         </p>
         <a href="registry.html" class="btn btn-primary">View Registry</a>
         <a href="demo.html" class="btn btn-outline" style="margin-left:0.5rem;">Try the Demo</a>

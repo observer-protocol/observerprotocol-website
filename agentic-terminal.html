@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agentic Terminal — Observer Protocol</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;0,900;1,300;1,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0a0a08;
+      --bg2:       #111110;
+      --bg3:       #1a1a18;
+      --border:    #2a2a26;
+      --amber:     #f5a623;
+      --amber-dim: #b8791a;
+      --amber-glow:#f5a62322;
+      --green:     #4ade80;
+      --green-dim: #166534;
+      --text:      #e8e8e0;
+      --text-dim:  #888880;
+      --text-faint:#444440;
+      --blue:      #7eb8f7;
+      --teal:      #5eead4;
+      --purple:    #a78bfa;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem; height: 56px;
+      background: rgba(10,10,8,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; font-weight: 500; color: var(--amber); letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-dim); text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--amber); }
+    .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; display: inline-block; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .nav-status { display: flex; align-items: center; gap: 0.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-dim); }
+
+    /* PAGE HEADER */
+    .page-header {
+      padding: 9rem 2.5rem 5rem;
+      border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .page-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 50% 70% at 80% 30%, rgba(167,139,250,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 50% at 20% 80%, rgba(94,234,212,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .page-header-inner { max-width: 900px; position: relative; }
+    .breadcrumb { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-faint); letter-spacing: 0.1em; margin-bottom: 1.5rem; }
+    .breadcrumb span { color: var(--amber); }
+    .page-tag { display: inline-flex; align-items: center; gap: 0.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--purple); letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid #7c3aed44; padding: 0.3rem 0.8rem; margin-bottom: 1.5rem; background: #a78bfa11; }
+    h1 { font-family: 'Fraunces', serif; font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1.25rem; }
+    .page-sub { font-size: 1rem; color: var(--text-dim); max-width: 640px; line-height: 1.75; font-weight: 300; margin-bottom: 2rem; }
+    .op-relation {
+      display: inline-flex; align-items: center; gap: 0.75rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
+      color: var(--text-faint); letter-spacing: 0.06em;
+      border: 1px solid var(--border); padding: 0.5rem 1rem;
+      background: var(--bg2);
+    }
+    .op-relation .sep { color: var(--border); }
+    .op-relation .op { color: var(--blue); }
+    .op-relation .arrow { color: var(--text-faint); }
+    .op-relation .at { color: var(--purple); }
+
+    /* SECTIONS */
+    section { padding: 5rem 2.5rem; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber); margin-bottom: 1rem; }
+    h2 { font-family: 'Fraunces', serif; font-size: clamp(1.6rem, 2.5vw, 2.4rem); font-weight: 600; line-height: 1.15; margin-bottom: 1rem; color: var(--text); }
+    .section-intro { font-size: 0.95rem; color: var(--text-dim); max-width: 680px; line-height: 1.8; margin-bottom: 3rem; font-weight: 300; }
+
+    /* TIER CARDS */
+    .tier-cards {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1.5rem; margin-top: 1rem;
+    }
+    @media (max-width: 680px) { .tier-cards { grid-template-columns: 1fr; } }
+    .tier-card {
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      display: flex; flex-direction: column;
+      transition: border-color 0.2s;
+    }
+    .tier-card.sovereign:hover { border-color: var(--teal); }
+    .tier-card.enterprise:hover { border-color: var(--purple); }
+    .tier-card-header {
+      padding: 1.75rem 2rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .tier-label {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+    .tier-label.sovereign { color: var(--teal); }
+    .tier-label.enterprise { color: var(--purple); }
+    .tier-card h3 { font-family: 'Fraunces', serif; font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .tier-price {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;
+      color: var(--text-faint); margin-top: 0.25rem;
+    }
+    .tier-price strong { color: var(--green); font-size: 1rem; }
+    .tier-card-body { padding: 1.5rem 2rem; flex: 1; }
+    .tier-desc { font-size: 0.9rem; color: var(--text-dim); line-height: 1.75; font-weight: 300; margin-bottom: 1.5rem; }
+    .tier-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .tier-features li {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+      color: var(--text-dim); display: flex; align-items: flex-start; gap: 0.6rem;
+    }
+    .tier-features li::before { content: '✓'; color: var(--green); flex-shrink: 0; }
+    .tier-features li.pending::before { content: '·'; color: var(--text-faint); }
+    .tier-features li.pending { color: var(--text-faint); }
+    .tier-card-footer { padding: 1.5rem 2rem; border-top: 1px solid var(--border); }
+    .btn-tier {
+      display: block; text-align: center; text-decoration: none;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.75rem;
+      letter-spacing: 0.08em; padding: 0.85rem 1.5rem;
+      font-weight: 600; transition: all 0.2s;
+    }
+    .btn-tier.sovereign { background: var(--teal); color: #0f2820; }
+    .btn-tier.sovereign:hover { background: #99f6e4; }
+    .btn-tier.enterprise { background: transparent; color: var(--purple); border: 1px solid var(--purple); }
+    .btn-tier.enterprise:hover { background: #a78bfa11; }
+
+    /* WHAT AT DOES */
+    .at-features { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); margin-top: 2rem; }
+    @media (max-width: 768px) { .at-features { grid-template-columns: 1fr; } }
+    .at-feature { background: var(--bg); padding: 2rem; transition: background 0.2s; }
+    .at-feature:hover { background: var(--bg2); }
+    .at-feature-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--purple); letter-spacing: 0.1em; border: 1px solid #7c3aed44; display: inline-block; padding: 0.2rem 0.5rem; background: #a78bfa11; margin-bottom: 1rem; }
+    .at-feature h3 { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.6rem; color: var(--text); }
+    .at-feature p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.75; font-weight: 300; }
+
+    /* HOW IT RELATES */
+    .relation-grid { display: grid; grid-template-columns: 1fr 40px 1fr; gap: 0; align-items: center; margin-top: 2rem; }
+    @media (max-width: 640px) { .relation-grid { grid-template-columns: 1fr; } }
+    .relation-card { border: 1px solid var(--border); padding: 2rem; background: var(--bg2); }
+    .relation-card.op-card { border-color: #7eb8f744; background: #7eb8f708; }
+    .relation-card.at-card { border-color: #a78bfa44; background: #a78bfa08; }
+    .relation-arrow { text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 1.2rem; color: var(--text-faint); }
+    @media (max-width: 640px) { .relation-arrow { transform: rotate(90deg); padding: 1rem 0; } }
+    .relation-card-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .relation-card.op-card .relation-card-tag { color: var(--blue); }
+    .relation-card.at-card .relation-card-tag { color: var(--purple); }
+    .relation-card h3 { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .relation-card p { font-size: 0.85rem; color: var(--text-dim); line-height: 1.7; font-weight: 300; margin-bottom: 1rem; }
+    .relation-items { display: flex; flex-direction: column; gap: 0.35rem; }
+    .relation-item { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--text-faint); }
+    .relation-item::before { content: '→ '; color: var(--text-faint); }
+
+    /* EARLY ACCESS */
+    .early-access {
+      background: var(--bg2); border: 1px solid var(--border);
+      padding: 3rem 2.5rem; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .early-access::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(167,139,250,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .early-access-inner { position: relative; max-width: 560px; margin: 0 auto; }
+    .early-access h3 { font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 1rem; }
+    .early-access p { font-size: 0.92rem; color: var(--text-dim); line-height: 1.75; font-weight: 300; margin-bottom: 1.75rem; }
+    .early-access-ctas { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; letter-spacing: 0.08em; padding: 0.75rem 1.5rem; background: var(--amber); color: #0a0a08; text-decoration: none; font-weight: 600; transition: all 0.2s; }
+    .btn-primary:hover { background: #ffc04d; }
+    .btn-secondary { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; letter-spacing: 0.08em; padding: 0.75rem 1.5rem; background: transparent; color: var(--text); text-decoration: none; border: 1px solid var(--border); transition: all 0.2s; }
+    .btn-secondary:hover { border-color: var(--text-dim); }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 2.5rem 2.5rem 2rem; background: var(--bg); }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .footer-brand { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--amber); letter-spacing: 0.12em; text-transform: uppercase; }
+    .footer-links { display: flex; gap: 2rem; flex-wrap: wrap; }
+    .footer-links a { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-faint); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text-dim); }
+    .footer-note { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-faint); margin-top: 1.5rem; max-width: 1100px; margin-left: auto; margin-right: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="/">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="/architecture">Architecture</a></li>
+    <li><a href="/docs">Docs</a></li>
+    <li><a href="/agentic-terminal" class="active">Agentic Terminal</a></li>
+    <li><a href="/registry">Registry</a></li>
+    <li><a href="/demo">Demo</a></li>
+  </ul>
+  <div class="nav-status"><div class="pulse"></div>MAINNET LIVE · V1.1</div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb">OBSERVER PROTOCOL · <span>AGENTIC TERMINAL</span></div>
+    <div class="page-tag">Trust Intelligence Layer</div>
+    <h1>Agentic Terminal</h1>
+    <p class="page-sub">
+      The Identity &amp; Access Management (IAM) and intelligence layer built on Observer Protocol. Where cryptographic identity becomes actionable trust — for individuals managing their own agent credentials, and enterprises managing agent fleets at scale.
+    </p>
+    <div class="op-relation">
+      <span class="op">Observer Protocol</span>
+      <span class="sep">·</span>
+      <span>Open identity infrastructure</span>
+      <span class="arrow">→</span>
+      <span class="at">Agentic Terminal</span>
+      <span class="sep">·</span>
+      <span>Intelligence layer on top</span>
+    </div>
+  </div>
+</div>
+
+<!-- TWO TIERS -->
+<section style="background: var(--bg); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">Two Tiers</div>
+    <h2>One protocol. Two entry points.</h2>
+    <p class="section-intro">
+      Observer Protocol is the open foundation — free for anyone to build on. Agentic Terminal is how you interact with it. Choose the tier that fits your context.
+    </p>
+    <div class="tier-cards">
+
+      <!-- SOVEREIGN -->
+      <div class="tier-card sovereign">
+        <div class="tier-card-header">
+          <div class="tier-label sovereign">Individual · Free</div>
+          <h3>Sovereign Dashboard</h3>
+          <div class="tier-price"><strong>Free</strong> · during adoption phase</div>
+        </div>
+        <div class="tier-card-body">
+          <p class="tier-desc">
+            Own your agent identity without a platform account. Self-sovereign, client-side, encrypted. Your cryptographic credentials stay in your browser — not on our servers.
+          </p>
+          <ul class="tier-features">
+            <li>Client-side Ed25519 keypair generation</li>
+            <li>OP registration and DID issuance</li>
+            <li>VAC viewer and credential management</li>
+            <li>AES-256-GCM encrypted IndexedDB storage</li>
+            <li>Multi-rail transaction history</li>
+            <li>Agent badge and public profile</li>
+            <li class="pending">Delegation credential viewer (coming)</li>
+            <li class="pending">Cross-device key sync (coming)</li>
+          </ul>
+        </div>
+        <div class="tier-card-footer">
+          <a href="https://agenticterminal.io/sovereign" class="btn-tier sovereign" target="_blank">
+            Open Sovereign Dashboard →
+          </a>
+        </div>
+      </div>
+
+      <!-- ENTERPRISE -->
+      <div class="tier-card enterprise">
+        <div class="tier-card-header">
+          <div class="tier-label enterprise">Enterprise · Early Access</div>
+          <h3>AT Enterprise</h3>
+          <div class="tier-price">Contact us · <strong style="color: var(--amber);">Early access</strong></div>
+        </div>
+        <div class="tier-card-body">
+          <p class="tier-desc">
+            Agent-native IAM built crypto-native from the ground up — not retrofitted from human identity systems. Identity is a keypair, not a username. Trust is cryptographic proof, not a policy assertion. KYB linkage, delegation workflows, compliance audit trails, and trust score monitoring — all anchored to on-chain economic behavior.
+          </p>
+          <ul class="tier-features">
+            <li>Agent fleet dashboard with trust scores</li>
+            <li>Delegation credential issuance and approval</li>
+            <li>KYB badge and legal entity linkage</li>
+            <li>Remediation configuration and monitoring</li>
+            <li>Compliance audit trail</li>
+            <li>AT-ARS-1.0 reputation scoring (5-factor)</li>
+            <li>Org-scoped credential viewer</li>
+            <li class="pending">Multi-org hierarchy (coming)</li>
+          </ul>
+        </div>
+        <div class="tier-card-footer">
+          <a href="https://agenticterminal.io" class="btn-tier enterprise" target="_blank">
+            Request Early Access →
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CRYPTO NATIVE -->
+<section style="background: var(--bg3); border-bottom: 1px solid var(--border); border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center;">
+      <div>
+        <div class="section-label">Architecture</div>
+        <h2>Built crypto-native.<br/>Not retrofitted.</h2>
+        <p style="font-size: 0.95rem; color: var(--text-dim); line-height: 1.8; font-weight: 300; margin-bottom: 1.25rem;">
+          Most agentic IAM tools on the market today are human identity systems adapted for agents — OAuth flows, JWT tokens, and role-based access control bolted onto an architecture that was never designed for autonomous economic actors.
+        </p>
+        <p style="font-size: 0.95rem; color: var(--text-dim); line-height: 1.8; font-weight: 300;">
+          Agentic Terminal was designed from day one for agents that transact autonomously across cryptographic rails. The primitives are different. The trust model is different. The result is IAM that actually fits the agentic economy — not IAM that approximates it.
+        </p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 1px; background: var(--border);">
+        <div style="background: var(--bg2); padding: 1.25rem 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-faint); letter-spacing: 0.1em; margin-bottom: 0.4rem;">RETROFITTED IAM</div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-faint); text-decoration: line-through;">Username + password</div>
+          </div>
+          <div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--amber); letter-spacing: 0.1em; margin-bottom: 0.4rem;">CRYPTO-NATIVE AT</div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text);">Ed25519 keypair</div>
+          </div>
+        </div>
+        <div style="background: var(--bg2); padding: 1.25rem 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-faint); letter-spacing: 0.1em; margin-bottom: 0.4rem;">RETROFITTED IAM</div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-faint); text-decoration: line-through;">Policy assertion</div>
+          </div>
+          <div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--amber); letter-spacing: 0.1em; margin-bottom: 0.4rem;">CRYPTO-NATIVE AT</div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text);">Cryptographic proof</div>
+          </div>
+        </div>
+        <div style="background: var(--bg2); padding: 1.25rem 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-faint); letter-spacing: 0.1em; margin-bottom: 0.4rem;">RETROFITTED IAM</div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-faint); text-decoration: line-through;">Admin-assigned roles</div>
+          </div>
+          <div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--amber); letter-spacing: 0.1em; margin-bottom: 0.4rem;">CRYPTO-NATIVE AT</div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text);">On-chain behavioral reputation</div>
+          </div>
+        </div>
+        <div style="background: var(--bg2); padding: 1.25rem 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-faint); letter-spacing: 0.1em; margin-bottom: 0.4rem;">RETROFITTED IAM</div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-faint); text-decoration: line-through;">JWT tokens</div>
+          </div>
+          <div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--amber); letter-spacing: 0.1em; margin-bottom: 0.4rem;">CRYPTO-NATIVE AT</div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text);">W3C Verifiable Credentials</div>
+          </div>
+        </div>
+        <div style="background: var(--bg2); padding: 1.25rem 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-faint); letter-spacing: 0.1em; margin-bottom: 0.4rem;">RETROFITTED IAM</div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-faint); text-decoration: line-through;">OAuth flows</div>
+          </div>
+          <div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--amber); letter-spacing: 0.1em; margin-bottom: 0.4rem;">CRYPTO-NATIVE AT</div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text);">Lightning / x402 / Solana rails</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT AT DOES -->
+<section style="background: var(--bg2); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">Capabilities</div>
+    <h2>What Agentic Terminal does.</h2>
+    <p class="section-intro">
+      AT reads the open protocol layer and adds the IAM, intelligence, workflow, and compliance capabilities that enterprises and developers need to actually deploy autonomous agents safely.
+    </p>
+    <div class="at-features">
+      <div class="at-feature">
+        <div class="at-feature-tag">IDENTITY</div>
+        <h3>Know Your Agent (KYA)</h3>
+        <p>Links agent DIDs to legal entities via KYB credentials. Gives enterprises the compliance layer they need to delegate economic authority — knowing not just who an agent is cryptographically, but who it represents legally.</p>
+      </div>
+      <div class="at-feature">
+        <div class="at-feature-tag">TRUST</div>
+        <h3>AT-ARS-1.0 Reputation Score</h3>
+        <p>A 5-factor weighted reputation formula built on 40+ longitudinal metrics from verified on-chain activity. Housed in AT — not OP — to preserve the open protocol's composability. The score is AT's proprietary interpretation of OP's open facts.</p>
+      </div>
+      <div class="at-feature">
+        <div class="at-feature-tag">DELEGATION</div>
+        <h3>Delegation Workflows</h3>
+        <p>Issue, approve, and revoke AIP Delegation Credentials through a visual workflow. Set scopes, constraints, and expiry. Monitor the full delegation chain with eager verification — know at any moment whether your agent's authority is intact.</p>
+      </div>
+      <div class="at-feature">
+        <div class="at-feature-tag">COMPLIANCE</div>
+        <h3>Audit Trail</h3>
+        <p>Every verified transaction, credential issuance, delegation event, and remediation action is logged with cryptographic proof. Exportable, org-scoped, and permanently timestamped. The audit trail that regulators and partners expect.</p>
+      </div>
+      <div class="at-feature">
+        <div class="at-feature-tag">REMEDIATION</div>
+        <h3>Remediation Configuration</h3>
+        <p>Configure how your deployment responds when an agent fails a trust threshold check. Set thresholds, remediation options, and escalation paths. AT owns the remediation content; AIP owns the envelope structure.</p>
+      </div>
+      <div class="at-feature">
+        <div class="at-feature-tag">INTELLIGENCE</div>
+        <h3>Longitudinal Behavioral Data</h3>
+        <p>The data flywheel that makes AT defensible over time. Every verified interaction contributes to behavioral patterns that no competitor can replicate — because the data accumulates from day one and cannot be backfilled.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT RELATES TO OP -->
+<section style="background: var(--bg); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">OP + AT</div>
+    <h2>Open protocol. Proprietary intelligence.</h2>
+    <p class="section-intro">
+      The distinction matters — for developers building on OP, for enterprises evaluating AT, and for understanding why the moat is real.
+    </p>
+    <div class="relation-grid">
+      <div class="relation-card op-card">
+        <div class="relation-card-tag">Observer Protocol</div>
+        <h3>Open Infrastructure</h3>
+        <p>Free, open source, self-hostable. The verification logic is public. Anyone can implement it, extend it, or run their own node. OP does not custody funds, execute payments, or control access.</p>
+        <div class="relation-items">
+          <div class="relation-item">W3C DID/VC standards</div>
+          <div class="relation-item">VAC issuance and verification</div>
+          <div class="relation-item">AIP behavioral spec</div>
+          <div class="relation-item">MIT licensed · CC BY 4.0</div>
+          <div class="relation-item">Self-hostable · Rail-agnostic</div>
+        </div>
+      </div>
+      <div class="relation-arrow">→</div>
+      <div class="relation-card at-card">
+        <div class="relation-card-tag">Agentic Terminal</div>
+        <h3>Proprietary Intelligence</h3>
+        <p>AT reads the open protocol and adds interpretation, workflow, and intelligence that enterprises pay for. The behavioral data flywheel accumulates over time — that's the moat. OP is the foundation; AT is the business.</p>
+        <div class="relation-items">
+          <div class="relation-item">AT-ARS-1.0 reputation score</div>
+          <div class="relation-item">Longitudinal behavioral data</div>
+          <div class="relation-item">Fleet management and delegation workflows</div>
+          <div class="relation-item">KYB linkage and compliance audit</div>
+          <div class="relation-item">Remediation configuration</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EARLY ACCESS CTA -->
+<section style="background: var(--bg2); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="early-access">
+      <div class="early-access-inner">
+        <div class="section-label" style="text-align:center; margin-bottom: 1rem;">Enterprise Early Access</div>
+        <h3>Building with autonomous agents at scale?</h3>
+        <p>AT Enterprise is in early access. We're working directly with a small number of organizations deploying agent fleets who need trust infrastructure now — not in six months. If that's you, let's talk.</p>
+        <div class="early-access-ctas">
+          <a href="https://agenticterminal.io" class="btn-primary" target="_blank">Request Early Access →</a>
+          <a href="/architecture" class="btn-secondary">Read the Architecture</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">Observer Protocol</div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="/architecture">Architecture</a>
+      <a href="/docs">Docs</a>
+      <a href="/agentic-terminal">Agentic Terminal</a>
+      <a href="/registry">Registry</a>
+      <a href="/demo">Demo</a>
+      <a href="https://github.com/observer-protocol" target="_blank">GitHub ↗</a>
+    </div>
+  </div>
+  <div class="footer-note">
+    Observer Protocol is free infrastructure. We monetize Agentic Terminal intelligence, not the protocol. · observerprotocol.org · agenticterminal.io
+  </div>
+</footer>
+
+</body>
+</html>

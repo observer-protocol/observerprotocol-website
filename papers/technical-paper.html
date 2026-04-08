@@ -87,7 +87,7 @@
 
       <div class="abstract">
         <div class="abstract-label">Abstract</div>
-        <p>Autonomous agents increasingly transact across multiple payment rails—Lightning Network (L402), HTTP-native stablecoins (x402), and emerging protocols. Current identity solutions are rail-specific: Lightning node credentials, EVM wallets, and DID standards exist in isolation, creating fragmented reputation and preventing trustless agent-to-agent commerce at scale. We present Observer Protocol, a unified agent credential infrastructure that anchors identity above the transport layer using <code>agent_id = SHA256(primary_pubkey)</code>. We describe cryptographic verification mechanisms for two live production rails (L402 preimage verification and EVM EIP-191 key registration with on-chain <code>tx.from</code> matching), an ERC-8004 on-chain identity anchor on Base Mainnet, and a reputation model that accrues to the agent regardless of which rail was used. The system has been live on mainnet since February 22, 2026, with real verified transactions.</p>
+        <p>Autonomous agents increasingly transact across multiple payment rails—Lightning Network (L402), HTTP-native stablecoins (x402), and emerging protocols. Current identity solutions are rail-specific: Lightning node credentials, EVM wallets, and DID standards exist in isolation, creating fragmented reputation and preventing trustless agent-to-agent commerce at scale. We present Observer Protocol, a unified agent credential infrastructure that anchors identity above the transport layer using <code>agent_id = SHA256(primary_pubkey)</code>. We describe cryptographic verification mechanisms for two live mainnet beta rails (L402 preimage verification and EVM EIP-191 key registration with on-chain <code>tx.from</code> matching), an ERC-8004 on-chain identity anchor on Base Mainnet, and a reputation model that accrues to the agent regardless of which rail was used. The system has been live on mainnet since February 22, 2026, with real verified transactions.</p>
       </div>
 
       <article class="paper-content">
@@ -183,7 +183,7 @@
           <li><strong>Reputation Registry</strong>: Scores and transaction history</li>
           <li><strong>Validation Registry</strong>: Staking and slashing mechanisms</li>
         </ol>
-        <p>Contracts are deployed on Base Mainnet for production use and Celo Sepolia for testing:</p>
+        <p>Contracts are deployed on Base Mainnet for mainnet beta use and Celo Sepolia for testing:</p>
         <pre><code>AgentIdentityRegistry (Celo Sepolia): 0xBA88f04f4506F6E04f8897ecE02efFa7CD978642</code></pre>
         <p>The ERC-8004 integration provides:</p>
         <ul>
