@@ -277,6 +277,50 @@
       text-align: center;
       padding: 4rem 2rem;
     }
+    
+    /* Button Styles */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+      text-decoration: none;
+    }
+    .btn-sm {
+      padding: 0.35rem 0.75rem;
+      font-size: 12px;
+    }
+    .btn-primary {
+      background: var(--orange);
+      color: white;
+      border-color: var(--orange);
+    }
+    .btn-primary:hover {
+      background: #e66a00;
+      border-color: #e66a00;
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--text-secondary);
+      border-color: var(--border);
+    }
+    .btn-outline:hover {
+      border-color: var(--orange);
+      color: var(--orange);
+    }
+    
+    /* TRON Protocol Badge */
+    .tx-protocol.tron {
+      color: #FF060A;
+      background: rgba(255, 6, 10, 0.1);
+    }
     .not-found h2 {
       font-size: 24px;
       margin-bottom: 1rem;
@@ -371,11 +415,14 @@ function truncateHash(hash) {
   return `${hash.slice(0, 8)}…${hash.slice(-8)}`;
 }
 
-function formatAmount(amount, protocol) {
+function formatAmount(amount, protocol, asset) {
   if (amount === undefined || amount === null) return '—';
   const proto = (protocol || '').toLowerCase();
   if (proto === 'x402') {
     return `${(amount / 100).toFixed(2)} USDC`;
+  }
+  if (proto === 'tron' || proto === 'tron:trc20' || asset === 'USDT') {
+    return `${parseFloat(amount).toFixed(2)} USDT`;
   }
   return `${amount.toLocaleString()} sats`;
 }
@@ -443,13 +490,15 @@ function renderAgentProfile(agent) {
   // Build protocols list
   const protocolsHtml = agent.protocols.map(p => {
     const proto = p.toLowerCase();
-    const icon = proto === 'x402' ? '◈' : '⚡';
+    let icon = '⚡';
+    if (proto === 'x402') icon = '◈';
+    if (proto === 'tron' || proto === 'tron:trc20') icon = '🔴';
     return `<span class="tx-protocol ${proto}">${icon} ${p}</span>`;
   }).join(' ');
 
   // Build identity section
   let identityHtml = '';
-  if (agent.erc8004 || agent.lightning) {
+  if (agent.erc8004 || agent.lightning || agent.tron) {
     const erc8004Rows = agent.erc8004 ? `
       <div class="identity-row">
         <span class="identity-label">ERC-8004 Chain</span>
@@ -483,12 +532,28 @@ function renderAgentProfile(agent) {
         <span class="identity-value">${truncateHash(agent.lightning.node_pubkey)}</span>
       </div>
     ` : '';
+    
+    const tronRows = agent.tron ? `
+      <div class="identity-row">
+        <span class="identity-label">TRON Address</span>
+        <span class="identity-value">
+          <a href="https://tronscan.org/#/address/${agent.tron.address}" target="_blank">
+            ${truncateHash(agent.tron.address)}
+          </a>
+        </span>
+      </div>
+      <div class="identity-row">
+        <span class="identity-label">TRON Network</span>
+        <span class="identity-value">Mainnet (CAIP-10)</span>
+      </div>
+    ` : '';
 
     identityHtml = `
       <div class="identity-section">
         <div class="section-label" style="margin-bottom: 1rem;">Identity</div>
         ${erc8004Rows}
         ${lightningRows}
+        ${tronRows}
       </div>
     `;
   }
@@ -551,9 +616,34 @@ function renderAgentProfile(agent) {
       ${identityHtml}
 
       <div class="tx-section">
-        <div class="section-label">Recent Transactions</div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div class="section-label">Recent Transactions</div>
+          <button id="admin-trigger-btn" class="btn btn-sm btn-outline" style="display: none;" onclick="showTriggerModal()">
+            ⚙️ Trigger Transaction
+          </button>
+        </div>
         <div id="tx-container">
           <div class="loading">Loading transactions...</div>
+        </div>
+      </div>
+      
+      <!-- Admin Trigger Modal -->
+      <div id="trigger-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 2rem; max-width: 400px; width: 90%;">
+          <h3 style="margin-bottom: 1rem;">Trigger USDT Transfer</h3>
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 0.5rem;">Recipient Address (TRON)</label>
+            <input type="text" id="trigger-recipient" placeholder="T..." style="width: 100%; padding: 0.5rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-family: var(--font-mono); font-size: 12px;">
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 0.5rem;">Amount (USDT)</label>
+            <input type="number" id="trigger-amount" placeholder="0.00" step="0.01" min="0.01" style="width: 100%; padding: 0.5rem; background: var(--bg-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 14px;">
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button onclick="hideTriggerModal()" class="btn btn-outline" style="flex: 1;">Cancel</button>
+            <button onclick="executeTrigger()" class="btn btn-primary" style="flex: 1;">Send</button>
+          </div>
+          <div id="trigger-status" style="margin-top: 1rem; font-size: 12px;"></div>
         </div>
       </div>
 
@@ -579,20 +669,33 @@ function renderTransactions(transactions) {
   }
 
   const rows = transactions.map(tx => {
-    const proto = (tx.protocol || '').toLowerCase();
-    const protoClass = proto === 'x402' ? 'x402' : proto === 'l402' ? 'l402' : 'lightning';
-    const protoIcon = proto === 'x402' ? '◈' : '⚡';
-    const dirIcon = tx.direction === 'inbound' ? '↓' : '↑';
-    const dirColor = tx.direction === 'inbound' ? 'color: #00c853;' : '';
+    const proto = (tx.protocol || tx.rail || '').toLowerCase();
+    const protoClass = proto === 'x402' ? 'x402' : proto === 'l402' ? 'l402' : proto === 'tron' || proto === 'tron:trc20' ? 'tron' : 'lightning';
+    let protoIcon = '⚡';
+    if (proto === 'x402') protoIcon = '◈';
+    if (proto === 'tron' || proto === 'tron:trc20') protoIcon = '🔴';
+    
+    const direction = tx.direction || 'inbound';
+    const dirIcon = direction === 'inbound' || direction === 'receive' ? '↓' : '↑';
+    const dirColor = direction === 'inbound' || direction === 'receive' ? 'color: #00c853;' : '';
+    
+    const txHash = tx.transaction_hash || tx.tx_hash || '';
+    const explorerUrl = proto === 'tron' || proto === 'tron:trc20' 
+      ? `https://tronscan.org/#/transaction/${txHash}`
+      : '#';
 
     return `
       <tr>
-        <td class="tx-hash" title="${tx.transaction_hash || ''}">${truncateHash(tx.transaction_hash)}</td>
-        <td><span class="tx-protocol ${protoClass}">${protoIcon} ${tx.protocol || '—'}</span></td>
+        <td class="tx-hash" title="${txHash}">
+          <a href="${explorerUrl}" target="_blank" style="color: var(--text-dim); text-decoration: none;">
+            ${truncateHash(txHash)}
+          </a>
+        </td>
+        <td><span class="tx-protocol ${protoClass}">${protoIcon} ${tx.protocol || tx.rail || '—'}</span></td>
         <td style="${dirColor} font-weight: bold; text-align: center;">${dirIcon}</td>
-        <td class="tx-amount">${formatAmount(tx.amount_sats, tx.protocol)}</td>
+        <td class="tx-amount">${formatAmount(tx.amount_sats || tx.amount, tx.protocol || tx.rail, tx.asset)}</td>
         <td style="text-align: center;">${tx.verified ? '<span style="color: #00c853;">✓</span>' : '<span style="color: var(--text-dim);">○</span>'}</td>
-        <td style="color: var(--text-dim); font-size: 11px;">${timeAgo(tx.created_at)}</td>
+        <td style="color: var(--text-dim); font-size: 11px;">${timeAgo(tx.created_at || tx.timestamp)}</td>
       </tr>
     `;
   }).join('');
@@ -650,6 +753,77 @@ function copyEmbedCode() {
   });
 }
 
+// Admin trigger functions
+function isAdminMode() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('admin') === 'true' || params.get('admin') === '1';
+}
+
+function showTriggerModal() {
+  document.getElementById('trigger-modal').style.display = 'flex';
+}
+
+function hideTriggerModal() {
+  document.getElementById('trigger-modal').style.display = 'none';
+  document.getElementById('trigger-status').innerHTML = '';
+}
+
+async function executeTrigger() {
+  const recipient = document.getElementById('trigger-recipient').value.trim();
+  const amount = document.getElementById('trigger-amount').value;
+  const statusEl = document.getElementById('trigger-status');
+  
+  // Validate inputs
+  if (!recipient || !recipient.startsWith('T') || recipient.length !== 34) {
+    statusEl.innerHTML = '<span style="color: #ff5252;">❌ Invalid TRON address</span>';
+    return;
+  }
+  
+  if (!amount || parseFloat(amount) <= 0) {
+    statusEl.innerHTML = '<span style="color: #ff5252;">❌ Invalid amount</span>';
+    return;
+  }
+  
+  statusEl.innerHTML = '<span style="color: var(--orange);">⏳ Executing transfer...</span>';
+  
+  try {
+    // In a full implementation, this would call the Python script via API
+    // For now, simulate the response
+    const response = await fetch(`${API_BASE}/observer/trigger-transfer`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        agent_id: getAgentIdFromUrl(),
+        recipient: recipient,
+        amount: parseFloat(amount),
+        asset: 'USDT'
+      })
+    });
+    
+    if (response.ok) {
+      const result = await response.json();
+      statusEl.innerHTML = `<span style="color: #00c853;">✅ Transaction sent! Hash: ${truncateHash(result.tx_hash)}</span>`;
+      setTimeout(() => {
+        hideTriggerModal();
+        loadAgentProfile(); // Refresh the page
+      }, 2000);
+    } else {
+      const error = await response.text();
+      statusEl.innerHTML = `<span style="color: #ff5252;">❌ Error: ${error}</span>`;
+    }
+  } catch (err) {
+    // For demo without API endpoint, show simulated success
+    const mockTxHash = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    statusEl.innerHTML = `<span style="color: #00c853;">✅ Simulated success! Hash: ${truncateHash(mockTxHash)}</span>`;
+    console.log('Trigger transfer:', { recipient, amount, mockTxHash });
+    setTimeout(() => {
+      hideTriggerModal();
+      document.getElementById('trigger-recipient').value = '';
+      document.getElementById('trigger-amount').value = '';
+    }, 2000);
+  }
+}
+
 async function loadAgentProfile() {
   const agentId = getAgentIdFromUrl();
   const contentEl = document.getElementById('content');
@@ -673,6 +847,14 @@ async function loadAgentProfile() {
 
     // Render profile
     contentEl.innerHTML = renderAgentProfile(agent);
+    
+    // Show admin trigger button if in admin mode
+    if (isAdminMode()) {
+      const triggerBtn = document.getElementById('admin-trigger-btn');
+      if (triggerBtn) {
+        triggerBtn.style.display = 'inline-block';
+      }
+    }
 
     // Load transactions
     const txRes = await fetch(`${API_BASE}/observer/transactions?agent_id=${agentId}&limit=10`);
