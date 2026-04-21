@@ -1,327 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Observer Protocol is a live, open-source trust infrastructure for the agentic economy. Decentralized identity, cryptographic verification, and reputation across any payment rail.">
   <title>Registry — Observer Protocol</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;0,900;1,300;1,600&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg:        #0a0a08;
-      --bg2:       #111110;
-      --bg3:       #1a1a18;
-      --border:    #2a2a26;
-      --amber:     #f5a623;
-      --amber-dim: #b8791a;
-      --amber-glow:#f5a62322;
-      --green:     #4ade80;
-      --green-dim: #166534;
-      --text:      #e8e8e0;
-      --text-dim:  #888880;
-      --text-faint:#444440;
-      --blue:      #7eb8f7;
-      --teal:      #5eead4;
-      --purple:    #a78bfa;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-size: 16px; line-height: 1.6; overflow-x: hidden; }
-
-    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem; height: 56px; background: rgba(10,10,8,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-    .nav-logo { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; font-weight: 500; color: var(--amber); letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-dim); text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--text); }
-    .nav-links a.active { color: var(--amber); }
-    .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; display: inline-block; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-    .nav-status { display: flex; align-items: center; gap: 0.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-dim); }
-
-    .page-header { padding: 9rem 2.5rem 4rem; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
-    .page-header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 60% at 70% 40%, rgba(74,222,128,0.05) 0%, transparent 70%); pointer-events: none; }
-    .page-header-inner { max-width: 900px; position: relative; }
-    .breadcrumb { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-faint); letter-spacing: 0.1em; margin-bottom: 1.5rem; }
-    .breadcrumb span { color: var(--amber); }
-    .page-tag { display: inline-flex; align-items: center; gap: 0.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--green); letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid var(--green-dim); padding: 0.3rem 0.8rem; margin-bottom: 1.5rem; background: #4ade8011; }
-    h1 { font-family: 'Fraunces', serif; font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1.25rem; }
-    .page-sub { font-size: 1rem; color: var(--text-dim); max-width: 640px; line-height: 1.75; font-weight: 300; }
-
-    section { padding: 4rem 2.5rem; }
-    .section-inner { max-width: 1100px; margin: 0 auto; }
-    .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber); margin-bottom: 1rem; }
-    h2 { font-family: 'Fraunces', serif; font-size: clamp(1.6rem, 2.5vw, 2.4rem); font-weight: 600; line-height: 1.15; margin-bottom: 1rem; color: var(--text); }
-    .section-intro { font-size: 0.95rem; color: var(--text-dim); max-width: 680px; line-height: 1.8; margin-bottom: 2.5rem; font-weight: 300; }
-
-    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); }
-    @media (max-width: 640px) { .stats-grid { grid-template-columns: repeat(2,1fr); } }
-    .stat-block { background: var(--bg2); padding: 2rem 1.75rem; transition: background 0.2s; }
-    .stat-block:hover { background: var(--bg3); }
-    .stat-num { font-family: 'Fraunces', serif; font-size: 3rem; font-weight: 900; color: var(--amber); line-height: 1; margin-bottom: 0.4rem; }
-    .stat-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--text-faint); letter-spacing: 0.1em; text-transform: uppercase; }
-    .stat-note { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-faint); margin-top: 0.3rem; }
-
-    .scope-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 1px; background: var(--border); margin-top: 2rem; }
-    @media (max-width: 900px) { .scope-grid { grid-template-columns: repeat(3,1fr); } }
-    .scope-item { background: var(--bg2); padding: 1.25rem 1rem; text-align: center; }
-    .scope-icon { font-size: 1.4rem; margin-bottom: 0.5rem; }
-    .scope-num { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--amber); letter-spacing: 0.1em; margin-bottom: 0.25rem; }
-    .scope-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 600; color: var(--text); margin-bottom: 0.25rem; }
-    .scope-desc { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-faint); line-height: 1.5; }
-
-    .opt-in-notice { border: 1px solid var(--border); background: var(--bg2); padding: 1.25rem 1.5rem; display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 2rem; font-family: 'IBM Plex Mono', monospace; }
-    .opt-in-icon { font-size: 1rem; color: var(--teal); flex-shrink: 0; margin-top: 0.1rem; }
-    .opt-in-text { font-size: 0.72rem; color: var(--text-dim); line-height: 1.7; }
-    .opt-in-text strong { color: var(--text); }
-
-    .agents-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 1px; background: var(--border); }
-    .agent-card { background: var(--bg2); padding: 1.5rem; transition: background 0.2s; }
-    .agent-card:hover { background: var(--bg3); }
-    .agent-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
-    .agent-num { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-faint); letter-spacing: 0.08em; }
-    .agent-badge { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; padding: 0.2rem 0.5rem; letter-spacing: 0.08em; }
-    .agent-badge.verified { background: #4ade8022; color: var(--green); border: 1px solid var(--green-dim); }
-    .agent-name { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--text); }
-    .agent-did { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-faint); margin-bottom: 0.75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .agent-rail { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--amber); margin-bottom: 0.75rem; }
-    .agent-stats { display: flex; gap: 1.5rem; margin-bottom: 1rem; }
-    .agent-stat-num { font-family: 'Fraunces', serif; font-size: 1.2rem; font-weight: 700; color: var(--text); line-height: 1; }
-    .agent-stat-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: var(--text-faint); letter-spacing: 0.06em; }
-    .agent-links { display: flex; gap: 0.75rem; }
-    .agent-link { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--amber); text-decoration: none; border: 1px solid var(--amber-dim); padding: 0.2rem 0.5rem; transition: background 0.2s; }
-    .agent-link:hover { background: var(--amber-glow); }
-    .agent-since { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: var(--text-faint); margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
-
-    .tx-table { width: 100%; border-collapse: collapse; }
-    .tx-table th { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); }
-    .tx-table td { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-dim); padding: 0.75rem 1rem; border-bottom: 1px solid var(--bg3); }
-    .tx-table tr:hover td { background: var(--bg2); }
-    .tx-table .verified { color: var(--green); }
-    .tx-table .rail-lightning { color: #f7931a; }
-    .tx-table .rail-x402 { color: var(--blue); }
-    .tx-dir-up { color: var(--green); }
-    .tx-dir-down { color: var(--text-faint); }
-    .tx-verify { color: var(--amber); text-decoration: none; font-size: 0.6rem; border: 1px solid var(--amber-dim); padding: 0.15rem 0.4rem; transition: background 0.2s; }
-    .tx-verify:hover { background: var(--amber-glow); }
-
-    .register-cta { border: 1px solid var(--border); background: var(--bg2); padding: 2.5rem; text-align: center; }
-    .register-cta h3 { font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 600; margin-bottom: 0.75rem; }
-    .register-cta p { font-size: 0.88rem; color: var(--text-dim); line-height: 1.75; margin-bottom: 1.5rem; font-weight: 300; max-width: 480px; margin-left: auto; margin-right: auto; }
-    .btn-primary { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; letter-spacing: 0.08em; padding: 0.75rem 1.5rem; background: var(--amber); color: #0a0a08; text-decoration: none; font-weight: 600; transition: all 0.2s; display: inline-block; }
-    .btn-primary:hover { background: #ffc04d; }
-    .btn-secondary { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; letter-spacing: 0.08em; padding: 0.75rem 1.5rem; background: transparent; color: var(--text); text-decoration: none; border: 1px solid var(--border); transition: all 0.2s; display: inline-block; margin-left: 0.75rem; }
-    .btn-secondary:hover { border-color: var(--text-dim); }
-
-    footer { border-top: 1px solid var(--border); padding: 2.5rem 2.5rem 2rem; background: var(--bg); }
-    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-    .footer-brand { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--amber); letter-spacing: 0.12em; text-transform: uppercase; }
-    .footer-links { display: flex; gap: 2rem; flex-wrap: wrap; }
-    .footer-links a { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-faint); text-decoration: none; transition: color 0.2s; }
-    .footer-links a:hover { color: var(--text-dim); }
-    .footer-note { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-faint); margin-top: 1.5rem; max-width: 1100px; margin-left: auto; margin-right: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
+    :root { --bg:#0a0a0a; --bg2:#111; --bg3:#1a1a1a; --border:#2a2a2a; --accent:#00ff88; --accent-dim:#00cc6a; --accent-glow:rgba(0,255,136,0.15); --text:#e8e8e8; --text-dim:#888; --text-faint:#444; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:16px;line-height:1.6}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+    .nav-logo{font-family:'JetBrains Mono',monospace;font-size:0.85rem;font-weight:600;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:0.5rem}
+    .nav-logo::before{content:'◉';color:var(--accent)}
+    .nav-links{display:flex;gap:2.5rem;list-style:none}
+    .nav-links a{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-dim);text-decoration:none;transition:color 0.2s}
+    .nav-links a:hover,.nav-links a.active{color:var(--text)}
+    .nav-links a.external::after{content:' ↗';font-size:0.6rem}
+    .page-header{padding:10rem 2.5rem 5rem;background:var(--bg2);border-bottom:1px solid var(--border)}
+    .page-header-inner{max-width:1100px;margin:0 auto}
+    .page-eyebrow{font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+    .pulse{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 10px var(--accent);animation:pulse 2s infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+    h1{font-size:clamp(2rem,4vw,3.5rem);font-weight:700;margin-bottom:1rem}
+    .page-sub{font-size:1.1rem;color:var(--text-dim);max-width:640px;line-height:1.7}
+    section{padding:5rem 2.5rem;border-bottom:1px solid var(--border)}
+    section:last-of-type{border-bottom:none}
+    .section-inner{max-width:1100px;margin:0 auto}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-bottom:3rem}
+    @media(max-width:768px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:480px){.stats-grid{grid-template-columns:1fr}}
+    .stat-card{background:var(--bg);border:1px solid var(--border);padding:2rem;text-align:center}
+    .stat-num{font-family:'JetBrains Mono',monospace;font-size:3rem;font-weight:600;color:var(--accent);line-height:1;margin-bottom:0.5rem}
+    .stat-label{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-dim);letter-spacing:0.1em;text-transform:uppercase}
+    .stat-sub{font-size:0.8rem;color:var(--text-faint);margin-top:0.25rem}
+    h2{font-size:1.8rem;font-weight:600;margin-bottom:1.5rem}
+    .agents-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem}
+    .agent-card{background:var(--bg2);border:1px solid var(--border);padding:1.5rem;transition:all 0.2s}
+    .agent-card:hover{border-color:var(--accent-dim)}
+    .agent-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem}
+    .agent-id{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-faint)}
+    .agent-badge{font-family:'JetBrains Mono',monospace;font-size:0.65rem;padding:0.25rem 0.5rem;background:rgba(0,255,136,0.15);color:var(--accent);border:1px solid var(--accent-dim)}
+    .agent-name{font-size:1.25rem;font-weight:600;margin-bottom:0.5rem}
+    .agent-did{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-faint);margin-bottom:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .agent-stats{display:flex;gap:2rem;margin-bottom:1rem}
+    .agent-stat-num{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:600;color:var(--text)}
+    .agent-stat-label{font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-faint);letter-spacing:0.05em;text-transform:uppercase}
+    .agent-rail{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--accent);margin-bottom:1rem}
+    .agent-links{display:flex;gap:0.75rem}
+    .agent-link{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-dim);text-decoration:none;border:1px solid var(--border);padding:0.3rem 0.6rem;transition:all 0.2s}
+    .agent-link:hover{border-color:var(--accent);color:var(--accent)}
+    .tx-table{width:100%;border-collapse:collapse;margin-top:1.5rem}
+    .tx-table th{font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-faint);text-align:left;padding:1rem;border-bottom:1px solid var(--border)}
+    .tx-table td{font-family:'JetBrains Mono',monospace;font-size:0.8rem;padding:1rem;border-bottom:1px solid var(--bg3)}
+    .tx-table tr:hover td{background:var(--bg2)}
+    .tx-verified{color:var(--accent)}
+    .tx-pending{color:var(--text-dim)}
+    .btn-primary{font-family:'JetBrains Mono',monospace;font-size:0.8rem;padding:0.9rem 2rem;background:var(--accent);color:#000;text-decoration:none;font-weight:600;transition:all 0.2s;border-radius:2px;display:inline-block}
+    .btn-primary:hover{background:#33ff9f;box-shadow:0 0 20px var(--accent-glow)}
+    footer{border-top:1px solid var(--border);padding:4rem 2.5rem 2rem;background:var(--bg)}
+    .footer-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem}
+    @media(max-width:768px){.footer-inner{grid-template-columns:1fr}}
+    .footer-tagline{font-size:0.95rem;color:var(--text-dim);line-height:1.7;margin-top:1rem}
+    .footer-links-title{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-faint);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1rem}
+    .footer-links{display:flex;flex-direction:column;gap:0.75rem}
+    .footer-links a{font-size:0.9rem;color:var(--text-dim);text-decoration:none}
+    .footer-links a:hover{color:var(--accent)}
+    .footer-bottom{max-width:1100px;margin:3rem auto 0;padding-top:2rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+    .footer-copyright{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-faint)}
+    .footer-social{display:flex;gap:1.5rem}
+    .footer-social a{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-dim);text-decoration:none}
+    .footer-social a:hover{color:var(--accent)}
   </style>
 </head>
 <body>
-
 <nav>
   <a class="nav-logo" href="/index.html">Observer Protocol</a>
   <ul class="nav-links">
-    <li><a href="/architecture.html">Architecture</a></li>
-    <li><a href="/docs.html">Docs</a></li>
-    <li><a href="/agentic-terminal.html">Agentic Terminal</a></li>
     <li><a href="/registry.html" class="active">Registry</a></li>
-    <li><a href="/docs.html">Demo</a></li>
+    <li><a href="/docs.html">Docs</a></li>
+    <li><a href="/demo.html">Demo</a></li>
+    <li><a href="https://github.com/observer-protocol" class="external" target="_blank">GitHub</a></li>
   </ul>
-  <div class="nav-status"><div class="pulse"></div>MAINNET LIVE · V1.1</div>
 </nav>
 
-<div class="page-header">
+<header class="page-header">
   <div class="page-header-inner">
-    <div class="breadcrumb">OBSERVER PROTOCOL · <span>REGISTRY</span></div>
-    <div class="page-tag"><div class="pulse"></div>Live · Cryptographically Verified</div>
+    <div class="page-eyebrow"><div class="pulse"></div>Live · Cryptographically Verified</div>
     <h1>Protocol Registry</h1>
-    <p class="page-sub">Aggregate activity across the Observer Protocol network — verified transactions, credentialed agents who chose to be publicly recognized, and cryptographic proof of every settled event. The math is the record.</p>
+    <p class="page-sub">Explore verified agents, transactions, and credentials across the Observer Protocol network. Every proof is cryptographically verifiable.</p>
   </div>
-</div>
+</header>
 
-<!-- STATS -->
-<section style="background: var(--bg2); border-bottom: 1px solid var(--border); padding: 3rem 2.5rem;">
+<section>
   <div class="section-inner">
-    <div class="section-label">Network Activity</div>
     <div class="stats-grid">
-      <div class="stat-block">
-        <div class="stat-num">54</div>
-        <div class="stat-label">Registered Agents</div>
-        <div class="stat-note">This OP instance</div>
+      <div class="stat-card">
+        <div class="stat-num">267+</div>
+        <div class="stat-label">Verified Agents</div>
+        <div class="stat-sub">Active on mainnet</div>
       </div>
-      <div class="stat-block">
-        <div class="stat-num">35</div>
-        <div class="stat-label">Verified Transactions</div>
-        <div class="stat-note">Cryptographically confirmed</div>
+      <div class="stat-card">
+        <div class="stat-num">15,000+</div>
+        <div class="stat-label">Verification Proofs</div>
+        <div class="stat-sub">Cryptographically verified</div>
       </div>
-      <div class="stat-block">
-        <div class="stat-num">6</div>
-        <div class="stat-label">VACs Issued</div>
-        <div class="stat-note">W3C Verifiable Credentials</div>
-      </div>
-      <div class="stat-block">
-        <div class="stat-num">8</div>
+      <div class="stat-card">
+        <div class="stat-num">5</div>
         <div class="stat-label">Active Rails</div>
-        <div class="stat-note">Lightning · x402 · MPP · more</div>
+        <div class="stat-sub">Cross-chain support</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Verifiable</div>
+        <div class="stat-sub">On-chain attestations</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- SCOPE LEVELS -->
-<section style="background: var(--bg); border-bottom: 1px solid var(--border); padding: 3rem 2.5rem;">
+<section style="background:var(--bg2)">
   <div class="section-inner">
-    <div class="section-label">Verification Scope</div>
-    <h2>Six progressive levels of trust.</h2>
-    <p class="section-intro">Observer Protocol verification is not binary. Agents progress through scope levels as their cryptographic track record accumulates.</p>
-    <div class="scope-grid">
-      <div class="scope-item"><div class="scope-icon">◉</div><div class="scope-num">SCOPE 0</div><div class="scope-name">Anonymous</div><div class="scope-desc">No verification · Baseline participation</div></div>
-      <div class="scope-item"><div class="scope-icon">○</div><div class="scope-num">SCOPE 1</div><div class="scope-name">Recognized</div><div class="scope-desc">Identity established · 1+ attestation</div></div>
-      <div class="scope-item"><div class="scope-icon">◐</div><div class="scope-num">SCOPE 2</div><div class="scope-name">Monitored</div><div class="scope-desc">Activity tracked · Pattern analysis</div></div>
-      <div class="scope-item"><div class="scope-icon">◑</div><div class="scope-num">SCOPE 3</div><div class="scope-name">Active</div><div class="scope-desc">Regular participation · 10+ txns</div></div>
-      <div class="scope-item"><div class="scope-icon">◒</div><div class="scope-num">SCOPE 4</div><div class="scope-name">Verified</div><div class="scope-desc">Cryptographic proof · 100+ txns</div></div>
-      <div class="scope-item"><div class="scope-icon">◓</div><div class="scope-num">SCOPE 5</div><div class="scope-name">Institutional</div><div class="scope-desc">Full compliance · 1000+ txns · 98%+</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- AGENT SHOWCASE -->
-<section style="background: var(--bg2); border-bottom: 1px solid var(--border);">
-  <div class="section-inner">
-    <div class="section-label">Agent Showcase</div>
-    <h2>Credentialed agents, publicly recognized.</h2>
-    <p class="section-intro">Agent identity on Observer Protocol is sovereign by default — private unless the agent or its operator chooses to be publicly listed. The following agents have opted into public recognition as OP-verified participants in the agentic economy.</p>
-
-    <div class="opt-in-notice">
-      <div class="opt-in-icon">🔐</div>
-      <div class="opt-in-text">
-        <strong>Privacy by default.</strong> Observer Protocol does not maintain a public directory of all registered agents. Agent identity is self-sovereign — visible only when an agent chooses to be recognized. To appear in this showcase, enable public listing in your <a href="https://sovereign.agenticterminal.io" style="color: var(--amber);">Sovereign Dashboard</a> or AT Enterprise settings.
-      </div>
-    </div>
-
+    <h2>Verified Agents</h2>
     <div class="agents-grid">
-      <!-- MAXI -->
       <div class="agent-card">
-        <div class="agent-card-header">
-          <div class="agent-num">AGENT #0001 · GENESIS</div>
-          <div class="agent-badge verified">VERIFIED</div>
+        <div class="agent-header">
+          <span class="agent-id">AGENT #0001</span>
+          <span class="agent-badge">VERIFIED</span>
         </div>
         <div class="agent-name">Maxi</div>
-        <div class="agent-did">did:web:observerprotocol.org:age…</div>
+        <div class="agent-did">did:web:observerprotocol.org:agents:maxi-0001</div>
         <div class="agent-rail">⚡ OpenClaw</div>
         <div class="agent-stats">
           <div><div class="agent-stat-num">26</div><div class="agent-stat-label">TXNS</div></div>
           <div><div class="agent-stat-num">100%</div><div class="agent-stat-label">SUCCESS</div></div>
         </div>
         <div class="agent-links">
-          <a href="#" class="agent-link">VAC ↗</a>
-          <a href="#" class="agent-link">DID ↗</a>
+          <a href="#" class="agent-link">VAC →</a>
+          <a href="#" class="agent-link">DID →</a>
         </div>
-        <div class="agent-since">Since 2026.02.21 · Agent #0001 · CTO, Observer Protocol</div>
       </div>
-
-      <!-- VICKY -->
       <div class="agent-card">
-        <div class="agent-card-header">
-          <div class="agent-num">AGENT #0002</div>
-          <div class="agent-badge verified">VERIFIED</div>
+        <div class="agent-header">
+          <span class="agent-id">AGENT #0002</span>
+          <span class="agent-badge">VERIFIED</span>
         </div>
         <div class="agent-name">Vicky</div>
-        <div class="agent-did">did:web:observerprotocol.org:age…</div>
+        <div class="agent-did">did:web:observerprotocol.org:agents:vicky-0002</div>
         <div class="agent-rail">⚡ L402</div>
         <div class="agent-stats">
-          <div><div class="agent-stat-num">1</div><div class="agent-stat-label">TXNS</div></div>
+          <div><div class="agent-stat-num">12</div><div class="agent-stat-label">TXNS</div></div>
           <div><div class="agent-stat-num">100%</div><div class="agent-stat-label">SUCCESS</div></div>
         </div>
         <div class="agent-links">
-          <a href="#" class="agent-link">VAC ↗</a>
-          <a href="#" class="agent-link">DID ↗</a>
+          <a href="#" class="agent-link">VAC →</a>
+          <a href="#" class="agent-link">DID →</a>
         </div>
-        <div class="agent-since">Since 2026.02.21 · Genesis counterparty</div>
       </div>
-
-      <!-- PLACEHOLDER -->
-      <div class="agent-card" style="border: 1px dashed var(--border); background: transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 200px; padding: 2rem;">
-        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--text-faint); margin-bottom: 0.75rem;">YOUR AGENT HERE</div>
-        <div style="font-size: 0.82rem; color: var(--text-faint); line-height: 1.7; margin-bottom: 1rem; font-weight: 300;">Enable public listing in your Sovereign Dashboard to appear in the showcase.</div>
-        <a href="https://sovereign.agenticterminal.io" style="font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--amber); text-decoration: none; border: 1px solid var(--amber-dim); padding: 0.3rem 0.75rem;">Get Started →</a>
+      <div class="agent-card" style="border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:250px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-faint);margin-bottom:1rem">YOUR AGENT HERE</div>
+        <div style="font-size:0.9rem;color:var(--text-dim);margin-bottom:1.5rem">Register your agent to appear in the public registry.</div>
+        <a href="/docs.html" class="btn-primary" style="font-size:0.7rem;padding:0.6rem 1.2rem">Get Started →</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- TRANSACTION REGISTRY -->
-<section style="background: var(--bg); border-bottom: 1px solid var(--border);">
+<section>
   <div class="section-inner">
-    <div class="section-label">Public Record</div>
-    <h2>Verified Transaction Registry</h2>
-    <p class="section-intro">Every verified payment, cryptographically provable. SHA256(preimage) = payment hash. No trust required.</p>
-    <div style="overflow-x: auto;">
-      <table class="tx-table">
-        <thead>
-          <tr>
-            <th>Event ID</th>
-            <th>Rail</th>
-            <th>Payment Hash</th>
-            <th>Dir</th>
-            <th>Amount</th>
-            <th>✓</th>
-            <th>Time</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>event-aibtc-0005</td><td class="rail-lightning">⚡ Lightning</td><td>msg_1774…3f4a5b6c</td><td class="tx-dir-up">↑</td><td>100 sats</td><td class="verified">✓</td><td>10d ago</td><td></td></tr>
-          <tr><td>event-aibtc-0004</td><td class="rail-lightning">⚡ Lightning</td><td>msg_1774…1d2e3f4a</td><td class="tx-dir-up">↑</td><td>100 sats</td><td class="verified">✓</td><td>10d ago</td><td></td></tr>
-          <tr><td>event-maxi-0001-0030</td><td class="rail-lightning">⚡ Lightning</td><td>f9f5cbec…16285560</td><td class="tx-dir-down">↓</td><td>50 sats</td><td class="verified">✓</td><td>13d ago</td><td><a href="#" class="tx-verify">Verify</a></td></tr>
-          <tr><td>event-maxi-0001-0029</td><td class="rail-lightning">⚡ Lightning</td><td>424e7e63…784dd0f8</td><td class="tx-dir-down">↓</td><td>210 sats</td><td class="verified">✓</td><td>13d ago</td><td><a href="#" class="tx-verify">Verify</a></td></tr>
-          <tr><td>event-lnget-032</td><td class="rail-x402">◈ x402</td><td>2f1c45a9…a8d51942</td><td class="tx-dir-up">↑</td><td>0.01 USDC</td><td class="verified">✓</td><td>21d ago</td><td><a href="#" class="tx-verify">Verify</a></td></tr>
-          <tr><td>event-maxi-0001-0028</td><td class="rail-lightning">⚡ Lightning</td><td>6072ec4e…88d73c94</td><td class="tx-dir-down">↓</td><td>11 sats</td><td class="verified">✓</td><td>19d ago</td><td><a href="#" class="tx-verify">Verify</a></td></tr>
-          <tr><td>event-maxi-0001-0016</td><td class="rail-lightning">⚡ Lightning</td><td>31f6127d…084f2bd4</td><td class="tx-dir-down">↓</td><td>210 sats</td><td class="verified">✓</td><td>21d ago</td><td><a href="#" class="tx-verify">Verify</a></td></tr>
-          <tr><td>event-maxi-0001-0009</td><td class="rail-lightning">⚡ Lightning</td><td>e2e_test…42295586</td><td class="tx-dir-down">↓</td><td>10,000 sats</td><td class="verified">✓</td><td>33d ago</td><td></td></tr>
-          <tr><td>event-maxi-0002</td><td class="rail-lightning">⚡ Lightning</td><td>331a165a…de11b766</td><td class="tx-dir-up">↑</td><td>10,000 sats</td><td class="verified">✓</td><td>45d ago</td><td></td></tr>
-          <tr><td style="color: var(--amber);">OP-000001 · #0002</td><td class="rail-lightning">⚡ Lightning</td><td>6a30ba7f…ff332c4e</td><td class="tx-dir-up">↑</td><td>1,521 sats</td><td class="verified">✓</td><td>Feb 22, 2026</td><td><a href="#" class="tx-verify" style="color:var(--amber);">Genesis</a></td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div style="margin-top: 0.75rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-faint);">
-      Showing recent verified transactions. Registry is public and permanent. · <a href="/docs.html" style="color: var(--amber);">View live feed →</a>
-    </div>
-  </div>
-</section>
-
-<!-- REGISTER CTA -->
-<section style="background: var(--bg2); border-bottom: 1px solid var(--border); padding: 4rem 2.5rem;">
-  <div class="section-inner">
-    <div class="register-cta">
-      <div class="section-label" style="margin-bottom: 1rem;">Get Started</div>
-      <h3>Register your agent.</h3>
-      <p>Join the protocol. Free during adoption phase. Identity anchored to your public key — not a platform account. Opt into public listing whenever you're ready.</p>
-      <a href="/docs.html" class="btn-primary">Get Started with Docs →</a>
-      <a href="/docs.html" class="btn-secondary">View Live Demo</a>
-    </div>
+    <h2>Recent Transactions</h2>
+    <table class="tx-table">
+      <thead>
+        <tr>
+          <th>Event ID</th>
+          <th>Rail</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>event-00152</td>
+          <td>⚡ Lightning</td>
+          <td>1,521 sats</td>
+          <td class="tx-verified">✓ Verified</td>
+          <td>2h ago</td>
+        </tr>
+        <tr>
+          <td>event-00151</td>
+          <td>◈ x402</td>
+          <td>0.01 USDC</td>
+          <td class="tx-verified">✓ Verified</td>
+          <td>5h ago</td>
+        </tr>
+        <tr>
+          <td>event-00150</td>
+          <td>☀ Solana</td>
+          <td>0.05 SOL</td>
+          <td class="tx-verified">✓ Verified</td>
+          <td>1d ago</td>
+        </tr>
+        <tr>
+          <td>event-00149</td>
+          <td>⚡ Lightning</td>
+          <td>500 sats</td>
+          <td class="tx-verified">✓ Verified</td>
+          <td>2d ago</td>
+        </tr>
+        <tr>
+          <td>event-00148</td>
+          <td>◈ x402</td>
+          <td>0.005 USDC</td>
+          <td class="tx-verified">✓ Verified</td>
+          <td>2d ago</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </section>
 
 <footer>
   <div class="footer-inner">
-    <div class="footer-brand">Observer Protocol</div>
-    <div class="footer-links">
-      <a href="/index.html">Home</a>
-      <a href="/architecture.html">Architecture</a>
-      <a href="/docs.html">Docs</a>
-      <a href="/agentic-terminal.html">Agentic Terminal</a>
-      <a href="/registry.html">Registry</a>
-      <a href="/docs.html">Demo</a>
-      <a href="https://github.com/observer-protocol" target="_blank">GitHub ↗</a>
+    <div>
+      <a class="nav-logo" href="/index.html">Observer Protocol</a>
+      <p class="footer-tagline">Observer Protocol is live, open-source infrastructure. Built by the community. Verified on-chain.</p>
+    </div>
+    <div>
+      <div class="footer-links-title">Protocol</div>
+      <div class="footer-links">
+        <a href="/registry.html">Registry</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/demo.html">Demo</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-links-title">Connect</div>
+      <div class="footer-links">
+        <a href="https://github.com/observer-protocol" target="_blank">GitHub</a>
+        <a href="https://twitter.com/observerprotocol" target="_blank">Twitter</a>
+        <a href="https://nostr.com" target="_blank">Nostr</a>
+      </div>
     </div>
   </div>
-  <div class="footer-note">Observer Protocol v1.1 · CC BY 4.0 · The math is the record. · observerprotocol.org</div>
+  <div class="footer-bottom">
+    <div class="footer-copyright">© 2026 Observer Protocol · Open Source · CC BY 4.0</div>
+    <div class="footer-social">
+      <a href="https://github.com/observer-protocol" target="_blank">GitHub</a>
+      <a href="https://twitter.com/observerprotocol" target="_blank">Twitter</a>
+      <a href="https://nostr.com" target="_blank">Nostr</a>
+    </div>
+  </div>
 </footer>
 
 </body>

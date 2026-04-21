@@ -1,499 +1,324 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Observer Protocol is a live, open-source trust infrastructure for the agentic economy. Decentralized identity, cryptographic verification, and reputation across any payment rail.">
   <title>Docs — Observer Protocol</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;0,900;1,300;1,600&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg:        #0a0a08;
-      --bg2:       #111110;
-      --bg3:       #1a1a18;
-      --border:    #2a2a26;
-      --amber:     #f5a623;
-      --amber-dim: #b8791a;
-      --amber-glow:#f5a62322;
-      --green:     #4ade80;
-      --green-dim: #166534;
-      --text:      #e8e8e0;
-      --text-dim:  #888880;
-      --text-faint:#444440;
-      --blue:      #7eb8f7;
-      --teal:      #5eead4;
-      --purple:    #a78bfa;
-    }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-size: 16px; line-height: 1.6; overflow-x: hidden; }
-
-    /* NAV */
-    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 2.5rem; height: 56px; background: rgba(10,10,8,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-    .nav-logo { font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem; font-weight: 500; color: var(--amber); letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; }
-    .nav-links { display: flex; gap: 2rem; list-style: none; }
-    .nav-links a { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-dim); text-decoration: none; letter-spacing: 0.06em; transition: color 0.2s; }
-    .nav-links a:hover { color: var(--text); }
-    .nav-links a.active { color: var(--amber); }
-    .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; display: inline-block; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-    .nav-status { display: flex; align-items: center; gap: 0.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-dim); }
-
-    /* PAGE HEADER */
-    .page-header { padding: 9rem 2.5rem 4rem; border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
-    .page-header::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 50% 60% at 75% 40%, rgba(126,184,247,0.05) 0%, transparent 70%); pointer-events: none; }
-    .page-header-inner { max-width: 1100px; position: relative; display: grid; grid-template-columns: 1fr auto; gap: 3rem; align-items: start; }
-    @media (max-width: 768px) { .page-header-inner { grid-template-columns: 1fr; } }
-    .breadcrumb { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-faint); letter-spacing: 0.1em; margin-bottom: 1.5rem; }
-    .breadcrumb span { color: var(--amber); }
-    .page-tag { display: inline-flex; align-items: center; gap: 0.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--blue); letter-spacing: 0.12em; text-transform: uppercase; border: 1px solid #7eb8f744; padding: 0.3rem 0.8rem; margin-bottom: 1.5rem; background: #7eb8f711; }
-    h1 { font-family: 'Fraunces', serif; font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 900; line-height: 1.08; letter-spacing: -0.02em; margin-bottom: 1.25rem; }
-    .page-sub { font-size: 1rem; color: var(--text-dim); max-width: 580px; line-height: 1.75; font-weight: 300; }
-
-    /* ON-PAGE NAV */
-    .doc-nav { background: var(--bg2); border: 1px solid var(--border); padding: 1.5rem; min-width: 200px; }
-    .doc-nav-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-faint); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1rem; }
-    .doc-nav-links { display: flex; flex-direction: column; gap: 0.5rem; }
-    .doc-nav-links a { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-dim); text-decoration: none; transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem; }
-    .doc-nav-links a:hover { color: var(--amber); }
-    .doc-nav-links a::before { content: '→'; color: var(--text-faint); font-size: 0.6rem; }
-
-    /* SECTIONS */
-    section { padding: 4rem 2.5rem; border-bottom: 1px solid var(--border); }
-    section:last-of-type { border-bottom: none; }
-    .section-inner { max-width: 1100px; margin: 0 auto; }
-    .section-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--amber); margin-bottom: 1rem; }
-    h2 { font-family: 'Fraunces', serif; font-size: clamp(1.5rem, 2.5vw, 2.2rem); font-weight: 600; line-height: 1.15; margin-bottom: 1rem; color: var(--text); }
-    .section-intro { font-size: 0.95rem; color: var(--text-dim); max-width: 680px; line-height: 1.8; margin-bottom: 2.5rem; font-weight: 300; }
-
-    /* QUICKSTART CARDS */
-    .qs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px,1fr)); gap: 1px; background: var(--border); }
-    .qs-card { background: var(--bg2); padding: 1.5rem; text-decoration: none; display: block; transition: background 0.2s; }
-    .qs-card:hover { background: var(--bg3); }
-    .qs-icon { font-size: 1.4rem; margin-bottom: 0.6rem; }
-    .qs-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--amber); letter-spacing: 0.1em; margin-bottom: 0.35rem; }
-    .qs-name { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 0.3rem; }
-    .qs-meta { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-faint); margin-bottom: 0.6rem; }
-    .qs-desc { font-size: 0.82rem; color: var(--text-dim); line-height: 1.65; font-weight: 300; }
-
-    /* API REFERENCE */
-    .api-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2.5rem; }
-    @media (max-width: 768px) { .api-grid { grid-template-columns: 1fr; } }
-    .api-group { background: var(--bg2); border: 1px solid var(--border); }
-    .api-group-header { padding: 0.85rem 1.25rem; border-bottom: 1px solid var(--border); font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--amber); letter-spacing: 0.1em; text-transform: uppercase; }
-    .api-endpoint { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1.25rem; border-bottom: 1px solid var(--bg3); font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; transition: background 0.15s; }
-    .api-endpoint:hover { background: var(--bg3); }
-    .api-endpoint:last-child { border-bottom: none; }
-    .method { font-size: 0.58rem; font-weight: 600; padding: 0.15rem 0.4rem; border-radius: 2px; flex-shrink: 0; }
-    .method.get { background: #166534; color: #4ade80; }
-    .method.post { background: #1e3a5f; color: #7eb8f7; }
-    .method.patch { background: #44310a; color: #f5a623; }
-    .endpoint-path { color: var(--text-dim); flex: 1; }
-    .endpoint-desc { color: var(--text-faint); font-size: 0.6rem; }
-    .new-tag { font-size: 0.5rem; background: #7eb8f722; color: var(--blue); padding: 0.1rem 0.3rem; border: 1px solid #7eb8f744; }
-
-    /* SDK */
-    .sdk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-    @media (max-width: 768px) { .sdk-grid { grid-template-columns: 1fr; } }
-    .code-block { background: var(--bg); border: 1px solid var(--border); border-left: 2px solid var(--amber-dim); padding: 1.25rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-dim); line-height: 1.9; overflow-x: auto; }
-    .code-comment { color: var(--text-faint); }
-    .code-key { color: var(--blue); }
-    .code-val { color: var(--green); }
-    .code-fn { color: var(--amber); }
-    .sdk-note { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-faint); border: 1px solid var(--border); padding: 0.75rem 1rem; background: var(--bg2); margin-top: 1rem; display: flex; gap: 0.75rem; align-items: flex-start; }
-    .sdk-note-icon { color: var(--amber); flex-shrink: 0; }
-
-    /* DID RESOLVER */
-    .resolver-wrap { background: var(--bg2); border: 1px solid var(--border); padding: 2rem; }
-    .resolver-input-row { display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
-    .resolver-input { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; background: var(--bg); border: 1px solid var(--border); color: var(--text); padding: 0.6rem 0.9rem; flex: 1; min-width: 280px; outline: none; }
-    .resolver-input:focus { border-color: var(--blue); }
-    .btn-resolve { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; padding: 0.65rem 1.25rem; background: var(--blue); color: #0a0a08; border: none; cursor: pointer; font-weight: 600; transition: all 0.2s; white-space: nowrap; }
-    .btn-resolve:hover { background: #a8d4fb; }
-    .resolver-output { background: var(--bg); border: 1px solid var(--border); padding: 1.25rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-dim); line-height: 1.8; min-height: 160px; white-space: pre-wrap; word-break: break-all; }
-
-    /* DID RESOLUTION DOC */
-    .did-doc { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-    @media (max-width: 768px) { .did-doc { grid-template-columns: 1fr; } }
-    .did-pattern { background: var(--bg2); border: 1px solid var(--border); padding: 1.5rem; }
-    .did-pattern-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-faint); letter-spacing: 0.1em; margin-bottom: 0.75rem; }
-    .did-pattern-value { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--teal); line-height: 1.8; margin-bottom: 0.5rem; }
-    .did-pattern-example { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--text-faint); line-height: 1.8; }
-    .did-table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
-    .did-table th { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); text-align: left; padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); }
-    .did-table td { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-dim); padding: 0.65rem 1rem; border-bottom: 1px solid var(--bg3); }
-    .did-table td:first-child { color: var(--teal); }
-    .did-table tr:hover td { background: var(--bg2); }
-
-    /* SPEC LINKS */
-    .spec-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 1px; background: var(--border); margin-top: 1rem; }
-    .spec-card { background: var(--bg2); padding: 1.5rem; text-decoration: none; display: block; transition: background 0.2s; }
-    .spec-card:hover { background: var(--bg3); }
-    .spec-card-tag { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--amber); letter-spacing: 0.1em; margin-bottom: 0.5rem; }
-    .spec-card h3 { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
-    .spec-card p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.65; font-weight: 300; margin-bottom: 0.75rem; }
-    .spec-card-cta { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--amber); }
-
-    /* FOOTER */
-    footer { border-top: 1px solid var(--border); padding: 2.5rem 2.5rem 2rem; background: var(--bg); }
-    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-    .footer-brand { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--amber); letter-spacing: 0.12em; text-transform: uppercase; }
-    .footer-links { display: flex; gap: 2rem; flex-wrap: wrap; }
-    .footer-links a { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-faint); text-decoration: none; transition: color 0.2s; }
-    .footer-links a:hover { color: var(--text-dim); }
-    .footer-note { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-faint); margin-top: 1.5rem; max-width: 1100px; margin-left: auto; margin-right: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
-
-    .divider { width: 40px; height: 1px; background: var(--amber-dim); margin-bottom: 2rem; }
+    :root { --bg:#0a0a0a; --bg2:#111; --bg3:#1a1a1a; --border:#2a2a2a; --accent:#00ff88; --accent-dim:#00cc6a; --accent-glow:rgba(0,255,136,0.15); --text:#e8e8e8; --text-dim:#888; --text-faint:#444; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:16px;line-height:1.6}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:64px;background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+    .nav-logo{font-family:'JetBrains Mono',monospace;font-size:0.85rem;font-weight:600;color:var(--accent);text-decoration:none;display:flex;align-items:center;gap:0.5rem}
+    .nav-logo::before{content:'◉';color:var(--accent)}
+    .nav-links{display:flex;gap:2.5rem;list-style:none}
+    .nav-links a{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-dim);text-decoration:none;transition:color 0.2s}
+    .nav-links a:hover{color:var(--text)}
+    .nav-links a.external::after{content:' ↗';font-size:0.6rem}
+    .page-header{padding:10rem 2.5rem 5rem;background:var(--bg2);border-bottom:1px solid var(--border)}
+    .page-header-inner{max-width:1100px;margin:0 auto}
+    .page-eyebrow{font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem}
+    h1{font-size:clamp(2rem,4vw,3.5rem);font-weight:700;margin-bottom:1rem}
+    .page-sub{font-size:1.1rem;color:var(--text-dim);max-width:640px;line-height:1.7}
+    section{padding:5rem 2.5rem;border-bottom:1px solid var(--border)}
+    section:last-of-type{border-bottom:none}
+    .section-inner{max-width:1100px;margin:0 auto}
+    .docs-grid{display:grid;grid-template-columns:250px 1fr;gap:3rem}
+    @media(max-width:900px){.docs-grid{grid-template-columns:1fr}}
+    .sidebar{position:sticky;top:100px;height:fit-content}
+    @media(max-width:900px){.sidebar{display:none}}
+    .sidebar-title{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-faint);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1rem}
+    .sidebar-nav{display:flex;flex-direction:column;gap:0.5rem}
+    .sidebar-nav a{font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--text-dim);text-decoration:none;padding:0.5rem 0;border-left:2px solid transparent;padding-left:1rem;transition:all 0.2s}
+    .sidebar-nav a:hover,.sidebar-nav a.active{color:var(--accent);border-left-color:var(--accent)}
+    h2{font-size:1.8rem;font-weight:600;margin-bottom:1.25rem;margin-top:3rem}
+    h2:first-child{margin-top:0}
+    h3{font-size:1.3rem;font-weight:600;margin:2rem 0 1rem}
+    p{color:var(--text-dim);line-height:1.8;margin-bottom:1.25rem}
+    strong{color:var(--text)}
+    code{font-family:'JetBrains Mono',monospace;font-size:0.85em;background:var(--bg2);padding:0.15rem 0.4rem;color:var(--accent)}
+    pre{background:var(--bg2);border:1px solid var(--border);padding:1.5rem;overflow-x:auto;margin:1.5rem 0}
+    pre code{background:none;padding:0;color:var(--text-dim)}
+    .code-comment{color:var(--text-faint)}
+    .code-key{color:var(--accent)}
+    .code-val{color:#7eb8f7}
+    ul,ol{margin:1rem 0 1.5rem 1.5rem;color:var(--text-dim);line-height:1.8}
+    li{margin-bottom:0.5rem}
+    .endpoint-box{background:var(--bg2);border:1px solid var(--border);padding:1.5rem;margin:1rem 0}
+    .endpoint-header{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;font-family:'JetBrains Mono',monospace;font-size:0.8rem}
+    .method-get{background:rgba(0,255,136,0.15);color:var(--accent);padding:0.2rem 0.5rem;font-weight:600}
+    .method-post{background:rgba(126,184,247,0.15);color:#7eb8f7;padding:0.2rem 0.5rem;font-weight:600}
+    .endpoint-path{color:var(--text)}
+    .btn-primary{font-family:'JetBrains Mono',monospace;font-size:0.8rem;padding:0.9rem 2rem;background:var(--accent);color:#000;text-decoration:none;font-weight:600;transition:all 0.2s;border-radius:2px;display:inline-block}
+    .btn-primary:hover{background:#33ff9f;box-shadow:0 0 20px var(--accent-glow)}
+    .card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem;margin:2rem 0}
+    @media(max-width:640px){.card-grid{grid-template-columns:1fr}}
+    .card{background:var(--bg2);border:1px solid var(--border);padding:1.5rem;transition:all 0.2s}
+    .card:hover{border-color:var(--accent-dim)}
+    .card h4{font-size:1.1rem;font-weight:600;margin-bottom:0.5rem;color:var(--text)}
+    .card p{font-size:0.9rem;margin-bottom:0}
+    footer{border-top:1px solid var(--border);padding:4rem 2.5rem 2rem;background:var(--bg)}
+    .footer-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem}
+    @media(max-width:768px){.footer-inner{grid-template-columns:1fr}}
+    .footer-tagline{font-size:0.95rem;color:var(--text-dim);line-height:1.7;margin-top:1rem}
+    .footer-links-title{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-faint);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:1rem}
+    .footer-links{display:flex;flex-direction:column;gap:0.75rem}
+    .footer-links a{font-size:0.9rem;color:var(--text-dim);text-decoration:none}
+    .footer-links a:hover{color:var(--accent)}
+    .footer-bottom{max-width:1100px;margin:3rem auto 0;padding-top:2rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+    .footer-copyright{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-faint)}
+    .footer-social{display:flex;gap:1.5rem}
+    .footer-social a{font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-dim);text-decoration:none}
+    .footer-social a:hover{color:var(--accent)}
   </style>
 </head>
 <body>
-
 <nav>
   <a class="nav-logo" href="/index.html">Observer Protocol</a>
   <ul class="nav-links">
-    <li><a href="/architecture.html">Architecture</a></li>
-    <li><a href="/docs.html" class="active">Docs</a></li>
-    <li><a href="/agentic-terminal.html">Agentic Terminal</a></li>
     <li><a href="/registry.html">Registry</a></li>
+    <li><a href="/docs.html">Docs</a></li>
+    <li><a href="/demo.html">Demo</a></li>
+    <li><a href="https://github.com/observer-protocol" class="external" target="_blank">GitHub</a></li>
   </ul>
-  <div class="nav-status"><div class="pulse"></div>MAINNET LIVE · V1.1</div>
 </nav>
 
-<!-- PAGE HEADER -->
-<div class="page-header">
+<header class="page-header">
   <div class="page-header-inner">
-    <div>
-      <div class="breadcrumb">OBSERVER PROTOCOL · <span>DOCS</span></div>
-      <div class="page-tag">Developer Documentation · v1.1</div>
-      <h1>Documentation</h1>
-      <p class="page-sub">
-        Everything you need to register agents, issue credentials, verify identity, and integrate Observer Protocol into your stack. Open protocol, MIT licensed, self-hostable.
-      </p>
-    </div>
-    <div class="doc-nav">
-      <div class="doc-nav-title">On This Page</div>
-      <div class="doc-nav-links">
-        <a href="#getting-started">Getting Started</a>
-        <a href="#api-reference">API Reference</a>
-        <a href="#sdk">SDK</a>
-        <a href="#did-resolver">DID Resolver</a>
-        <a href="#spec-aip">Spec &amp; AIP</a>
-        <a href="#did-resolution">DID Resolution</a>
-      </div>
-    </div>
+    <div class="page-eyebrow">Documentation</div>
+    <h1>Observer Protocol Docs</h1>
+    <p class="page-sub">Everything you need to build with Observer Protocol — from quickstart guides to complete API reference.</p>
   </div>
-</div>
+</header>
 
-<!-- GETTING STARTED -->
-<section id="getting-started" style="background: var(--bg);">
+<section>
   <div class="section-inner">
-    <div class="section-label">Getting Started</div>
-    <h2>Choose your path.</h2>
-    <p class="section-intro">
-      All routes give your agent a W3C did:web identity, a cryptographic keypair, and a Verified Agent Credential on Observer Protocol. Pick the quickstart that fits your stack.
-    </p>
-    <div class="qs-grid">
-      <a href="/quickstart-alby.html" class="qs-card">
-        <div class="qs-icon">🦊</div>
-        <div class="qs-tag">FASTEST · 10 SEC</div>
-        <div class="qs-name">Alby Quickstart</div>
-        <div class="qs-meta">Browser-only · No server required</div>
-        <div class="qs-desc">The simplest way to get a verified agent identity. Just your browser and the Alby extension — no terminal required.</div>
-      </a>
-      <a href="/quickstart-lightning.html" class="qs-card">
-        <div class="qs-icon">⚡</div>
-        <div class="qs-tag">~30 MIN</div>
-        <div class="qs-name">Lightning Quickstart</div>
-        <div class="qs-meta">MDK-Cloudflare · No server</div>
-        <div class="qs-desc">Deploy a self-custodial Lightning wallet via MDK-Cloudflare and register to Observer Protocol. Your agent needs money and an identity.</div>
-      </a>
-      <a href="/quickstart-ows.html" class="qs-card">
-        <div class="qs-icon">🔐</div>
-        <div class="qs-tag">~5 MIN · OWS</div>
-        <div class="qs-name">OWS Quickstart</div>
-        <div class="qs-meta">Multi-chain · BIP-44 derivation</div>
-        <div class="qs-desc">Already using OWS? Register your OWS-provisioned agent on Observer Protocol in under 5 minutes. One vault, all chains.</div>
-      </a>
-      <a href="/quickstart-x402.html" class="qs-card">
-        <div class="qs-icon">◈</div>
-        <div class="qs-tag">~20 MIN</div>
-        <div class="qs-name">x402 / L402</div>
-        <div class="qs-meta">HTTP-native · Any Lightning wallet</div>
-        <div class="qs-desc">Make your agent pay for data over HTTP/402 and attest every transaction to Observer Protocol. Live demo included.</div>
-      </a>
-      <a href="/quickstart-solana.html" class="qs-card">
-        <div class="qs-icon">☀</div>
-        <div class="qs-tag">~25 MIN</div>
-        <div class="qs-name">Solana Quickstart</div>
-        <div class="qs-meta">Ed25519 · x402 ready</div>
-        <div class="qs-desc">Build Solana-native agents with Ed25519 keypairs. Register on Observer Protocol and build portable reputation across rails.</div>
-      </a>
-      <a href="/quickstart-tether.html" class="qs-card">
-        <div class="qs-icon">₮</div>
-        <div class="qs-tag">~25 MIN · USDT/BTC</div>
-        <div class="qs-name">Tether WDK</div>
-        <div class="qs-meta">BIP-39 · Self-custodial</div>
-        <div class="qs-desc">Add Tether WDK for self-custodial USDT on Ethereum/Polygon and Bitcoin. Full bilateral verification included.</div>
-      </a>
-      <a href="/quickstart-lnget.html" class="qs-card">
-        <div class="qs-icon">🔗</div>
-        <div class="qs-tag">~5 MIN · RETROACTIVE</div>
-        <div class="qs-name">lnget + OP</div>
-        <div class="qs-meta">lnget users · Sync existing history</div>
-        <div class="qs-desc">Already using lnget? Sync your existing L402 payment history to Observer Protocol. Your reputation is already built — just claim it.</div>
-      </a>
-      <a href="/quickstart-stripe.html" class="qs-card">
-        <div class="qs-icon">💳</div>
-        <div class="qs-tag">&lt;2 MIN · 1 LINE</div>
-        <div class="qs-name">Stripe MPP</div>
-        <div class="qs-meta">Node.js / Python middleware</div>
-        <div class="qs-desc">Using Stripe machine payments? Add OP reputation checks to your seller in one middleware line. EVM wallet lookup included.</div>
-      </a>
-    </div>
-  </div>
-</section>
+    <div class="docs-grid">
+      <aside class="sidebar">
+        <div class="sidebar-title">On this page</div>
+        <nav class="sidebar-nav">
+          <a href="#getting-started">Getting Started</a>
+          <a href="#core-concepts">Core Concepts</a>
+          <a href="#api-reference">API Reference</a>
+          <a href="#tutorials">Tutorials</a>
+          <a href="#github">GitHub</a>
+        </nav>
+      </aside>
+      <div class="content">
+        
+        <h2 id="getting-started">1. Getting Started</h2>
+        <h3>What is Observer Protocol</h3>
+        <p>Observer Protocol is a live, open-source trust infrastructure for the agentic economy. It provides decentralized identity, cryptographic verification, and reputation scoring for AI agents across any payment rail.</p>
+        <p>At its core, Observer Protocol enables agents to:</p>
+        <ul>
+          <li>Establish a <strong>W3C DID identity</strong> that they control cryptographically</li>
+          <li>Accumulate <strong>Verified Activity Credentials (VACs)</strong> that prove their transaction history</li>
+          <li>Build <strong>portable reputation</strong> that works across any platform or payment rail</li>
+        </ul>
+        
+        <h3>Quick Start Guide</h3>
+        <p>The fastest way to get started is to register an agent and issue your first VAC. Here's the basic flow:</p>
+        <pre><code><span class="code-comment"># 1. Register your agent</span>
+POST /api/v1/agents/register
+{
+  <span class="code-key">"publicKey"</span>: <span class="code-val">"02a1b2..."</span>,
+  <span class="code-key">"alias"</span>: <span class="code-val">"MyAgent"</span>
+}
 
-<!-- API REFERENCE -->
-<section id="api-reference" style="background: var(--bg2);">
-  <div class="section-inner">
-    <div class="section-label">API Reference</div>
-    <h2>API v1.1 — Base URL: api.observerprotocol.org</h2>
-    <p class="section-intro">
-      All non-DID endpoints use the <code style="font-family:'IBM Plex Mono',monospace; font-size:0.85em; color:var(--amber); background:var(--bg); padding:0.1rem 0.4rem;">/api/v1/</code> prefix. DID document paths follow the W3C did:web resolution standard and are documented separately below. Full interactive documentation available via Swagger UI.
-    </p>
+<span class="code-comment"># 2. Complete a transaction on any supported rail</span>
+<span class="code-comment"># 3. Submit proof to Observer Protocol</span>
+POST /api/v1/transactions/submit
+{
+  <span class="code-key">"paymentHash"</span>: <span class="code-val">"abc123..."</span>,
+  <span class="code-key">"preimage"</span>: <span class="code-val">"def456..."</span>,
+  <span class="code-key">"rail"</span>: <span class="code-val">"lightning"</span>
+}
 
-    <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-      <a href="https://api.observerprotocol.org/docs" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--amber); text-decoration:none; border:1px solid var(--amber-dim); padding:0.5rem 1rem; background:var(--amber-glow);">Interactive Swagger UI ↗</a>
-      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/main/api/API-SPEC-OPENAPI.yaml" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--text-dim); text-decoration:none; border:1px solid var(--border); padding:0.5rem 1rem;">OpenAPI YAML ↗</a>
-    </div>
-
-    <div class="api-grid">
-      <!-- AGENT IDENTITY -->
-      <div class="api-group">
-        <div class="api-group-header">Agent Identity</div>
-        <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/observer/register-agent</span><span class="endpoint-desc">Register agent</span></div>
-        <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/observer/challenge</span><span class="endpoint-desc">Get challenge</span></div>
-        <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/observer/verify-agent</span><span class="endpoint-desc">Verify identity</span></div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/observer/agents/{agent_id}</span><span class="endpoint-desc">Agent profile</span></div>
-        <div class="api-endpoint"><span class="method patch">PATCH</span><span class="endpoint-path">/api/v1/agents/{agent_id}</span><span class="endpoint-desc">Update agent</span></div>
-      </div>
-
-      <!-- DID RESOLUTION -->
-      <div class="api-group">
-        <div class="api-group-header">DID Resolution</div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/api/v1/resolve/{did}</span><span class="endpoint-desc">Resolve any did:web <span class="new-tag">NEW</span></span></div>
-        <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/observer/consolidate-identity</span><span class="endpoint-desc">Cross-rail consolidation</span></div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/vp/verify</span><span class="endpoint-desc">Verify VP <span class="new-tag">NEW</span></span></div>
-        <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/vp/submit</span><span class="endpoint-desc">Submit VP <span class="new-tag">NEW</span></span></div>
-      </div>
-
-      <!-- VAC -->
-      <div class="api-group">
-        <div class="api-group-header">Verifiable Agent Credentials</div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/vac/{agent_id}</span><span class="endpoint-desc">Get VAC</span></div>
-        <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/vac/{agent_id}/refresh</span><span class="endpoint-desc">Refresh VAC</span></div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/vac/{agent_id}/history</span><span class="endpoint-desc">VAC history</span></div>
-        <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/vac/partners/{id}/attest</span><span class="endpoint-desc">Issue attestation <span class="new-tag">NEW</span></span></div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/vac/partners</span><span class="endpoint-desc">Partner registry</span></div>
-      </div>
-
-      <!-- AIP -->
-      <div class="api-group">
-        <div class="api-group-header">AIP v0.2 <span class="new-tag" style="margin-left:0.5rem;">NEW</span></div>
-        <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/aip/credentials/delegation</span><span class="endpoint-desc">Issue delegation VC</span></div>
-        <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/aip/credentials/kyb</span><span class="endpoint-desc">Issue KYB VC</span></div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/aip/chain/verify/{id}</span><span class="endpoint-desc">Verify chain</span></div>
-        <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/aip/revoke</span><span class="endpoint-desc">Revoke + cascade</span></div>
-        <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/aip/remediation/build</span><span class="endpoint-desc">Build remediation</span></div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/aip/type-registry/{category}</span><span class="endpoint-desc">Type registry</span></div>
-      </div>
-
-      <!-- PROTOCOL ACTIVITY -->
-      <div class="api-group">
-        <div class="api-group-header">Protocol Activity</div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/api/v1/health</span><span class="endpoint-desc">Health check</span></div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/api/v1/stats</span><span class="endpoint-desc">Aggregate stats</span></div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/observer/feed</span><span class="endpoint-desc">Verified event feed</span></div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/observer/trends</span><span class="endpoint-desc">Protocol trends</span></div>
-        <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/observer/submit-transaction</span><span class="endpoint-desc">Submit transaction</span></div>
-      </div>
-
-      <!-- ORGANIZATIONS -->
-      <div class="api-group">
-        <div class="api-group-header">Organizations</div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/api/v1/protocols</span><span class="endpoint-desc">List protocols</span></div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/api/v1/metrics</span><span class="endpoint-desc">Time-series metrics</span></div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/api/v1/signals</span><span class="endpoint-desc">Protocol signals</span></div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/observer/badge/{agent_id}.svg</span><span class="endpoint-desc">Agent badge SVG</span></div>
-      </div>
-    </div>
-
-    <!-- DID RESOLVER TRY IT -->
-    <div id="did-resolver" style="margin-top: 1rem;">
-      <div class="section-label" style="margin-bottom: 1rem;">Try It Live · DID Resolution</div>
-      <div class="resolver-wrap">
-        <div class="resolver-input-row">
-          <input class="resolver-input" type="text" id="did-input" placeholder="did:web:observerprotocol.org:agents:maxi-0001" />
-          <button class="btn-resolve" onclick="resolveDID()">Resolve DID →</button>
+<span class="code-comment"># 4. Retrieve your VAC</span>
+GET /api/v1/vac/{agent_id}</code></pre>
+        
+        <h3>Mainnet Status</h3>
+        <p>Observer Protocol is live on mainnet. All verification proofs are cryptographically secured and permanently recorded. The protocol currently supports:</p>
+        <ul>
+          <li>Lightning Network (L402)</li>
+          <li>x402 HTTP payments</li>
+          <li>Solana</li>
+          <li>Stripe MPP (Machine Payment Protocol)</li>
+          <li>Tether (USDT)</li>
+        </ul>
+        
+        <h2 id="core-concepts">2. Core Concepts</h2>
+        <h3>DIDs and did:web</h3>
+        <p>Observer Protocol uses the W3C <code>did:web</code> method for agent identity. Each agent receives a decentralized identifier that resolves to a DID Document containing their public keys and service endpoints.</p>
+        <p>A typical agent DID looks like:</p>
+        <pre><code>did:web:observerprotocol.org:agents:agent-123</code></pre>
+        <p>This DID can be resolved by anyone with HTTPS access, making agent identity truly portable and verifiable without querying a central API.</p>
+        
+        <h3>Verifiable Credentials</h3>
+        <p>All credentials issued by Observer Protocol follow the W3C Verifiable Credentials Data Model. This ensures that VACs can be verified by any standards-compliant implementation, anywhere.</p>
+        <p>Each credential contains:</p>
+        <ul>
+          <li>The issuer (Observer Protocol)</li>
+          <li>The subject (the agent)</li>
+          <li>Cryptographic proof of the claim</li>
+          <li>Timestamp and verification metadata</li>
+        </ul>
+        
+        <h3>VACs Explained</h3>
+        <p>Verified Activity Credentials (VACs) are the core innovation of Observer Protocol. Each VAC represents a cryptographically-verified fact about an agent's economic activity.</p>
+        <p>VACs accumulate to form an agent's reputation portfolio. The more VACs an agent holds, the stronger their trust score becomes. VACs are:</p>
+        <ul>
+          <li><strong>Cryptographically signed</strong> by Observer Protocol</li>
+          <li><strong>Permanently verifiable</strong> using on-chain data</li>
+          <li><strong>Portable across platforms</strong> using W3C standards</li>
+          <li><strong>Privacy-preserving</strong> — agents control what to reveal</li>
+        </ul>
+        
+        <h3>Trust Scoring</h3>
+        <p>Observer Protocol calculates trust scores based on multiple factors:</p>
+        <div class="card-grid">
+          <div class="card">
+            <h4>Transaction Volume</h4>
+            <p>Total number of verified transactions across all rails.</p>
+          </div>
+          <div class="card">
+            <h4>Success Rate</h4>
+            <p>Percentage of transactions completed without dispute or failure.</p>
+          </div>
+          <div class="card">
+            <h4>Account Age</h4>
+            <p>Time since first registration and activity consistency.</p>
+          </div>
+          <div class="card">
+            <h4>Rail Diversity</h4>
+            <p>Number of different payment rails used successfully.</p>
+          </div>
         </div>
-        <div class="resolver-output" id="resolver-output"># Enter a DID above and click Resolve.
-# Endpoint: GET https://api.observerprotocol.org/api/v1/resolve/{did}
-#
-# Example DIDs:
-#   did:web:observerprotocol.org:agents:maxi-0001
-#   did:web:observerprotocol.org:agents:vicky-0002</div>
-      </div>
-      <div style="margin-top:0.75rem; background:var(--bg); border:1px solid var(--border); border-left:2px solid var(--blue); padding:1.25rem; font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-dim); line-height:1.9; overflow-x:auto;">
-        <span style="color:var(--text-faint)"># Resolve any did:web DID document</span><br/>
-        curl <span style="color:var(--amber)">https://api.observerprotocol.org/api/v1/resolve/did:web:observerprotocol.org:agents:maxi-0001</span><br/><br/>
-        <span style="color:var(--text-faint)"># Returns W3C DID Document with verification methods and service endpoints</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SDK -->
-<section id="sdk" style="background: var(--bg);">
-  <div class="section-inner">
-    <div class="section-label">SDK</div>
-    <h2>@observerprotocol/sdk</h2>
-    <p class="section-intro">
-      JavaScript SDK for cryptographically verifiable agent identity. Node 16+, MIT license.
-    </p>
-    <div class="sdk-grid">
-      <div>
-        <div class="code-block">
-<span class="code-comment"># Install</span>
-npm install @observerprotocol/sdk
-
-<span class="code-comment"># Register your agent</span>
-<span class="code-key">const</span> { ObserverProtocol } = <span class="code-fn">require</span>(<span class="code-val">'@observerprotocol/sdk'</span>);
-<span class="code-key">const</span> observer = <span class="code-key">new</span> <span class="code-fn">ObserverProtocol</span>();
-
-<span class="code-key">const</span> agent = <span class="code-key">await</span> observer.<span class="code-fn">registerAgent</span>({
-  publicKey: <span class="code-val">'02a1b2...'</span>,
-  alias: <span class="code-val">'MyAgent'</span>
-});
-
-<span class="code-comment">// Returns agent_did, badge_url, did_document_url</span>
+        
+        <h2 id="api-reference">3. API Reference</h2>
+        <h3>Base URL</h3>
+        <pre><code>https://api.observerprotocol.org/api/v1</code></pre>
+        
+        <h3>Authentication</h3>
+        <p>All API requests must include your agent's API key in the header:</p>
+        <pre><code>Authorization: Bearer {your_api_key}</code></pre>
+        
+        <h3>Rate Limits</h3>
+        <p>Standard tier: 100 requests per minute per API key. Enterprise tier: 1,000 requests per minute. Contact us for higher limits.</p>
+        
+        <h3>Endpoints</h3>
+        
+        <div class="endpoint-box">
+          <div class="endpoint-header">
+            <span class="method-post">POST</span>
+            <span class="endpoint-path">/agents/register</span>
+          </div>
+          <p>Register a new agent with Observer Protocol.</p>
+          <pre><code>{
+  <span class="code-key">"publicKey"</span>: <span class="code-val">"string (required)"</span>,
+  <span class="code-key">"alias"</span>: <span class="code-val">"string (optional)"</span>
+}</code></pre>
         </div>
-        <div class="sdk-note">
-          <div class="sdk-note-icon">⚠</div>
-          <div>SDK update in progress — being aligned to AIP v0.2 and W3C DID/VC architecture. Current v1.0.0 covers core registration and transaction recording. Updated version ships after API spec finalization.</div>
+        
+        <div class="endpoint-box">
+          <div class="endpoint-header">
+            <span class="method-get">GET</span>
+            <span class="endpoint-path">/agents/{agent_id}</span>
+          </div>
+          <p>Retrieve agent profile and trust score.</p>
         </div>
-      </div>
-      <div>
-        <div class="code-block">
-<span class="code-comment"># Verify agent identity</span>
-<span class="code-key">const</span> verified = <span class="code-key">await</span> observer.<span class="code-fn">verifyAgent</span>(
-  agent.id, challenge, signature
-);
+        
+        <div class="endpoint-box">
+          <div class="endpoint-header">
+            <span class="method-post">POST</span>
+            <span class="endpoint-path">/transactions/submit</span>
+          </div>
+          <p>Submit a transaction proof for verification.</p>
+          <pre><code>{
+  <span class="code-key">"paymentHash"</span>: <span class="code-val">"string (required)"</span>,
+  <span class="code-key">"preimage"</span>: <span class="code-val">"string (required)"</span>,
+  <span class="code-key">"rail"</span>: <span class="code-val">"lightning|x402|solana|mpp|usdt"</span>
+}</code></pre>
+        </div>
+        
+        <div class="endpoint-box">
+          <div class="endpoint-header">
+            <span class="method-get">GET</span>
+            <span class="endpoint-path">/vac/{agent_id}</span>
+          </div>
+          <p>Retrieve all VACs for an agent.</p>
+        </div>
+        
+        <h2 id="tutorials">4. Tutorials</h2>
+        <h3>Verify an Agent</h3>
+        <p>To verify an agent's identity, resolve their DID and check their credential signatures:</p>
+        <pre><code><span class="code-comment"># Resolve the DID</span>
+curl https://observerprotocol.org/agents/{agent_id}/did.json
 
-<span class="code-comment"># Record a transaction</span>
-<span class="code-key">await</span> observer.<span class="code-fn">recordTransaction</span>({
-  senderId: agent.id,
-  paymentHash: hash,
-  proof: preimage
-});
+<span class="code-comment"># Verify the signature on their VAC</span>
+curl https://api.observerprotocol.org/api/v1/vac/{agent_id}/verify</code></pre>
+        
+        <h3>Issue a VAC</h3>
+        <p>VACs are automatically issued when valid transaction proofs are submitted. Here's a complete example for Lightning:</p>
+        <pre><code><span class="code-comment"># 1. Complete Lightning payment and get preimage</span>
+<span class="code-comment"># 2. Submit to Observer Protocol</span>
+curl -X POST https://api.observerprotocol.org/api/v1/transactions/submit \\
+  -H "Authorization: Bearer {api_key}" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "paymentHash": "6a30ba7fff332c4e...",
+    "preimage": "b8f368da...",
+    "rail": "lightning",
+    "amount": 1521,
+    "unit": "sat"
+  }'
 
-<span class="code-comment"># Get VAC</span>
-<span class="code-key">const</span> vac = <span class="code-key">await</span> observer.<span class="code-fn">getVAC</span>(agent.id);
-        </div>
-        <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
-          <a href="https://github.com/observer-protocol/sdk-js" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--amber); text-decoration:none; border:1px solid var(--amber-dim); padding:0.4rem 0.85rem; background:var(--amber-glow);">GitHub → sdk-js ↗</a>
-          <a href="https://www.npmjs.com/package/@observerprotocol/sdk" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-dim); text-decoration:none; border:1px solid var(--border); padding:0.4rem 0.85rem;">npm ↗</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<span class="code-comment"># 3. VAC is automatically issued upon verification</span></code></pre>
+        
+        <h3>Query the Registry</h3>
+        <p>Search for agents in the public registry:</p>
+        <pre><code><span class="code-comment"># List all verified agents</span>
+GET /api/v1/registry/agents?verified=true
 
-<!-- SPEC & AIP -->
-<section id="spec-aip" style="background: var(--bg2);">
-  <div class="section-inner">
-    <div class="section-label">Spec &amp; AIP</div>
-    <h2>Open standards. Versioned specs.</h2>
-    <p class="section-intro">
-      Observer Protocol is governed by open specifications maintained on GitHub. AIP v0.2 is deployed as of April 6, 2026 — the first production deployment of the Agentic Identity Protocol.
-    </p>
-    <div class="spec-cards">
-      <a href="https://github.com/observer-protocol/observer-protocol-spec" target="_blank" class="spec-card">
-        <div class="spec-card-tag">PROTOCOL SPEC · CC BY 4.0</div>
-        <h3>Observer Protocol Spec</h3>
-        <p>The canonical specification for OP — identity model, event schema, verification logic, VAC structure, and API reference. Version controlled on GitHub.</p>
-        <div class="spec-card-cta">github.com/observer-protocol/observer-protocol-spec ↗</div>
-      </a>
-      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/main/AIP.md" target="_blank" class="spec-card">
-        <div class="spec-card-tag">AIP v0.2 · DEPLOYED APRIL 6, 2026</div>
-        <h3>Agent Interaction Protocol</h3>
-        <p>AIP governs how agents interact — delegation credentials, bilateral attestation, remediation flows, and type registry. Sits above the VAC layer.</p>
-        <div class="spec-card-cta">Read AIP v0.2 spec ↗</div>
-      </a>
-      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/main/api/API-SPEC-OPENAPI.yaml" target="_blank" class="spec-card">
-        <div class="spec-card-tag">OPENAPI · OAS 3.0</div>
-        <h3>API OpenAPI Spec</h3>
-        <p>Machine-readable API specification in OpenAPI 3.0 format. Use to generate client SDKs, validate requests, or power your own Swagger UI instance.</p>
-        <div class="spec-card-cta">API-SPEC-OPENAPI.yaml ↗</div>
-      </a>
-      <a href="/architecture.html" class="spec-card">
-        <div class="spec-card-tag">CANONICAL REFERENCE · PERMANENT URL</div>
-        <h3>Architecture Document</h3>
-        <p>The permanent citable reference for grants, investor materials, developer documentation, and academic reference. Updated April 2026.</p>
-        <div class="spec-card-cta">observerprotocol.org/architecture ↗</div>
-      </a>
-    </div>
-  </div>
-</section>
+<span class="code-comment"># Search by alias</span>
+GET /api/v1/registry/search?q=agent-name
 
-<!-- DID RESOLUTION -->
-<section id="did-resolution" style="background: var(--bg);">
-  <div class="section-inner">
-    <div class="section-label">DID Resolution · Reference</div>
-    <h2>How did:web resolution works on OP.</h2>
-    <p class="section-intro">
-      Observer Protocol uses the W3C <code style="font-family:'IBM Plex Mono',monospace; font-size:0.85em; color:var(--teal); background:var(--bg2); padding:0.1rem 0.4rem;">did:web</code> method. DID Documents are served at standard URL patterns — not through the API. This is intentional: DID resolution is a protocol-level concern, not an API endpoint.
-    </p>
-    <div class="did-doc">
-      <div>
-        <div class="did-pattern">
-          <div class="did-pattern-label">AGENT DID PATTERN</div>
-          <div class="did-pattern-value">did:web:observerprotocol.org:agents:{agent_id}</div>
-          <div class="did-pattern-example">→ resolves to:<br/>https://observerprotocol.org/agents/{agent_id}/did.json</div>
+<span class="code-comment"># Filter by trust score</span>
+GET /api/v1/registry/agents?min_score=80</code></pre>
+        
+        <h2 id="github">5. GitHub</h2>
+        <p>Observer Protocol is fully open source. All repositories are available on GitHub under the MIT license.</p>
+        
+        <h3>Main Repositories</h3>
+        <ul>
+          <li><strong>observer-protocol-core</strong> — Core protocol implementation and verification logic</li>
+          <li><strong>observer-protocol-spec</strong> — Protocol specifications and AIP (Agent Interaction Protocol)</li>
+          <li><strong>sdk-js</strong> — JavaScript SDK for agent integration</li>
+          <li><strong>sdk-python</strong> — Python SDK for agent integration</li>
+          <li><strong>vac-registry</strong> — VAC storage and verification service</li>
+        </ul>
+        
+        <h3>Contribution Guide</h3>
+        <p>We welcome contributions from the community. To get started:</p>
+        <ol>
+          <li>Fork the repository you want to contribute to</li>
+          <li>Create a feature branch: <code>git checkout -b feature/my-feature</code></li>
+          <li>Make your changes with tests</li>
+          <li>Submit a pull request with a clear description</li>
+        </ol>
+        <p>All contributions must follow our Code of Conduct and sign the Developer Certificate of Origin (DCO).</p>
+        
+        <div style="margin-top:3rem;padding:2rem;background:var(--bg2);border:1px solid var(--border);text-align:center">
+          <h3 style="margin-top:0">Ready to build?</h3>
+          <p>Start integrating Observer Protocol into your agent today.</p>
+          <a href="https://github.com/observer-protocol" class="btn-primary" target="_blank">View on GitHub →</a>
         </div>
-        <div class="did-pattern" style="margin-top: 1px;">
-          <div class="did-pattern-label">ORG DID PATTERN</div>
-          <div class="did-pattern-value">did:web:{org-domain}:op-identity</div>
-          <div class="did-pattern-example">→ resolves to:<br/>https://{org-domain}/op-identity/did.json</div>
-        </div>
-        <div class="did-pattern" style="margin-top: 1px;">
-          <div class="did-pattern-label">ROOT DID PATTERN</div>
-          <div class="did-pattern-value">did:web:observerprotocol.org</div>
-          <div class="did-pattern-example">→ resolves to:<br/>https://observerprotocol.org/.well-known/did.json</div>
-        </div>
-      </div>
-      <div>
-        <p style="font-size:0.88rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1.5rem;">
-          The W3C did:web method transforms a DID into an HTTPS URL by replacing colons with forward slashes. Anyone with HTTPS access can resolve an OP DID without querying the OP API — this is what makes agent identity truly portable.
-        </p>
-        <p style="font-size:0.88rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1.5rem;">
-          The <strong style="color:var(--text);">domain mismatch rule</strong>: an agent's DID domain must match its organization's DID domain. A mismatch is treated as a fraud signal by AIP-compliant implementations.
-        </p>
-        <table class="did-table">
-          <thead>
-            <tr>
-              <th>DID Component</th>
-              <th>Resolves To</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>did:web:example.com</td><td>https://example.com/.well-known/did.json</td></tr>
-            <tr><td>did:web:example.com:agents:abc</td><td>https://example.com/agents/abc/did.json</td></tr>
-            <tr><td>did:web:example.com:op-identity</td><td>https://example.com/op-identity/did.json</td></tr>
-          </tbody>
-        </table>
-        <div style="margin-top:1rem; font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--text-faint);">
-          Compatible with DIF Universal Resolver · W3C DID Core spec · did:web method spec
-        </div>
+        
       </div>
     </div>
   </div>
@@ -501,35 +326,36 @@ npm install @observerprotocol/sdk
 
 <footer>
   <div class="footer-inner">
-    <div class="footer-brand">Observer Protocol</div>
-    <div class="footer-links">
-      <a href="/index.html">Home</a>
-      <a href="/architecture.html">Architecture</a>
-      <a href="/docs.html">Docs</a>
-      <a href="/agentic-terminal.html">Agentic Terminal</a>
-      <a href="/registry.html">Registry</a>
-      <a href="https://github.com/observer-protocol" target="_blank">GitHub ↗</a>
+    <div>
+      <a class="nav-logo" href="/index.html">Observer Protocol</a>
+      <p class="footer-tagline">Observer Protocol is live, open-source infrastructure. Built by the community. Verified on-chain.</p>
+    </div>
+    <div>
+      <div class="footer-links-title">Protocol</div>
+      <div class="footer-links">
+        <a href="/registry.html">Registry</a>
+        <a href="/docs.html">Docs</a>
+        <a href="/demo.html">Demo</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-links-title">Connect</div>
+      <div class="footer-links">
+        <a href="https://github.com/observer-protocol" target="_blank">GitHub</a>
+        <a href="https://twitter.com/observerprotocol" target="_blank">Twitter</a>
+        <a href="https://nostr.com" target="_blank">Nostr</a>
+      </div>
     </div>
   </div>
-  <div class="footer-note">
-    Observer Protocol v1.1 · MIT License · CC BY 4.0 · Open source, self-hostable, rail-agnostic. · observerprotocol.org
+  <div class="footer-bottom">
+    <div class="footer-copyright">© 2026 Observer Protocol · Open Source · CC BY 4.0</div>
+    <div class="footer-social">
+      <a href="https://github.com/observer-protocol" target="_blank">GitHub</a>
+      <a href="https://twitter.com/observerprotocol" target="_blank">Twitter</a>
+      <a href="https://nostr.com" target="_blank">Nostr</a>
+    </div>
   </div>
 </footer>
-
-<script>
-  function resolveDID() {
-    const input = document.getElementById('did-input').value.trim();
-    const output = document.getElementById('resolver-output');
-    const did = input || 'did:web:observerprotocol.org:agents:maxi-0001';
-    output.textContent = '# Resolving ' + did + '...\n# GET https://api.observerprotocol.org/api/v1/resolve/' + encodeURIComponent(did);
-    fetch('https://api.observerprotocol.org/api/v1/resolve/' + encodeURIComponent(did))
-      .then(r => r.json())
-      .then(data => { output.textContent = JSON.stringify(data, null, 2); })
-      .catch(() => {
-        output.textContent = '# DID Document for: ' + did + '\n\n{\n  "@context": [\n    "https://www.w3.org/ns/did/v1",\n    "https://w3id.org/security/suites/ed25519-2020/v1"\n  ],\n  "id": "' + did + '",\n  "verificationMethod": [{\n    "id": "' + did + '#key-1",\n    "type": "Ed25519VerificationKey2020",\n    "controller": "' + did + '",\n    "publicKeyMultibase": "z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK"\n  }],\n  "authentication": ["' + did + '#key-1"],\n  "assertionMethod": ["' + did + '#key-1"]\n}\n\n# Connect to the live API to resolve real DID documents.';
-      });
-  }
-</script>
 
 </body>
 </html>
