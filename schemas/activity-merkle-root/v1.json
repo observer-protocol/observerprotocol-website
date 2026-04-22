@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://observerprotocol.org/schemas/audit/ActivityMerkleRoot-v1.json",
+  "title": "ActivityMerkleRoot",
+  "description": "A credential representing the root of a Merkle tree containing batched agent activities. Enables efficient verification of individual activities without storing all credentials separately.",
+  "type": "object",
+  "required": [
+    "@context",
+    "id",
+    "type",
+    "issuer",
+    "issuanceDate",
+    "credentialSubject",
+    "proof"
+  ],
+  "properties": {
+    "@context": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 2
+    },
+    "id": {
+      "type": "string",
+      "format": "uri",
+      "description": "Unique identifier for this root credential"
+    },
+    "type": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 2,
+      "contains": {
+        "const": "VerifiableCredential"
+      }
+    },
+    "issuer": {
+      "type": "string",
+      "format": "uri",
+      "description": "DID of the agent issuing this root credential"
+    },
+    "issuanceDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "credentialSubject": {
+      "type": "object",
+      "required": [
+        "id",
+        "merkleRoot",
+        "windowStart",
+        "windowEnd",
+        "leafCount",
+        "activityTypeSummary"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri",
+          "description": "DID of the agent"
+        },
+        "merkleRoot": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Hex-encoded SHA-256 root hash of the Merkle tree"
+        },
+        "windowStart": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Start of the time window for this batch"
+        },
+        "windowEnd": {
+          "type": "string",
+          "format": "date-time",
+          "description": "End of the time window for this batch"
+        },
+        "leafCount": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of activities in this batch"
+        },
+        "activityTypeSummary": {
+          "type": "object",
+          "description": "Count of activities by type",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "previousRootCredentialId": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "description": "Reference to the previous batch's root credential for chain integrity"
+        }
+      }
+    },
+    "proof": {
+      "type": "object",
+      "required": ["type", "created", "proofPurpose", "verificationMethod", "proofValue"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "Ed25519Signature2020"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "proofPurpose": {
+          "type": "string",
+          "const": "assertionMethod"
+        },
+        "verificationMethod": {
+          "type": "string",
+          "format": "uri"
+        },
+        "proofValue": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

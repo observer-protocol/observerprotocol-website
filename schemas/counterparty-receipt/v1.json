@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://observerprotocol.org/schemas/audit/CounterpartyReceiptCredential-v1.json",
+  "title": "CounterpartyReceiptCredential",
+  "description": "A credential issued by a counterparty agent acknowledging observation of another agent's activity. Part of Spec 3.4 Dual-Source Audit Principle.",
+  "type": "object",
+  "required": [
+    "@context",
+    "id",
+    "type",
+    "issuer",
+    "issuanceDate",
+    "credentialSubject",
+    "proof"
+  ],
+  "properties": {
+    "@context": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 2,
+      "description": "Must include https://www.w3.org/2018/credentials/v1 and https://observerprotocol.org/contexts/audit/v1"
+    },
+    "id": {
+      "type": "string",
+      "format": "uri",
+      "description": "Unique identifier for this receipt credential"
+    },
+    "type": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 2,
+      "contains": {
+        "const": "VerifiableCredential"
+      },
+      "description": "Must include VerifiableCredential and CounterpartyReceiptCredential"
+    },
+    "issuer": {
+      "type": "string",
+      "format": "uri",
+      "description": "DID of the counterparty agent issuing this receipt"
+    },
+    "issuanceDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the receipt was issued"
+    },
+    "expirationDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Optional expiration timestamp"
+    },
+    "credentialSubject": {
+      "type": "object",
+      "required": [
+        "id",
+        "activityType",
+        "acknowledgmentType",
+        "activityTimestamp",
+        "transactionDetails"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri",
+          "description": "DID of the agent whose activity is being acknowledged"
+        },
+        "activityType": {
+          "type": "string",
+          "enum": [
+            "transaction_initiated",
+            "transaction_received",
+            "credential_presented",
+            "credential_received",
+            "delegation_issued",
+            "delegation_revoked",
+            "key_rotation",
+            "internal_state_change",
+            "attestation_requested",
+            "attestation_received"
+          ],
+          "description": "Type of activity being acknowledged (should match agent's claim)"
+        },
+        "acknowledgmentType": {
+          "type": "string",
+          "enum": ["observed", "received", "fulfilled"],
+          "description": "Level of acknowledgment from the Spec 3.4 Type Registry"
+        },
+        "agentActivityCredentialId": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "description": "URL of the agent's activity credential if known"
+        },
+        "activityTimestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when the activity occurred (should match agent's claim)"
+        },
+        "transactionDetails": {
+          "type": "object",
+          "required": ["rail", "referenceId"],
+          "properties": {
+            "rail": {
+              "type": "string",
+              "description": "Payment rail or protocol used"
+            },
+            "amount": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "pattern": "^[0-9]+(\\.[0-9]+)?$"
+                },
+                "currency": {
+                  "type": "string"
+                }
+              },
+              "required": ["value", "currency"]
+            },
+            "referenceId": {
+              "type": "string",
+              "description": "Transaction reference ID (should match agent's claim)"
+            },
+            "memo": {
+              "type": ["string", "null"]
+            }
+          }
+        },
+        "observationDetails": {
+          "type": ["object", "null"],
+          "description": "Optional details about how/where the activity was observed",
+          "properties": {
+            "observedAt": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the counterparty observed the activity"
+            },
+            "observationMethod": {
+              "type": "string",
+              "description": "How the activity was observed (e.g., 'on_chain', 'webhook', 'manual')"
+            },
+            "sourceEndpoint": {
+              "type": ["string", "null"],
+              "description": "Optional source endpoint or node"
+            }
+          }
+        },
+        "metadata": {
+          "type": ["object", "null"]
+        }
+      }
+    },
+    "proof": {
+      "type": "object",
+      "required": ["type", "created", "proofPurpose", "verificationMethod", "proofValue"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "Ed25519Signature2020"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "proofPurpose": {
+          "type": "string",
+          "const": "assertionMethod"
+        },
+        "verificationMethod": {
+          "type": "string",
+          "format": "uri"
+        },
+        "proofValue": {
+          "type": "string",
+          "description": "Base58-encoded Ed25519 signature"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://observerprotocol.org/schemas/audit/AgentActivityCredential-v1.json",
+  "title": "AgentActivityCredential",
+  "description": "A self-issued credential where an agent cryptographically declares its own activity. Part of Spec 3.4 Dual-Source Audit Principle.",
+  "type": "object",
+  "required": [
+    "@context",
+    "id",
+    "type",
+    "issuer",
+    "issuanceDate",
+    "credentialSubject",
+    "proof"
+  ],
+  "properties": {
+    "@context": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 2,
+      "description": "Must include https://www.w3.org/2018/credentials/v1 and https://observerprotocol.org/contexts/audit/v1"
+    },
+    "id": {
+      "type": "string",
+      "format": "uri",
+      "description": "Unique identifier for this credential, typically https://agent.example.com/audit/activities/{uuid}"
+    },
+    "type": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 2,
+      "contains": {
+        "const": "VerifiableCredential"
+      },
+      "description": "Must include VerifiableCredential and AgentActivityCredential"
+    },
+    "issuer": {
+      "type": "string",
+      "format": "uri",
+      "description": "DID of the agent issuing this credential (self-issued)"
+    },
+    "issuanceDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when the credential was issued"
+    },
+    "expirationDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Optional expiration timestamp"
+    },
+    "credentialSubject": {
+      "type": "object",
+      "required": [
+        "id",
+        "activityType",
+        "activityTimestamp",
+        "transactionDetails"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri",
+          "description": "DID of the agent (same as issuer for self-issued credentials)"
+        },
+        "activityType": {
+          "type": "string",
+          "enum": [
+            "transaction_initiated",
+            "transaction_received",
+            "credential_presented",
+            "credential_received",
+            "delegation_issued",
+            "delegation_revoked",
+            "key_rotation",
+            "internal_state_change",
+            "attestation_requested",
+            "attestation_received"
+          ],
+          "description": "Type of activity from the Spec 3.4 Type Registry"
+        },
+        "delegationCredentialId": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "description": "URL of the authorizing delegation credential, or null if not applicable"
+        },
+        "counterpartyDid": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "description": "DID of the counterparty agent if applicable"
+        },
+        "expectsCounterpartyReceipt": {
+          "type": "boolean",
+          "description": "Whether this activity expects a counterparty receipt"
+        },
+        "expectedReceiptWindow": {
+          "type": "string",
+          "pattern": "^P(T\\d+H)?(\\d+M)?(\\d+S)?$",
+          "description": "ISO 8601 duration (e.g., PT5M) specifying how long to wait for receipt"
+        },
+        "activityTimestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when the activity occurred"
+        },
+        "transactionDetails": {
+          "type": "object",
+          "required": ["rail", "referenceId"],
+          "properties": {
+            "rail": {
+              "type": "string",
+              "description": "Payment rail or protocol used (e.g., 'lightning', 'ethereum', 'solana', 'x402')"
+            },
+            "amount": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "pattern": "^[0-9]+(\\.[0-9]+)?$",
+                  "description": "Amount as a string to preserve precision"
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Currency code (e.g., 'BTC', 'ETH', 'USDC')"
+                }
+              },
+              "required": ["value", "currency"]
+            },
+            "referenceId": {
+              "type": "string",
+              "description": "Transaction reference ID (hash, invoice ID, etc.)"
+            },
+            "memo": {
+              "type": ["string", "null"],
+              "description": "Optional transaction memo or description"
+            }
+          }
+        },
+        "merkleProof": {
+          "type": ["object", "null"],
+          "description": "Merkle inclusion proof if this activity is part of a batch",
+          "properties": {
+            "rootCredentialId": {
+              "type": "string",
+              "format": "uri",
+              "description": "ID of the Merkle root credential"
+            },
+            "leafHash": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$",
+              "description": "Hex-encoded SHA-256 hash of this activity (the leaf)"
+            },
+            "proofPath": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "hash": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                  },
+                  "position": {
+                    "type": "string",
+                    "enum": ["left", "right"]
+                  }
+                },
+                "required": ["hash", "position"]
+              },
+              "description": "Merkle proof path from leaf to root"
+            }
+          },
+          "required": ["rootCredentialId", "leafHash", "proofPath"]
+        },
+        "metadata": {
+          "type": ["object", "null"],
+          "description": "Optional additional metadata about the activity"
+        }
+      }
+    },
+    "proof": {
+      "type": "object",
+      "required": ["type", "created", "proofPurpose", "verificationMethod", "proofValue"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "Ed25519Signature2020",
+          "description": "Signature type must be Ed25519Signature2020"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the proof was created"
+        },
+        "proofPurpose": {
+          "type": "string",
+          "const": "assertionMethod",
+          "description": "Purpose of the proof"
+        },
+        "verificationMethod": {
+          "type": "string",
+          "format": "uri",
+          "description": "DID URL of the signing key (e.g., did:op:agent123#key-1)"
+        },
+        "proofValue": {
+          "type": "string",
+          "description": "Base58-encoded Ed25519 signature"
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

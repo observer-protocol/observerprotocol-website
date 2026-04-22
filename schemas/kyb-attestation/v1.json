@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://observerprotocol.org/schemas/kyb-attestation/v1.json",
+  "title": "KYB Verifiable Credential Schema",
+  "description": "W3C Verifiable Credential schema for Know Your Business (KYB) attestations per Spec 3.1",
+  "type": "object",
+  "required": ["@context", "type", "issuer", "issuanceDate", "credentialSubject", "proof"],
+  "properties": {
+    "@context": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 2,
+      "description": "W3C VC context and OP-specific context"
+    },
+    "type": {
+      "type": "array",
+      "items": { "type": "string" },
+      "contains": { "const": "VerifiableCredential" },
+      "description": "Must include VerifiableCredential"
+    },
+    "id": {
+      "type": "string",
+      "format": "uri",
+      "description": "Unique credential identifier (UUID v4)"
+    },
+    "issuer": {
+      "type": "string",
+      "description": "DID of the KYB provider issuing this attestation"
+    },
+    "issuanceDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when credential was issued"
+    },
+    "expirationDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when credential expires (max 7 days for VAC)"
+    },
+    "credentialSubject": {
+      "type": "object",
+      "required": ["id", "organization"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "DID of the organization being attested"
+        },
+        "organization": {
+          "type": "object",
+          "required": ["name", "legalEntityId", "jurisdiction"],
+          "properties": {
+            "name": { "type": "string" },
+            "legalEntityId": { "type": "string" },
+            "jurisdiction": { "type": "string" },
+            "registeredAddress": { "type": "string" },
+            "businessType": { "type": "string" }
+          }
+        },
+        "kybResult": {
+          "type": "string",
+          "enum": ["pass", "fail", "pending"],
+          "description": "Outcome of KYB verification"
+        },
+        "kybProvider": {
+          "type": "string",
+          "description": "Name of the KYB verification provider"
+        },
+        "kybCompletedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "complianceStatus": {
+          "type": "string",
+          "enum": ["compliant", "non_compliant", "under_review"]
+        }
+      }
+    },
+    "proof": {
+      "type": "object",
+      "required": ["type", "created", "proofPurpose", "verificationMethod", "proofValue"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["Ed25519Signature2020"]
+        },
+        "created": { "type": "string", "format": "date-time" },
+        "proofPurpose": { "type": "string", "const": "assertionMethod" },
+        "verificationMethod": { "type": "string" },
+        "proofValue": { "type": "string" }
+      }
+    }
+  }
+}

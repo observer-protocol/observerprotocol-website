@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://observerprotocol.org/schemas/delegation-credential/v1.json",
+  "title": "Delegation Credential Schema",
+  "description": "W3C Verifiable Credential schema for organizational delegation to agents per Spec 3.2",
+  "type": "object",
+  "required": ["@context", "type", "issuer", "issuanceDate", "credentialSubject", "proof"],
+  "properties": {
+    "@context": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 2
+    },
+    "type": {
+      "type": "array",
+      "items": { "type": "string" },
+      "contains": { "const": "VerifiableCredential" }
+    },
+    "id": {
+      "type": "string",
+      "format": "uri",
+      "description": "Unique credential identifier"
+    },
+    "issuer": {
+      "type": "string",
+      "description": "DID of the organization issuing the delegation"
+    },
+    "issuanceDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expirationDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "credentialSubject": {
+      "type": "object",
+      "required": ["id", "delegation"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "DID of the agent receiving delegation"
+        },
+        "organization": {
+          "type": "object",
+          "properties": {
+            "did": { "type": "string" },
+            "name": { "type": "string" },
+            "kybCredentialId": { "type": "string" }
+          }
+        },
+        "delegation": {
+          "type": "object",
+          "required": ["scope"],
+          "properties": {
+            "scope": {
+              "type": "object",
+              "required": ["paymentSettlement"],
+              "properties": {
+                "paymentSettlement": { "type": "boolean" },
+                "maxTransactionValue": {
+                  "type": "object",
+                  "properties": {
+                    "amount": { "type": "string" },
+                    "currency": { "type": "string" }
+                  }
+                },
+                "allowedCounterpartyTypes": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "allowedRails": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "geographicRestriction": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "ISO country codes allowed, or null for unrestricted"
+                }
+              }
+            },
+            "depth": {
+              "type": "object",
+              "properties": {
+                "current": { "type": "integer", "minimum": 1, "maximum": 10 },
+                "maximum": { "type": "integer", "minimum": 1, "maximum": 10 }
+              }
+            },
+            "parentCredentialId": {
+              "type": "string",
+              "description": "For chained delegations, reference to parent credential"
+            }
+          }
+        }
+      }
+    },
+    "proof": {
+      "type": "object",
+      "required": ["type", "created", "proofPurpose", "verificationMethod", "proofValue"],
+      "properties": {
+        "type": { "type": "string", "enum": ["Ed25519Signature2020"] },
+        "created": { "type": "string", "format": "date-time" },
+        "proofPurpose": { "type": "string", "const": "assertionMethod" },
+        "verificationMethod": { "type": "string" },
+        "proofValue": { "type": "string" }
+      }
+    }
+  }
+}

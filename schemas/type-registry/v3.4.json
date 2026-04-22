@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://observerprotocol.org/schemas/audit/TypeRegistry-v3.4.json",
+  "title": "Spec 3.4 Type Registry",
+  "description": "Type definitions for Observer Protocol Spec 3.4 - Compliance and Audit Trails",
+  "version": "3.4.0",
+  "specUrl": "https://observerprotocol.org/specs/3.4-audit-trails",
+  
+  "activityTypes": {
+    "description": "Types of agent activities that can be recorded in AgentActivityCredential",
+    "values": {
+      "transaction_initiated": {
+        "description": "Agent initiated a payment or transfer transaction",
+        "expectsCounterpartyReceipt": true,
+        "typicalRails": ["lightning", "bitcoin", "ethereum", "solana", "tron"]
+      },
+      "transaction_received": {
+        "description": "Agent received a payment or transfer",
+        "expectsCounterpartyReceipt": true,
+        "typicalRails": ["lightning", "bitcoin", "ethereum", "solana", "tron"]
+      },
+      "credential_presented": {
+        "description": "Agent presented a Verifiable Credential to a verifier",
+        "expectsCounterpartyReceipt": true,
+        "typicalContext": "Selective disclosure or full presentation"
+      },
+      "credential_received": {
+        "description": "Agent received a Verifiable Credential from an issuer",
+        "expectsCounterpartyReceipt": false,
+        "typicalContext": "VAC issuance, delegation receipt"
+      },
+      "delegation_issued": {
+        "description": "Agent issued a delegation credential to another agent",
+        "expectsCounterpartyReceipt": true,
+        "typicalContext": "Organization delegating authority to agent"
+      },
+      "delegation_revoked": {
+        "description": "Agent revoked a previously issued delegation",
+        "expectsCounterpartyReceipt": true,
+        "typicalContext": "Revocation of organizational authority"
+      },
+      "key_rotation": {
+        "description": "Agent rotated its signing keys",
+        "expectsCounterpartyReceipt": false,
+        "typicalContext": "Security best practice, key compromise response"
+      },
+      "internal_state_change": {
+        "description": "Agent recorded an internal state change",
+        "expectsCounterpartyReceipt": false,
+        "typicalContext": "Configuration, model updates, policy changes"
+      },
+      "attestation_requested": {
+        "description": "Agent requested an attestation from another agent or service",
+        "expectsCounterpartyReceipt": true,
+        "typicalContext": "Trust score attestation, capability verification"
+      },
+      "attestation_received": {
+        "description": "Agent received an attestation from another agent or service",
+        "expectsCounterpartyReceipt": false,
+        "typicalContext": "Receipt of trust score, capability verification result"
+      }
+    }
+  },
+  
+  "acknowledgmentTypes": {
+    "description": "Types of counterparty acknowledgments in CounterpartyReceiptCredential",
+    "values": {
+      "observed": {
+        "description": "Counterparty observed the activity (network visibility)",
+        "confidenceLevel": "low",
+        "typicalUse": "On-chain observation, mempool monitoring"
+      },
+      "received": {
+        "description": "Counterparty received the activity (direct receipt)",
+        "confidenceLevel": "medium",
+        "typicalUse": "Payment received, webhook delivered"
+      },
+      "fulfilled": {
+        "description": "Counterparty fulfilled/executed the activity",
+        "confidenceLevel": "high",
+        "typicalUse": "Service completed, transaction confirmed"
+      }
+    }
+  },
+  
+  "credentialTypes": {
+    "description": "Verifiable Credential types defined in Spec 3.4",
+    "values": {
+      "AgentActivityCredential": {
+        "description": "Self-issued credential where agent declares its own activity",
+        "issuer": "agent_did (self-issued)",
+        "subject": "agent_did",
+        "schemaUrl": "https://observerprotocol.org/schemas/audit/AgentActivityCredential-v1.json",
+        "signatureType": "Ed25519Signature2020"
+      },
+      "CounterpartyReceiptCredential": {
+        "description": "Counterparty-issued credential acknowledging observation",
+        "issuer": "counterparty_did",
+        "subject": "agent_did",
+        "schemaUrl": "https://observerprotocol.org/schemas/audit/CounterpartyReceiptCredential-v1.json",
+        "signatureType": "Ed25519Signature2020"
+      },
+      "ActivityMerkleRoot": {
+        "description": "Merkle root credential for batched activities",
+        "issuer": "agent_did",
+        "subject": "agent_did",
+        "schemaUrl": "https://observerprotocol.org/schemas/audit/ActivityMerkleRoot-v1.json",
+        "signatureType": "Ed25519Signature2020"
+      }
+    }
+  },
+  
+  "timeWindows": {
+    "description": "Standard time windows for coverage metrics per Spec 3.4 §7",
+    "values": {
+      "7d": {
+        "days": 7,
+        "description": "Weekly rolling window for recent activity"
+      },
+      "30d": {
+        "days": 30,
+        "description": "Monthly rolling window for trend analysis"
+      },
+      "90d": {
+        "days": 90,
+        "description": "Quarterly rolling window for compliance reporting"
+      }
+    }
+  },
+  
+  "matchTolerance": {
+    "description": "Timestamp tolerance for matching activities to receipts per Spec 3.4 §7",
+    "defaultMinutes": 10,
+    "description_long": "Activities and receipts with timestamps within this tolerance window are considered for matching"
+  },
+  
+  "merkleBatching": {
+    "description": "Merkle tree batching configuration per Spec 3.4 §5",
+    "defaultWindowSeconds": 60,
+    "hashAlgorithm": "SHA-256",
+    "canonicalization": "RFC 8785 (JCS)",
+    "description_long": "Agents batch activities into Merkle trees with one signed root credential per time window"
+  },
+  
+  "protocolMetadata": {
+    "name": "Observer Protocol Spec 3.4",
+    "shortName": "Spec 3.4",
+    "fullName": "Observer Protocol Spec 3.4 - Compliance and Audit Trails",
+    "status": "active",
+    "effectiveDate": "2026-04-22",
+    "supersedes": null,
+    "scope": {
+      "included": [
+        "AgentActivityCredential primitive",
+        "CounterpartyReceiptCredential primitive",
+        "Merkle-per-time-window batching",
+        "AT-side ingest, aggregation, query",
+        "Match-rate computation",
+        "Type Registry entries"
+      ],
+      "excluded": [
+        "Policy rules that act on audit data",
+        "Compliance policy enforcement",
+        "AML rules",
+        "Real-time fraud detection"
+      ]
+    },
+    "principles": {
+      "dualSource": "Every material agent action produces TWO credentials: AgentActivityCredential (agent-signed) and CounterpartyReceiptCredential (counterparty-signed)",
+      "offlineVerification": "Verification works WITHOUT OP being reachable",
+      "cryptographicIntegrity": "Signatures actually verify (Ed25519Signature2020)",
+      "canonicalHashing": "Use RFC 8785 (JCS) for canonical JSON in Merkle leaves"
+    }
+  }
+}

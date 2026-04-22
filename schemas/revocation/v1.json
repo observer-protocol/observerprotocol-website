@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://observerprotocol.org/schemas/revocation/v1.json",
+  "title": "Credential Revocation Schema",
+  "description": "Schema for revocation records per Spec 3.3",
+  "type": "object",
+  "required": ["@context", "type", "issuer", "issuanceDate", "credentialSubject", "proof"],
+  "properties": {
+    "@context": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 2
+    },
+    "type": {
+      "type": "array",
+      "items": { "type": "string" },
+      "contains": { "const": "VerifiableCredential" }
+    },
+    "id": {
+      "type": "string",
+      "description": "Unique revocation record identifier"
+    },
+    "issuer": {
+      "type": "string",
+      "description": "DID of the entity issuing the revocation (organization or revocation agent)"
+    },
+    "issuanceDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "credentialSubject": {
+      "type": "object",
+      "required": ["id", "credentialId", "credentialType", "revocation"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "DID of the revoked credential's subject"
+        },
+        "credentialId": {
+          "type": "string",
+          "description": "ID of the credential being revoked"
+        },
+        "credentialType": {
+          "type": "string",
+          "enum": ["delegation", "kyb_vc", "attestation"]
+        },
+        "revocation": {
+          "type": "object",
+          "required": ["reason", "revokedAt"],
+          "properties": {
+            "reason": {
+              "type": "string",
+              "enum": [
+                "agent_compromised",
+                "agent_decommissioned",
+                "scope_violation",
+                "org_kyb_expired",
+                "org_kyb_revoked",
+                "org_offboarded",
+                "fraud_suspected",
+                "admin_override"
+              ]
+            },
+            "reasonDescription": { "type": "string" },
+            "revokedAt": { "type": "string", "format": "date-time" },
+            "revokedBy": {
+              "type": "string",
+              "description": "DID of the entity performing revocation"
+            },
+            "cascadeToChildren": { "type": "boolean" },
+            "cascadedCredentialIds": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+    "proof": {
+      "type": "object",
+      "required": ["type", "created", "proofPurpose", "verificationMethod", "proofValue"],
+      "properties": {
+        "type": { "type": "string", "enum": ["Ed25519Signature2020"] },
+        "created": { "type": "string", "format": "date-time" },
+        "proofPurpose": { "type": "string", "const": "assertionMethod" },
+        "verificationMethod": { "type": "string" },
+        "proofValue": { "type": "string" }
+      }
+    }
+  }
+}
