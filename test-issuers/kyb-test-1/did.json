@@ -1,0 +1,18 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    "https://w3id.org/security/suites/ed25519-2020/v1"
+  ],
+  "id": "did:web:observerprotocol.org:test-issuers:kyb-test-1",
+  "verificationMethod": [
+    {
+      "id": "did:web:observerprotocol.org:test-issuers:kyb-test-1#key-1",
+      "type": "Ed25519VerificationKey2020",
+      "controller": "did:web:observerprotocol.org:test-issuers:kyb-test-1",
+      "publicKeyMultibase": "z9v6vZTFa6CwyK4kx7QyJRSESXXdGNJjUwf5UDgFv2htV"
+    }
+  ],
+  "assertionMethod": [
+    "did:web:observerprotocol.org:test-issuers:kyb-test-1#key-1"
+  ]
+}
