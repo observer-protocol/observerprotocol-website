@@ -151,12 +151,12 @@
 <nav>
   <a class="nav-logo" href="/">Observer Protocol</a>
   <ul class="nav-links">
-    <li><a href="/architecture">Architecture</a></li>
-    <li><a href="/docs" class="active">Docs</a></li>
-    <li><a href="/agentic-terminal">Agentic Terminal</a></li>
-    <li><a href="/registry">Registry</a></li>
+    <li><a href="./architecture.html">Architecture</a></li>
+    <li><a href="./docs.html" class="active">Docs</a></li>
+    <li><a href="./agentic-terminal.html">Agentic Terminal</a></li>
+    <li><a href="./registry.html">Registry</a></li>
   </ul>
-  <div class="nav-status"><div class="pulse"></div>MAINNET LIVE · V1.1</div>
+  <div class="nav-status"><div class="pulse"></div>PUBLIC BETA · V1.1</div>
 </nav>
 
 <!-- PAGE HEADER -->
@@ -164,7 +164,7 @@
   <div class="page-header-inner">
     <div>
       <div class="breadcrumb">OBSERVER PROTOCOL · <span>DOCS</span></div>
-      <div class="page-tag">Developer Documentation · v1.1</div>
+      <div class="page-tag">Developer Documentation · v1.3</div>
       <h1>Documentation</h1>
       <p class="page-sub">
         Everything you need to register agents, issue credentials, verify identity, and integrate Observer Protocol into your stack. Open protocol, MIT licensed, self-hostable.
@@ -257,14 +257,14 @@
 <section id="api-reference" style="background: var(--bg2);">
   <div class="section-inner">
     <div class="section-label">API Reference</div>
-    <h2>API v1.1 — Base URL: api.observerprotocol.org</h2>
+    <h2>API v1.3 — Base URL: api.observerprotocol.org</h2>
     <p class="section-intro">
       All non-DID endpoints use the <code style="font-family:'IBM Plex Mono',monospace; font-size:0.85em; color:var(--amber); background:var(--bg); padding:0.1rem 0.4rem;">/api/v1/</code> prefix. DID document paths follow the W3C did:web resolution standard and are documented separately below. Full interactive documentation available via Swagger UI.
     </p>
 
     <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
       <a href="https://api.observerprotocol.org/docs" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--amber); text-decoration:none; border:1px solid var(--amber-dim); padding:0.5rem 1rem; background:var(--amber-glow);">Interactive Swagger UI ↗</a>
-      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/main/api/API-SPEC-OPENAPI.yaml" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--text-dim); text-decoration:none; border:1px solid var(--border); padding:0.5rem 1rem;">OpenAPI YAML ↗</a>
+      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/master/docs/developer-guide/api-reference.md" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--text-dim); text-decoration:none; border:1px solid var(--border); padding:0.5rem 1rem;">OpenAPI YAML ↗</a>
     </div>
 
     <div class="api-grid">
@@ -299,7 +299,7 @@
 
       <!-- AIP -->
       <div class="api-group">
-        <div class="api-group-header">AIP v0.2 <span class="new-tag" style="margin-left:0.5rem;">NEW</span></div>
+        <div class="api-group-header">AIP v0.3.1 <span class="new-tag" style="margin-left:0.5rem;">NEW</span></div>
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/aip/credentials/delegation</span><span class="endpoint-desc">Issue delegation VC</span></div>
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/aip/credentials/kyb</span><span class="endpoint-desc">Issue KYB VC</span></div>
         <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/aip/chain/verify/{id}</span><span class="endpoint-desc">Verify chain</span></div>
@@ -364,7 +364,9 @@
       <div>
         <div class="code-block">
 <span class="code-comment"># Install</span>
-npm install @observerprotocol/sdk
+pip install observer-protocol
+# or
+npm install @observer-protocol/sdk
 
 <span class="code-comment"># Register your agent</span>
 <span class="code-key">const</span> { ObserverProtocol } = <span class="code-fn">require</span>(<span class="code-val">'@observerprotocol/sdk'</span>);
@@ -379,7 +381,7 @@ npm install @observerprotocol/sdk
         </div>
         <div class="sdk-note">
           <div class="sdk-note-icon">⚠</div>
-          <div>SDK update in progress — being aligned to AIP v0.2 and W3C DID/VC architecture. Current v1.0.0 covers core registration and transaction recording. Updated version ships after API spec finalization.</div>
+          <div></div>
         </div>
       </div>
       <div>
@@ -400,7 +402,7 @@ npm install @observerprotocol/sdk
 <span class="code-key">const</span> vac = <span class="code-key">await</span> observer.<span class="code-fn">getVAC</span>(agent.id);
         </div>
         <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
-          <a href="https://github.com/observer-protocol/sdk-js" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--amber); text-decoration:none; border:1px solid var(--amber-dim); padding:0.4rem 0.85rem; background:var(--amber-glow);">GitHub → sdk-js ↗</a>
+          <a href="https://github.com/observer-protocol/observer-protocol-spec/tree/master/sdk" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--amber); text-decoration:none; border:1px solid var(--amber-dim); padding:0.4rem 0.85rem; background:var(--amber-glow);">GitHub → sdk-js ↗</a>
           <a href="https://www.npmjs.com/package/@observerprotocol/sdk" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-dim); text-decoration:none; border:1px solid var(--border); padding:0.4rem 0.85rem;">npm ↗</a>
         </div>
       </div>
@@ -414,7 +416,7 @@ npm install @observerprotocol/sdk
     <div class="section-label">Spec &amp; AIP</div>
     <h2>Open standards. Versioned specs.</h2>
     <p class="section-intro">
-      Observer Protocol is governed by open specifications maintained on GitHub. AIP v0.2 is deployed as of April 6, 2026 — the first production deployment of the Agentic Identity Protocol.
+      Observer Protocol is governed by open specifications maintained on GitHub. AIP v0.3.1 is deployed as of April 6, 2026 — the first production deployment of the Agentic Identity Protocol.
     </p>
     <div class="spec-cards">
       <a href="https://github.com/observer-protocol/observer-protocol-spec" target="_blank" class="spec-card">
@@ -423,19 +425,19 @@ npm install @observerprotocol/sdk
         <p>The canonical specification for OP — identity model, event schema, verification logic, VAC structure, and API reference. Version controlled on GitHub.</p>
         <div class="spec-card-cta">github.com/observer-protocol/observer-protocol-spec ↗</div>
       </a>
-      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/main/AIP.md" target="_blank" class="spec-card">
-        <div class="spec-card-tag">AIP v0.2 · DEPLOYED APRIL 6, 2026</div>
+      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/master/docs/AIP_v0.5.md" target="_blank" class="spec-card">
+        <div class="spec-card-tag">AIP v0.3.1 · DEPLOYED APRIL 6, 2026</div>
         <h3>Agent Interaction Protocol</h3>
         <p>AIP governs how agents interact — delegation credentials, bilateral attestation, remediation flows, and type registry. Sits above the VAC layer.</p>
-        <div class="spec-card-cta">Read AIP v0.2 spec ↗</div>
+        <div class="spec-card-cta">Read AIP v0.3.1 spec ↗</div>
       </a>
-      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/main/api/API-SPEC-OPENAPI.yaml" target="_blank" class="spec-card">
+      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/master/docs/developer-guide/api-reference.md" target="_blank" class="spec-card">
         <div class="spec-card-tag">OPENAPI · OAS 3.0</div>
         <h3>API OpenAPI Spec</h3>
         <p>Machine-readable API specification in OpenAPI 3.0 format. Use to generate client SDKs, validate requests, or power your own Swagger UI instance.</p>
         <div class="spec-card-cta">API-SPEC-OPENAPI.yaml ↗</div>
       </a>
-      <a href="/architecture" class="spec-card">
+      <a href="./architecture.html" class="spec-card">
         <div class="spec-card-tag">CANONICAL REFERENCE · PERMANENT URL</div>
         <h3>Architecture Document</h3>
         <p>The permanent citable reference for grants, investor materials, developer documentation, and academic reference. Updated April 2026.</p>
@@ -504,15 +506,15 @@ npm install @observerprotocol/sdk
     <div class="footer-brand">Observer Protocol</div>
     <div class="footer-links">
       <a href="/">Home</a>
-      <a href="/architecture">Architecture</a>
-      <a href="/docs">Docs</a>
-      <a href="/agentic-terminal">Agentic Terminal</a>
-      <a href="/registry">Registry</a>
+      <a href="./architecture.html">Architecture</a>
+      <a href="./docs.html">Docs</a>
+      <a href="./agentic-terminal.html">Agentic Terminal</a>
+      <a href="./registry.html">Registry</a>
       <a href="https://github.com/observer-protocol" target="_blank">GitHub ↗</a>
     </div>
   </div>
   <div class="footer-note">
-    Observer Protocol v1.1 · MIT License · CC BY 4.0 · Open source, self-hostable, rail-agnostic. · observerprotocol.org
+    Observer Protocol v1.3 · MIT License · CC BY 4.0 · Open source, self-hostable, rail-agnostic. · observerprotocol.org
   </div>
 </footer>
 
