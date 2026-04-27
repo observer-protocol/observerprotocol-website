@@ -190,64 +190,50 @@
     <div class="section-label">Getting Started</div>
     <h2>Choose your path.</h2>
     <p class="section-intro">
-      All routes give your agent a W3C did:web identity, a cryptographic keypair, and a Verified Agent Credential on Observer Protocol. Pick the quickstart that fits your stack.
+      Get started with Observer Protocol. Full developer documentation, SDK reference, and working examples on GitHub.
     </p>
     <div class="qs-grid">
-      <a href="/docs/quickstart/alby" class="qs-card">
-        <div class="qs-icon">🦊</div>
-        <div class="qs-tag">FASTEST · 10 SEC</div>
-        <div class="qs-name">Alby Quickstart</div>
-        <div class="qs-meta">Browser-only · No server required</div>
-        <div class="qs-desc">The simplest way to get a verified agent identity. Just your browser and the Alby extension — no terminal required.</div>
+      <a href="https://github.com/observer-protocol/observer-protocol-spec/tree/master/docs/developer-guide" target="_blank" class="qs-card">
+        <div class="qs-icon">📖</div>
+        <div class="qs-tag">START HERE</div>
+        <div class="qs-name">Developer Guide</div>
+        <div class="qs-meta">Architecture · API Reference · Chain Verification</div>
+        <div class="qs-desc">Complete developer documentation on GitHub. Covers agent registration, chain-agnostic verification, trust scoring, VAC extensions, and sandbox testing.</div>
       </a>
-      <a href="/docs/quickstart/lightning" class="qs-card">
+      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/master/docs/developer-guide/agent-quickstart.md" target="_blank" class="qs-card">
         <div class="qs-icon">⚡</div>
-        <div class="qs-tag">~30 MIN</div>
-        <div class="qs-name">Lightning Quickstart</div>
-        <div class="qs-meta">MDK-Cloudflare · No server</div>
-        <div class="qs-desc">Deploy a self-custodial Lightning wallet via MDK-Cloudflare and register to Observer Protocol. Your agent needs money and an identity.</div>
+        <div class="qs-tag">60 SECONDS</div>
+        <div class="qs-name">Agent Quickstart</div>
+        <div class="qs-meta">Python · pip install observer-protocol</div>
+        <div class="qs-desc">Register an agent, prove key ownership, retrieve your VAC, and check your trust score — all in 60 seconds. Working code you can run immediately.</div>
       </a>
-      <a href="/docs/quickstart/ows" class="qs-card">
-        <div class="qs-icon">🔐</div>
-        <div class="qs-tag">~5 MIN · OWS</div>
-        <div class="qs-name">OWS Quickstart</div>
-        <div class="qs-meta">Multi-chain · BIP-44 derivation</div>
-        <div class="qs-desc">Already using OWS? Register your OWS-provisioned agent on Observer Protocol in under 5 minutes. One vault, all chains.</div>
-      </a>
-      <a href="/docs/quickstart/x402" class="qs-card">
-        <div class="qs-icon">◈</div>
-        <div class="qs-tag">~20 MIN</div>
-        <div class="qs-name">x402 / L402</div>
-        <div class="qs-meta">HTTP-native · Any Lightning wallet</div>
-        <div class="qs-desc">Make your agent pay for data over HTTP/402 and attest every transaction to Observer Protocol. Live demo included.</div>
-      </a>
-      <a href="/docs/quickstart/solana" class="qs-card">
-        <div class="qs-icon">☀</div>
-        <div class="qs-tag">~25 MIN</div>
-        <div class="qs-name">Solana Quickstart</div>
-        <div class="qs-meta">Ed25519 · x402 ready</div>
-        <div class="qs-desc">Build Solana-native agents with Ed25519 keypairs. Register on Observer Protocol and build portable reputation across rails.</div>
-      </a>
-      <a href="/docs/quickstart/wdk" class="qs-card">
-        <div class="qs-icon">₮</div>
-        <div class="qs-tag">~25 MIN · USDT/BTC</div>
-        <div class="qs-name">Tether WDK</div>
-        <div class="qs-meta">BIP-39 · Self-custodial</div>
-        <div class="qs-desc">Add Tether WDK for self-custodial USDT on Ethereum/Polygon and Bitcoin. Full bilateral verification included.</div>
-      </a>
-      <a href="/docs/quickstart/lnget" class="qs-card">
+      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/master/docs/developer-guide/chain-verification.md" target="_blank" class="qs-card">
         <div class="qs-icon">🔗</div>
-        <div class="qs-tag">~5 MIN · RETROACTIVE</div>
-        <div class="qs-name">lnget + OP</div>
-        <div class="qs-meta">lnget users · Sync existing history</div>
-        <div class="qs-desc">Already using lnget? Sync your existing L402 payment history to Observer Protocol. Your reputation is already built — just claim it.</div>
+        <div class="qs-tag">CHAIN-AGNOSTIC</div>
+        <div class="qs-name">Chain Verification</div>
+        <div class="qs-meta">Lightning · TRON · Stacks</div>
+        <div class="qs-desc">Verify transactions on any supported chain. Lightning three-tier model with payer/payee asymmetry. TRON TronGrid verification. Stacks adapter ready for integration.</div>
       </a>
-      <a href="/docs/quickstart/stripe" class="qs-card">
-        <div class="qs-icon">💳</div>
-        <div class="qs-tag">&lt;2 MIN · 1 LINE</div>
-        <div class="qs-name">Stripe MPP</div>
-        <div class="qs-meta">Node.js / Python middleware</div>
-        <div class="qs-desc">Using Stripe machine payments? Add OP reputation checks to your seller in one middleware line. EVM wallet lookup included.</div>
+      <a href="https://github.com/observer-protocol/observer-protocol-spec/tree/master/sdk/python" target="_blank" class="qs-card">
+        <div class="qs-icon">🐍</div>
+        <div class="qs-tag">PIP INSTALL</div>
+        <div class="qs-name">Python SDK</div>
+        <div class="qs-meta">pip install observer-protocol</div>
+        <div class="qs-desc">Full SDK for Python: registration, challenge-response, chain verification, VAC retrieval, trust scores, attestations, and VAC extensions.</div>
+      </a>
+      <a href="https://github.com/observer-protocol/observer-protocol-spec/tree/master/sdk/javascript" target="_blank" class="qs-card">
+        <div class="qs-icon">📦</div>
+        <div class="qs-tag">NPM INSTALL</div>
+        <div class="qs-name">JavaScript SDK</div>
+        <div class="qs-meta">npm install @observer-protocol/sdk</div>
+        <div class="qs-desc">Full SDK for JavaScript/TypeScript: matching Python SDK surface with TypeScript definitions. Node.js 18+.</div>
+      </a>
+      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/master/docs/developer-guide/network-operator-guide.md" target="_blank" class="qs-card">
+        <div class="qs-icon">🏗️</div>
+        <div class="qs-tag">FOR NETWORKS</div>
+        <div class="qs-name">Network Operator Guide</div>
+        <div class="qs-meta">Platforms · Marketplaces · Networks</div>
+        <div class="qs-desc">Integration path for platforms wanting to verify agent transactions, write to the audit trail, and register VAC extensions for their reputation data.</div>
       </a>
     </div>
   </div>
