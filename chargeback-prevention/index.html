@@ -166,11 +166,11 @@
 
     <p>A16z published a piece co-authored by Christian Catalini and others titled <em>AI agents have moved quickly from copilots to economic actors faster than the infrastructure around them.</em> It crystallizes five points: agents need portable identity, blockchains are the natural coordination layer, payment rails are gravitating to crypto, verification is the new scarcity, and user control must be preserved.</p>
 
-    <p>But the piece I want to anchor on is more foundational. Catalini, Xiang Hui, and Jane Wu published <em>Some Simple Economics of AGI</em> in February &mdash; the most important paper on the AI economy written so far:</p>
+    <p>But the piece I want to anchor on is more foundational. Catalini, Xiang Hui, and Jane Wu published <em>Some Simple Economics of AGI</em> in February -the most important paper on the AI economy written so far:</p>
 
     <blockquote><p>For three hundred thousand years, human cognition was the primary engine of progress. Today, AI is driving the marginal cost of measurable execution toward zero. The binding constraint on growth is no longer intelligence. It is human verification bandwidth: the scarce capacity to validate outcomes, audit behavior, and underwrite meaning and responsibility when execution is abundant.</p></blockquote>
 
-    <p>The implication &mdash; Catalini's "Provenance Premium" &mdash; is that any credible signal lowering the cost of verification commands a premium. Cryptographic provenance on rails that also settle payments becomes the lowest-friction substrate for that signal. That insight is why we're building what we're building.</p>
+    <p>The implication -Catalini's "Provenance Premium" -is that any credible signal lowering the cost of verification commands a premium. Cryptographic provenance on rails that also settle payments becomes the lowest-friction substrate for that signal. That insight is why we're building what we're building.</p>
   </section>
 
   <!-- ═══════════════════════════════════════════════════════ -->
@@ -182,7 +182,7 @@
 
     <p>AI infrastructure companies are about to have a chargeback liability problem at a scale no one is talking about yet. An agent purchases inference credits on its principal's behalf hundreds of times per day. The principal sees a charge they don't recognize, claims they didn't authorize it, and the AI infra company has no way to prove they did. Multiply this by millions of agents and the category has a P&amp;L event none of them have an architecture to defend against.</p>
 
-    <p>In TradFi, cryptographic attestations alone cannot defeat a chargeback &mdash; the card network's rules are the rules. But in crypto-native settlement, where the transaction settles on Lightning or USDT on TRON with no card network in between, the cryptographic attestation <em>is</em> the dispute resolution regime. The receipt the merchant holds, signed by the human's principal key authorizing this exact transaction, is the definitive answer to "did the human authorize this?" The receipt is the regime.</p>
+    <p>In TradFi, cryptographic attestations alone cannot defeat a chargeback -the card network's rules are the rules. But in crypto-native settlement, where the transaction settles on Lightning or USDT on TRON with no card network in between, the cryptographic attestation <em>is</em> the dispute resolution regime. The receipt the merchant holds, signed by the human's principal key authorizing this exact transaction, is the definitive answer to "did the human authorize this?" The receipt is the regime.</p>
 
     <p>AI infrastructure companies are the right wedge. They already transact with agents. They already settle in crypto-native rails or are about to. They have no card-network exposure. They're sophisticated enough to integrate a verification layer in days, not quarters.</p>
   </section>
@@ -196,9 +196,9 @@
 
     <p>We call what we're building AI Infra&sup2;. Trust infrastructure for AI infrastructure.</p>
 
-    <p><strong>Observer Protocol (OP)</strong> is the open W3C-compliant protocol layer with four primitives: credential schemas for cryptographic delegation, verification primitives for counterparty checks, an independently verifiable receipt format, and AIP (Agent Interaction Protocol) &mdash; the standard for how agents and counterparties exchange structured claims at runtime. AIP introduces the <em>soft-reject</em>: a structured, recoverable response with a remediation path the agent can act on, rather than a terminal error.</p>
+    <p><strong>Observer Protocol (OP)</strong> is the open W3C-compliant protocol layer with four primitives: credential schemas for cryptographic delegation, verification primitives for counterparty checks, an independently verifiable receipt format, and AIP (Agent Interaction Protocol) -the standard for how agents and counterparties exchange structured claims at runtime. AIP introduces the <em>soft-reject</em>: a structured, recoverable response with a remediation path the agent can act on, rather than a terminal error.</p>
 
-    <p><strong>Agentic Terminal (AT)</strong> is the application layer. The relevant surface for individuals is <strong>Sovereign</strong> &mdash; self-custodied identity, agent registration, delegation policy configuration. Designed to feel like Phoenix or Strike. Cypherpunk values, mainstream UX. Free for individuals.</p>
+    <p><strong>Agentic Terminal (AT)</strong> is the application layer. The relevant surface for individuals is <strong>Sovereign</strong> -self-custodied identity, agent registration, delegation policy configuration. Designed to feel like Phoenix or Strike. Cypherpunk values, mainstream UX. Free for individuals.</p>
   </section>
 
   <!-- ═══════════════════════════════════════════════════════ -->
@@ -208,7 +208,7 @@
   <section>
     <h2>On openness, and what we charge for</h2>
 
-    <p>Observer Protocol is MIT-licensed and always will be. The schemas, verification primitives, AIP standards, receipt format, SDK &mdash; all genuinely open. Any human, agent, AI infrastructure company, chain, or rail can implement OP independently of us. Identity infrastructure locked behind a single vendor cannot become a standard.</p>
+    <p>Observer Protocol is MIT-licensed and always will be. The schemas, verification primitives, AIP standards, receipt format, SDK -all genuinely open. Any human, agent, AI infrastructure company, chain, or rail can implement OP independently of us. Identity infrastructure locked behind a single vendor cannot become a standard.</p>
 
     <p>What we offer commercially is the OP/AT API as <strong>Liability-as-a-Service</strong>. AI infra companies drop the SDK in at their API edge, route verification calls to us, and get cryptographic chargeback prevention as a service. They keep their own payment infrastructure. We add the trust layer. Pricing is per transaction. No licenses. No annual contracts.</p>
   </section>
@@ -231,7 +231,7 @@
     <div class="screenshot-pair">
       <div class="screenshot">
         <img src="images/beat-0.jpeg" alt="WhatsApp showing API rate limit errors">
-        <div class="screenshot-caption">Token capacity depleted &mdash; real notification</div>
+        <div class="screenshot-caption">Token capacity depleted -real notification</div>
       </div>
       <div class="screenshot">
         <img src="images/beat-2.jpeg" alt="WhatsApp message from Maxi with magic link">
@@ -239,11 +239,11 @@
       </div>
     </div>
 
-    <p><strong>Beat 0</strong> <span class="beat-status status-real">Real</span> &mdash; This is an actual notification I got on my phone. Maxi can't continue work without more inference capacity.</p>
+    <p><strong>Beat 0</strong> <span class="beat-status status-real">Real</span> -This is an actual notification I got on my phone. Maxi can't continue work without more inference capacity.</p>
 
-    <p><strong>Beat 1</strong> <span class="beat-status status-scripted">Scripted</span> &mdash; Maxi identifies NeuralBridge, which sells GPU inference credits and accepts Lightning and USDT on TRON. She attempts to purchase, picking Lightning by default &mdash; her natural rail with no delegation policy on file.</p>
+    <p><strong>Beat 1</strong> <span class="beat-status status-scripted">Scripted</span> -Maxi identifies NeuralBridge, which sells GPU inference credits and accepts Lightning and USDT on TRON. She attempts to purchase, picking Lightning by default -her natural rail with no delegation policy on file.</p>
 
-    <p><strong>Beat 2</strong> <span class="beat-status status-mixed">Mixed</span> &mdash; NeuralBridge's verification stack returns an AIP soft-reject with a magic link package. Maxi forwards it to me via WhatsApp. Magic link generation, JWT signing, and single-use enforcement are all live in production. This is the agent-as-courier model: NeuralBridge owns the protocol, Maxi owns the relationship.</p>
+    <p><strong>Beat 2</strong> <span class="beat-status status-mixed">Mixed</span> -NeuralBridge's verification stack returns an AIP soft-reject with a magic link package. Maxi forwards it to me via WhatsApp. Magic link generation, JWT signing, and single-use enforcement are all live in production. This is the agent-as-courier model: NeuralBridge owns the protocol, Maxi owns the relationship.</p>
   </div>
 
   <!-- BEAT 3 -->
@@ -258,17 +258,17 @@
       </div>
       <div>
         <p>I tap the magic link. Sovereign shows three options: <strong>Approve this purchase</strong> (one-time, default), <strong>Approve recurring with NeuralBridge</strong> (Level 2), and <strong>Set up broader policy</strong> (Level 3).</p>
-        <p>Single tap, under thirty seconds. A keypair is generated silently in the background &mdash; the Lightning wallet pattern where users get full functionality from minute one without thinking about keys.</p>
+        <p>Single tap, under thirty seconds. A keypair is generated silently in the background -the Lightning wallet pattern where users get full functionality from minute one without thinking about keys.</p>
       </div>
     </div>
   </div>
 
   <!-- BEATS 4-5 -->
   <div class="beat-section">
-    <div class="beat-label">Beats 4 &amp; 5 <span class="beat-status status-mixed">Mixed &mdash; verification real, settlement simulated</span></div>
+    <div class="beat-label">Beats 4 &amp; 5 <span class="beat-status status-mixed">Mixed -verification real, settlement simulated</span></div>
     <h3>Credential signed, purchase retried, settlement happens</h3>
 
-    <p>Sovereign signs a delegation credential scoped to exactly this transaction and delivers it to Maxi through agent infrastructure (not WhatsApp &mdash; human comms carry messages, signed VCs travel over agent channels).</p>
+    <p>Sovereign signs a delegation credential scoped to exactly this transaction and delivers it to Maxi through agent infrastructure (not WhatsApp -human comms carry messages, signed VCs travel over agent channels).</p>
 
     <p>Maxi retries with the credential attached. NeuralBridge verifies the Ed25519 signature, confirms scope coverage, checks the time window, matches counterparty DID. Settlement executes.</p>
   </div>
@@ -290,12 +290,12 @@
 
     <div class="screenshot screenshot-desktop" style="margin: 24px 0;">
       <img src="images/beat-7-8.png" alt="NeuralBridge operations view with dispute simulation">
-      <div class="screenshot-caption">NeuralBridge operations console &mdash; transaction log, integration code, dispute resolution</div>
+      <div class="screenshot-caption">NeuralBridge operations console -transaction log, integration code, dispute resolution</div>
     </div>
 
     <p>I claim I didn't authorize the transaction. NeuralBridge presents the receipt. It cryptographically proves: the principal DID is mine, the authorization was one-time for this exact transaction, the delegation credential is valid, the scope matches, the timestamp is consistent. The dispute is resolved before it becomes a chargeback.</p>
 
-    <p>The operations view shows what NeuralBridge sees: verified transaction, four-line integration snippet (no API key, no runtime dependency &mdash; any third party can verify), stored receipt, and dispute prevention indicator. AI infra companies don't displace anything to adopt this &mdash; they add the trust layer.</p>
+    <p>The operations view shows what NeuralBridge sees: verified transaction, four-line integration snippet (no API key, no runtime dependency -any third party can verify), stored receipt, and dispute prevention indicator. AI infra companies don't displace anything to adopt this -they add the trust layer.</p>
   </div>
 
   <!-- CLOSING BEAT -->
@@ -306,11 +306,11 @@
     <div class="screenshot-pair">
       <div class="screenshot">
         <img src="images/beat-5.jpeg" alt="Authorization success screen with delegation policy prompt">
-        <div class="screenshot-caption">Success &mdash; with policy discovery prompt</div>
+        <div class="screenshot-caption">Success -with policy discovery prompt</div>
       </div>
       <div class="screenshot">
         <img src="images/beat-8-2.jpeg" alt="Level 3 policy configuration with Bitcoin Maxi setup">
-        <div class="screenshot-caption">Level 3 &mdash; Gresham's Law as runtime policy</div>
+        <div class="screenshot-caption">Level 3 -Gresham's Law as runtime policy</div>
       </div>
     </div>
 
@@ -320,7 +320,7 @@
       <li><strong>Rail preference</strong>: USDT on TRON first, Lightning second</li>
       <li><strong>USDT cap</strong>: $100 per transaction, $1,000 per month</li>
       <li><strong>Lightning cap</strong>: 15,000 sats per transaction (~$15), 100,000 sats per month</li>
-      <li><strong>Escalation</strong>: $50 &mdash; notify me above this amount</li>
+      <li><strong>Escalation</strong>: $50 -notify me above this amount</li>
       <li><strong>Fallback</strong>: If USDT balance insufficient, use Lightning</li>
     </ul>
 
