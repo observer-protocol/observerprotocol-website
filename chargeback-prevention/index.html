@@ -21,7 +21,6 @@
     --green: #00E5A0;
     --red: #FF4D6A;
     --amber: #FFB547;
-    --gold: #F5A623;
     --mono: 'IBM Plex Mono', monospace;
     --sans: 'Syne', sans-serif;
   }
@@ -33,6 +32,8 @@
   nav .inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
   .nav-logo { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-family: var(--mono); }
   .nav-badge { font-family: var(--mono); font-size: 11px; padding: 4px 10px; border: 1px solid rgba(0,212,255,0.3); border-radius: 2px; color: var(--accent); letter-spacing: 0.06em; }
+
+  /* Typography */
   .hero { padding: 80px 0 48px; }
   h1 { font-size: clamp(28px, 5vw, 44px); font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 20px; }
   h1 .accent { color: var(--accent); }
@@ -40,39 +41,65 @@
   h2 { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 16px; margin-top: 64px; }
   h3 { font-size: 18px; font-weight: 600; margin-bottom: 8px; margin-top: 40px; }
   p { margin-bottom: 16px; line-height: 1.7; color: var(--text); font-size: 15px; }
-  .muted { color: var(--muted); }
   strong { font-weight: 600; }
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
   blockquote { border-left: 3px solid var(--accent); padding: 16px 24px; margin: 24px 0; background: var(--surface); border-radius: 0 4px 4px 0; }
   blockquote p { color: var(--muted); font-style: italic; margin-bottom: 0; font-size: 14px; }
   section { margin-bottom: 48px; }
+  ul, ol { margin: 16px 0 16px 24px; }
+  li { margin-bottom: 6px; font-size: 15px; line-height: 1.6; }
+
+  /* Architecture diagram */
+  .arch-diagram { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 32px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; margin: 32px 0; flex-wrap: wrap; }
+  .arch-node { text-align: center; padding: 16px 20px; border: 1px solid var(--border2); border-radius: 4px; background: var(--surface2); min-width: 120px; }
+  .arch-node .icon { font-size: 28px; margin-bottom: 6px; }
+  .arch-node .label { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; }
+  .arch-node .sublabel { font-family: var(--mono); font-size: 10px; color: var(--muted); margin-top: 2px; }
+  .arch-arrow { font-size: 20px; color: var(--muted); }
+
+  /* Beat sections */
   .beat-section { margin: 48px 0; padding: 32px 0; border-top: 1px solid var(--border); }
   .beat-label { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
   .beat-status { font-family: var(--mono); font-size: 11px; padding: 3px 8px; border-radius: 2px; margin-left: 12px; }
   .status-real { background: rgba(0,229,160,0.1); border: 1px solid rgba(0,229,160,0.3); color: var(--green); }
   .status-scripted { background: rgba(255,181,71,0.1); border: 1px solid rgba(255,181,71,0.3); color: var(--amber); }
   .status-mixed { background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.3); color: var(--accent); }
-  .screenshot { margin: 24px 0; border: 1px solid var(--border2); border-radius: 4px; overflow: hidden; background: var(--surface); }
+
+  /* Screenshots */
+  .screenshot { border: 1px solid var(--border2); border-radius: 4px; overflow: hidden; background: var(--surface); }
   .screenshot img { width: 100%; display: block; }
-  .screenshot-mobile { max-width: 320px; margin-left: auto; margin-right: auto; }
-  .screenshot-desktop { max-width: 100%; }
   .screenshot-caption { font-family: var(--mono); font-size: 10px; color: var(--muted); padding: 8px 14px; border-top: 1px solid var(--border); letter-spacing: 0.06em; text-transform: uppercase; }
-  ul { margin: 16px 0 16px 24px; }
-  li { margin-bottom: 8px; font-size: 15px; line-height: 1.6; color: var(--text); }
+
+  /* Side-by-side screenshot pairs */
+  .screenshot-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+  .screenshot-pair .screenshot { max-width: 100%; margin: 0; }
+
+  /* Text-wrap layout: image floated alongside prose */
+  .beat-with-image { display: grid; grid-template-columns: 280px 1fr; gap: 24px; align-items: start; margin: 24px 0; }
+  .beat-with-image .screenshot { margin: 0; }
+
+  /* Receipt fields */
   .receipt-fields { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 20px; margin: 16px 0; font-family: var(--mono); font-size: 13px; }
   .receipt-fields li { color: var(--muted); font-size: 13px; }
   .receipt-fields li strong { color: var(--text); }
-  .cta-section { margin: 64px 0; padding: 40px; background: var(--surface); border: 1px solid var(--border2); border-radius: 4px; }
+
+  /* CTAs */
+  .cta-section { margin: 24px 0; padding: 32px; background: var(--surface); border: 1px solid var(--border2); border-radius: 4px; }
   .cta-section h3 { margin-top: 0; }
-  .btn { font-family: var(--mono); font-size: 12px; padding: 12px 24px; border-radius: 2px; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.15s; border: none; margin-top: 16px; }
-  .btn-primary { background: var(--accent); color: #000; font-weight: 600; }
-  .btn-primary:hover { background: #33DEFF; text-decoration: none; }
+
+  /* Author + footer */
   .author { margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border); font-family: var(--mono); font-size: 13px; color: var(--muted); }
   .author strong { color: var(--text); }
   footer { border-top: 1px solid var(--border); padding: 40px 0; text-align: center; font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.06em; margin-top: 80px; }
   footer a { color: var(--accent); text-decoration: none; }
-  @media (max-width: 600px) { .container { padding: 0 16px; } h1 { font-size: 28px; } h2 { font-size: 22px; } .screenshot-mobile { max-width: 280px; } }
+
+  @media (max-width: 700px) {
+    .screenshot-pair { grid-template-columns: 1fr; }
+    .beat-with-image { grid-template-columns: 1fr; }
+    .arch-diagram { flex-direction: column; }
+    .arch-arrow { transform: rotate(90deg); }
+  }
 </style>
 </head>
 <body>
@@ -91,27 +118,43 @@
     <p class="hero-sub">A working demo, plus the case for why the agentic economy needs trust infrastructure built on crypto rails.</p>
   </div>
 
+  <!-- Architecture diagram -->
+  <div class="arch-diagram">
+    <div class="arch-node">
+      <div class="icon">&#128100;</div>
+      <div class="label">Human</div>
+      <div class="sublabel">Principal</div>
+    </div>
+    <div class="arch-arrow">&#10230;</div>
+    <div class="arch-node">
+      <div class="icon">&#129302;</div>
+      <div class="label">Agent</div>
+      <div class="sublabel">Delegated authority</div>
+    </div>
+    <div class="arch-arrow">&#10230;</div>
+    <div class="arch-node">
+      <div class="icon">&#9881;</div>
+      <div class="label">AI Infra</div>
+      <div class="sublabel">Counterparty</div>
+    </div>
+  </div>
+
   <!-- ═══════════════════════════════════════════════════════ -->
   <!-- THE THESIS -->
   <!-- ═══════════════════════════════════════════════════════ -->
 
   <section>
     <h2>The thesis</h2>
-    <p>Three things are about to happen, in roughly this order.</p>
 
-    <p><strong>One.</strong> Over the next five years, the majority of digital transactions will be initiated by agents acting on behalf of humans and organizations. This is not a contrarian view anymore. Stripe and Tempo's MPP marketplace processed 34,000 agent-driven transactions in its first week. Coinbase's x402 is doing roughly $1.6M per month in real (non-wash) volume and that number is climbing fast. AI infrastructure companies are being designed from day one with agents as the primary customer. The transition is not five years away. It is happening now and the curve is steep.</p>
+    <p><strong>One.</strong> Over the next five years, the majority of digital transactions will be initiated by agents acting on behalf of humans and organizations. Stripe and Tempo's MPP marketplace processed 34,000 agent-driven transactions in its first week. Coinbase's x402 is doing roughly $1.6M per month in real volume. AI infrastructure companies are being designed from day one with agents as the primary customer. The transition is happening now and the curve is steep.</p>
 
-    <p><strong>Two.</strong> Agents, and the humans they represent, are going to be less tribal about rails and chains than crypto-native humans currently are. This sounds wrong if you're deep in the Bitcoin or Ethereum or Solana communities, but it follows from how agents will actually be used. An agent's job is to complete a task on its principal's behalf. If a counterparty accepts USDT on TRON, Lightning, or USDC on Base, a pragmatic agent will route to whichever rail completes the transaction with the lowest friction. Most humans will mirror this pragmatism for <em>spending</em> even when they remain tribal about <em>saving</em>. Which brings me to my own situation.</p>
+    <p><strong>Two.</strong> Agents will be less tribal about rails than crypto-native humans currently are. An agent's job is to complete a task on its principal's behalf. If a counterparty accepts USDT on TRON, Lightning, or USDC on Base, a pragmatic agent routes to whichever rail completes the transaction with the lowest friction. Most humans will mirror this pragmatism for <em>spending</em> even when they remain tribal about <em>saving</em>.</p>
 
-    <p>I'm a Bitcoin maxi. I genuinely believe Bitcoin is the soundest money that has ever existed and I want to hold every sat I can. I published <em>Bitcoin Singularity</em> just last year. My own OpenClaw agent, who has been instrumental in the discovery of the pain and in contributing to our solution, is called Maxi. She was born on my Bitcoin node and was one of the first ten or so agents in the world to have economic autonomy with her own L402 and LND endpoints. Yet she too is multi-rail and also supports USDT on TRON among others.</p>
+    <p>I'm a Bitcoin maxi. I published <em>Bitcoin Singularity</em> last year. My agent Maxi was born on my Bitcoin node and was one of the first agents in the world with her own L402 and LND endpoints. Yet she too is multi-rail. We're building Observer Protocol (OP) and Agentic Terminal (AT) to be multi-rail and multi-chain by default. These aren't in tension with my Bitcoin convictions. They're the most coherent expression of bitcoin maxi values when applied to a world where agents transact constantly on my behalf.</p>
 
-    <p>We are also building Observer Protocol (OP) and Agentic Terminal (AT) to be multi-rail and multi-chain by default, with full first-class support for Lightning, USDT on TRON, USDC on Solana, and any other rail an agent or counterparty wants to use. These aren't in tension with my Bitcoin convictions. They're the most coherent expression of bitcoin maxi values when applied to a world where agents transact constantly on my behalf.</p>
+    <p>The principle is older than crypto. Gresham's Law: bad money drives out good. My Bitcoin is the appreciating money. USDT and USDC are the depreciating ones. When Maxi needs to buy GPU inference credits, the rational thing is for her to spend stablecoins. Lightning is the fallback with tight per-transaction caps because each sat I release is wealth I would rather hold.</p>
 
-    <p>The principle is older than crypto. Gresham's Law: bad money drives out good. When you have two forms of money in circulation and one is appreciating relative to the other, rational actors spend the depreciating one and hoard the appreciating one. My Bitcoin is the appreciating one. USDT and USDC are the depreciating ones (denominated in a rapidly debasing fiat unit). When Maxi needs to buy GPU inference credits or pay for an API call, the rational thing is for her to spend stablecoins. Lightning is the fallback for when stablecoins aren't accepted, or when the merchant prefers it, with tight per-transaction caps on the BTC side because each sat I release is wealth I would rather hold. This isn't dilution of bitcoin maxi conviction. It's centuries-old monetary intuition validated at the level of agent runtime policy.</p>
-
-    <p><strong>Three.</strong> KYA infrastructure (know your agent) must support agents being multi-rail and multi-chain natively. This is the architectural consequence of the first two points. Today, most retailers accept Visa, Mastercard, Amex, and increasingly cash-on-mobile equivalents. Tomorrow, early-adopting commerce, especially AI infrastructure companies whose customers are agents, will accept multiple stablecoins and Lightning/Bitcoin. The KYA Trust Stack must therefore allow agents to carry a single portable identity across all of those rails, accrue verifiable credentials (transaction history, behavioral attestations, delegation receipts) that aren't constrained to a specific chain or marketplace, and be verifiable by any counterparty that adopts the standard.</p>
-
-    <p>This is not a future requirement. It's the current bottleneck.</p>
+    <p><strong>Three.</strong> KYA infrastructure (know your agent) must support agents being multi-rail natively. The KYA Trust Stack must allow agents to carry a single portable identity across all rails, accrue verifiable credentials that aren't constrained to a specific chain, and be verifiable by any counterparty that adopts the standard. This is the current bottleneck.</p>
   </section>
 
   <!-- ═══════════════════════════════════════════════════════ -->
@@ -121,17 +164,13 @@
   <section>
     <h2>What the smart money is converging on</h2>
 
-    <p>A16z published a piece a few weeks ago, co-authored by Christian Catalini, Carolynn Levy, Aleks Hall, Liz Harkavy, Nick Levine, and Patrick Sneville, titled <em>AI agents have moved quickly from copilots to economic actors faster than the infrastructure around them.</em> It's one of the clearest mainstream framings of the problem I've read, and it crystallizes five points anyone building in this space should internalize: agents need portable identity, blockchains are the natural coordination layer, payment rails for headless agentic commerce are gravitating to crypto, verification is becoming the new scarcity, and user control needs to be preserved as agents abstract more of human action.</p>
+    <p>A16z published a piece co-authored by Christian Catalini and others titled <em>AI agents have moved quickly from copilots to economic actors faster than the infrastructure around them.</em> It crystallizes five points: agents need portable identity, blockchains are the natural coordination layer, payment rails are gravitating to crypto, verification is the new scarcity, and user control must be preserved.</p>
 
-    <p>I don't disagree with any of it. Observer Protocol and Agentic Terminal are direct architectural responses to all five.</p>
+    <p>But the piece I want to anchor on is more foundational. Catalini, Xiang Hui, and Jane Wu published <em>Some Simple Economics of AGI</em> in February &mdash; the most important paper on the AI economy written so far:</p>
 
-    <p>But the piece I want to anchor this writeup on is a few months older and more foundational. Catalini, Xiang Hui, and Jane Wu published <em>Some Simple Economics of AGI</em> in February. It is, I believe, the most important paper on the AI economy that has been written so far. Their core argument:</p>
+    <blockquote><p>For three hundred thousand years, human cognition was the primary engine of progress. Today, AI is driving the marginal cost of measurable execution toward zero. The binding constraint on growth is no longer intelligence. It is human verification bandwidth: the scarce capacity to validate outcomes, audit behavior, and underwrite meaning and responsibility when execution is abundant.</p></blockquote>
 
-    <blockquote><p>For three hundred thousand years, human cognition was the primary engine of progress. Today, AI is driving the marginal cost of measurable execution toward zero. In an economy where autonomous agents act with broad agency, the binding constraint on growth is no longer intelligence. It is human verification bandwidth: the scarce capacity to validate outcomes, audit behavior, and underwrite meaning and responsibility when execution is abundant.</p></blockquote>
-
-    <p>The implication, which Catalini calls the "Provenance Premium," is that any credible signal that lowers the cost of verification commands a premium. Cryptographic provenance, executed on rails that also settle payments, becomes the lowest-friction substrate for that signal. The settlement infrastructure and the verification infrastructure naturally couple on crypto rails. They cannot couple as cleanly anywhere else.</p>
-
-    <p>That insight, more than any other, is why we're building what we're building.</p>
+    <p>The implication &mdash; Catalini's "Provenance Premium" &mdash; is that any credible signal lowering the cost of verification commands a premium. Cryptographic provenance on rails that also settle payments becomes the lowest-friction substrate for that signal. That insight is why we're building what we're building.</p>
   </section>
 
   <!-- ═══════════════════════════════════════════════════════ -->
@@ -141,17 +180,11 @@
   <section>
     <h2>The chargeback prevention opportunity</h2>
 
-    <p>Catalini's framing identifies the abstract problem. The concrete commercial wedge is chargeback prevention.</p>
+    <p>AI infrastructure companies are about to have a chargeback liability problem at a scale no one is talking about yet. An agent purchases inference credits on its principal's behalf hundreds of times per day. The principal sees a charge they don't recognize, claims they didn't authorize it, and the AI infra company has no way to prove they did. Multiply this by millions of agents and the category has a P&amp;L event none of them have an architecture to defend against.</p>
 
-    <p>Here's the situation. AI infrastructure companies, the ones whose customers are agents, are about to have a chargeback liability problem at a scale no one is talking about yet. An agent purchases inference credits, browser sessions, image generation, data lookups, on its principal's behalf, hundreds of times per day. The principal looks at their statement, sees a charge they don't recognize, claims they didn't authorize it, and the AI infra company has no way to prove they did. The card networks default to the consumer in disputes. The merchant eats the loss. Multiply this by millions of agents, scaling to billions of transactions per year, and the AI infrastructure category has a P&L event that none of them have an architecture to defend against.</p>
+    <p>In TradFi, cryptographic attestations alone cannot defeat a chargeback &mdash; the card network's rules are the rules. But in crypto-native settlement, where the transaction settles on Lightning or USDT on TRON with no card network in between, the cryptographic attestation <em>is</em> the dispute resolution regime. The receipt the merchant holds, signed by the human's principal key authorizing this exact transaction, is the definitive answer to "did the human authorize this?" The receipt is the regime.</p>
 
-    <p>The question is what regime should govern dispute resolution for crypto-native agentic commerce. And the answer is genuinely a blue ocean. There is no Visa for crypto-native agent commerce. There is no Mastercard chargeback guide. There is no incumbent dispute regime that cryptographic attestations have to fight against. The rules of dispute and resolution in this space are being written right now, by whoever ships first with the right architecture.</p>
-
-    <p>I want to be clear about one thing. In TradFi, where Visa and Mastercard have decades of established dispute regimes backed by Reg E and consumer protection law, cryptographic attestations alone cannot defeat a chargeback. A merchant losing a Visa dispute can't say "but we have a signed delegation credential." The network's rules are the rules. So the chargeback prevention thesis isn't credible in card-network world today and won't be for a while.</p>
-
-    <p>But in crypto-native settlement, where the transaction is between an agent's wallet and a merchant's wallet, settled on rails like Lightning or USDT on TRON, with no card network in between, the cryptographic attestation <em>is</em> the dispute resolution regime. The receipt the merchant holds, signed by the human's principal key authorizing this exact transaction, is the definitive answer to "did the human authorize this?" There is no higher authority that can override a cryptographically valid receipt. The receipt is the regime.</p>
-
-    <p>This is why AI infrastructure companies are the right wedge. They already transact with agents. They already settle in crypto-native rails or are about to. They have no card-network exposure. They have a real dispute risk that they can't solve internally. And they're sophisticated enough technically to integrate a verification layer in days, not quarters.</p>
+    <p>AI infrastructure companies are the right wedge. They already transact with agents. They already settle in crypto-native rails or are about to. They have no card-network exposure. They're sophisticated enough to integrate a verification layer in days, not quarters.</p>
   </section>
 
   <!-- ═══════════════════════════════════════════════════════ -->
@@ -161,23 +194,11 @@
   <section>
     <h2>AI Infra&sup2;</h2>
 
-    <p>We call what we're building AI Infra&sup2;. The notation is deliberate. We're trust infrastructure for AI infrastructure. The recursion makes the positioning visible.</p>
+    <p>We call what we're building AI Infra&sup2;. Trust infrastructure for AI infrastructure.</p>
 
-    <p>Two products, one thesis:</p>
+    <p><strong>Observer Protocol (OP)</strong> is the open W3C-compliant protocol layer with four primitives: credential schemas for cryptographic delegation, verification primitives for counterparty checks, an independently verifiable receipt format, and AIP (Agent Interaction Protocol) &mdash; the standard for how agents and counterparties exchange structured claims at runtime. AIP introduces the <em>soft-reject</em>: a structured, recoverable response with a remediation path the agent can act on, rather than a terminal error.</p>
 
-    <p><strong>Observer Protocol (OP)</strong> is the open W3C-compliant protocol layer. OP defines four core primitives:</p>
-    <ul>
-      <li><strong>Credential schemas</strong> &mdash; including the delegation credential format that lets humans authorize their agents with cryptographic precision (one-time, recurring with a counterparty, or governed by a richer policy)</li>
-      <li><strong>Verification primitives</strong> &mdash; the cryptographic checks any counterparty performs when an agent presents a delegation credential</li>
-      <li><strong>Receipt format</strong> &mdash; independently verifiable W3C Verifiable Credentials that any third party can validate without runtime dependency on the issuer</li>
-      <li><strong>AIP (Agent Interaction Protocol)</strong> &mdash; the standard for how agents and counterparties exchange structured claims at runtime. AIP defines what an agent looks like to a counterparty, what authorization claims look like, and crucially, what happens when a transaction is attempted without sufficient authorization. AIP introduces the <em>soft-reject</em> &mdash; a structured, recoverable response that includes a remediation path the agent can act on, rather than a terminal error. The soft-reject is what makes the magic-link flow possible: when a counterparty's verification stack receives a transaction without a delegation credential, it can return a structured authorization request that the agent forwards to its human, rather than just failing the transaction outright.</li>
-    </ul>
-
-    <p>The protocol is rail-agnostic, chain-agnostic, and counterparty-agnostic. Any AI infrastructure company can integrate the SDK and start verifying agents in production. The protocol is the standard layer.</p>
-
-    <p><strong>Agentic Terminal (AT)</strong> is the application layer built on top of Observer Protocol. The relevant surface for individuals is <strong>Sovereign</strong> &mdash; the human-side product. Self-custodied identity, agent registration, delegation policy configuration, transaction history. Designed to feel familiar to anyone who has used a modern Lightning wallet (Phoenix, Strike, Wallet of Satoshi). Cypherpunk values, mainstream UX. Sovereign is free for individuals. Self-custodied identity is a right, not a product.</p>
-
-    <p>The protocol is open. The application layer is opinionated. Both ship today.</p>
+    <p><strong>Agentic Terminal (AT)</strong> is the application layer. The relevant surface for individuals is <strong>Sovereign</strong> &mdash; self-custodied identity, agent registration, delegation policy configuration. Designed to feel like Phoenix or Strike. Cypherpunk values, mainstream UX. Free for individuals.</p>
   </section>
 
   <!-- ═══════════════════════════════════════════════════════ -->
@@ -187,17 +208,9 @@
   <section>
     <h2>On openness, and what we charge for</h2>
 
-    <p>A first principle we've held since starting this work is that core KYA identity infrastructure for the agentic economy must be truly open, and the base primitives must be free. Not "open with a commercial license." Not "open for community use only." Genuinely open. MIT-licensed, copy-paste-able into any project, forkable into competing implementations, runnable on any infrastructure anywhere in the world.</p>
+    <p>Observer Protocol is MIT-licensed and always will be. The schemas, verification primitives, AIP standards, receipt format, SDK &mdash; all genuinely open. Any human, agent, AI infrastructure company, chain, or rail can implement OP independently of us. Identity infrastructure locked behind a single vendor cannot become a standard.</p>
 
-    <p>This is why Observer Protocol is MIT-licensed and always will be. The schemas, the verification primitives, the AIP standards, the receipt format, the SDK &mdash; all of it is open infrastructure. Any human, any agent, any AI infrastructure company, any chain, any rail can implement OP independently of us. Any instance of OP running anywhere enables any human or agent counterparty to speak the same KYA language, exchange compatible credentials, verify each other's receipts, and accrue portable third-party attestations that aren't constrained to a single platform.</p>
-
-    <p>This is not a marketing position. It's a structural requirement for what we're building. Identity infrastructure that's locked behind a single vendor cannot become a standard.</p>
-
-    <p>What we offer commercially is the OP/AT API as <strong>Liability-as-a-Service</strong> for AI infrastructure companies. AI infra companies whose agents are about to be transacting at scale don't need to deploy our protocol stack themselves. They drop the SDK in at their API edge, route verification calls to us, and get cryptographic chargeback prevention as a service. We handle credential verification, receipt issuance support, dispute defense tooling, the integration surface. They keep their own payment infrastructure, their own ledgers, their own settlement logic. We don't replace their payment stack &mdash; we add the trust layer that lets them defend agent transactions cryptographically.</p>
-
-    <p>Pricing is per transaction, scaling with their adoption. No software licenses. No annual contracts. No procurement cycle.</p>
-
-    <p>The protocol is the standard. The API is the product. The standard is free. The product scales with the volume of verified agent commerce.</p>
+    <p>What we offer commercially is the OP/AT API as <strong>Liability-as-a-Service</strong>. AI infra companies drop the SDK in at their API edge, route verification calls to us, and get cryptographic chargeback prevention as a service. They keep their own payment infrastructure. We add the trust layer. Pricing is per transaction. No licenses. No annual contracts.</p>
   </section>
 
   <!-- ═══════════════════════════════════════════════════════ -->
@@ -207,55 +220,30 @@
   <section>
     <h2>The demo, beat by beat</h2>
 
-    <p>Here's what this looks like in practice. The demo follows my agent Maxi through a transaction with a fictional AI infrastructure company called NeuralBridge.</p>
-
-    <p>A note on what's real and what's simulated. Most of the protocol stack is live and production-ready today: OP already does cryptographic verification of Lightning and USDT-on-TRON transactions on mainnet, the magic-link flow is real end-to-end, the Sovereign authorization page is live, the delegation credential schema is locked. What's simulated in this demo is what depends on partnerships we haven't yet closed: NeuralBridge is fictional, so the agent runtime orchestration and the actual on-chain settlement for <em>this specific transaction</em> are scripted. Read the simulated parts as the deal flow. Every mocked beat is a partnership opportunity. I'll mark each beat as we go.</p>
+    <p>The demo follows my agent Maxi through a transaction with a fictional AI infrastructure company called NeuralBridge. Most of the protocol stack is live and production-ready today. What's simulated depends on partnerships we haven't yet closed: NeuralBridge is fictional, so agent runtime orchestration and actual on-chain settlement for this specific transaction are scripted. Read the simulated parts as deal flow. I'll mark each beat.</p>
   </section>
 
-  <!-- BEAT 0 -->
+  <!-- BEATS 0 + 2 paired -->
   <div class="beat-section">
-    <div class="beat-label">Beat 0 <span class="beat-status status-real">Real</span></div>
-    <h3>Maxi runs out of inference tokens</h3>
+    <div class="beat-label">Beats 0 &amp; 2 <span class="beat-status status-mixed">Problem &rarr; Response</span></div>
+    <h3>Maxi runs out of tokens, then finds a solution</h3>
 
-    <div class="screenshot screenshot-mobile">
-      <img src="images/beat-0.jpeg" alt="WhatsApp showing API rate limit errors">
-      <div class="screenshot-caption">Maxi's token capacity depleted &mdash; real notification from OpenClaw</div>
+    <div class="screenshot-pair">
+      <div class="screenshot">
+        <img src="images/beat-0.jpeg" alt="WhatsApp showing API rate limit errors">
+        <div class="screenshot-caption">Token capacity depleted &mdash; real notification</div>
+      </div>
+      <div class="screenshot">
+        <img src="images/beat-2.jpeg" alt="WhatsApp message from Maxi with magic link">
+        <div class="screenshot-caption">Maxi forwards the magic link via WhatsApp</div>
+      </div>
     </div>
 
-    <p>This is an actual notification I got on my phone. OpenClaw, the gateway Maxi runs through, surfaces this message when token capacity is depleted. The platform's default copy is "API rate limit reached" but the actual cause was that I'd run out of tokens. Either way, Maxi can't continue the work she was doing for me without more inference capacity.</p>
+    <p><strong>Beat 0</strong> <span class="beat-status status-real">Real</span> &mdash; This is an actual notification I got on my phone. Maxi can't continue work without more inference capacity.</p>
 
-    <p>This is the motivating problem of the demo. Not a fabricated scenario. A real moment in my actual workflow.</p>
-  </div>
+    <p><strong>Beat 1</strong> <span class="beat-status status-scripted">Scripted</span> &mdash; Maxi identifies NeuralBridge, which sells GPU inference credits and accepts Lightning and USDT on TRON. She attempts to purchase, picking Lightning by default &mdash; her natural rail with no delegation policy on file.</p>
 
-  <!-- BEAT 1 -->
-  <div class="beat-section">
-    <div class="beat-label">Beat 1 <span class="beat-status status-scripted">Scripted</span></div>
-    <h3>Maxi identifies a solution and attempts to purchase</h3>
-
-    <p>The agent runtime orchestration here is canned for the demo. The full autonomy loop &mdash; discovering counterparty payment configs, evaluating rails, attempting purchases independently &mdash; is scripted because there's no real NeuralBridge to discover. The protocol primitives that would make this autonomous in production are all built and verified.</p>
-
-    <p>In the scenario: rather than stopping and waiting, Maxi did what an autonomous agent should do. She identified NeuralBridge, an AI infrastructure company that sells GPU inference credits and accepts both Lightning and USDT on TRON, queried their published payment configuration, and attempted to purchase 50,000 sats worth of GPU inference credits.</p>
-
-    <p>She picked Lightning by default. This matters. At this point, Maxi has no delegation policy from me on file. She's a Bitcoin-native agent running on Lightning infrastructure. Her natural rail in the absence of human guidance is Lightning. That's both authentic to who she is and architecturally honest: agents act on their defaults until their humans express different preferences.</p>
-  </div>
-
-  <!-- BEAT 2 -->
-  <div class="beat-section">
-    <div class="beat-label">Beat 2 <span class="beat-status status-mixed">Mixed &mdash; infrastructure real, counterparty simulated</span></div>
-    <h3>NeuralBridge soft-rejects with a magic link</h3>
-
-    <div class="screenshot screenshot-mobile">
-      <img src="images/beat-2.jpeg" alt="WhatsApp message from Maxi with magic link">
-      <div class="screenshot-caption">Maxi forwards the magic link via WhatsApp &mdash; agent-as-courier model</div>
-    </div>
-
-    <p>Magic link generation, JWT signing, single-use enforcement, and the Sovereign destination are all real and live in production. The NeuralBridge counterparty itself and Maxi's WhatsApp delivery to me are simulated for the demo because there's no real NeuralBridge integration and Maxi's WhatsApp send capability depends on a future AI infra partnership. The architectural model &mdash; agent forwards the magic link package to its human via their existing comms channel &mdash; is what's being demonstrated.</p>
-
-    <p>NeuralBridge has no delegation credential proving I authorized this purchase. Their verification stack returns an AIP soft-reject &mdash; a structured response that includes the magic link package Maxi can act on. The package contains a signed JWT pointing to my Sovereign authorization page, plus standardized intro text Maxi can forward verbatim or adapt for our channel, plus the transaction context, plus an expiry.</p>
-
-    <p>Maxi forwards the magic link to me through our existing communication channel. NeuralBridge has no idea where I am or how to reach me. They don't need to. They handed the package to Maxi, and Maxi knows our channel.</p>
-
-    <p>This is the agent-as-courier model. NeuralBridge owns the protocol. Maxi owns the relationship. The architecture cleanly separates the two.</p>
+    <p><strong>Beat 2</strong> <span class="beat-status status-mixed">Mixed</span> &mdash; NeuralBridge's verification stack returns an AIP soft-reject with a magic link package. Maxi forwards it to me via WhatsApp. Magic link generation, JWT signing, and single-use enforcement are all live in production. This is the agent-as-courier model: NeuralBridge owns the protocol, Maxi owns the relationship.</p>
   </div>
 
   <!-- BEAT 3 -->
@@ -263,107 +251,51 @@
     <div class="beat-label">Beat 3 <span class="beat-status status-real">Real</span></div>
     <h3>I authorize the purchase from my phone</h3>
 
-    <div class="screenshot screenshot-mobile">
-      <img src="images/beat-3.jpeg" alt="Sovereign authorize page on iPhone">
-      <div class="screenshot-caption">Sovereign authorization page &mdash; one-tap approval on mobile</div>
+    <div class="beat-with-image">
+      <div class="screenshot">
+        <img src="images/beat-3.jpeg" alt="Sovereign authorize page on iPhone">
+        <div class="screenshot-caption">One-tap mobile authorization</div>
+      </div>
+      <div>
+        <p>I tap the magic link. Sovereign shows three options: <strong>Approve this purchase</strong> (one-time, default), <strong>Approve recurring with NeuralBridge</strong> (Level 2), and <strong>Set up broader policy</strong> (Level 3).</p>
+        <p>Single tap, under thirty seconds. A keypair is generated silently in the background &mdash; the Lightning wallet pattern where users get full functionality from minute one without thinking about keys.</p>
+      </div>
     </div>
-
-    <p>I tap the magic link. It opens my Sovereign authorization page on mobile. Three options:</p>
-
-    <ul>
-      <li><strong>Approve this purchase</strong> &mdash; one-time authorization, default highlighted, the orange button</li>
-      <li><strong>Approve recurring with NeuralBridge</strong> &mdash; Level 2, future transactions with this counterparty up to a ceiling</li>
-      <li><strong>Set up broader policy</strong> &mdash; Level 3, the full delegation primitive</li>
-    </ul>
-
-    <p>For a first-time interaction, I tap Approve. Single tap, under thirty seconds from receiving the WhatsApp to the success screen. A keypair gets generated for me silently in the background and stored locally. This is the Lightning wallet pattern (Phoenix, Strike, WoS) where users get full functionality from minute one without ever having to think about keys, with the ability to take ownership later when they're ready.</p>
   </div>
 
-  <!-- BEAT 4 -->
+  <!-- BEATS 4-5 -->
   <div class="beat-section">
-    <div class="beat-label">Beat 4 <span class="beat-status status-real">Real</span></div>
-    <h3>Sovereign signs and pushes the credential</h3>
+    <div class="beat-label">Beats 4 &amp; 5 <span class="beat-status status-mixed">Mixed &mdash; verification real, settlement simulated</span></div>
+    <h3>Credential signed, purchase retried, settlement happens</h3>
 
-    <p>My Sovereign instance signs a delegation credential &mdash; a W3C Verifiable Credential conforming to OP's delegation schema &mdash; with my newly-created principal key. The credential is scoped to exactly this transaction: this counterparty, this amount, this rail, this expiry. The credential is delivered to Maxi's runtime through a separate retrieval channel, not through WhatsApp. Human comms channels carry human-readable messages. Signed VCs travel over agent infrastructure.</p>
-  </div>
+    <p>Sovereign signs a delegation credential scoped to exactly this transaction and delivers it to Maxi through agent infrastructure (not WhatsApp &mdash; human comms carry messages, signed VCs travel over agent channels).</p>
 
-  <!-- BEAT 5 -->
-  <div class="beat-section">
-    <div class="beat-label">Beat 5 <span class="beat-status status-mixed">Mixed &mdash; verification real, settlement simulated</span></div>
-    <h3>Maxi retries the purchase, settlement happens</h3>
-
-    <p>The cryptographic verification capability is real and production-ready. OP already does Ed25519 verification of delegation credentials and verifies real Lightning preimages and USDT-on-TRON on-chain settlements on mainnet today. The specific transaction in this demo is simulated because NeuralBridge is fictional and there's no real on-chain settlement happening between my wallet and theirs. In a live integration with a real AI infra partner, settlement on these rails is what already works.</p>
-
-    <p>Maxi retries the purchase, this time with the credential attached. NeuralBridge's verification stack:</p>
-
-    <ol style="margin: 16px 0 16px 24px;">
-      <li style="margin-bottom: 6px;">Verifies the Ed25519 signature against my published key</li>
-      <li style="margin-bottom: 6px;">Confirms the credential's scope covers this exact transaction</li>
-      <li style="margin-bottom: 6px;">Confirms the credential is within its time window</li>
-      <li style="margin-bottom: 6px;">Confirms the counterparty DID matches NeuralBridge</li>
-      <li style="margin-bottom: 6px;">Accepts settlement</li>
-    </ol>
-
-    <p>The Lightning payment executes. Funds move.</p>
+    <p>Maxi retries with the credential attached. NeuralBridge verifies the Ed25519 signature, confirms scope coverage, checks the time window, matches counterparty DID. Settlement executes.</p>
   </div>
 
   <!-- BEAT 6 -->
   <div class="beat-section">
-    <div class="beat-label">Beat 6 <span class="beat-status status-mixed">Mixed &mdash; schema real, receipt from simulated transaction</span></div>
+    <div class="beat-label">Beat 6 <span class="beat-status status-mixed">Schema real, receipt from simulated transaction</span></div>
     <h3>NeuralBridge issues a settlement receipt</h3>
 
-    <p>NeuralBridge signs the receipt with their own key, under their own DID. We provide the SDK primitives that make receipt issuance trivial; NeuralBridge does the actual signing on their own infrastructure with their own keys. This matters: the receipt is the counterparty's cryptographic attestation that this transaction happened on their infrastructure, authorized by this specific delegation credential, signed by this principal. We don't sign receipts for transactions we weren't party to. That's what keeps OP positioned as the standard layer rather than as a centralizing dependency.</p>
+    <p>NeuralBridge signs the receipt with <em>their own key</em>, under their own DID. We provide the SDK; they do the signing. The receipt carries transaction details, a reference to the delegation credential, the authorization level, my principal DID, and NeuralBridge's signature.</p>
 
-    <p>The receipt carries:</p>
-
-    <ul class="receipt-fields">
-      <li><strong>Transaction details</strong> &mdash; amount, rail, hash, timestamp</li>
-      <li><strong>Delegation reference</strong> &mdash; the credential that authorized it</li>
-      <li><strong>Authorization level</strong> &mdash; Level 1, one-time</li>
-      <li><strong>Principal DID</strong> &mdash; my identity</li>
-      <li><strong>NeuralBridge's signature</strong> &mdash; under their own DID</li>
-    </ul>
-
-    <p>Crucially, the receipt is <strong>independently verifiable</strong>. Any third party with the receipt JSON and NeuralBridge's published public key (resolvable via standard <code>did:web</code> resolution) can verify the signature without runtime dependency on AT's backend or NeuralBridge's backend. The receipt is the cryptographic anchor that survives every party going offline.</p>
+    <p>Crucially: <strong>independently verifiable</strong>. Any third party with the receipt JSON and NeuralBridge's published public key (via standard <code>did:web</code> resolution) can verify without runtime dependency on AT's or NeuralBridge's backend. The receipt survives every party going offline.</p>
   </div>
 
-  <!-- BEAT 7 -->
+  <!-- BEATS 7-8 -->
   <div class="beat-section">
-    <div class="beat-label">Beat 7 <span class="beat-status status-mixed">Mixed &mdash; verification logic real, dispute simulated</span></div>
-    <h3>Dispute prevention</h3>
+    <div class="beat-label">Beats 7 &amp; 8 <span class="beat-status status-mixed">Verification logic real, dispute simulated</span></div>
+    <h3>Dispute prevention &amp; the NeuralBridge operations view</h3>
 
-    <div class="screenshot screenshot-desktop">
+    <div class="screenshot screenshot-desktop" style="margin: 24px 0;">
       <img src="images/beat-7-8.png" alt="NeuralBridge operations view with dispute simulation">
-      <div class="screenshot-caption">NeuralBridge operations view &mdash; receipt verification resolves the dispute</div>
+      <div class="screenshot-caption">NeuralBridge operations console &mdash; transaction log, integration code, dispute resolution</div>
     </div>
 
-    <p>The receipt verification logic, the cryptographic proof, and the ability of any third party to verify NeuralBridge's signed receipt are all real and production-ready. The dispute scenario itself is simulated because the underlying transaction was simulated.</p>
+    <p>I claim I didn't authorize the transaction. NeuralBridge presents the receipt. It cryptographically proves: the principal DID is mine, the authorization was one-time for this exact transaction, the delegation credential is valid, the scope matches, the timestamp is consistent. The dispute is resolved before it becomes a chargeback.</p>
 
-    <p>Now imagine a dispute. I claim, weeks later, that I didn't authorize this transaction. NeuralBridge presents the receipt &mdash; a receipt they themselves signed, under their own DID, immediately after the transaction. The receipt cryptographically proves five things in sequence:</p>
-
-    <ol style="margin: 16px 0 16px 24px;">
-      <li style="margin-bottom: 6px;">The principal DID is mine, signed by my key</li>
-      <li style="margin-bottom: 6px;">The authorization level was one-time, scoped to this exact transaction</li>
-      <li style="margin-bottom: 6px;">The delegation credential referenced is valid and verifiable</li>
-      <li style="margin-bottom: 6px;">The scope covers this exact amount, counterparty, and rail</li>
-      <li style="margin-bottom: 6px;">The timestamp is consistent</li>
-    </ol>
-
-    <p>The dispute is resolved before it becomes a chargeback. There is no card network to override the receipt. The cryptographic proof is the regime.</p>
-
-    <p>A note on dual visibility. The same receipt that NeuralBridge holds is also visible to me, as the principal, in Sovereign's transaction history. Not a separate copy or a derived view. The same cryptographically signed artifact, signed by NeuralBridge under their own DID, verifiable by either party (or any third party) using NeuralBridge's published public key.</p>
-
-    <p>Sovereign already supports this kind of dual-visibility for verified transactions. Lightning transactions in Sovereign expand to show preimage verification today. USDT-on-TRON transactions expand to TRONscan views of the on-chain settlement today. The delegation receipt for agent transactions is the same architectural pattern, applied to a richer artifact: not just <em>the transaction settled</em> but <em>the transaction was authorized by this principal, scoped to these terms, signed by this counterparty.</em> When AI infrastructure partners integrate OP, this view becomes live for their customers' agent transactions, alongside the rail-level verification that already works today.</p>
-  </div>
-
-  <!-- BEAT 8 -->
-  <div class="beat-section">
-    <div class="beat-label">Beat 8 <span class="beat-status status-real">Real UI, simulated data</span></div>
-    <h3>The NeuralBridge operations view</h3>
-
-    <p>This is what NeuralBridge sees on their side. A clean operations console showing the verified transaction, the integration code snippet (four lines, no API key, no runtime dependency on AT or NeuralBridge to verify &mdash; any third party with NeuralBridge's published DID can verify the receipt), the stored receipt, and the dispute prevention indicator.</p>
-
-    <p>The integration story is concrete. AI infrastructure companies don't need to displace anything to adopt this. They already have payment verification infrastructure. They have ledgers, settlement logs, audit trails. Integrating OP adds one more artifact for every agent transaction: a cryptographically signed delegation receipt that proves the human authorized the purchase, lives alongside their existing transaction record, and can be presented in any future dispute. We don't replace their payment stack. We add the trust layer.</p>
+    <p>The operations view shows what NeuralBridge sees: verified transaction, four-line integration snippet (no API key, no runtime dependency &mdash; any third party can verify), stored receipt, and dispute prevention indicator. AI infra companies don't displace anything to adopt this &mdash; they add the trust layer.</p>
   </div>
 
   <!-- CLOSING BEAT -->
@@ -371,31 +303,28 @@
     <div class="beat-label">Closing beat <span class="beat-status status-real">Real</span></div>
     <h3>Trust grows with use</h3>
 
-    <div class="screenshot screenshot-mobile">
-      <img src="images/beat-5.jpeg" alt="Authorization success screen with Level 3 discovery prompt">
-      <div class="screenshot-caption">Success screen with delegation policy discovery prompt</div>
+    <div class="screenshot-pair">
+      <div class="screenshot">
+        <img src="images/beat-5.jpeg" alt="Authorization success screen with delegation policy prompt">
+        <div class="screenshot-caption">Success &mdash; with policy discovery prompt</div>
+      </div>
+      <div class="screenshot">
+        <img src="images/beat-8-1.jpeg" alt="Level 3 policy configuration with Bitcoin Maxi setup">
+        <div class="screenshot-caption">Level 3 &mdash; Gresham's Law as runtime policy</div>
+      </div>
     </div>
 
-    <p>After the first authorization, the success screen invites me to refine my delegation. <em>"Want to reduce friction next time? Configure your delegation policy."</em> I tap through.</p>
-
-    <div class="screenshot screenshot-mobile" style="margin-top: 24px;">
-      <img src="images/beat-8-1.jpeg" alt="Sovereign Level 3 policy configuration">
-      <div class="screenshot-caption">Level 3 policy configuration &mdash; Gresham's Law as agent runtime policy</div>
-    </div>
-
-    <p>This is where the architecture's full power shows. Sovereign's policy configuration page is live, and it's pre-populated with what I'd actually configure as a Bitcoin maxi:</p>
+    <p>After the first authorization, the success screen invites me to configure a delegation policy. I tap through to Sovereign's policy page, pre-populated with my Bitcoin maxi configuration:</p>
 
     <ul>
       <li><strong>Rail preference</strong>: USDT on TRON first, Lightning second</li>
       <li><strong>USDT cap</strong>: $100 per transaction, $1,000 per month</li>
-      <li><strong>Lightning cap</strong>: 15,000 sats per transaction (about $15), 100,000 sats per month</li>
-      <li><strong>Escalation threshold</strong>: $50, above which I get notified before any transaction</li>
-      <li><strong>Fallback rule</strong>: If USDT balance insufficient at transaction time, use Lightning</li>
+      <li><strong>Lightning cap</strong>: 15,000 sats per transaction (~$15), 100,000 sats per month</li>
+      <li><strong>Escalation</strong>: $50 &mdash; notify me above this amount</li>
+      <li><strong>Fallback</strong>: If USDT balance insufficient, use Lightning</li>
     </ul>
 
-    <p>This is Gresham's Law expressed as an agent runtime policy. Spend the depreciating money first. Cap the appreciating money tightly. Keep me in the loop above $50.</p>
-
-    <p>Maxi defaults to Lightning. I configure her to default to USDT. The architecture lets us both be right, in our own ways, simultaneously.</p>
+    <p>Gresham's Law as agent runtime policy. Spend the depreciating money first. Cap the appreciating money tightly. Maxi defaults to Lightning. I configure her to default to USDT. The architecture lets us both be right.</p>
   </div>
 
   <!-- ═══════════════════════════════════════════════════════ -->
@@ -405,24 +334,9 @@
   <section>
     <h2>Why this scales beyond AI infra</h2>
 
-    <p>The chargeback prevention thesis is the wedge. The longer-term thesis is bigger.</p>
+    <p>The chargeback prevention thesis is the wedge. As AI execution commoditizes toward the marginal cost of compute, economic value migrates to what remains scarce: verification-grade ground truth, cryptographic provenance, and liability underwriting.</p>
 
-    <p>Catalini's argument is that as AI execution commoditizes toward the marginal cost of compute, economic value migrates to what remains scarce: verification-grade ground truth, cryptographic provenance, and liability underwriting. Rents accrue to whoever owns the verification infrastructure. He calls this <em>Liability-as-a-Service</em> and identifies it as the dominant emerging product category in the AI economy.</p>
-
-    <p>What we're building is the substrate for that category, applied to agent commerce.</p>
-
-    <p>Today, the wedge is AI infrastructure companies that need a chargeback prevention layer. Tomorrow, the same architecture extends to:</p>
-
-    <ul>
-      <li><strong>Marketplace platforms</strong> where agents transact with each other and need portable reputation</li>
-      <li><strong>Enterprise procurement</strong> where corporate agents represent budget authorities and need cryptographic delegation receipts for audit</li>
-      <li><strong>Cross-border commerce</strong> where the agent's KYA status replaces fiat-side KYC checks</li>
-      <li><strong>DePIN networks</strong> where agents pay for compute, storage, and bandwidth and need verifiable usage receipts</li>
-    </ul>
-
-    <p>In each case, the same primitives apply. Portable identity. Cryptographic delegation. Independent receipts. Multi-rail by default. The architecture doesn't change. The use case expands.</p>
-
-    <p>Five years from now, every AI infrastructure company that processes agent transactions will need this layer. Whoever ships first with the right opinionated architecture, the right open standard, and the right reference implementations becomes the de facto standard for the category. That's the prize. That's why this matters.</p>
+    <p>Today, the wedge is AI infrastructure companies. Tomorrow, the same architecture extends to marketplace platforms (portable reputation), enterprise procurement (delegation receipts for audit), cross-border commerce (KYA replacing KYC), and DePIN networks (verifiable usage receipts). The primitives don't change. The use case expands.</p>
   </section>
 
   <!-- ═══════════════════════════════════════════════════════ -->
@@ -432,28 +346,19 @@
   <section>
     <h2>The honest call to action</h2>
 
-    <p>We're in capital-efficient development with a working demo, deployed mainnet integrations on Lightning and USDT-on-TRON, an SDK in production, and an MIT-licensed protocol that anyone can implement against. What we're looking for now is design partnerships and ecosystem alignment.</p>
+    <p>We're in capital-efficient development with a working demo, deployed mainnet integrations on Lightning and USDT-on-TRON, an SDK in production, and an MIT-licensed protocol anyone can implement against.</p>
 
     <div class="cta-section">
-      <h3>If you're an AI infrastructure company facing this problem</h3>
-      <p>Get in touch. The integration is small and the timing is good. Drop the SDK in at your API edge, point verification calls at our API, ship cryptographic chargeback prevention as a service from day one. Pricing is per transaction. No annual contracts, no procurement cycle. We're actively onboarding design partners who want to co-shape what the next iteration of the standard looks like. The trade is straightforward: you get production-ready chargeback prevention and a named co-author position on the emerging standard, we get the case study and the volume.</p>
+      <h3>AI infrastructure companies</h3>
+      <p>Drop the SDK in at your API edge, point verification calls at our API, ship cryptographic chargeback prevention from day one. Per-transaction pricing. No contracts. We're onboarding design partners who want to co-shape the standard. You get production-ready chargeback prevention and a co-author position; we get the case study and the volume.</p>
     </div>
 
     <div class="cta-section" style="margin-top: 16px;">
-      <h3>If you're a chain or rail looking to attract agent-mediated commerce volume</h3>
-      <p>Also get in touch. The stack is rail-agnostic by design, and we're actively seeking ecosystem partnerships with chains that want to position themselves as the canonical settlement layer for verified agent commerce. Stablecoin-heavy chains and Lightning-native infrastructure are both strong fits.</p>
+      <h3>Chains and rails</h3>
+      <p>The stack is rail-agnostic by design. We're seeking ecosystem partnerships with chains that want to position themselves as the canonical settlement layer for verified agent commerce. Stablecoin-heavy chains and Lightning-native infrastructure are both strong fits.</p>
     </div>
 
-    <div class="cta-section" style="margin-top: 16px;">
-      <h3>If you want to understand where the verification infrastructure thesis goes</h3>
-      <p>The demo and source materials are live on this page. Watch the recording, click around the surfaces, read the protocol spec on GitHub. The thinking here is open. The code is open. The standard is being shaped right now.</p>
-    </div>
-
-    <p style="margin-top: 32px;">The protocol is open. The schemas, the SDK, the AIP standards, the receipt formats, all of it is MIT-licensed, all on GitHub, all forkable into competing implementations. Anyone can implement OP independently of us. What we offer commercially is one way to consume the protocol: the OP/AT API as Liability-as-a-Service, priced per verified transaction, with no licenses and no procurement. The protocol scales without us. The infrastructure scales with us.</p>
-
-    <p>a16z and many others have started saying clearly that verification infrastructure is the bottleneck. Catalini's academic work has been saying it for longer.</p>
-
-    <p>In an age of AI abundance, and costs heading toward zero, we're building what becomes valuable on the other side.</p>
+    <p style="margin-top: 32px;">The protocol is open. The infrastructure scales with us. In an age of AI abundance, and costs heading toward zero, we're building what becomes valuable on the other side.</p>
 
     <p>DM me on <a href="https://x.com/boydcohen">X</a> if any of this lands.</p>
   </section>
