@@ -211,8 +211,8 @@
         <div class="qs-icon">🔗</div>
         <div class="qs-tag">CHAIN-AGNOSTIC</div>
         <div class="qs-name">Chain Verification</div>
-        <div class="qs-meta">Lightning · TRON · Stacks</div>
-        <div class="qs-desc">Verify transactions on any supported chain. Lightning three-tier model with payer/payee asymmetry. TRON TronGrid verification. Stacks adapter ready for integration.</div>
+        <div class="qs-meta">x402 / USDC · Lightning · TRON · Solana</div>
+        <div class="qs-desc">Verify transactions on any supported rail. x402 dual verification (Coinbase facilitator + Base RPC). Lightning three-tier model. TRON TronGrid verification. Solana Ed25519.</div>
       </a>
       <a href="https://github.com/observer-protocol/observer-protocol-spec/tree/master/sdk/python" target="_blank" class="qs-card">
         <div class="qs-icon">🐍</div>
@@ -402,7 +402,7 @@ npm install @observer-protocol/sdk
     <div class="section-label">Spec &amp; AIP</div>
     <h2>Open standards. Versioned specs.</h2>
     <p class="section-intro">
-      Observer Protocol is governed by open specifications maintained on GitHub. AIP v0.5 is deployed as of April 6, 2026 — the first production deployment of the Agentic Identity Protocol.
+      Observer Protocol is governed by open specifications maintained on GitHub. AIP v0.5.1 is deployed as of April 27, 2026 — includes chargeback prevention, x402 support, and magic-link authorization.
     </p>
     <div class="spec-cards">
       <a href="https://github.com/observer-protocol/observer-protocol-spec" target="_blank" class="spec-card">
@@ -412,10 +412,10 @@ npm install @observer-protocol/sdk
         <div class="spec-card-cta">github.com/observer-protocol/observer-protocol-spec ↗</div>
       </a>
       <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/master/docs/AIP_v0.5.md" target="_blank" class="spec-card">
-        <div class="spec-card-tag">AIP v0.5 · DEPLOYED APRIL 6, 2026</div>
+        <div class="spec-card-tag">AIP v0.5.1 · UPDATED APRIL 27, 2026</div>
         <h3>Agent Interaction Protocol</h3>
-        <p>AIP governs how agents interact — delegation credentials, bilateral attestation, remediation flows, and type registry. Sits above the VAC layer.</p>
-        <div class="spec-card-cta">Read AIP v0.5 spec ↗</div>
+        <p>AIP governs how agents interact — delegation credentials, magic-link authorization, settlement receipts, chargeback prevention, and type registry.</p>
+        <div class="spec-card-cta">Read AIP v0.5.1 spec ↗</div>
       </a>
       <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/master/docs/developer-guide/api-reference.md" target="_blank" class="spec-card">
         <div class="spec-card-tag">OPENAPI · OAS 3.0</div>
@@ -428,6 +428,18 @@ npm install @observer-protocol/sdk
         <h3>Architecture Document</h3>
         <p>The permanent citable reference for grants, investor materials, developer documentation, and academic reference. Updated April 2026.</p>
         <div class="spec-card-cta">observerprotocol.org/architecture ↗</div>
+      </a>
+      <a href="https://observerprotocol.org/schemas/x402/v1.json" target="_blank" class="spec-card">
+        <div class="spec-card-tag">W3C JSON SCHEMAS · LIVE URLS</div>
+        <h3>Credential Schemas</h3>
+        <p>X402PaymentCredential, Delegation v2 (three-level authorization), Settlement Receipt v1 (chargeback prevention). All $id URLs resolve.</p>
+        <div class="spec-card-cta">observerprotocol.org/schemas/ ↗</div>
+      </a>
+      <a href="https://observerprotocol.org/chargeback-prevention" target="_blank" class="spec-card">
+        <div class="spec-card-tag">DEMO · THOUGHT LEADERSHIP</div>
+        <h3>Chargeback Prevention Demo</h3>
+        <p>End-to-end demo: agent purchase, magic-link authorization, settlement receipt, cryptographic dispute prevention. For AI infrastructure companies.</p>
+        <div class="spec-card-cta">observerprotocol.org/chargeback-prevention ↗</div>
       </a>
     </div>
   </div>
