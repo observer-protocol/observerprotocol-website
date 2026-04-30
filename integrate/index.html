@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integrate Observer Protocol - Chargeback Prevention for AI Infrastructure | Observer Protocol</title>
+<meta name="description" content="Add cryptographic chargeback prevention to your AI infrastructure in under an hour. Drop-in SDK, per-transaction pricing, no procurement.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080C10;
+    --surface: #0D1219;
+    --surface2: #121A24;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #E8EDF2;
+    --muted: #6B7A8D;
+    --accent: #00D4FF;
+    --green: #00E5A0;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px); background-size: 48px 48px; pointer-events: none; z-index: 0; }
+  .container { max-width: 800px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+  nav { padding: 20px 0; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(8,12,16,0.92); backdrop-filter: blur(12px); z-index: 100; }
+  nav .inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-logo { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-family: var(--mono); text-decoration: none; }
+  .nav-badge { font-family: var(--mono); font-size: 11px; padding: 4px 10px; border: 1px solid rgba(0,212,255,0.3); border-radius: 2px; color: var(--accent); letter-spacing: 0.06em; }
+  h1 { font-size: clamp(28px, 5vw, 40px); font-weight: 800; line-height: 1.1; margin-bottom: 16px; }
+  h1 .accent { color: var(--accent); }
+  h2 { font-size: 24px; font-weight: 700; margin: 48px 0 16px; }
+  h3 { font-size: 18px; font-weight: 600; margin: 32px 0 8px; }
+  p { margin-bottom: 16px; line-height: 1.7; font-size: 15px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  pre { background: #060A0D; border: 1px solid var(--border2); border-radius: 4px; padding: 16px 20px; font-family: var(--mono); font-size: 13px; line-height: 1.7; overflow-x: auto; margin: 16px 0; }
+  code { font-family: var(--mono); font-size: 13px; color: var(--accent); }
+  .hero { padding: 64px 0 32px; }
+  .hero-sub { font-size: 16px; color: var(--muted); max-width: 600px; margin-bottom: 24px; }
+  .step { margin: 40px 0; padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; }
+  .step-num { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 8px; }
+  .proof { margin: 24px 0; padding: 16px 20px; background: rgba(0,229,160,0.05); border: 1px solid rgba(0,229,160,0.2); border-radius: 4px; }
+  .proof-label { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+  .proof-value { font-family: var(--mono); font-size: 12px; color: var(--text); word-break: break-all; }
+  .cta { margin: 48px 0; padding: 32px; background: var(--surface); border: 1px solid var(--border2); border-radius: 4px; text-align: center; }
+  footer { border-top: 1px solid var(--border); padding: 40px 0; text-align: center; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+  footer a { color: var(--accent); text-decoration: none; }
+  ul { margin: 16px 0 16px 24px; }
+  li { margin-bottom: 6px; font-size: 15px; }
+  .time-badge { display: inline-block; font-family: var(--mono); font-size: 11px; padding: 3px 10px; border: 1px solid rgba(0,229,160,0.3); border-radius: 2px; color: var(--green); margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a href="/" class="nav-logo">Observer Protocol</a>
+    <div class="nav-badge">Integration Guide</div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="hero">
+    <span class="time-badge">Integration time: under 1 hour</span>
+    <h1>Add Chargeback Prevention to Your <span class="accent">AI Infrastructure</span></h1>
+    <p class="hero-sub">Drop the SDK in at your API edge. Verify agent payments cryptographically. Issue settlement receipts that prevent disputes definitively. Per-transaction pricing, no procurement.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <h2>What you get</h2>
+
+  <p>Observer Protocol adds one artifact to every agent transaction on your infrastructure: a cryptographically signed settlement receipt that proves the human authorized the purchase. The receipt is independently verifiable by any third party. No runtime dependency on OP or your backend.</p>
+
+  <ul>
+    <li>Cryptographic delegation credentials (W3C Verifiable Credentials)</li>
+    <li>Three-level authorization model (one-time, recurring, standing policy)</li>
+    <li>Settlement receipts signed by your infrastructure under your own DID</li>
+    <li>Dual verification for x402 payments (Coinbase facilitator + on-chain)</li>
+    <li>Multi-rail: x402/USDC on Base, Lightning, USDT on TRON, Solana</li>
+  </ul>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+
+  <h2>Reference integration: Hyperbolic</h2>
+
+  <p>This guide uses a real integration with <a href="https://hyperbolic.xyz">Hyperbolic</a> (GPU inference via x402) as the reference. The transaction hashes below are real and verifiable on <a href="https://basescan.org">BaseScan</a>.</p>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-num">Step 1 - Install the SDK</div>
+    <h3>TypeScript</h3>
+    <pre>npm install @observer-protocol/sdk</pre>
+
+    <h3>Python</h3>
+    <pre>pip install observer-protocol</pre>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-num">Step 2 - Register your service as a counterparty</div>
+
+    <p>Register your AI infrastructure service with a DID so agents can discover and verify you.</p>
+
+    <h3>TypeScript</h3>
+    <pre>import { ObserverClient } from '@observer-protocol/sdk';
+
+const client = new ObserverClient();
+
+const service = await client.registerAgent({
+  publicKey: 'your_ed25519_public_key_hex',
+  agentName: 'Your AI Infra Service',
+});
+
+// Verify key ownership
+const challenge = await client.requestChallenge(service.agentId);
+// Sign challenge.nonce with your private key
+await client.verifyAgent(service.agentId, signatureHex);
+
+// Your service is now:
+// - Discoverable via DID: did:web:observerprotocol.org:agents:{id}
+// - Verifiable by any agent or counterparty
+// - Ready to issue and verify delegation credentials</pre>
+
+    <h3>Python</h3>
+    <pre>from observer_protocol import ObserverClient
+
+client = ObserverClient()
+pub, priv = ObserverClient.generate_keypair()
+
+service = client.register_agent(public_key=pub, agent_name="Your AI Infra Service")
+challenge = client.request_challenge(service.agent_id)
+sig = ObserverClient.sign_challenge(priv, challenge.nonce)
+client.verify_agent(service.agent_id, sig)</pre>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-num">Step 3 - Verify agent payments</div>
+
+    <p>When an agent pays for your service via x402, verify the payment and issue a credential.</p>
+
+    <h3>TypeScript</h3>
+    <pre>// After receiving an x402 payment from an agent
+const result = await client.verifyX402({
+  agentId: 'd13cdfceaa8f895afe56dc902179d279',
+  agentDid: 'did:web:observerprotocol.org:agents:d13cdf...',
+  counterparty: 'did:web:your-service.com',
+  amount: '100000', // 0.10 USDC in atomic units
+  resourceUri: 'https://api.your-service.com/v1/inference',
+  settlementTxHash: '0xd94a6d8bfa9c1634e19b59cac9503e732cb538772b96e02300702bc38fb39b94',
+  paymentPayload: paymentResponseFromX402,
+});
+
+// result.verification.onchainVerified = true
+// result.credential = W3C VC signed by OP
+// result.eventId = audit trail reference</pre>
+
+    <h3>Python</h3>
+    <pre>result = client.verify_x402(
+    agent_id="d13cdfceaa8f895afe56dc902179d279",
+    agent_did="did:web:observerprotocol.org:agents:d13cdf...",
+    counterparty="did:web:your-service.com",
+    amount="100000",
+    resource_uri="https://api.your-service.com/v1/inference",
+    settlement_tx_hash="0xd94a6d8bfa9c...",
+    payment_payload=payment_response,
+)
+
+assert result.verification.onchain_verified  # True</pre>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step">
+    <div class="step-num">Step 4 - Verify receipts (any third party can do this)</div>
+
+    <p>Receipt verification requires only the receipt JSON and the issuer's published public key. No API key. No runtime dependency on OP.</p>
+
+    <pre>from observer_protocol import verify_receipt, resolve_did
+
+issuer_key = resolve_did(receipt_json['issuer']['id'])
+result = verify_receipt(receipt_json, issuer_key)
+assert result.valid  # cryptographic proof verified</pre>
+
+    <p>Four lines. No API key. No runtime dependency on OP or the counterparty. Any third party can verify.</p>
+  </div>
+
+  <!-- PROOF -->
+  <h2>Real on-chain proof</h2>
+
+  <p>These are real x402 payments to Hyperbolic's GPU inference API, settled in USDC on Base mainnet, verified by Observer Protocol with dual verification (Coinbase facilitator + Base RPC on-chain).</p>
+
+  <div class="proof">
+    <div class="proof-label">Verified x402 Payment - Base Mainnet</div>
+    <div class="proof-value">
+      TX: <a href="https://basescan.org/tx/0xd94a6d8bfa9c1634e19b59cac9503e732cb538772b96e02300702bc38fb39b94" target="_blank">0xd94a6d8bfa9c1634...b39b94</a><br>
+      Agent: did:web:observerprotocol.org:agents:d13cdfceaa8f895afe56dc902179d279<br>
+      Counterparty: did:web:hyperbolic.xyz<br>
+      Amount: 0.10 USDC<br>
+      Rail: x402 (USDC on Base)<br>
+      On-chain verified: true
+    </div>
+  </div>
+
+  <div class="proof">
+    <div class="proof-label">X402PaymentCredential issued</div>
+    <div class="proof-value">
+      Credential: urn:uuid:8ca6c6e8-d681-428b-b0f9-4b158b6357cc<br>
+      Issuer: did:web:observerprotocol.org<br>
+      Schema: <a href="https://observerprotocol.org/schemas/x402/v1.json" target="_blank">observerprotocol.org/schemas/x402/v1.json</a><br>
+      Proof: Ed25519Signature2020
+    </div>
+  </div>
+
+  <!-- WHAT YOU DON'T NEED -->
+  <h2>What you don't need to change</h2>
+
+  <ul>
+    <li>Your payment infrastructure stays as-is</li>
+    <li>Your ledgers, settlement logs, audit trails - unchanged</li>
+    <li>Your API endpoints - unchanged</li>
+    <li>OP adds one artifact per agent transaction: the signed receipt</li>
+    <li>No annual contracts, no procurement, no software licenses</li>
+  </ul>
+
+  <!-- CTA -->
+  <div class="cta">
+    <h3>Ready to integrate?</h3>
+    <p style="color: var(--muted); margin-bottom: 16px;">Per-transaction pricing. No minimum. Ship chargeback prevention today.</p>
+    <p>
+      <a href="https://www.npmjs.com/package/@observer-protocol/sdk" target="_blank" style="margin-right: 16px;">npm install @observer-protocol/sdk</a>
+      <a href="https://pypi.org/project/observer-protocol/" target="_blank">pip install observer-protocol</a>
+    </p>
+    <p style="font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 16px;">
+      Questions? boyd@agenticterminal.io | <a href="https://x.com/boydcohen">@boydcohen</a>
+    </p>
+  </div>
+
+  <!-- LINKS -->
+  <h2>Resources</h2>
+  <ul>
+    <li><a href="https://github.com/observer-protocol/observer-protocol-spec/tree/master/sdk/typescript">TypeScript SDK source</a></li>
+    <li><a href="https://github.com/observer-protocol/observer-protocol-spec/tree/master/sdk/python">Python SDK source</a></li>
+    <li><a href="https://observerprotocol.org/schemas/x402/v1.json">X402PaymentCredential schema</a></li>
+    <li><a href="https://observerprotocol.org/schemas/delegation/v2.json">Delegation credential schema v2</a></li>
+    <li><a href="https://observerprotocol.org/schemas/receipt/settlement-receipt-v1.json">Settlement receipt schema v1</a></li>
+    <li><a href="https://observerprotocol.org/.well-known/did.json">OP DID document</a></li>
+    <li><a href="https://observerprotocol.org/chargeback-prevention">Chargeback prevention demo + thesis</a></li>
+    <li><a href="https://github.com/observer-protocol/observer-protocol-spec">GitHub</a></li>
+  </ul>
+
+</div>
+
+<footer>
+  <a href="/">Observer Protocol</a> &middot; <a href="https://github.com/observer-protocol">GitHub</a> &middot; MIT Licensed &middot; observerprotocol.org
+</footer>
+
+</body>
+</html>
