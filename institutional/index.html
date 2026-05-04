@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Institutional Bilateral Demo - Agent Identity for Custodied Flows | Observer Protocol</title>
+<meta name="description" content="Tiered attestations, one-click ERC-8004 publication, multi-rail settlement. Agent identity infrastructure for institutional counterparties.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080C10; --surface: #0D1219; --surface2: #121A24;
+    --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.12);
+    --text: #E8EDF2; --muted: #6B7A8D; --accent: #00D4FF; --accent2: #7B61FF;
+    --green: #00E5A0; --red: #FF4D6A; --amber: #FFB547;
+    --mono: 'IBM Plex Mono', monospace; --sans: 'Syne', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px); background-size: 48px 48px; pointer-events: none; z-index: 0; }
+  .container { max-width: 800px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+  nav { padding: 20px 0; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(8,12,16,0.92); backdrop-filter: blur(12px); z-index: 100; }
+  nav .inner { max-width: 800px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-logo { font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-family: var(--mono); text-decoration: none; }
+  .nav-badge { font-family: var(--mono); font-size: 11px; padding: 4px 10px; border: 1px solid rgba(123,97,255,0.3); border-radius: 2px; color: var(--accent2); letter-spacing: 0.06em; }
+  h1 { font-size: clamp(26px, 4vw, 38px); font-weight: 800; line-height: 1.1; margin-bottom: 16px; }
+  h1 .accent { color: var(--accent); }
+  h1 .accent2 { color: var(--accent2); }
+  h2 { font-size: 22px; font-weight: 700; margin: 48px 0 12px; }
+  p { margin-bottom: 14px; line-height: 1.7; font-size: 15px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .hero { padding: 64px 0 32px; }
+  .hero-sub { font-size: 15px; color: var(--muted); max-width: 640px; margin-bottom: 24px; }
+  .byline { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: -8px; margin-bottom: 24px; }
+  .scenario { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 20px; margin: 24px 0; }
+  .scenario-label { font-family: var(--mono); font-size: 10px; color: var(--accent2); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+
+  /* Beat cards */
+  .beat { margin: 32px 0; border-left: 3px solid var(--border2); padding-left: 20px; }
+  .beat-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .beat-num { font-family: var(--mono); font-size: 11px; color: var(--accent2); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; }
+  .beat-title { font-size: 17px; font-weight: 700; }
+  .beat-screen { font-family: var(--mono); font-size: 12px; color: var(--muted); margin: 8px 0; padding: 12px 16px; background: #060A0D; border: 1px solid var(--border2); border-radius: 4px; line-height: 1.6; overflow-x: auto; }
+  .beat-narration { font-size: 14px; color: var(--text); margin: 8px 0; font-style: italic; }
+  .beat-why { font-size: 13px; color: var(--muted); margin-top: 8px; }
+
+  /* Tier badges */
+  .tier { display: inline-block; font-family: var(--mono); font-size: 11px; padding: 2px 8px; border-radius: 2px; letter-spacing: 0.04em; }
+  .tier-1 { background: rgba(148,163,184,0.15); color: #94A3B8; }
+  .tier-2 { background: rgba(123,97,255,0.15); color: #7B61FF; }
+  .tier-3 { background: rgba(0,212,255,0.15); color: #00D4FF; }
+
+  /* Status */
+  .pass { color: var(--green); font-family: var(--mono); font-size: 12px; }
+  .fail { color: var(--red); font-family: var(--mono); font-size: 12px; }
+
+  .mapping { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 20px; margin: 32px 0; }
+  .mapping h3 { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+  .mapping li { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+
+  .live-vs-codesign { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+  .live-col, .codesign-col { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 16px; }
+  .live-col h3 { color: var(--green); font-size: 13px; font-family: var(--mono); margin-bottom: 8px; }
+  .codesign-col h3 { color: var(--accent2); font-size: 13px; font-family: var(--mono); margin-bottom: 8px; }
+  .live-col li, .codesign-col li { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+
+  .cta { margin: 48px 0; padding: 32px; background: var(--surface); border: 1px solid var(--border2); border-radius: 4px; text-align: center; }
+  .author { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); font-family: var(--mono); font-size: 13px; color: var(--muted); }
+  .author strong { color: var(--text); }
+  footer { border-top: 1px solid var(--border); padding: 40px 0; text-align: center; font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 64px; }
+  footer a { color: var(--accent); text-decoration: none; }
+  @media (max-width: 600px) { .live-vs-codesign { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a href="/" class="nav-logo">Observer Protocol</a>
+    <div class="nav-badge">Institutional Demo</div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="hero">
+    <h1><span class="accent2">Institutional</span> Bilateral Demo</h1>
+    <p class="hero-sub">Tiered attestations, one-click ERC-8004 publication, multi-rail settlement. Agent identity infrastructure for institutional counterparties.</p>
+    <p class="byline">By <span style="color: var(--text)">Boyd Cohen, Ph.D.</span> - Founder, Observer Protocol</p>
+  </div>
+
+  <!-- Scenario -->
+  <div class="scenario">
+    <div class="scenario-label">Scenario</div>
+    <p style="margin-bottom: 8px;">Two institutional counterparties operate agents against a custodied flow. <strong>Fund A</strong> (credit-focused hedge fund) operates a treasury agent. <strong>Lender B</strong> (DeFi lending protocol) operates a counterparty agent.</p>
+    <p style="margin-bottom: 8px;">The transaction: <strong>$1.2M USDC margin top-up</strong> to maintain LTV after a price move. Settlement on <strong>x402 / USDC on Base</strong>.</p>
+    <p style="margin-bottom: 0;">Fund A's agent holds a <span class="tier tier-2">Tier 2</span> credential. Lender B requires <span class="tier tier-3">Tier 3</span> for transactions at or above $1M. The smart contract on the receiving end is Immunefi-audited for code safety. The rejection happens at the agent principal layer - the gap OP/AT addresses.</p>
+  </div>
+
+  <!-- Beat 1 -->
+  <div class="beat" style="border-color: var(--accent2);">
+    <div class="beat-header">
+      <span class="beat-num">Beat 1</span>
+      <span class="beat-title">Discovery and Handshake</span>
+    </div>
+    <div class="beat-screen">
+Fund A: did:web:observerprotocol.org:agents:372c7bd2... <span class="tier tier-2">Tier 2</span> AT-ARS: 71
+Lender B: did:web:observerprotocol.org:agents:74836704... <span class="tier tier-3">Tier 3</span> AT-ARS: 88
+DIDs resolved. Org-level attestations on file. Tier mismatch visible.
+    </div>
+    <p class="beat-narration">Two institutional agents discover each other and exchange verifiable credentials. The protocol is symmetric - no privileged side. Same handshake whether the rail is Lightning, x402, or TRON.</p>
+  </div>
+
+  <!-- Beat 2 -->
+  <div class="beat" style="border-color: var(--red);">
+    <div class="beat-header">
+      <span class="beat-num">Beat 2</span>
+      <span class="beat-title">Eager Chain Verification - Tier Mismatch</span>
+    </div>
+    <div class="beat-screen">
+[Lender B verifies Fund A against ERC-8004 registry on Base]
+Fund A attestation tier: <span class="tier tier-2">Tier 2</span> (Enterprise-Attested)
+Required for >= $1,000,000: <span class="tier tier-3">Tier 3</span> (Chain-Anchored)
+ERC-8004 on-chain anchor: NOT FOUND
+<span class="fail">MISMATCH: Tier 2 received, Tier 3 required</span>
+    </div>
+    <p class="beat-narration">Lender B doesn't just trust what Fund A says. It checks the on-chain trust registry. Tier 2 is meaningful - an enterprise admin signed it. But for institutional settlement above threshold, independent verifiability is the bar.</p>
+  </div>
+
+  <!-- Beat 3 -->
+  <div class="beat" style="border-color: var(--red);">
+    <div class="beat-header">
+      <span class="beat-num">Beat 3</span>
+      <span class="beat-title">Policy-Layer Rejection</span>
+    </div>
+    <div class="beat-screen">
+Verdict: REJECTED (AIP v0.5.1)
+
+Violation 1: ATTESTATION_TIER_INSUFFICIENT
+  Tier 2 received; Tier 3 required for >= $1,000,000
+
+Violation 2: AT_ARS_BELOW_THRESHOLD
+  Score 71 below counterparty minimum 80
+
+Remediation: Request Tier 3 Delegation Credential
+  Chain-anchored attestation will contribute +9 to AT-ARS
+    </div>
+    <p class="beat-narration">Refusal at the policy layer, not the trust score. The smart contract is Immunefi-audited and would execute cleanly - but Lender B's agent never lets the request reach it. The gap: Immunefi protects the contract. OP/AT protects the agent principal.</p>
+  </div>
+
+  <!-- Beat 4 -->
+  <div class="beat" style="border-color: var(--amber);">
+    <div class="beat-header">
+      <span class="beat-num">Beat 4</span>
+      <span class="beat-title">Autonomous Remediation</span>
+    </div>
+    <div class="beat-screen">
+[Fund A's agent parses AIP refusal payload]
+  Missing: chain-anchored attestation
+  Score gap: 71 -> need 80
+  Path: upgrade_attestation_tier
+
+[Auto-submits Delegation Credential request]
+  Tier: Tier 3 (Enterprise + Chain-Anchored)
+  Scope: margin-topup, collateral-release
+  Rails: x402-usdc-base, lightning, tron:trc20
+  Expiry: 30 days
+
+>> Request appears in Fund A's CIO console. No human in the loop until now.
+    </div>
+    <p class="beat-narration">Fund A's agent reads the structured refusal, figures out what's missing, and asks for the upgrade autonomously. AIP gives both sides a shared schema for refusal and remediation. You don't teach agents new tricks - you express new policies.</p>
+  </div>
+
+  <!-- Beat 5 -->
+  <div class="beat" style="border-color: var(--accent2);">
+    <div class="beat-header">
+      <span class="beat-num">Beat 5</span>
+      <span class="beat-title">Human Approval - CIO Selects Tier 3</span>
+    </div>
+    <div class="beat-screen">
+AT Enterprise Dashboard - Issue Delegation Wizard
+
+Step 2 of 5: Attestation Tier
+
+  [ ] Tier 1: Self-Attested (Sovereign only)
+  [ ] Tier 2: Enterprise-Attested
+  [*] Tier 3: Enterprise + Chain-Anchored  &lt;-- SELECTED
+
+Scope: margin-topup, collateral-release
+Rails: x402-usdc-base, lightning, tron:trc20
+Approved with hardware key signature.
+    </div>
+    <p class="beat-narration">The human-in-the-loop event. The tier picker maps onto escalating approval surfaces a custodian already runs - retail, enterprise, regulated-counterparty. Three seconds to understand. No new vocabulary.</p>
+  </div>
+
+  <!-- Beat 6 -->
+  <div class="beat" style="border-color: var(--accent);">
+    <div class="beat-header">
+      <span class="beat-num">Beat 6</span>
+      <span class="beat-title">One-Click ERC-8004 Publication</span>
+    </div>
+    <div class="beat-screen">
+Delegation Issued:
+  Agent: Fund A Treasury Agent
+  Tier: <span class="tier tier-3">Tier 3: Enterprise + Chain-Anchored</span>
+  Scope: margin-topup, collateral-release
+  Rails: x402-usdc-base, lightning, tron:trc20
+  Expires: 30 days
+
+[Publish to ERC-8004 Registry] -> Registration file pinned
+  Token URI: https://api.observerprotocol.org/agents/.../registration.json
+  SHA-256: 11da2df5cb1218d98f792b4a69a77ffd...
+
+[Mint 8004 NFT on Base] -> TX confirmed
+
+AT-ARS Recompute: 71 -> 84 (+9 chain anchor, +4 hardware key)
+    </div>
+    <p class="beat-narration">One click moves Fund A from Tier 2 to Tier 3. Independent verifiability is no longer a claim - the audience is looking at the SHA-256 hash and the Base transaction. And the Rails field: x402, Lightning, TRON. Same credential, three rails, no new issuance.</p>
+  </div>
+
+  <!-- Beat 7 -->
+  <div class="beat" style="border-color: var(--green);">
+    <div class="beat-header">
+      <span class="beat-num">Beat 7</span>
+      <span class="beat-title">Retry and Settlement on x402 / USDC</span>
+    </div>
+    <div class="beat-screen">
+[Lender B independent verification against ERC-8004]
+  Chain-anchored Tier 3 attestation: <span class="pass">PASS</span>
+  AT-ARS score 84 >= 80: <span class="pass">PASS</span>
+  Transaction within scope: <span class="pass">PASS</span>
+  x402-usdc-base in Rails: <span class="pass">PASS</span>
+
+>> ALL CHECKS PASS
+
+Settlement: $1,200,000 USDC on x402 / Base
+TX: 0xa7c3f9b2e1d4...
+Receipt references: Delegation Token URI + 8004 anchor TX + CIO approval
+    </div>
+    <p class="beat-narration">Lender B verifies independently against 8004 - OP/AT is not in this verification path. Same architecture settles on Lightning or TRON if the counterparty prefers. The receipt is the dispute regime.</p>
+  </div>
+
+  <!-- Beat 8 -->
+  <div class="beat" style="border-color: var(--green);">
+    <div class="beat-header">
+      <span class="beat-num">Beat 8</span>
+      <span class="beat-title">Audit Trail in Both Dashboards</span>
+    </div>
+    <div class="beat-screen">
+FUND A's VIEW                     LENDER B's VIEW
+------------------------------   ------------------------------
+1. Refusal received               1. Refusal issued (policy)
+2. Auto-remediation sent          2. Remediation hint sent
+3. Tier 3 credential issued       3. Token URI resolved (8004)
+4. ERC-8004 publication tx        4. Content hash verified
+5. CIO hardware-key approval      5. Settlement approved
+6. Settlement on x402/USDC        6. Signed receipt issued
+
+Both views independently verifiable against the on-chain registry.
+    </div>
+    <p class="beat-narration">Every party has the full trail. Fund A's compliance team. Lender B's compliance team. The custodian's compliance team. A regulator with no relationship to either party can resolve the Token URI against 8004 and reconstruct exactly what happened.</p>
+  </div>
+
+  <!-- Mapping to Anchorage -->
+  <div class="mapping">
+    <h3>How this maps to an institutional custodian</h3>
+    <ul>
+      <li><strong>Beat 2</strong> mirrors tri-party policy enforcement on collateral movements - extended to the agent identity layer.</li>
+      <li><strong>Beat 3</strong> is the agent analog of quorum approval policies. Same paradigm, agent-aware.</li>
+      <li><strong>Beat 5</strong> tier picker maps onto escalating approval surfaces - retail / enterprise / regulated-counterparty.</li>
+      <li><strong>Beat 6</strong> ERC-8004 anchoring gives compliance independent verifiability. No vendor lock-in on the audit path.</li>
+      <li><strong>Beat 7</strong> multi-rail credential means no commitment to x402 vs Lightning vs TRON before seeing client demand.</li>
+      <li><strong>Beat 8</strong> answers "what happens when someone disputes an agent action?" - the audit artifact that makes agent-mediated flows defensible.</li>
+    </ul>
+  </div>
+
+  <!-- Live vs Co-design -->
+  <div class="live-vs-codesign">
+    <div class="live-col">
+      <h3>ALREADY LIVE</h3>
+      <ul>
+        <li>Three-tier attestation model in AT dashboard</li>
+        <li>Issue Delegation 5-step wizard</li>
+        <li>One-click ERC-8004 publication + NFT mint</li>
+        <li>Multi-rail delegation credentials</li>
+        <li>AIP refusal and remediation grammar</li>
+        <li>AT-ARS scoring with tier factors</li>
+        <li>x402, Lightning, TRON settlement</li>
+        <li>TypeScript + Python SDKs (npm + PyPI)</li>
+      </ul>
+    </div>
+    <div class="codesign-col">
+      <h3>CO-DESIGN WITH PARTNER</h3>
+      <ul>
+        <li>Institutional counterparty profile and policy primitives</li>
+        <li>Wizard integration with partner's CIO console</li>
+        <li>Counterparty agent harness</li>
+        <li>Credential schema extensions for institutional scope</li>
+      </ul>
+    </div>
+  </div>
+
+  <p style="font-size: 13px; color: var(--muted); text-align: center; margin: 24px 0;">Build estimate: 2-3 weeks from design partner kickoff. The protocol primitives, tier system, chain-anchoring path, and multi-rail credentials are all in production today.</p>
+
+  <!-- CTA -->
+  <div class="cta">
+    <h3>We're not asking for capital or headcount.</h3>
+    <p style="color: var(--muted); margin-bottom: 12px;">We're asking whether there's a real institutional surface where we'd co-design the agent identity layer against actual policy primitives.</p>
+    <p style="font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 12px;">
+      boyd@agenticterminal.io | <a href="https://x.com/boydcohen">@boydcohen</a>
+    </p>
+  </div>
+
+  <div class="author">
+    <p><strong>Boyd Cohen, Ph.D.</strong><br>
+    Founder, Observer Protocol & Agentic Terminal<br>
+    <a href="https://observerprotocol.org/chargeback-prevention">Chargeback Prevention Demo</a> | <a href="https://observerprotocol.org/integrate">Integration Guide</a> | <a href="https://github.com/observer-protocol">GitHub</a></p>
+  </div>
+
+</div>
+
+<footer>
+  <a href="/">Observer Protocol</a> &middot; <a href="/chargeback-prevention">Chargeback Demo</a> &middot; <a href="/integrate">Integration Guide</a> &middot; <a href="https://github.com/observer-protocol">GitHub</a> &middot; MIT Licensed
+</footer>
+
+</body>
+</html>
