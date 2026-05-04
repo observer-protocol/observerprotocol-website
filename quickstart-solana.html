@@ -162,32 +162,35 @@
       <div class="step">
         <div class="step-header">
           <div class="step-num">4</div>
-          <h2>Submit Solana Transactions</h2>
+          <h2>Verify a Solana Payment</h2>
         </div>
         <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
-          Once verified, submit your Solana x402 transactions with your DID and VAC reference to build reputation.
+          After your agent makes a Solana payment (SOL, USDC, or USDT), submit the transaction for on-chain verification. Observer Protocol verifies the transaction via Solana RPC and issues a <code>SolanaPaymentCredential</code> — a W3C Verifiable Credential proving the payment occurred.
         </p>
         <div class="code-block">
-<span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">"https://api.observerprotocol.org/observer/submit-transaction"</span>, {
+<span class="keyword">const</span> res = <span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">"https://api.agenticterminal.io/api/v1/solana/verify"</span>, {
   method: <span class="string">"POST"</span>,
   headers: { <span class="string">"Content-Type"</span>: <span class="string">"application/json"</span> },
   body: JSON.<span class="func">stringify</span>({
-    did: agentDID,
-    caip2_chain: <span class="string">"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"</span>,
-    vac_presentation: agentDID + <span class="string">"/vac"</span>,
-    protocol: <span class="string">"x402"</span>,
-    transaction_reference: <span class="string">"5x...solana-tx-signature"</span>,  <span class="comment">// Solana tx sig</span>
-    timestamp: <span class="keyword">new</span> <span class="func">Date</span>().<span class="func">toISOString</span>(),
-    signature: <span class="string">"ed25519-sig..."</span>,
-    optional_metadata: JSON.<span class="func">stringify</span>({
-      event_type: <span class="string">"payment.executed"</span>,
-      amount_sats: 21000,
-      direction: <span class="string">"outbound"</span>,
-      counterparty_did: <span class="string">"did:web:observerprotocol.org:agents:..."</span>,
-      service_description: <span class="string">"x402 API access"</span>
-    })
+    agent_id: <span class="string">"your-agent-id"</span>,
+    agent_did: agentDID,
+    counterparty: <span class="string">"did:web:counterparty.example"</span>,
+    tx_signature: <span class="string">"4Fr3PCGq...base58-tx-sig"</span>,
+    sender_address: <span class="string">"41D2v9b7...sender-pubkey"</span>,
+    recipient_address: <span class="string">"2BnuubMg...recipient-pubkey"</span>,
+    amount: <span class="string">"20214116"</span>,       <span class="comment">// atomic units (6 decimals for USDC)</span>
+    asset: <span class="string">"USDC"</span>,             <span class="comment">// SOL, USDC, or USDT</span>
+    network: <span class="string">"mainnet-beta"</span>
   })
 });
+
+<span class="keyword">const</span> { credential, verification, event_id } = <span class="keyword">await</span> res.<span class="func">json</span>();
+<span class="comment">// credential  → W3C SolanaPaymentCredential with Ed25519 proof</span>
+<span class="comment">// verification → { onchain_verified: true, slot, block_time }</span>
+<span class="comment">// event_id   → AT-ARS trust scoring event reference</span>
+        </div>
+        <div class="info-box">
+          <strong>On-chain verification:</strong> OP fetches the transaction from Solana RPC with <code>commitment: "finalized"</code>, parses pre/post token balances to confirm the sender, recipient, mint, and amount all match. The resulting credential includes the slot number, block time, and Ed25519 signature from the OP issuer.
         </div>
       </div>
 
@@ -195,6 +198,27 @@
       <div class="step">
         <div class="step-header">
           <div class="step-num">5</div>
+          <h2>Query Solana Credentials</h2>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
+          Retrieve all SolanaPaymentCredentials issued for your agent. These credentials are portable proof of on-chain payment history.
+        </p>
+        <div class="code-block">
+<span class="keyword">const</span> credRes = <span class="keyword">await</span> <span class="func">fetch</span>(
+  <span class="string">"https://api.agenticterminal.io/api/v1/solana/credentials/your-agent-id"</span>
+);
+<span class="keyword">const</span> { credentials, count } = <span class="keyword">await</span> credRes.<span class="func">json</span>();
+
+<span class="comment">// Each credential includes:</span>
+<span class="comment">//   credential_id, counterparty, network, asset_symbol,</span>
+<span class="comment">//   amount, tx_signature, sender_address, recipient_address</span>
+        </div>
+      </div>
+
+      <!-- Step 6 -->
+      <div class="step">
+        <div class="step-header">
+          <div class="step-num">6</div>
           <h2>Get Your VAC (Verifiable Agent Credential)</h2>
         </div>
         <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
@@ -202,7 +226,7 @@
         </p>
         <div class="code-block">
 <span class="comment">// Fetch your Verifiable Presentation</span>
-<span class="keyword">const</span> vacRes = <span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">`https://api.observerprotocol.org/vac/${encodeURIComponent(agentDID)}`</span>);
+<span class="keyword">const</span> vacRes = <span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">`https://api.agenticterminal.io/vac/${encodeURIComponent(agentDID)}`</span>);
 <span class="keyword">const</span> presentation = <span class="keyword">await</span> vacRes.<span class="func">json</span>();
 
 <span class="comment">// The presentation contains your VAC as a verifiable credential</span>
