@@ -44,6 +44,10 @@
   .beat-screen { font-family: var(--mono); font-size: 12px; color: var(--muted); margin: 8px 0; padding: 12px 16px; background: #060A0D; border: 1px solid var(--border2); border-radius: 4px; line-height: 1.6; overflow-x: auto; }
   .beat-narration { font-size: 14px; color: var(--text); margin: 8px 0; font-style: italic; }
   .beat-why { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  .beat-screenshot { margin: 12px 0; border: 1px solid var(--border2); border-radius: 4px; overflow: hidden; max-width: 360px; }
+  .beat-screenshot img { width: 100%; display: block; }
+  .beat-screenshot-wide { max-width: 100%; }
+  .beat-screenshot-caption { font-family: var(--mono); font-size: 9px; color: var(--muted); padding: 6px 10px; border-top: 1px solid var(--border); letter-spacing: 0.04em; text-transform: uppercase; }
 
   /* Tier badges */
   .tier { display: inline-block; font-family: var(--mono); font-size: 11px; padding: 2px 8px; border-radius: 2px; letter-spacing: 0.04em; }
@@ -87,7 +91,6 @@
   <div class="hero">
     <h1><span class="accent2">Institutional</span> Bilateral Demo</h1>
     <p class="hero-sub">Tiered attestations, one-click ERC-8004 publication, multi-rail settlement. Agent identity infrastructure for institutional counterparties.</p>
-    <p class="byline">By <span style="color: var(--text)">Boyd Cohen, Ph.D.</span> - Founder, Observer Protocol</p>
   </div>
 
   <!-- Scenario -->
@@ -146,6 +149,10 @@ Violation 2: AT_ARS_BELOW_THRESHOLD
 Remediation: Request Tier 3 Delegation Credential
   Chain-anchored attestation will contribute +9 to AT-ARS
     </div>
+    <div class="beat-screenshot beat-screenshot-wide">
+      <img src="images/beat-3-rejection.png" alt="AIP structured refusal with two violations and remediation hint">
+      <div class="beat-screenshot-caption">AIP v0.5.1 structured refusal - terminal output</div>
+    </div>
     <p class="beat-narration">Refusal at the policy layer, not the trust score. The smart contract is Immunefi-audited and would execute cleanly - but Lender B's agent never lets the request reach it. The gap: Immunefi protects the contract. OP/AT protects the agent principal.</p>
   </div>
 
@@ -191,6 +198,10 @@ Scope: margin-topup, collateral-release
 Rails: x402-usdc-base, lightning, tron:trc20
 Approved with hardware key signature.
     </div>
+    <div class="beat-screenshot">
+      <img src="images/beat-5-tier-selector.png" alt="AT Enterprise Dashboard - Attestation Tier selector with Tier 3 selected">
+      <div class="beat-screenshot-caption">Live AT dashboard - Issue Delegation wizard, step 2</div>
+    </div>
     <p class="beat-narration">The human-in-the-loop event. The tier picker maps onto escalating approval surfaces a custodian already runs - retail, enterprise, regulated-counterparty. Three seconds to understand. No new vocabulary.</p>
   </div>
 
@@ -215,6 +226,16 @@ Delegation Issued:
 [Mint 8004 NFT on Base] -> TX confirmed
 
 AT-ARS Recompute: 71 -> 84 (+9 chain anchor, +4 hardware key)
+    </div>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin: 12px 0;">
+      <div class="beat-screenshot">
+        <img src="images/beat-6-delegation-issued.png" alt="Delegation Issued - Tier 3, multi-rail, 30 days">
+        <div class="beat-screenshot-caption">Credential issued - publish to 8004</div>
+      </div>
+      <div class="beat-screenshot">
+        <img src="images/beat-6-8004-pinned.png" alt="Registration file pinned with Token URI and SHA-256 hash">
+        <div class="beat-screenshot-caption">Registration pinned - mint NFT on Base</div>
+      </div>
     </div>
     <p class="beat-narration">One click moves Fund A from Tier 2 to Tier 3. Independent verifiability is no longer a claim - the audience is looking at the SHA-256 hash and the Base transaction. And the Rails field: x402, Lightning, TRON. Same credential, three rails, no new issuance.</p>
   </div>
@@ -303,11 +324,6 @@ Both views independently verifiable against the on-chain registry.
 
   <p style="font-size: 13px; color: var(--muted); text-align: center; margin: 24px 0;">Build estimate: 2-3 weeks from design partner kickoff. The protocol primitives, tier system, chain-anchoring path, and multi-rail credentials are all in production today.</p>
 
-  <div class="author">
-    <p><strong>Boyd Cohen, Ph.D.</strong><br>
-    Founder, Observer Protocol & Agentic Terminal<br>
-    <a href="https://observerprotocol.org/chargeback-prevention">Chargeback Prevention Demo</a> | <a href="https://observerprotocol.org/integrate">Integration Guide</a> | <a href="https://github.com/observer-protocol">GitHub</a></p>
-  </div>
 
 </div>
 
