@@ -1,6 +1,19 @@
 [build]
   publish = "."
 
+# DID document resolution — must serve JSON per W3C did:web spec.
+# The api. subdomain is the canonical source; proxy through the apex
+# so the W3C-mandated path observerprotocol.org/agents/{id}/did.json
+# returns the actual DID document instead of falling through to the
+# human-readable agent listing page (agents.html). This rule MUST
+# come before the /agents/* catch-all below.
+[[redirects]]
+  from = "/agents/:id/did.json"
+  to = "https://api.observerprotocol.org/agents/:id/did.json"
+  status = 200
+  force = true
+
+# Human-readable agent profile pages — existing behavior, preserved.
 [[redirects]]
   from = "/agents/*"
   to = "/agents.html"
