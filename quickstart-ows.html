@@ -133,7 +133,7 @@ ows wallet create --name <span class="string">"agent-treasury"</span>
           Add the Observer Protocol SDK to your project:
         </p>
         <div class="code-block">
-npm install @observerprotocol/sdk
+npm install @observer-protocol/sdk
         </div>
       </div>
 
@@ -147,7 +147,7 @@ npm install @observerprotocol/sdk
           Use your OWS-derived keys to register on Observer Protocol:
         </p>
         <div class="code-block">
-<span class="keyword">import</span> { ObserverClient } <span class="keyword">from</span> <span class="string">'@observerprotocol/sdk'</span>;
+<span class="keyword">import</span> { ObserverClient } <span class="keyword">from</span> <span class="string">'@observer-protocol/sdk'</span>;
 <span class="keyword">import</span> { OWSWallet } <span class="keyword">from</span> <span class="string">'@openwallet/sdk'</span>;
 
 <span class="comment">// Load your OWS vault</span>
@@ -158,20 +158,17 @@ npm install @observerprotocol/sdk
 
 <span class="comment">// Create OP client</span>
 <span class="keyword">const</span> client = <span class="keyword">new</span> <span class="func">ObserverClient</span>({
-  baseUrl: <span class="string">'https://api.observerprotocol.org'</span>,
-  agentId: <span class="string">'my-ows-agent'</span>,
-  publicKey: solanaKey.publicKey,
-  privateKey: solanaKey.privateKey
+  baseUrl: <span class="string">'https://api.observerprotocol.org'</span>
 });
 
-<span class="comment">// Register with OWS metadata</span>
-<span class="keyword">await</span> client.<span class="func">register</span>({
-  solanaAddress: solanaKey.address,
-  walletStandard: <span class="string">'ows'</span>,
-  owsVaultName: <span class="string">'agent-treasury'</span>,
-  chains: [<span class="string">'evm'</span>, <span class="string">'solana'</span>, <span class="string">'bitcoin'</span>],
-  alias: <span class="string">'My OWS Agent'</span>
+<span class="comment">// Register your agent with the OWS-derived public key</span>
+<span class="keyword">const</span> agent = <span class="keyword">await</span> client.<span class="func">registerAgent</span>({
+  publicKey: solanaKey.publicKey,         <span class="comment">// hex-encoded ed25519 pub</span>
+  agentName: <span class="string">'My OWS Agent'</span>,
+  alias: <span class="string">'my-ows-agent'</span>,
+  framework: <span class="string">'ows'</span>
 });
+<span class="comment">// → { agent_id, agent_did, ... }</span>
         </div>
       </div>
 
@@ -186,16 +183,14 @@ npm install @observerprotocol/sdk
         </p>
         <div class="code-block">
 <span class="comment">// Get challenge from server</span>
-<span class="keyword">const</span> challenge = <span class="keyword">await</span> client.<span class="func">getChallenge</span>();
+<span class="keyword">const</span> challenge = <span class="keyword">await</span> client.<span class="func">requestChallenge</span>(agent.agent_id);
+<span class="comment">// → { challengeId, nonce, expiresAt }</span>
 
-<span class="comment">// Sign with OWS-derived key</span>
-<span class="keyword">const</span> signature = <span class="keyword">await</span> solanaKey.<span class="func">sign</span>(challenge.message);
+<span class="comment">// Sign the nonce with your OWS-derived ed25519 key</span>
+<span class="keyword">const</span> signedChallenge = <span class="keyword">await</span> solanaKey.<span class="func">sign</span>(challenge.nonce);
 
-<span class="comment">// Verify registration</span>
-<span class="keyword">await</span> client.<span class="func">verifyChallenge</span>({
-  signature: signature,
-  challengeId: challenge.id
-});
+<span class="comment">// Verify ownership</span>
+<span class="keyword">await</span> client.<span class="func">verifyAgent</span>(agent.agent_id, signedChallenge);
         </div>
       </div>
 
@@ -210,8 +205,8 @@ npm install @observerprotocol/sdk
         </p>
         <div class="code-block">
 <span class="comment">// Get your VAC</span>
-<span class="keyword">const</span> vac = <span class="keyword">await</span> client.<span class="func">getVAC</span>();
-console.<span class="func">log</span>(<span class="string">'VAC URL:'</span>, <span class="string">`https://observerprotocol.org/vac/</span>${client.agentId}<span class="string">`</span>);
+<span class="keyword">const</span> vac = <span class="keyword">await</span> client.<span class="func">getVAC</span>(agent.agent_id);
+console.<span class="func">log</span>(<span class="string">'VAC URL:'</span>, <span class="string">`https://observerprotocol.org/vac/</span>${agent.agent_id}<span class="string">`</span>);
 
 <span class="comment">// Response includes:</span>
 <span class="comment">// - OWS badge</span>
