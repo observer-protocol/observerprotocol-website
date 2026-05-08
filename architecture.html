@@ -383,7 +383,7 @@
           <div class="arch-col-header">Agent Identity</div>
           <div class="arch-card identity">
             <div class="arch-card-title">did:web · Agent DID <span class="live-badge">live</span></div>
-            <div class="arch-card-body">did:web:observerprotocol.org<br/>:agents:{id}/did.json<br/>Invoice → preimage · Macaroon auth</div>
+            <div class="arch-card-body">did:web:observerprotocol.org<br/>:agents:{id}/did.json<br/>W3C-resolvable · public</div>
           </div>
           <div class="arch-card identity">
             <div class="arch-card-title">did:web · Org DID</div>
@@ -422,12 +422,8 @@
             <div class="arch-card-body">Sessions · stablecoin<br/>Fiat bridge</div>
           </div>
           <div class="arch-card rails">
-            <div class="arch-card-title">Tether WDK</div>
-            <div class="arch-card-body">verifiedSend()<br/>Bilateral auth</div>
-          </div>
-          <div class="arch-card rails">
-            <div class="arch-card-title">OWS · MoonPay</div>
-            <div class="arch-card-body">Policy engine integration<br/>Trust threshold gating</div>
+            <div class="arch-card-title">USDT-on-TRON <span class="live-badge">live</span></div>
+            <div class="arch-card-body">TRC-20 receipts · TronGrid<br/>verified · ERC-8004 anchor</div>
           </div>
         </div>
         <!-- OBSERVER PROTOCOL -->
@@ -464,7 +460,7 @@
         </div>
         <!-- AIP -->
         <div>
-          <div class="arch-col-header aip-header">AIP <span class="new-badge">v0.2</span></div>
+          <div class="arch-col-header aip-header">AIP <span class="new-badge">v0.5</span></div>
           <div class="arch-card aip">
             <div class="arch-card-title">Delegation Credential <span class="new-badge-card">new</span></div>
             <div class="arch-card-body">Org → agent signed scope<br/>Embedded in VAC extension<br/>Full chain verified at query</div>
@@ -502,8 +498,24 @@
             <div class="arch-card-body">Self-sovereign individual tier<br/>Client-side keypair · free</div>
           </div>
           <div class="arch-card at">
-            <div class="arch-card-title">AT-ARS-1.0 score</div>
-            <div class="arch-card-body">5-factor weighted formula<br/>Longitudinal · 40+ metrics</div>
+            <div class="arch-card-title">AT-ARS score <span class="live-badge">live</span></div>
+            <div class="arch-card-body">5-band trust score (0–100)<br/>Receipt + counterparty + org<br/>+ recency + volume signals</div>
+          </div>
+          <div class="arch-card at">
+            <div class="arch-card-title">Magic-link authorization <span class="live-badge">live</span></div>
+            <div class="arch-card-body">Soft-reject remediation<br/>One-tap human approval<br/>JWT · 15-min single-use</div>
+          </div>
+          <div class="arch-card at">
+            <div class="arch-card-title">Delegation policy engine <span class="live-badge">live</span></div>
+            <div class="arch-card-body">Multi-rail prioritization<br/>Per-tx + per-month caps<br/>Escalation thresholds</div>
+          </div>
+          <div class="arch-card at">
+            <div class="arch-card-title">Bilateral handshake <span class="new-badge-card">new</span></div>
+            <div class="arch-card-body">Sender + recipient prove DIDs<br/>before settlement<br/>Chargeback-resistant receipt</div>
+          </div>
+          <div class="arch-card at">
+            <div class="arch-card-title">Sandbox tier <span class="live-badge">live</span></div>
+            <div class="arch-card-body">sandbox.observerprotocol.org<br/>Fixtures · deterministic<br/>SDK + integration testing</div>
           </div>
           <div class="arch-card at">
             <div class="arch-card-title">Remediation config</div>
@@ -513,6 +525,23 @@
             <div class="arch-card-title">PostgreSQL store</div>
             <div class="arch-card-body">agentic_terminal_db<br/>verified_agents · events</div>
           </div>
+        </div>
+      </div>
+
+      <!-- WALLET STANDARDS -->
+      <div class="arch-section-label">Wallet Abstractions · Multi-Rail Provisioning</div>
+      <div class="arch-foundations">
+        <div class="foundation-block">
+          <div class="foundation-title">Tether WDK · Wallet Development Kit <span class="live-badge">partnership</span></div>
+          <div class="foundation-body">Multi-rail wallet provisioning + identity binding for agentic commerce. <strong>@observer-protocol/wdk-protocol-trust</strong> + <strong>@observer-protocol/wdk-lightning-verifier</strong> compose with WDK to add bilateral trust handshake, ERC-8004 anchoring, and chargeback-resistant receipts.</div>
+        </div>
+        <div class="foundation-block">
+          <div class="foundation-title">OWS · Open Wallet Standard <span class="live-badge">live</span></div>
+          <div class="foundation-body">BIP-44-derived multi-chain agent vaults (EVM · Solana · Bitcoin). One vault, one identity, portable reputation. OWS-provisioned agents register on OP via the canonical SDK and inherit the full Observer Protocol trust surface.</div>
+        </div>
+        <div class="foundation-block">
+          <div class="foundation-title">MPP · Machine Payments Protocol <span class="live-badge">live</span></div>
+          <div class="foundation-body">Stripe-coauthored payment-session protocol for machine-to-machine settlement. Observer Protocol layers identity + reputation on top — every MPP / x402 seller can add agent reputation in one middleware line via the OP SDK.</div>
         </div>
       </div>
 
