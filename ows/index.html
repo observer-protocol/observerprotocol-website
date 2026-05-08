@@ -281,7 +281,7 @@
         <div class="stack-check">✓</div>
         <div>
           <div class="stack-item-title">Real data — not mocked</div>
-          <div class="stack-item-desc">W3C DIDs live on mainnet. OP attestation infra running on dedicated node. AT dashboard deployed at agenticterminal.ai. Real credential issuance throughout.</div>
+          <div class="stack-item-desc">W3C DIDs live on mainnet. OP attestation infra running on dedicated cloud VPS. AT dashboard deployed at app.agenticterminal.io. Real credential issuance throughout.</div>
         </div>
       </div>
     </div>
@@ -290,9 +290,9 @@
   <div class="divider"></div>
 
   <section>
-    <div class="section-label">Integration · <span style="color:var(--amber)">Prerelease API</span></div>
+    <div class="section-label">Integration</div>
     <h2>OWS Quickstart</h2>
-    <p class="section-intro">Already using OWS? Register your OWS-provisioned agent on Observer Protocol in under 5 minutes. One vault, one identity, portable reputation across every chain. <span style="color:var(--amber);font-family:var(--mono);font-size:12px;">SDK v1.1.0 shipping this week — methods below reflect the prerelease API.</span></p>
+    <p class="section-intro">Already using OWS? Register your OWS-provisioned agent on Observer Protocol in under 5 minutes. One vault, one identity, portable reputation across every chain. SDK v0.2.0 live on npm + PyPI.</p>
     <div class="steps">
       <div class="step">
         <div class="step-num-wrap"><div class="step-num">1</div><div class="step-line"></div></div>
@@ -311,7 +311,7 @@
         <div class="step-body">
           <div class="step-title">Install OP SDK</div>
           <div class="step-desc">Add the Observer Protocol SDK to your project.</div>
-          <pre><span class="cmd">npm install @observerprotocol/sdk</span></pre>
+          <pre><span class="cmd">npm install @observer-protocol/sdk</span></pre>
         </div>
       </div>
       <div class="step">
@@ -319,7 +319,7 @@
         <div class="step-body">
           <div class="step-title">Register Your Agent</div>
           <div class="step-desc">Use your OWS-derived keys to register on Observer Protocol. Your OWS vault is your identity source of truth.</div>
-          <pre><span class="keyword">import</span> { ObserverClient } <span class="keyword">from</span> <span class="string">'@observerprotocol/sdk'</span>;
+          <pre><span class="keyword">import</span> { ObserverClient } <span class="keyword">from</span> <span class="string">'@observer-protocol/sdk'</span>;
 <span class="keyword">import</span> { OWSWallet } <span class="keyword">from</span> <span class="string">'@openwallet/sdk'</span>;
 
 <span class="comment">// Load your OWS vault</span>
@@ -327,18 +327,16 @@
 <span class="keyword">const</span> key = <span class="keyword">await</span> wallet.derivePath(<span class="string">"m/44'/501'/0'/0'"</span>);
 
 <span class="keyword">const</span> client = <span class="keyword">new</span> ObserverClient({
-  baseUrl: <span class="string">'https://api.observerprotocol.org'</span>,
-  agentId: <span class="string">'my-ows-agent'</span>,
-  publicKey: key.publicKey,
-  privateKey: key.privateKey
+  baseUrl: <span class="string">'https://api.observerprotocol.org'</span>
 });
 
-<span class="keyword">await</span> client.register({
-  walletStandard: <span class="string">'ows'</span>,
-  owsVaultName: <span class="string">'agent-treasury'</span>,
-  chains: [<span class="string">'evm'</span>, <span class="string">'solana'</span>, <span class="string">'bitcoin'</span>],
-  alias: <span class="string">'My OWS Agent'</span>
-});</pre>
+<span class="keyword">const</span> agent = <span class="keyword">await</span> client.registerAgent({
+  publicKey: key.publicKey,         <span class="comment">// hex-encoded ed25519 pub</span>
+  agentName: <span class="string">'My OWS Agent'</span>,
+  alias: <span class="string">'my-ows-agent'</span>,
+  framework: <span class="string">'ows'</span>
+});
+<span class="comment">// → { agent_id, agent_did, ... }</span></pre>
         </div>
       </div>
       <div class="step">
@@ -346,9 +344,13 @@
         <div class="step-body">
           <div class="step-title">Sign the Challenge</div>
           <div class="step-desc">Complete registration by signing the verification challenge with your OWS-derived key.</div>
-          <pre><span class="keyword">const</span> challenge = <span class="keyword">await</span> client.getChallenge();
-<span class="keyword">const</span> signature = <span class="keyword">await</span> key.sign(challenge.message);
-<span class="keyword">await</span> client.verifyChallenge({ signature, challengeId: challenge.id });</pre>
+          <pre><span class="keyword">const</span> challenge = <span class="keyword">await</span> client.requestChallenge(agent.agent_id);
+<span class="comment">// → { challengeId, nonce, expiresAt }</span>
+
+<span class="comment">// Sign the nonce with your OWS-derived ed25519 key</span>
+<span class="keyword">const</span> signedChallenge = <span class="keyword">await</span> key.sign(challenge.nonce);
+
+<span class="keyword">await</span> client.verifyAgent(agent.agent_id, signedChallenge);</pre>
         </div>
       </div>
       <div class="step">
@@ -356,8 +358,8 @@
         <div class="step-body">
           <div class="step-title">View Your VAC</div>
           <div class="step-desc">Your Verifiable Agent Credential is now live — OWS badge, supported chains (CAIP-2), trust score, and portable reputation across every OWS-compatible service.</div>
-          <pre><span class="keyword">const</span> vac = <span class="keyword">await</span> client.getVAC();
-console.log(<span class="string">'VAC URL:'</span>, `https://observerprotocol.org/vac/${client.agentId}`);
+          <pre><span class="keyword">const</span> vac = <span class="keyword">await</span> client.getVAC(agent.agent_id);
+console.log(<span class="string">'VAC URL:'</span>, `https://observerprotocol.org/vac/${agent.agent_id}`);
 
 <span class="comment">// - OWS badge + CAIP-2 chain addresses</span>
 <span class="comment">// - Trust score + Delegation VC status</span>
@@ -384,7 +386,7 @@ console.log(<span class="string">'VAC URL:'</span>, `https://observerprotocol.or
     <p class="section-intro" style="margin: 0 auto 32px;">Know Your Agent (KYA) — the identity and trust layer the agentic economy was missing. Open beta. Mainnet DIDs live. Not a prototype.</p>
     <div class="cta-row" style="justify-content:center;">
       <a href="https://observerprotocol.org" class="btn btn-primary">View Registry →</a>
-      <a href="https://agenticterminal.io/dashboard" class="btn btn-secondary">AT Dashboard</a>
+      <a href="https://app.agenticterminal.io/dashboard" class="btn btn-secondary">AT Dashboard</a>
       <a href="https://github.com/observer-protocol" class="btn btn-secondary">GitHub</a>
     </div>
   </section>
@@ -392,7 +394,7 @@ console.log(<span class="string">'VAC URL:'</span>, `https://observerprotocol.or
 </div>
 
 <footer>
-  <p>Observer Protocol · OWS Hackathon 2026 · <a href="https://observerprotocol.org">observerprotocol.org</a> · <a href="https://agenticterminal.ai">agenticterminal.ai</a></p>
+  <p>Observer Protocol · OWS Hackathon 2026 · <a href="https://observerprotocol.org">observerprotocol.org</a> · <a href="https://agenticterminal.io">agenticterminal.io</a></p>
 </footer>
 
 </body>
