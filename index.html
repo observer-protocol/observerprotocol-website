@@ -462,6 +462,76 @@
     }
     .at-card-pills { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
 
+    /* ── WALLET INTEGRATIONS ── */
+    .wallet-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+    @media (max-width: 880px) { .wallet-grid { grid-template-columns: 1fr; } }
+    .wallet-card {
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      padding: 2rem;
+      transition: border-color 0.2s;
+      display: flex; flex-direction: column;
+    }
+    .wallet-card.featured { border-color: var(--amber-dim); background: var(--amber-glow); }
+    .wallet-card:hover { border-color: var(--amber-dim); }
+    .wallet-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 0.8rem;
+    }
+    .wallet-card h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.35rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .wallet-h3-sub {
+      display: block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 400;
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-top: 0.3rem;
+    }
+    .wallet-body {
+      font-size: 0.86rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+      font-weight: 300;
+      margin-bottom: 1.25rem;
+    }
+    .wallet-pills {
+      display: flex; gap: 0.4rem; flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+    .wallet-links {
+      display: flex; flex-direction: column; gap: 0.5rem;
+      margin-top: auto;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .wallet-link {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--amber);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+    .wallet-link:hover { color: var(--text); }
+
     /* ── PRINCIPLES ── */
     .principles-section { background: var(--bg); }
     .principles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; margin-top: 2rem; }
@@ -873,6 +943,78 @@
     </div>
     <p style="margin-top: 1rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--text-faint); letter-spacing: 0.04em;">
       Chain-agnostic verification. Adding a rail requires one adapter — no protocol changes.
+    </p>
+  </div>
+</section>
+
+<!-- WALLET INTEGRATIONS -->
+<section style="background: var(--bg); border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">Wallet Integrations</div>
+    <h2>Native support across the wallet standards moving real volume.</h2>
+    <p class="section-intro">
+      Observer Protocol composes with the major wallet protocols rather than competing with them. Each integration carries the same trust primitives — DID, VAC, KYA — into the developer surface those wallets already provide.
+    </p>
+
+    <div class="wallet-grid">
+
+      <!-- WDK · highest priority -->
+      <div class="wallet-card featured">
+        <div class="wallet-tag">Tether · Partnership</div>
+        <h3>WDK <span class="wallet-h3-sub">Wallet Development Kit</span></h3>
+        <p class="wallet-body">
+          Multi-rail wallet provisioning and identity binding for agentic commerce. Observer Protocol's WDK extensions add bilateral trust handshake, ERC-8004 anchoring, and chargeback-resistant receipts to the Tether WDK stack.
+        </p>
+        <div class="wallet-pills">
+          <span class="pill">Multi-rail provisioning</span>
+          <span class="pill">Bilateral trust handshake</span>
+          <span class="pill">ERC-8004 anchored</span>
+        </div>
+        <div class="wallet-links">
+          <a href="https://github.com/observer-protocol/wdk-protocol-trust" target="_blank" rel="noopener" class="wallet-link">wdk-protocol-trust ↗</a>
+          <a href="https://github.com/observer-protocol/wdk-lightning-verifier" target="_blank" rel="noopener" class="wallet-link">wdk-lightning-verifier ↗</a>
+          <a href="/chargeback-prevention/wdk/" class="wallet-link">Live demo →</a>
+        </div>
+      </div>
+
+      <!-- OWS -->
+      <div class="wallet-card">
+        <div class="wallet-tag">Open Wallet Foundation · Live</div>
+        <h3>OWS <span class="wallet-h3-sub">Open Wallet Standard</span></h3>
+        <p class="wallet-body">
+          BIP-44-derived multi-chain agent vaults across EVM, Solana, and Bitcoin. OWS-provisioned agents register on Observer Protocol via the canonical SDK and inherit the full trust surface.
+        </p>
+        <div class="wallet-pills">
+          <span class="pill">BIP-44 vaults</span>
+          <span class="pill">Multi-chain</span>
+          <span class="pill">Portable reputation</span>
+        </div>
+        <div class="wallet-links">
+          <a href="/quickstart-ows.html" class="wallet-link">Quickstart →</a>
+        </div>
+      </div>
+
+      <!-- MPP -->
+      <div class="wallet-card">
+        <div class="wallet-tag">Stripe-coauthored · Live</div>
+        <h3>MPP <span class="wallet-h3-sub">Machine Payments Protocol</span></h3>
+        <p class="wallet-body">
+          Payment-session protocol for machine-to-machine settlement. Observer Protocol layers identity and reputation onto every MPP transaction in one middleware line.
+        </p>
+        <div class="wallet-pills">
+          <span class="pill">Payment session</span>
+          <span class="pill">M2M settlement</span>
+          <span class="pill">One middleware line</span>
+        </div>
+        <div class="wallet-links">
+          <a href="https://github.com/observer-protocol/mpp-integration" target="_blank" rel="noopener" class="wallet-link">mpp-integration ↗</a>
+        </div>
+      </div>
+
+    </div>
+
+    <p style="margin-top: 1.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-faint); letter-spacing: 0.04em;">
+      Full integration spec on the <a href="./architecture.html#wallet-standards" style="color: var(--amber); text-decoration: none; border-bottom: 1px solid var(--amber-dim);">architecture page →</a>
     </p>
   </div>
 </section>
