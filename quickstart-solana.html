@@ -83,19 +83,24 @@
         </p>
         <div class="code-block">
 <span class="keyword">import</span> { Keypair } <span class="keyword">from</span> <span class="string">'@solana/web3.js'</span>;
+<span class="keyword">import</span> crypto <span class="keyword">from</span> <span class="string">'crypto'</span>;
 
 <span class="comment">// Generate a new Ed25519 keypair</span>
 <span class="keyword">const</span> keypair = Keypair.<span class="func">generate</span>();
 
-<span class="comment">// Your Solana public key (base58-encoded)</span>
-<span class="keyword">const</span> publicKey = keypair.publicKey.<span class="func">toString</span>();
+<span class="comment">// Solana's native base58 pubkey (used by Solana RPC + wallet addresses)</span>
+<span class="keyword">const</span> solanaPubkey = keypair.publicKey.<span class="func">toString</span>();
 <span class="comment">// e.g., "HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH"</span>
 
-<span class="comment">// Derive your Agent DID from the public key</span>
-<span class="keyword">const</span> agentDID = <span class="string">`did:web:observerprotocol.org:agents:${publicKey}`</span>;
-<span class="comment">// e.g., "did:web:observerprotocol.org:agents:HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH"</span>
+<span class="comment">// Hex-encoded pubkey (used by Observer Protocol register-agent)</span>
+<span class="keyword">const</span> publicKey = Buffer.<span class="func">from</span>(keypair.publicKey.<span class="func">toBytes</span>()).<span class="func">toString</span>(<span class="string">'hex'</span>);
 
-<span class="comment">// Your secret key (32 bytes, hex-encoded for OP)</span>
+<span class="comment">// Derive agent_id and DID exactly as the server does:</span>
+<span class="comment">//   agent_id = sha256(public_key_hex)[:32]   agent_did = did:web:observerprotocol.org:agents:&lt;agent_id&gt;</span>
+<span class="keyword">const</span> agentId = crypto.<span class="func">createHash</span>(<span class="string">'sha256'</span>).<span class="func">update</span>(publicKey).<span class="func">digest</span>(<span class="string">'hex'</span>).<span class="func">slice</span>(0, 32);
+<span class="keyword">const</span> agentDID = <span class="string">`did:web:observerprotocol.org:agents:${agentId}`</span>;
+
+<span class="comment">// Your secret key (64 bytes, hex-encoded — keep this private)</span>
 <span class="keyword">const</span> secretKey = Buffer.<span class="func">from</span>(keypair.secretKey).<span class="func">toString</span>(<span class="string">'hex'</span>);
         </div>
       </div>
@@ -110,19 +115,17 @@
           Register your agent using your DID and Ed25519 public key. The response includes your VAC (Verifiable Agent Credential) URL.
         </p>
         <div class="code-block">
-<span class="keyword">curl</span> -X POST <span class="string">"https://api.observerprotocol.org/observer/register"</span> \
+<span class="keyword">curl</span> -X POST <span class="string">"https://api.observerprotocol.org/observer/register-agent"</span> \
   -H <span class="string">"Content-Type: application/json"</span> \
   -d <span class="string">'{
-    "did": "did:web:observerprotocol.org:agents:HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH",
-    "public_key": "HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH",
-    "key_type": "Ed25519",
-    "chain": "solana",
-    "wallet_standard": "ows",
-    "caip2_chain": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
+    "public_key": "&lt;hex-encoded Ed25519 pubkey from Step 1&gt;",
+    "agent_name": "My Solana Agent",
+    "rails": ["solana"],
+    "wallet_addresses": { "solana": "HN7cABqLq46Es1jh92dQQisAq662SmxELLLsHHe4YWrH" }
   }'</span>
         </div>
         <div class="info-box">
-          <strong>Response:</strong> Returns <code>{ did, vac_url, created_at }</code>. Save the <code>did</code> and <code>vac_url</code> — you'll need them for verification and transactions.
+          <strong>Response:</strong> Returns <code>{ agent_id, agent_did, badge_url, did_document_url, ... }</code>. The server derives <code>agent_id = sha256(public_key)[:32]</code> deterministically, so it always matches what you computed in Step 1.
         </div>
       </div>
 
@@ -136,24 +139,23 @@
           Sign the challenge message with your Ed25519 private key to prove DID ownership.
         </p>
         <div class="code-block">
-<span class="comment">// 1. Request a challenge using your DID</span>
-<span class="keyword">const</span> challengeRes = <span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">`https://api.observerprotocol.org/observer/challenge?did=${encodeURIComponent(agentDID)}`</span>);
-<span class="keyword">const</span> { challenge_id, message } = <span class="keyword">await</span> challengeRes.<span class="func">json</span>();
-
-<span class="comment">// 2. Sign the message with Ed25519</span>
-<span class="keyword">import</span> { sign } <span class="keyword">from</span> <span class="string">'tweetnacl'</span>;
-<span class="keyword">const</span> messageBytes = <span class="keyword">new</span> TextEncoder().<span class="func">encode</span>(message);
-<span class="keyword">const</span> signature = <span class="func">sign</span>(messageBytes, keypair.secretKey);
-
-<span class="comment">// 3. Submit verification with challenge_id</span>
-<span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">"https://api.observerprotocol.org/observer/verify"</span>, {
+<span class="comment">// 1. Request a challenge for your agent_id (JSON body)</span>
+<span class="keyword">const</span> challengeRes = <span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">"https://api.observerprotocol.org/observer/challenge"</span>, {
   method: <span class="string">"POST"</span>,
   headers: { <span class="string">"Content-Type"</span>: <span class="string">"application/json"</span> },
-  body: JSON.<span class="func">stringify</span>({
-    did: agentDID,
-    challenge_id: challenge_id,
-    signature: Buffer.<span class="func">from</span>(signature).<span class="func">toString</span>(<span class="string">'hex'</span>)
-  })
+  body: JSON.<span class="func">stringify</span>({ agent_id: agentId })
+});
+<span class="keyword">const</span> { challenge_id, nonce } = <span class="keyword">await</span> challengeRes.<span class="func">json</span>();
+
+<span class="comment">// 2. Sign the nonce with your Ed25519 secret key</span>
+<span class="keyword">import</span> { sign } <span class="keyword">from</span> <span class="string">'tweetnacl'</span>;
+<span class="keyword">const</span> nonceBytes = <span class="keyword">new</span> TextEncoder().<span class="func">encode</span>(nonce);
+<span class="keyword">const</span> signature = sign.<span class="func">detached</span>(nonceBytes, keypair.secretKey);
+<span class="keyword">const</span> sigHex = Buffer.<span class="func">from</span>(signature).<span class="func">toString</span>(<span class="string">'hex'</span>);
+
+<span class="comment">// 3. Submit signed challenge to verify-agent</span>
+<span class="keyword">await</span> <span class="func">fetch</span>(<span class="string">`https://api.observerprotocol.org/observer/verify-agent?agent_id=${agentId}&signed_challenge=${sigHex}`</span>, {
+  method: <span class="string">"POST"</span>
 });
         </div>
       </div>
@@ -172,11 +174,11 @@
   method: <span class="string">"POST"</span>,
   headers: { <span class="string">"Content-Type"</span>: <span class="string">"application/json"</span> },
   body: JSON.<span class="func">stringify</span>({
-    agent_id: <span class="string">"your-agent-id"</span>,
+    agent_id: agentId,
     agent_did: agentDID,
     counterparty: <span class="string">"did:web:counterparty.example"</span>,
     tx_signature: <span class="string">"4Fr3PCGq...base58-tx-sig"</span>,
-    sender_address: <span class="string">"41D2v9b7...sender-pubkey"</span>,
+    sender_address: solanaPubkey,
     recipient_address: <span class="string">"2BnuubMg...recipient-pubkey"</span>,
     amount: <span class="string">"20214116"</span>,       <span class="comment">// atomic units (6 decimals for USDC)</span>
     asset: <span class="string">"USDC"</span>,             <span class="comment">// SOL, USDC, or USDT</span>
@@ -205,7 +207,7 @@
         </p>
         <div class="code-block">
 <span class="keyword">const</span> credRes = <span class="keyword">await</span> <span class="func">fetch</span>(
-  <span class="string">"https://api.agenticterminal.io/api/v1/solana/credentials/your-agent-id"</span>
+  <span class="string">`https://api.agenticterminal.io/api/v1/solana/credentials/${agentId}`</span>
 );
 <span class="keyword">const</span> { credentials, count } = <span class="keyword">await</span> credRes.<span class="func">json</span>();
 
