@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Sovereign stats · internal</title>
+  <link rel="stylesheet" href="../../shared-styles.css" />
+  <style>
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      margin: 0;
+    }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 4rem 2rem; }
+    .eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--orange);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-size: 2.2rem;
+      font-weight: 600;
+      margin: 0 0 0.5rem;
+    }
+    .gen {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      margin-bottom: 2.5rem;
+    }
+    .gen .dot {
+      display: inline-block;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--verified);
+      margin-right: 0.5rem;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 1 } 50% { opacity: 0.4 } }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+    .card {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      padding: 1.25rem 1.5rem;
+    }
+    .card-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .card-total {
+      font-family: 'Fraunces', serif;
+      font-size: 2.4rem;
+      font-weight: 600;
+      line-height: 1;
+      color: var(--text-primary);
+    }
+    .card-deltas {
+      margin-top: 0.75rem;
+      display: flex;
+      gap: 1rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+    .card-deltas span strong { color: var(--orange); font-weight: 500; }
+
+    .section-h {
+      font-family: 'Fraunces', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0 0 1rem;
+    }
+    .feed {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      padding: 0;
+      margin-bottom: 2.5rem;
+    }
+    .feed-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 1.5rem;
+      padding: 0.8rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      align-items: center;
+    }
+    .feed-row:last-child { border-bottom: none; }
+    .feed-name { color: var(--text-primary); }
+    .feed-name .id { color: var(--text-dim); font-size: 0.7rem; display: block; word-break: break-all; }
+    .feed-rails { color: var(--orange); font-size: 0.7rem; }
+    .feed-when { color: var(--text-dim); font-size: 0.72rem; }
+    .feed-empty {
+      padding: 2rem;
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+    }
+    .error {
+      background: rgba(248, 113, 113, 0.1);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+      padding: 1rem 1.5rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      color: #f87171;
+      margin-bottom: 2rem;
+    }
+    .footnote {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+      margin-top: 2.5rem;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Internal · Sovereign growth</div>
+  <h1>Signups + onboarding</h1>
+  <div class="gen" id="gen"><span class="dot"></span>Loading…</div>
+
+  <div id="error" class="error" style="display:none"></div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-label">Distinct principals</div>
+      <div class="card-total" id="prin-total">—</div>
+      <div class="card-deltas">
+        <span><strong id="prin-24h">—</strong> 24h</span>
+        <span><strong id="prin-7d">—</strong> 7d</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Agents created</div>
+      <div class="card-total" id="ag-total">—</div>
+      <div class="card-deltas">
+        <span><strong id="ag-24h">—</strong> 24h</span>
+        <span><strong id="ag-7d">—</strong> 7d</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Delegations issued</div>
+      <div class="card-total" id="del-total">—</div>
+      <div class="card-deltas">
+        <span><strong id="del-24h">—</strong> 24h</span>
+        <span><strong id="del-7d">—</strong> 7d</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Agents transacting</div>
+      <div class="card-total" id="ftx-total">—</div>
+      <div class="card-deltas">
+        <span><strong id="ftx-24h">—</strong> 24h</span>
+        <span><strong id="ftx-7d">—</strong> 7d</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="section-h">Recent agents</h3>
+  <div class="feed" id="recent-agents"><div class="feed-empty">Loading…</div></div>
+
+  <h3 class="section-h">Recent principals</h3>
+  <div class="feed" id="recent-principals"><div class="feed-empty">Loading…</div></div>
+
+  <div class="footnote">
+    <strong>What each number means.</strong><br>
+    <em>Distinct principals</em> — unique <code>did:web</code> identities that have claimed at least one agent. Proxy for signups that completed onboarding.<br>
+    <em>Agents created</em> — Sovereign-path agents (org-less). Each principal can create many.<br>
+    <em>Delegations issued</em> — signed delegation credentials. Real signal that someone went through the spending-cap flow.<br>
+    <em>Agents transacting</em> — agents whose first verified transaction has landed. The deepest funnel signal.<br><br>
+    Page polls the API every 60 seconds. Bookmark this URL with the <code>?t=</code> token; it stays valid until rotated.
+  </div>
+</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('t');
+  const API = 'https://api.observerprotocol.org/api/v1/internal/sovereign-stats';
+
+  function fmt(n) {
+    if (n === null || n === undefined) return '—';
+    return n.toLocaleString('en-US');
+  }
+  function fmtWhen(iso) {
+    if (!iso) return '—';
+    const d = new Date(iso);
+    const now = new Date();
+    const ms = now - d;
+    const mins = Math.floor(ms / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return mins + 'm ago';
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return hours + 'h ago';
+    const days = Math.floor(hours / 24);
+    if (days < 30) return days + 'd ago';
+    return d.toLocaleDateString();
+  }
+  function shortDid(did) {
+    if (!did) return '—';
+    const last = did.split(':').pop() || did;
+    return last.length > 16 ? last.slice(0, 8) + '…' + last.slice(-6) : last;
+  }
+  function shortAgent(agent_id) {
+    if (!agent_id) return '—';
+    return agent_id.length > 16 ? agent_id.slice(0, 8) + '…' + agent_id.slice(-6) : agent_id;
+  }
+
+  async function load() {
+    if (!token) {
+      document.getElementById('error').style.display = 'block';
+      document.getElementById('error').textContent = 'Missing token. Append ?t=YOUR_TOKEN to the URL.';
+      document.getElementById('gen').innerHTML = '';
+      return;
+    }
+    try {
+      const res = await fetch(API + '?t=' + encodeURIComponent(token));
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error('HTTP ' + res.status + ' — ' + (body.detail || 'request failed'));
+      }
+      const d = await res.json();
+
+      document.getElementById('error').style.display = 'none';
+      document.getElementById('gen').innerHTML = '<span class="dot"></span>Last updated ' + fmtWhen(d.generated_at);
+
+      document.getElementById('prin-total').textContent = fmt(d.principals.total);
+      document.getElementById('prin-24h').textContent = '+' + fmt(d.principals.last_24h);
+      document.getElementById('prin-7d').textContent  = '+' + fmt(d.principals.last_7d);
+
+      document.getElementById('ag-total').textContent = fmt(d.agents.total);
+      document.getElementById('ag-24h').textContent   = '+' + fmt(d.agents.last_24h);
+      document.getElementById('ag-7d').textContent    = '+' + fmt(d.agents.last_7d);
+
+      document.getElementById('del-total').textContent = fmt(d.delegations.total);
+      document.getElementById('del-24h').textContent   = '+' + fmt(d.delegations.last_24h);
+      document.getElementById('del-7d').textContent    = '+' + fmt(d.delegations.last_7d);
+
+      document.getElementById('ftx-total').textContent = fmt(d.first_tx_agents.total);
+      document.getElementById('ftx-24h').textContent   = '+' + fmt(d.first_tx_agents.last_24h);
+      document.getElementById('ftx-7d').textContent    = '+' + fmt(d.first_tx_agents.last_7d);
+
+      // Recent agents
+      const agEl = document.getElementById('recent-agents');
+      if (!d.recent_agents.length) {
+        agEl.innerHTML = '<div class="feed-empty">No agents yet.</div>';
+      } else {
+        agEl.innerHTML = d.recent_agents.map(a =>
+          '<div class="feed-row">' +
+            '<div class="feed-name">' + (a.name || '<em style="color:#666">unnamed</em>') +
+              '<span class="id">' + shortAgent(a.agent_id) + '</span></div>' +
+            '<div class="feed-rails">' + (a.rails.length ? a.rails.join(' · ') : '—') + '</div>' +
+            '<div class="feed-when">' + fmtWhen(a.created_at) + '</div>' +
+          '</div>'
+        ).join('');
+      }
+
+      // Recent principals
+      const prEl = document.getElementById('recent-principals');
+      if (!d.recent_principals.length) {
+        prEl.innerHTML = '<div class="feed-empty">No principals yet.</div>';
+      } else {
+        prEl.innerHTML = d.recent_principals.map(p =>
+          '<div class="feed-row" style="grid-template-columns: 1fr auto;">' +
+            '<div class="feed-name">' + shortDid(p.did) +
+              '<span class="id">' + p.did + '</span></div>' +
+            '<div class="feed-when">' + fmtWhen(p.first_seen) + '</div>' +
+          '</div>'
+        ).join('');
+      }
+    } catch (e) {
+      document.getElementById('error').style.display = 'block';
+      document.getElementById('error').textContent = String(e.message || e);
+      document.getElementById('gen').innerHTML = '';
+    }
+  }
+
+  load();
+  setInterval(load, 60_000);
+</script>
+</body>
+</html>
