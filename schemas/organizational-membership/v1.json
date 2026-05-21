@@ -1,0 +1,116 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://observerprotocol.org/schemas/organizational-membership/v1.json",
+  "title": "Organizational Membership Credential Schema",
+  "description": "JSON Schema for OrganizationalMembershipCredential Verifiable Credentials. An organization (issuer) attests that an agent (credentialSubject) belongs to or is operated by it. Distinct from PrincipalAttestationCredential, which is a person attesting personal operation of an agent. This is the L4 organizational cell of the VAC Trust Matrix.",
+  "type": "object",
+  "required": [
+    "@context",
+    "id",
+    "type",
+    "issuer",
+    "validFrom",
+    "validUntil",
+    "credentialSubject",
+    "credentialSchema",
+    "proof"
+  ],
+  "properties": {
+    "@context": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "contains": { "enum": ["https://www.w3.org/ns/credentials/v2"] }
+    },
+    "id": {
+      "type": "string",
+      "description": "Credential identifier. urn:uuid: form per OP convention, or an HTTPS URL.",
+      "pattern": "^(urn:uuid:|https://).+"
+    },
+    "type": {
+      "type": "array",
+      "minItems": 2,
+      "items": { "type": "string" },
+      "contains": { "const": "VerifiableCredential" },
+      "description": "Must include VerifiableCredential and OrganizationalMembershipCredential"
+    },
+    "issuer": {
+      "type": "string",
+      "description": "Issuing organization's DID",
+      "pattern": "^did:[a-z]+:.+"
+    },
+    "validFrom": { "type": "string", "format": "date-time" },
+    "validUntil": { "type": "string", "format": "date-time" },
+    "credentialSubject": {
+      "type": "object",
+      "required": ["id", "organizationalMembership"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Subject agent's DID",
+          "pattern": "^did:[a-z]+:.+"
+        },
+        "organizationalMembership": {
+          "type": "object",
+          "required": ["organization", "relationship_type", "status"],
+          "properties": {
+            "organization": {
+              "type": "string",
+              "description": "Resolvable DID of the organization making the claim. Equals issuer.",
+              "pattern": "^did:[a-z]+:.+"
+            },
+            "organizationName": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Human-readable organization name (display only)."
+            },
+            "relationship_type": {
+              "type": "string",
+              "enum": ["member", "operated_by", "authorized_agent"],
+              "description": "Gradation of the organizational relationship. 'member': the agent is affiliated with the organization. 'operated_by': the organization runs the agent as its own. 'authorized_agent': the organization authorizes the agent to act on its behalf within a defined scope."
+            },
+            "status": {
+              "type": "string",
+              "enum": ["active", "suspended", "revoked"]
+            },
+            "since": {
+              "type": "string",
+              "format": "date-time",
+              "description": "When the membership relationship began."
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "credentialSchema": {
+      "type": "object",
+      "required": ["id", "type"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^https://observerprotocol.org/schemas/"
+        },
+        "type": { "const": "JsonSchema" }
+      },
+      "additionalProperties": false
+    },
+    "proof": {
+      "type": "object",
+      "required": ["type", "created", "verificationMethod", "proofPurpose", "proofValue"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["Ed25519Signature2020", "Ed25519Signature2026"]
+        },
+        "created": { "type": "string", "format": "date-time" },
+        "verificationMethod": { "type": "string", "pattern": "^did:[a-z]+:.+#.+" },
+        "proofPurpose": { "const": "assertionMethod" },
+        "proofValue": { "type": "string", "pattern": "^z[1-9A-HJ-NP-Za-km-z]+$" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
