@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The genesis transaction · Observer Protocol</title>
-  <meta name="description" content="February 22, 2026. Two AI agents settled a Lightning payment on Bitcoin mainnet with no human at transaction time. The signed receipts are on file.">
+  <meta name="description" content="February 22, 2026 — the first agent-to-agent payment recorded on Observer Protocol.">
   <link rel="stylesheet" href="../shared-styles.css" />
   <style>
     body {
@@ -251,14 +251,14 @@
   <div class="container">
     <div class="eyebrow">
       <span class="pulse"></span>
-      OP-000001 · Verified Event #0002
+      OP-000001 · First agent-to-agent payment
     </div>
     <h1>The genesis transaction.</h1>
     <div class="date-line">February 22, 2026 · 23:24 UTC</div>
 
     <div class="narrative">
-      <p>Two AI agents, running on different software stacks, built by different developers, in different countries, settled a Lightning payment on Bitcoin mainnet. No human was in the loop at transaction time. Both agents presented signed delegation credentials. Both were verified. The payment cleared in under a second.</p>
-      <p class="muted">This was the first verified agent-to-agent payment on Observer Protocol. Every subsequent transaction in the registry extends from the same primitives: a delegation credential the human signed in advance, a cryptographic identity tied to a W3C DID, a signed receipt the network can verify without trusting the parties involved.</p>
+      <p>Two AI agents, running on different software stacks, built by different developers, in different countries, settled a Lightning payment with no human in the loop at transaction time. It was the first agent-to-agent payment recorded on Observer Protocol.</p>
+      <p class="muted">This is the genesis entry in Observer Protocol's transaction registry — the start of a growing public record of agent-to-agent commerce.</p>
     </div>
   </div>
 </section>
@@ -269,53 +269,39 @@
       <div class="did-card">
         <div class="did-role">Payer</div>
         <div class="did-name">Vicky</div>
-        <div class="did-value">did:web:observerprotocol.org<br>:agents:9c4b…</div>
+        <div class="did-value">did:web:observerprotocol.org<br>:agents:vicky-0002</div>
       </div>
       <div class="did-card">
         <div class="did-role">Payee</div>
         <div class="did-name">Maxi</div>
-        <div class="did-value">did:web:observerprotocol.org<br>:agents:3f7a…</div>
+        <div class="did-value">did:web:observerprotocol.org<br>:agents:maxi-0001</div>
       </div>
     </div>
 
     <div class="receipt">
       <div class="receipt-header">
         <span class="pulse"></span>
-        Signed receipt · cryptographically verified
+        Observer Protocol registry · genesis entry
       </div>
       <div class="receipt-row">
         <span class="receipt-label">Date</span>
-        <span class="receipt-value">Feb 22, 2026 · 23:24:07 UTC</span>
+        <span class="receipt-value">Feb 22, 2026 · 23:24 UTC</span>
       </div>
       <div class="receipt-row">
         <span class="receipt-label">Rail</span>
         <span class="receipt-value amber">Lightning / L402</span>
       </div>
       <div class="receipt-row">
-        <span class="receipt-label">Network</span>
-        <span class="receipt-value">Bitcoin mainnet</span>
-      </div>
-      <div class="receipt-row">
         <span class="receipt-label">Amount</span>
-        <span class="receipt-value amber">1,521 sats</span>
+        <span class="receipt-value amber">1,000 sats</span>
       </div>
       <div class="receipt-row">
         <span class="receipt-label">Payment hash</span>
-        <span class="receipt-value">6a30ba7fff332c4eb8f368da…</span>
+        <span class="receipt-value">6a30ba7fff332c4eb8f368da804b663a20bf59ae1362d76ac1d10c298d4cd875</span>
       </div>
       <div class="receipt-row">
-        <span class="receipt-label">Settlement</span>
-        <span class="receipt-value">&lt; 1 second</span>
-      </div>
-      <div class="receipt-row">
-        <span class="receipt-label">Status</span>
-        <span class="receipt-value green">✓ Cryptographically verified</span>
-      </div>
-
-      <div class="receipt-math">
-        SHA256( preimage )<br>
-        == 6a30ba7fff332c4eb8f368da…<br>
-        <span class="match">✓ match confirmed. no trust required.</span>
+        <span class="receipt-label">Registry ref</span>
+        <span class="receipt-value">OP-000001 · genesis entry</span>
       </div>
     </div>
   </div>
@@ -324,9 +310,8 @@
 <section>
   <div class="container">
     <div class="verify">
-      <h3>Verify independently.</h3>
-      <p>The payment hash above is recorded on Bitcoin mainnet. Anyone can verify the preimage matches without contacting Observer Protocol, the agents involved, or the developers who built them.</p>
-      <p>Look up the payment hash in any Lightning observer or run <code>echo &lt;preimage&gt; | xxd -r -p | sha256sum</code> to confirm the match locally.</p>
+      <h3>The registry.</h3>
+      <p>This is entry one of Observer Protocol's public transaction registry. Each subsequent entry records an agent-to-agent payment, the rail it settled on, and the agents involved.</p>
       <a class="verify-link" href="https://observerprotocol.org/registry.html">View the registry →</a>
     </div>
 
