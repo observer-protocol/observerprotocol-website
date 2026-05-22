@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thesis — Observer Protocol</title>
+  <meta name="description" content="Your agent is about to become the buyer. A thesis on the agentic economy — and the case for building its trust layer on open, multi-rail, sovereign infrastructure." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;0,900;1,300;1,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0a0a08;
+      --bg2:       #111110;
+      --bg3:       #1a1a18;
+      --border:    #2a2a26;
+      --amber:     #f5a623;
+      --amber-dim: #b8791a;
+      --amber-glow:#f5a62322;
+      --green:     #4ade80;
+      --text:      #e8e8e0;
+      --text-dim:  #888880;
+      --text-faint:#444440;
+      --blue:      #7eb8f7;
+      --teal:      #5eead4;
+      --purple:    #a78bfa;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem; height: 56px;
+      background: rgba(10,10,8,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.8rem;
+      font-weight: 500; color: var(--amber); letter-spacing: 0.12em;
+      text-transform: uppercase; text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+      color: var(--text-dim); text-decoration: none; letter-spacing: 0.06em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--amber); }
+    .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; display: inline-block; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .nav-status { display: flex; align-items: center; gap: 0.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-dim); }
+
+    /* PAGE HEADER */
+    .page-header {
+      padding: 9rem 2.5rem 4rem;
+      border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .page-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 50% 80% at 78% 50%, rgba(245,166,35,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .page-header-inner { max-width: 760px; position: relative; }
+    .breadcrumb {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+      color: var(--text-faint); letter-spacing: 0.1em;
+      margin-bottom: 1.5rem;
+    }
+    .breadcrumb span { color: var(--amber); }
+    .page-tag {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+      color: var(--amber); letter-spacing: 0.12em; text-transform: uppercase;
+      border: 1px solid var(--amber-dim); padding: 0.3rem 0.8rem;
+      margin-bottom: 1.5rem; background: var(--amber-glow);
+    }
+    h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2.2rem, 4vw, 3.5rem);
+      font-weight: 900; line-height: 1.08;
+      letter-spacing: -0.02em; margin-bottom: 1.25rem;
+    }
+    h1 em { font-style: italic; color: var(--amber); }
+    .page-sub {
+      font-size: 1rem; color: var(--text-dim); max-width: 660px;
+      line-height: 1.8; font-weight: 300; margin-bottom: 1.5rem;
+    }
+    .page-sub strong { color: var(--text); font-weight: 500; }
+    .page-meta {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+      color: var(--text-faint); letter-spacing: 0.06em;
+    }
+    .page-meta span { color: var(--amber); margin: 0 0.4rem; }
+
+    /* SECTIONS */
+    section { padding: 4.5rem 2.5rem; border-top: 1px solid var(--border); }
+    section:first-of-type { border-top: none; }
+    .section-inner { max-width: 720px; margin: 0 auto; }
+    .section-label {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--amber); margin-bottom: 1rem;
+    }
+    h2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.6rem, 2.5vw, 2.4rem);
+      font-weight: 600; line-height: 1.15;
+      margin-bottom: 1.5rem; color: var(--text);
+    }
+    h2 em { font-style: italic; color: var(--amber); }
+
+    /* BODY COPY */
+    p.body {
+      font-size: 0.95rem; color: var(--text-dim);
+      line-height: 1.85; font-weight: 300;
+      max-width: 64ch; margin-bottom: 1.25rem;
+    }
+    p.body strong { color: var(--text); font-weight: 500; }
+    p.body em { color: var(--amber); font-style: normal; }
+    .faint { color: var(--text-faint); }
+
+    /* THE FORK — two-column comparison */
+    .fork {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1px; background: var(--border);
+      border: 1px solid var(--border);
+      margin: 1.75rem 0;
+    }
+    .fork-col { background: var(--bg2); padding: 1.5rem 1.4rem; }
+    .fork-col h3 {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      font-weight: 600; margin-bottom: 1rem; line-height: 1.5;
+    }
+    .fork-col.closed h3 { color: var(--text-faint); }
+    .fork-col.open h3 { color: var(--amber); }
+    .fork-col ul { list-style: none; }
+    .fork-col li {
+      font-size: 0.8rem; line-height: 1.55; color: var(--text-dim);
+      font-weight: 300; padding: 0.55rem 0 0.55rem 1.1rem;
+      position: relative; border-bottom: 1px dashed var(--border);
+    }
+    .fork-col li:last-child { border-bottom: none; }
+    .fork-col.closed li::before { content: '\00d7'; position: absolute; left: 0; color: var(--text-faint); }
+    .fork-col.open li::before { content: '\203a'; position: absolute; left: 1px; color: var(--amber); font-weight: 700; }
+    .fork-col li b { color: var(--text); font-weight: 500; }
+    @media (max-width: 560px) { .fork { grid-template-columns: 1fr; } }
+
+    /* FIGURES */
+    .figure {
+      margin: 1.75rem 0 0.5rem;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      padding: 2rem 1.6rem 1.4rem;
+    }
+    .figure svg { display: block; width: 100%; height: auto; }
+    .figcap {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.66rem; color: var(--text-faint);
+      margin-top: 1.1rem; line-height: 1.7; text-align: center;
+      max-width: 60ch; margin-left: auto; margin-right: auto;
+      letter-spacing: 0.02em;
+    }
+    .figcap b { color: var(--text-dim); font-weight: 500; }
+
+    /* THE FLYWHEEL TURN */
+    .turn {
+      margin: 2rem 0 0.5rem;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      padding: 1.6rem 1.6rem 1.4rem;
+    }
+    .turn-h {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--amber); margin-bottom: 1.4rem;
+    }
+    .turn-step {
+      display: grid; grid-template-columns: auto 1fr;
+      gap: 1.1rem; align-items: start;
+      padding-bottom: 1.1rem; position: relative;
+    }
+    .turn-step:last-child { padding-bottom: 0; }
+    .turn-step:not(:last-child)::before {
+      content: ''; position: absolute;
+      left: 13px; top: 30px; bottom: -2px;
+      width: 1px; background: var(--border);
+    }
+    .turn-step .n {
+      width: 27px; height: 27px;
+      border: 1px solid var(--amber-dim); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+      color: var(--amber); background: var(--bg);
+      z-index: 1; flex-shrink: 0;
+    }
+    .turn-step .s {
+      font-size: 0.86rem; line-height: 1.7;
+      color: var(--text-dim); font-weight: 300; padding-top: 3px;
+    }
+    .turn-step .s b { color: var(--text); font-weight: 500; }
+    .turn-step .s em { color: var(--amber); font-style: normal; }
+    .turn-loop {
+      margin-top: 0.5rem; font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem; color: var(--green);
+      display: flex; align-items: center; gap: 0.55rem;
+    }
+
+    /* PROOF BLOCK */
+    .proof {
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(74,222,128,0.05), transparent 62%);
+      padding: 1.6rem; margin: 0.5rem 0;
+    }
+    .proof .tag {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--green); margin-bottom: 0.9rem;
+      display: flex; align-items: center; gap: 0.55rem;
+    }
+    .proof .tag::before { content: '\25cf'; font-size: 0.55rem; }
+    .proof p {
+      font-size: 0.88rem; line-height: 1.75;
+      color: var(--text-dim); font-weight: 300; max-width: 64ch;
+    }
+    .proof p strong { color: var(--text); font-weight: 500; }
+    .proof p em { color: var(--amber); font-style: normal; }
+
+    /* WHAT'S LIVE TODAY */
+    .today { display: grid; gap: 0; margin-top: 1.5rem; }
+    .today-row {
+      display: grid; grid-template-columns: auto 1fr;
+      gap: 1rem; align-items: baseline;
+      border-bottom: 1px dashed var(--border);
+      padding: 0.7rem 0;
+    }
+    .today-row:last-child { border-bottom: none; }
+    .today-row .st {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .today-row .st.live { color: var(--green); }
+    .today-row .st.next { color: var(--amber); }
+    .today-row .tx {
+      font-size: 0.86rem; color: var(--text-dim);
+      line-height: 1.65; font-weight: 300;
+    }
+    .today-row .tx b { color: var(--text); font-weight: 500; }
+
+    /* CLOSING */
+    .linkrow { display: flex; flex-wrap: wrap; gap: 0.75rem; margin: 1.75rem 0 2rem; }
+    .lk {
+      text-decoration: none; display: flex; flex-direction: column; gap: 0.3rem;
+      border: 1px solid var(--border); background: var(--bg2);
+      padding: 0.9rem 1.1rem; transition: border-color 0.2s, transform 0.2s;
+    }
+    .lk:hover { border-color: var(--amber); transform: translateY(-2px); }
+    .lk .lk-t {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;
+      font-weight: 500; color: var(--text);
+    }
+    .lk:hover .lk-t { color: var(--amber); }
+    .lk .lk-u {
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem;
+      color: var(--text-faint); letter-spacing: 0.02em;
+    }
+    .cta {
+      font-size: 0.95rem; color: var(--text-dim);
+      line-height: 1.8; font-weight: 300; max-width: 62ch;
+    }
+    .cta a {
+      color: var(--amber); text-decoration: none;
+      border-bottom: 1px solid var(--amber-dim);
+    }
+    .cta a:hover { border-bottom-color: var(--amber); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border); padding: 2.5rem 2.5rem 2rem;
+      background: var(--bg);
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-brand { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--amber); letter-spacing: 0.12em; text-transform: uppercase; }
+    .footer-links { display: flex; gap: 2rem; flex-wrap: wrap; }
+    .footer-links a { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-faint); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text-dim); }
+    .footer-note { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-faint); margin-top: 1.5rem; max-width: 1100px; margin-left: auto; margin-right: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
+
+    ::selection { background: var(--amber); color: var(--bg); }
+
+    @media (max-width: 640px) {
+      nav { padding: 0 1.25rem; }
+      .page-header { padding: 8rem 1.5rem 3rem; }
+      section { padding: 3.5rem 1.5rem; }
+      footer { padding: 2.5rem 1.5rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="./architecture.html">Architecture</a></li>
+    <li><a href="./thesis.html" class="active">Thesis</a></li>
+    <li><a href="./docs.html">Docs</a></li>
+    <li><a href="./agentic-terminal.html">Agentic Terminal</a></li>
+    <li><a href="./registry.html">Registry</a></li>
+  </ul>
+  <div class="nav-status"><div class="pulse"></div>PUBLIC BETA · V1.1</div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb">OBSERVER PROTOCOL · <span>THESIS</span></div>
+    <div class="page-tag"><div class="pulse"></div> A thesis on the agentic economy</div>
+    <h1>Your agent is about to become the buyer. <em>Whose rails does it run on?</em></h1>
+    <p class="page-sub">Soon your AI assistant won't just recommend things — it will <strong>buy them for you</strong>. Subscriptions, services, flights, a car, a seat to space. Most digital commerce will have an agent somewhere in the loop, spending on your behalf. The open question is not whether that arrives. It's whether it gets built on closed, card-rail, compliance-gated platforms — or on open protocols anyone can verify and no one can revoke. We're building for the second future, and we think it's the bigger one.</p>
+    <div class="page-meta">Observer Protocol <span>&times;</span> Agentic Terminal · Public beta</div>
+  </div>
+</div>
+
+<!-- 01 — THE FORK -->
+<section>
+  <div class="section-inner">
+    <div class="section-label">01 — The Fork</div>
+    <h2>Two futures are being built right now. They are not compatible.</h2>
+    <p class="body">Every major payment network has shipped or announced agentic infrastructure — Stripe, PayPal, Visa, Google. The default trajectory is familiar: closed platforms, card rails, US-compliance-first, USDC-default. Merchants depend on a platform's willingness to host them. Agents depend on per-merchant API keys. Everyone depends on one vendor's policy decisions. <strong>That stack works — for the slice of the world it's designed for.</strong></p>
+    <div class="fork">
+      <div class="fork-col closed">
+        <h3>The compliance-first stack</h3>
+        <ul>
+          <li>Closed platform, <b>platform-captured</b> merchants</li>
+          <li>Card-rail default; USDC / x402 forward</li>
+          <li>US-first, built for the compliance perimeter</li>
+          <li>Per-merchant API keys, vendor-gated</li>
+          <li>Trust is <b>asserted</b> by the platform</li>
+        </ul>
+      </div>
+      <div class="fork-col open">
+        <h3>The open / sovereign stack — ours</h3>
+        <ul>
+          <li>Open protocol, <b>no platform capture</b></li>
+          <li><b>Multi-rail by default</b> — USDT, Bitcoin / Lightning forward (USDC supported, not centered)</li>
+          <li>Global-citizen-first, beyond any single jurisdiction</li>
+          <li>The credential is the auth — no per-merchant keys</li>
+          <li>Trust is <b>cryptographically derived</b> — anyone can verify it</li>
+        </ul>
+      </div>
+    </div>
+    <p class="body">Here's what the closed stacks structurally cannot serve: <em>the people who need agentic commerce most live outside the US compliance perimeter.</em> The unbanked. The inflation-hit. Founders and businesses where dollar rails are a privilege, not a default. People organizing under regimes that can switch a payment processor off. That's not a niche underneath the US market — by population and by urgency, <strong>it's the larger one</strong>. And a platform-captured, card-rail-default architecture is built, by design, to exclude it.</p>
+  </div>
+</section>
+
+<!-- 02 — THE STACK -->
+<section>
+  <div class="section-inner">
+    <div class="section-label">02 — The Stack</div>
+    <h2>One protocol at the core. <em>Every transaction makes it stronger.</em></h2>
+    <p class="body">Observer Protocol is the epicenter — the trust layer everything else is built on. The two Agentic Terminal surfaces sit on top of it: agents transact through them, every transaction sends a cryptographic attestation inward to the protocol, and the protocol returns verified trust outward to the surfaces. That loop is a flywheel — each transaction makes the trust graph richer and the whole stack harder to replicate. A static, asserted-trust platform can't copy it.</p>
+
+    <div class="figure">
+      <svg viewBox="0 0 680 330" role="img" aria-labelledby="cyc-t cyc-d" xmlns="http://www.w3.org/2000/svg">
+        <title id="cyc-t">The OP / AT architecture</title>
+        <desc id="cyc-d">Observer Protocol at the center as the compounding trust layer, with two Agentic Terminal surfaces — Sovereign and the Directory — flanking it. Each surface sends attestations inward to the protocol and receives verified trust outward, so trust compounds with every transaction.</desc>
+        <defs>
+          <marker id="ah" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#4ade80" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="ao" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#f5a623" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <!-- LEFT spoke: attestations inward (green, ->hub), verified trust outward (amber, ->surface) -->
+        <line x1="216" y1="171" x2="262" y2="171" stroke="#166534" stroke-width="1.5" marker-end="url(#ah)"/>
+        <line x1="264" y1="189" x2="216" y2="189" stroke="#b8791a" stroke-width="1.5" marker-end="url(#ao)"/>
+        <!-- RIGHT spoke -->
+        <line x1="464" y1="171" x2="418" y2="171" stroke="#166534" stroke-width="1.5" marker-end="url(#ah)"/>
+        <line x1="416" y1="189" x2="464" y2="189" stroke="#b8791a" stroke-width="1.5" marker-end="url(#ao)"/>
+
+        <!-- CENTER: Observer Protocol (the core) -->
+        <circle cx="340" cy="180" r="76" fill="#1a1a18" stroke="#f5a623" stroke-width="1.5"/>
+        <circle cx="340" cy="180" r="68" fill="none" stroke="#b8791a" stroke-width="0.5" opacity="0.55"/>
+        <text x="340" y="164" text-anchor="middle" fill="#f5a623" font-family="'Fraunces', serif" font-size="19" font-weight="600">Observer</text>
+        <text x="340" y="186" text-anchor="middle" fill="#f5a623" font-family="'Fraunces', serif" font-size="19" font-weight="600">Protocol</text>
+        <text x="340" y="206" text-anchor="middle" fill="#4ade80" font-family="'IBM Plex Mono', monospace" font-size="9.5" letter-spacing="0.08em">COMPOUNDING TRUST LAYER</text>
+
+        <!-- LEFT surface: Sovereign -->
+        <circle cx="150" cy="180" r="60" fill="#1a1a18" stroke="#2a2a26" stroke-width="1"/>
+        <circle cx="150" cy="180" r="60" fill="none" stroke="#f5a623" stroke-width="0.5" opacity="0.4"/>
+        <text x="150" y="170" text-anchor="middle" fill="#f5a623" font-family="'Fraunces', serif" font-size="16" font-weight="600">Sovereign</text>
+        <text x="150" y="192" text-anchor="middle" fill="#888880" font-family="'IBM Plex Mono', monospace" font-size="10">individuals,</text>
+        <text x="150" y="206" text-anchor="middle" fill="#888880" font-family="'IBM Plex Mono', monospace" font-size="10">founders, agents</text>
+
+        <!-- RIGHT surface: Directory -->
+        <circle cx="530" cy="180" r="60" fill="#1a1a18" stroke="#2a2a26" stroke-width="1"/>
+        <circle cx="530" cy="180" r="60" fill="none" stroke="#f5a623" stroke-width="0.5" opacity="0.4"/>
+        <text x="530" y="170" text-anchor="middle" fill="#f5a623" font-family="'Fraunces', serif" font-size="16" font-weight="600">AT Directory</text>
+        <text x="530" y="192" text-anchor="middle" fill="#888880" font-family="'IBM Plex Mono', monospace" font-size="10">merchant &amp;</text>
+        <text x="530" y="206" text-anchor="middle" fill="#888880" font-family="'IBM Plex Mono', monospace" font-size="10">commerce surface</text>
+
+        <!-- caption row -->
+        <text x="150" y="278" text-anchor="middle" fill="#888880" font-family="'IBM Plex Mono', monospace" font-size="11">the terminal</text>
+        <text x="340" y="278" text-anchor="middle" fill="#888880" font-family="'IBM Plex Mono', monospace" font-size="11">the protocol</text>
+        <text x="530" y="278" text-anchor="middle" fill="#888880" font-family="'IBM Plex Mono', monospace" font-size="11">the commerce surface</text>
+
+        <!-- legend -->
+        <line x1="198" y1="305" x2="218" y2="305" stroke="#166534" stroke-width="1.5" marker-end="url(#ah)"/>
+        <text x="224" y="309" fill="#4ade80" font-family="'IBM Plex Mono', monospace" font-size="10.5">attestations in</text>
+        <line x1="344" y1="305" x2="364" y2="305" stroke="#b8791a" stroke-width="1.5" marker-end="url(#ao)"/>
+        <text x="370" y="309" fill="#f5a623" font-family="'IBM Plex Mono', monospace" font-size="10.5">verified trust out</text>
+      </svg>
+      <p class="figcap"><b>The architecture.</b> Observer Protocol is the epicenter — the compounding trust layer. The two Agentic Terminal surfaces sit on top of it: every transaction sends <span style="color:var(--green)">attestations</span> inward, and the protocol returns <span style="color:var(--amber)">verified trust</span> outward. The loop is what makes the trust layer harder to replicate with each use.</p>
+    </div>
+
+    <p class="body"><strong>Observer Protocol</strong> is the trust layer. When two agents transact, both sides can cryptographically attest that it happened, and those attestations accumulate into a public, auditable trust graph anyone can read. No central authority decides who's trustworthy — the protocol computes it from real, signed history.</p>
+    <p class="body"><strong>Agentic Terminal &middot; Sovereign</strong> is the cockpit, built for <em>individuals, founders, the unbanked, and global citizens</em> — not enterprise compliance desks. Your identity, your keys, a cross-rail Lightning + USDT feed, and the controls that make delegating to an agent actually safe. <span class="faint">(The same trust layer scales up to institutions — but the sovereign individual is who we build for first.)</span></p>
+    <p class="body"><strong>AT Directory</strong> is where the loop actually closes. Agents discover merchants they can pay, execute verified transactions, and <em>both sides earn trust from it</em> — the agent's score rises, the merchant's tier rises, and the next agent sees a stronger signal. Merchants don't sit passively in a list: by adopting Observer Protocol with a few lines of code, a merchant lets agents discover, transact, and build trust <strong>without anyone provisioning developer API keys or running an OAuth dance</strong>. That's the single biggest friction in agentic commerce today — and embracing OP is how a merchant removes it. Indexed on freedom-aligned rails first by deliberate choice, queryable by web, REST, or MCP.</p>
+
+    <div class="turn">
+      <div class="turn-h">One full turn of the flywheel</div>
+      <div class="turn-step"><span class="n">1</span><span class="s">You set the rules in <b>Sovereign</b> — your agent works for you, may spend up to a daily cap across Lightning and USDT, no per-transaction approval underneath it.</span></div>
+      <div class="turn-step"><span class="n">2</span><span class="s">Your agent <b>discovers a merchant</b> in the Directory it can actually pay, and executes the purchase on a freedom-aligned rail.</span></div>
+      <div class="turn-step"><span class="n">3</span><span class="s">Both sides <b>cryptographically attest</b> the transaction, and it lands in Observer Protocol's public trust graph — <em>no human in the loop</em>. Today that attestation still rides on a merchant API key provisioned in advance; going OP-native removes even that, because <b>the credential becomes the auth</b>.</span></div>
+      <div class="turn-step"><span class="n">4</span><span class="s">The agent's trust score rises. The merchant's tier rises. <b>The next agent sees a stronger signal</b> — and the merchant becomes easier to find and safer to transact with.</span></div>
+      <div class="turn-step"><span class="n">5</span><span class="s">You watch it all in Sovereign — <b>your agents' activity and trust growing over time</b>, on infrastructure no platform can revoke.</span></div>
+      <div class="turn-loop">&#8635; &nbsp;every turn makes the trust layer richer, and harder to replicate</div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 — WHAT IT LOOKS LIKE -->
+<section>
+  <div class="section-inner">
+    <div class="section-label">03 — What It Looks Like</div>
+    <h2>Delegation you control. Trust you can read at a glance.</h2>
+    <p class="body">The thing the closed stacks ask you to give up is <em>control</em> — you hand your card to the platform and trust its policy. Sovereign inverts that. You issue your agent a credential that says exactly what it may do, and a trust score anyone can verify reflects what it has actually done.</p>
+
+    <div class="figure">
+      <svg viewBox="0 0 680 396" role="img" aria-labelledby="del-t del-d" xmlns="http://www.w3.org/2000/svg">
+        <title id="del-t">Agent delegation and trust score</title>
+        <desc id="del-d">A panel showing an agent's AT-ARS trust score of 68 out of 100, its multi-rail support, and a human-set delegation credential capping daily spend with no per-transaction approval.</desc>
+
+        <rect x="40" y="40" width="270" height="316" rx="10" fill="#111110" stroke="#2a2a26" stroke-width="1"/>
+        <text x="62" y="74" fill="#888880" font-family="'IBM Plex Mono', monospace" font-size="11" letter-spacing="0.12em">AT-ARS TRUST SCORE</text>
+
+        <circle cx="120" cy="150" r="46" fill="none" stroke="#2a2a26" stroke-width="9"/>
+        <circle cx="120" cy="150" r="46" fill="none" stroke="#f5a623" stroke-width="9" stroke-linecap="round"
+                stroke-dasharray="289" stroke-dashoffset="92.5" transform="rotate(-90 120 150)"/>
+        <text x="120" y="156" text-anchor="middle" fill="#f5a623" font-family="'Fraunces', serif" font-size="40" font-weight="900">68</text>
+        <text x="120" y="178" text-anchor="middle" fill="#888880" font-family="'IBM Plex Mono', monospace" font-size="10">/ 100</text>
+
+        <text x="196" y="132" fill="#e8e8e0" font-family="'IBM Plex Mono', monospace" font-size="12.5" font-weight="500">Band 2</text>
+        <text x="196" y="152" fill="#888880" font-family="'IBM Plex Mono', monospace" font-size="10.5">verified agent</text>
+        <text x="196" y="172" fill="#4ade80" font-family="'IBM Plex Mono', monospace" font-size="10.5">&#9679; 6 attestations</text>
+
+        <line x1="62" y1="216" x2="288" y2="216" stroke="#2a2a26" stroke-width="1"/>
+        <text x="62" y="244" fill="#888880" font-family="'IBM Plex Mono', monospace" font-size="11">Computed from real</text>
+        <text x="62" y="262" fill="#888880" font-family="'IBM Plex Mono', monospace" font-size="11">transaction history —</text>
+        <text x="62" y="280" fill="#888880" font-family="'IBM Plex Mono', monospace" font-size="11">not assigned by us.</text>
+
+        <rect x="62" y="306" width="92" height="28" rx="14" fill="#111110" stroke="#2a2a26" stroke-width="1"/>
+        <text x="108" y="324" text-anchor="middle" fill="#f5a623" font-family="'IBM Plex Mono', monospace" font-size="11">&#9889; Lightning</text>
+        <rect x="164" y="306" width="64" height="28" rx="14" fill="#111110" stroke="#2a2a26" stroke-width="1"/>
+        <text x="196" y="324" text-anchor="middle" fill="#f5a623" font-family="'IBM Plex Mono', monospace" font-size="11">USDT</text>
+        <rect x="238" y="306" width="50" height="28" rx="14" fill="#111110" stroke="#2a2a26" stroke-width="1"/>
+        <text x="263" y="324" text-anchor="middle" fill="#888880" font-family="'IBM Plex Mono', monospace" font-size="11">+BTC</text>
+
+        <rect x="340" y="40" width="300" height="316" rx="10" fill="#111110" stroke="#2a2a26" stroke-width="1"/>
+        <text x="362" y="74" fill="#888880" font-family="'IBM Plex Mono', monospace" font-size="11" letter-spacing="0.12em">DELEGATION CREDENTIAL</text>
+        <text x="362" y="98" fill="#e8e8e0" font-family="'Fraunces', serif" font-size="18" font-weight="600">Issued by you. Signed.</text>
+
+        <g font-family="'IBM Plex Mono', monospace">
+          <circle cx="370" cy="134" r="3" fill="#4ade80"/>
+          <text x="384" y="138" fill="#888880" font-size="12">This agent works for</text>
+          <text x="384" y="156" fill="#e8e8e0" font-size="12" font-weight="500">your company</text>
+
+          <line x1="362" y1="178" x2="618" y2="178" stroke="#2a2a26" stroke-width="1"/>
+
+          <circle cx="370" cy="200" r="3" fill="#4ade80"/>
+          <text x="384" y="204" fill="#888880" font-size="12">May spend up to</text>
+          <text x="384" y="224" fill="#f5a623" font-size="13" font-weight="500">500 USDT + 100k sats / day</text>
+
+          <line x1="362" y1="246" x2="618" y2="246" stroke="#2a2a26" stroke-width="1"/>
+
+          <circle cx="370" cy="268" r="3" fill="#4ade80"/>
+          <text x="384" y="272" fill="#888880" font-size="12">Per-transaction approval</text>
+          <text x="384" y="290" fill="#e8e8e0" font-size="12" font-weight="500">not required under cap</text>
+
+          <line x1="362" y1="312" x2="618" y2="312" stroke="#2a2a26" stroke-width="1"/>
+
+          <circle cx="370" cy="334" r="3" fill="#f5a623"/>
+          <text x="384" y="338" fill="#888880" font-size="12">Revocable by you,</text>
+          <text x="384" y="356" fill="#e8e8e0" font-size="12" font-weight="500">any time, instantly</text>
+        </g>
+      </svg>
+      <p class="figcap"><b>Left:</b> the AT-ARS trust score — derived from an agent's real, attested transaction history, not assigned by anyone. <b>Right:</b> a delegation credential you issue and sign — scope, a daily spend cap across rails, no per-transaction nagging under the cap, and instant revocation. Illustrative of the Sovereign interface.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 04 — NOT JUST A THESIS -->
+<section>
+  <div class="section-inner">
+    <div class="section-label">04 — Not Just a Thesis</div>
+    <h2>It's running, and the open-wallet world is paying attention.</h2>
+    <div class="proof">
+      <div class="tag">live signal</div>
+      <p>We're <strong>engaging with partners at multiple levels of the stack</strong> — including the possibility of Observer Protocol becoming a native <strong>policy-and-trust module inside open wallet infrastructure</strong>. The thesis isn't that someone <em>should</em> build an open, sovereign trust layer for agents. It's that the open-wallet ecosystem is already reaching for one — and we built it on the rails the closed stacks treat as an afterthought.</p>
+    </div>
+
+    <div class="today">
+      <div class="today-row"><span class="st live">&#10003; live</span><span class="tx"><b>Public beta</b> — the trust protocol, the terminal, and the directory all running today.</span></div>
+      <div class="today-row"><span class="st live">&#10003; live</span><span class="tx"><b>A real, verifiable attestation</b> on a Lightning payment — reproducible from any terminal in under a minute. The proof isn't a slide; it's a cryptographic receipt.</span></div>
+      <div class="today-row"><span class="st live">&#10003; live</span><span class="tx"><b>Multi-rail by default</b> — Lightning, USDT, x402 / ERC-8004, with USDC supported. Standards-aligned, not platform-locked.</span></div>
+      <div class="today-row"><span class="st next">&#8594; next</span><span class="tx"><b>OP-native merchants</b> — the credential becomes the auth, attestations write back automatically, and the per-API-key future disappears.</span></div>
+    </div>
+    <p class="body" style="margin-top:1.5rem">If the trust layer for the agentic economy is going to be USDT- and Bitcoin-native rather than card-rail-and-USDC-native, it has to be built by people who chose those rails on purpose. <em>That's the conversation.</em></p>
+  </div>
+</section>
+
+<!-- CLOSING -->
+<section>
+  <div class="section-inner">
+    <div class="section-label">See It for Yourself</div>
+    <h2>The thesis is live. Go read it off the protocol.</h2>
+    <div class="linkrow">
+      <a class="lk" href="https://observerprotocol.org" target="_blank" rel="noopener"><span class="lk-t">Observer Protocol</span><span class="lk-u">observerprotocol.org · the trust layer</span></a>
+      <a class="lk" href="https://sovereign.agenticterminal.io" target="_blank" rel="noopener"><span class="lk-t">AT · Sovereign</span><span class="lk-u">sovereign.agenticterminal.io · the terminal</span></a>
+      <a class="lk" href="https://agenticterminal.ai" target="_blank" rel="noopener"><span class="lk-t">AT Directory</span><span class="lk-u">agenticterminal.ai · the commerce surface</span></a>
+      <a class="lk" href="https://agenticterminal.ai/how-it-works" target="_blank" rel="noopener"><span class="lk-t">Verify the proof &#8629;</span><span class="lk-u">run the attestation check yourself</span></a>
+    </div>
+    <p class="cta">Building on open rails, operating sovereign infrastructure, or want OP as a trust module in your stack? <a href="mailto:hello@agenticterminal.ai">Let's talk.</a></p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">Observer Protocol</div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="./architecture.html">Architecture</a>
+      <a href="./thesis.html">Thesis</a>
+      <a href="./docs.html">Docs</a>
+      <a href="./agentic-terminal.html">Agentic Terminal</a>
+      <a href="./registry.html">Registry</a>
+      <a href="https://github.com/observer-protocol" target="_blank">GitHub ↗</a>
+    </div>
+  </div>
+  <div class="footer-note">
+    Permanent URL: observerprotocol.org/thesis · A thesis on the agentic economy and the case for an open, multi-rail trust layer · Observer Protocol × Agentic Terminal · Public beta.
+  </div>
+</footer>
+
+</body>
+</html>
