@@ -26,7 +26,6 @@
   from = "/status-lists/:id"
   to = "/status-lists/:id.json"
   status = 200
-  force = true
 
 # Credentials — same pattern: signed credential 'id' fields and external
 # references may omit .json; serve the underlying file either way.
@@ -34,7 +33,6 @@
   from = "/credentials/:id"
   to = "/credentials/:id.json"
   status = 200
-  force = true
 
 # Serve status list and credential JSON with correct content-type + CORS.
 [[headers]]
