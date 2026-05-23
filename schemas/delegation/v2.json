@@ -18,7 +18,7 @@
   "properties": {
     "@context": {
       "type": "array",
-      "minItems": 2,
+      "minItems": 1,
       "items": { "type": "string" },
       "contains": { "enum": ["https://www.w3.org/ns/credentials/v2"] }
     },
@@ -232,7 +232,50 @@
         },
         "enforcementMode": { "type": "string", "enum": ["protocol_native", "pre_transaction_check"] },
         "parentDelegationId": { "type": ["string", "null"], "format": "uri" },
-        "kybCredentialId": { "type": ["string", "null"], "format": "uri" }
+        "kybCredentialId": { "type": ["string", "null"], "format": "uri" },
+        "tradingMandate": {
+          "type": "object",
+          "description": "AIP v0.7 — optional trading-domain mandate. Expresses the scope of a delegated agent's trading authority. Verification is unchanged; the field is signed under the existing credential proof. See aip-v0.7-draft-1.md.",
+          "properties": {
+            "allowedVenues": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Closed list of venue identifiers the agent MAY transact on. A venue not present is denied."
+            },
+            "allowedInstruments": {
+              "type": "array",
+              "items": { "type": "string" },
+              "description": "Closed list of permitted assets, pairs, or instrument classes."
+            },
+            "maxNotionalPerOrder": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Maximum notional value of any single order, denominated by `unit`."
+            },
+            "maxPosition": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Maximum aggregate open exposure under this mandate, denominated by `unit`."
+            },
+            "unit": {
+              "type": "string",
+              "description": "Denomination currency or asset code for maxNotionalPerOrder and maxPosition. REQUIRED whenever either is present; verifiers MUST NOT infer units."
+            },
+            "dailyDrawdownCap": {
+              "type": "object",
+              "required": ["limit", "type", "window"],
+              "properties": {
+                "limit": { "type": "number", "minimum": 0 },
+                "type": { "type": "string", "enum": ["percent", "absolute"] },
+                "window": { "type": "string", "description": "Duration string, canonical form '<integer>h' (e.g. '24h')." }
+              }
+            }
+          },
+          "dependentRequired": {
+            "maxNotionalPerOrder": ["unit"],
+            "maxPosition": ["unit"]
+          }
+        }
       },
       "allOf": [
         {
@@ -300,7 +343,7 @@
       "type": "object",
       "required": ["type", "created", "verificationMethod", "proofPurpose", "proofValue"],
       "properties": {
-        "type": { "const": "Ed25519Signature2020" },
+        "type": { "const": "Ed25519Signature2026" },
         "created": { "type": "string", "format": "date-time" },
         "verificationMethod": { "type": "string", "pattern": "^did:[a-z]+:.+#.+" },
         "proofPurpose": { "const": "assertionMethod" },

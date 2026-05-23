@@ -1,0 +1,26 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/credentials/v2"
+  ],
+  "id": "https://observerprotocol.org/status-lists/v07-trading-demo-v1",
+  "type": [
+    "VerifiableCredential",
+    "BitstringStatusListCredential"
+  ],
+  "issuer": "did:web:observerprotocol.org",
+  "validFrom": "2026-05-23T20:00:00Z",
+  "validUntil": "2027-05-23T20:00:00Z",
+  "credentialSubject": {
+    "id": "https://observerprotocol.org/status-lists/v07-trading-demo-v1#list",
+    "type": "BitstringStatusList",
+    "statusPurpose": "revocation",
+    "encodedList": "H4sIAAAAAAAC_-3BMQEAAADCoPVPbQwfoAAAAAAAAAAAAAAAAAAAAIC3AYbSVKsAQAAA"
+  },
+  "proof": {
+    "type": "Ed25519Signature2026",
+    "created": "2026-05-23T23:18:55Z",
+    "verificationMethod": "did:web:observerprotocol.org#key-2",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z3GRDusZnnYX9wHUn5aZrtbUx89TxJ2K2EzjUKEikv1igcAgRYd16kJuZ7vcCEaF96JaxPJEKNgvGMcpAxYsNqiqD"
+  }
+}
