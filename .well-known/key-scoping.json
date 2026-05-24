@@ -1,0 +1,38 @@
+{
+  "scoping_version": 1,
+  "issuer": "did:web:observerprotocol.org",
+  "updated_at": "2026-05-24T00:00:00Z",
+  "description": "OP issuer key-scoping policy. Enumerates each key in the issuer DID document and the credential types each key is governance-authorised to sign. Informational only; the protocol does not enforce these constraints cryptographically. Verifiers MAY consume this document to detect mis-scoped issuance (e.g. an ObserverDelegationCredential signed by #key-3). See AIP v0.8 §3.4.",
+  "keys": [
+    {
+      "id": "did:web:observerprotocol.org#key-1",
+      "status": "deprecated",
+      "custody": "not_held",
+      "rotated_out_at": "2026-05-21T00:00:00Z",
+      "scoped_to_issuance_of": [],
+      "notes": "Retained in verificationMethod only — verifies historical credentials issued under this key (notably the Cryptorefills merchant attestation). MUST NOT be used to sign any new credential."
+    },
+    {
+      "id": "did:web:observerprotocol.org#key-2",
+      "status": "active",
+      "custody": "offline",
+      "activated_at": "2026-05-21T20:33:22Z",
+      "scoped_to_issuance_of": [
+        "ObserverDelegationCredential",
+        "OrganizationalMembershipCredential",
+        "BitstringStatusListCredential"
+      ],
+      "notes": "Primary org root signing key. Lives only as an offline encrypted keyfile under the custodian's control. Signing is a deliberate manual offline action via the opkey CLI."
+    },
+    {
+      "id": "did:web:observerprotocol.org#key-3",
+      "status": "active",
+      "custody": "on_server",
+      "activated_at": "2026-05-24T20:37:07Z",
+      "scoped_to_issuance_of": [
+        "PolicyEvaluationCredential"
+      ],
+      "notes": "Scoped on-server signing key for sub-100ms PolicyEvaluationCredential issuance. Held only on the policy evaluator server under restricted file permissions. Scoping is governance-only; the DID document cannot cryptographically enforce credential-type restrictions. Rotate independently of #key-2 if compromised; compromise invalidates evaluation credentials but does not threaten delegation credentials."
+    }
+  ]
+}

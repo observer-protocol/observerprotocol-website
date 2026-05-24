@@ -269,9 +269,88 @@
                 "type": { "type": "string", "enum": ["percent", "absolute"] },
                 "window": { "type": "string", "description": "Duration string, canonical form '<integer>h' (e.g. '24h')." }
               }
+            },
+            "counterparty": {
+              "type": "object",
+              "description": "AIP v0.8 — counterparty controls. See aip-v0.8-draft-1.md §2.1.",
+              "properties": {
+                "allowList": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Closed list of permitted counterparties. Entries SHOULD be DIDs; raw rail-specific addresses accepted as fallback."
+                },
+                "blockList": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Closed list of denied counterparties. DID or address strings."
+                },
+                "requireIssuerClassIn": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": ["op_first_party", "sovereign_self_attested", "third_party_kyb", "partner", "peer_agent"]
+                  },
+                  "description": "Counterparty's OP-tracked issuer_class MUST be an element of this set. Set semantics, not a numeric tier."
+                }
+              }
+            },
+            "temporal": {
+              "type": "object",
+              "description": "AIP v0.8 — time-of-day window constraint beyond the credential's validUntil. See aip-v0.8-draft-1.md §2.2.",
+              "properties": {
+                "allowedTimeWindows": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["start", "end", "timezone"],
+                    "properties": {
+                      "start": { "type": "string", "pattern": "^[0-2][0-9]:[0-5][0-9]$", "description": "HH:MM 24-hour." },
+                      "end": { "type": "string", "pattern": "^[0-2][0-9]:[0-5][0-9]$", "description": "HH:MM 24-hour." },
+                      "timezone": { "type": "string", "description": "IANA timezone name (e.g. 'UTC', 'America/New_York')." },
+                      "daysOfWeek": {
+                        "type": "array",
+                        "items": { "type": "string", "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] },
+                        "description": "Days the window applies. Defaults to all days when absent."
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "geographic": {
+              "type": "object",
+              "description": "AIP v0.8 — jurisdictional constraints on counterparties. Requires counterparty attestation data carrying jurisdiction. See aip-v0.8-draft-1.md §2.3.",
+              "properties": {
+                "blockedJurisdictions": {
+                  "type": "array",
+                  "items": { "type": "string", "pattern": "^[A-Z]{2}$" },
+                  "description": "ISO 3166-1 alpha-2 country codes; counterparty MUST NOT belong to any. Fail-open if jurisdiction unknown."
+                },
+                "allowedJurisdictionsOnly": {
+                  "type": "array",
+                  "items": { "type": "string", "pattern": "^[A-Z]{2}$" },
+                  "description": "ISO 3166-1 alpha-2 country codes; if present, counterparty MUST belong to one of these. Fail-closed if jurisdiction unknown."
+                }
+              }
+            },
+            "velocity": {
+              "type": "object",
+              "description": "AIP v0.8 — aggregate volume velocity caps. Stateful; SHOULD be enforced server-side or by a stateful embedded evaluator. Cap values are denominated by the sibling tradingMandate.unit field. See aip-v0.8-draft-1.md §2.4.",
+              "properties": {
+                "dailyVolumeCap": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Maximum aggregate transacted volume in any 24h rolling window."
+                },
+                "monthlyVolumeCap": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Maximum aggregate transacted volume in any 30d rolling window."
+                }
+              }
             }
           },
-          "dependentRequired": {
+          "dependencies": {
             "maxNotionalPerOrder": ["unit"],
             "maxPosition": ["unit"]
           }
