@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Your Agent — Observer Protocol</title>
+  <meta name="description" content="A live demo of human-in-the-loop delegation, wallet-enforced policy, and independently verifiable settlement on Liquid, signed against mainnet DIDs." />
+
+  <meta property="og:title" content="Free Your Agent — Observer Protocol" />
+  <meta property="og:description" content="A live demo of human-in-the-loop delegation, wallet-enforced policy, and independently verifiable settlement on Liquid, signed against mainnet DIDs." />
+  <meta property="og:url" content="https://observerprotocol.org/free-your-agent" />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="https://observerprotocol.org/free-your-agent-1-sovereign-form.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free Your Agent — Observer Protocol" />
+  <meta name="twitter:description" content="Live demo of human-in-the-loop delegation, wallet-enforced policy, and independently verifiable settlement on Liquid." />
+  <meta name="twitter:image" content="https://observerprotocol.org/free-your-agent-1-sovereign-form.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;0,900;1,300;1,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0a0a08;
+      --bg2:       #111110;
+      --bg3:       #1a1a18;
+      --bg-code:   #050504;
+      --border:    #2a2a26;
+      --border-strong: #3a3a34;
+      --amber:     #f5a623;
+      --amber-dim: #b8791a;
+      --amber-glow:#f5a62322;
+      --green:     #4ade80;
+      --green-dim: #166534;
+      --green-glow:#4ade8011;
+      --red:       #f87171;
+      --red-dim:   #b91c1c;
+      --red-glow:  #f8717111;
+      --text:      #e8e8e0;
+      --text-dim:  #888880;
+      --text-faint:#444440;
+      --blue:      #7eb8f7;
+      --teal:      #5eead4;
+      --purple:    #a78bfa;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem;
+      height: 56px;
+      background: rgba(10,10,8,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--amber);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-status {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-dim);
+    }
+    .pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── PAGE LAYOUT ── */
+    main {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 8rem 2rem 6rem;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 2rem 0 4rem;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -3rem; left: 50%; transform: translateX(-50%);
+      width: 120%; height: 60%;
+      background: radial-gradient(ellipse 50% 60% at 50% 50%, rgba(245,166,35,0.07) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+    }
+    .hero-eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--amber);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    h1.hero-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      color: var(--text);
+    }
+    .hero-subtitle {
+      font-family: 'Fraunces', serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(1.15rem, 2vw, 1.5rem);
+      line-height: 1.4;
+      color: var(--text-dim);
+      margin-bottom: 1.75rem;
+    }
+    .hero-lede {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--text);
+      max-width: 700px;
+    }
+
+    /* ── SECTION ── */
+    section { padding: 3rem 0; }
+    h2 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 1.85rem;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.25rem;
+      color: var(--text);
+    }
+    h3 {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 500;
+      font-size: 1.3rem;
+      letter-spacing: -0.005em;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+    .beat-heading {
+      display: flex; align-items: baseline; gap: 1rem;
+      margin-top: 3rem; margin-bottom: 1.25rem;
+    }
+    .beat-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--amber);
+      letter-spacing: 0.1em;
+    }
+    .beat-heading h3 { margin-bottom: 0; }
+    p { margin-bottom: 1.1rem; color: var(--text); }
+    p strong { color: var(--text); font-weight: 600; }
+    .friction-word { color: var(--amber); font-weight: 600; }
+    .text-dim { color: var(--text-dim); }
+    .divider {
+      border: 0;
+      height: 1px;
+      background: var(--border);
+      margin: 4rem 0;
+    }
+
+    /* ── INLINE CODE ── */
+    code.inline {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.92em;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      color: var(--amber);
+    }
+
+    /* ── ASSET FIGURE ── */
+    figure {
+      margin: 2rem 0 2.5rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg2);
+    }
+    figure img, figure video {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: var(--bg);
+    }
+    figcaption {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--border);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── CODE BLOCK ── */
+    .codeblock {
+      position: relative;
+      margin: 2rem 0 2.5rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg-code);
+    }
+    .codeblock-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.6rem 1rem;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+    .codeblock-actions { display: flex; gap: 0.5rem; align-items: center; }
+    .codeblock-btn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.7rem;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      letter-spacing: 0.05em;
+    }
+    .codeblock-btn:hover { color: var(--amber); border-color: var(--amber-dim); }
+    .codeblock-btn.copied { color: var(--green); border-color: var(--green-dim); }
+    .codeblock pre {
+      margin: 0;
+      padding: 1.25rem 1.25rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      line-height: 1.55;
+      color: var(--text);
+      overflow-x: auto;
+      max-height: 600px;
+      transition: max-height 0.3s;
+    }
+    .codeblock.collapsed pre {
+      max-height: 240px;
+      overflow: hidden;
+      mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    }
+    /* Inline-ish JSON highlights */
+    .json-key   { color: var(--amber); }
+    .json-str   { color: var(--green); }
+    .json-num   { color: var(--blue); }
+    .json-bool  { color: var(--purple); }
+    .json-null  { color: var(--text-dim); }
+
+    /* ── BLOCKSTREAM TXID CALLOUT ── */
+    .txid-callout {
+      margin: 2rem 0;
+      padding: 1.5rem 1.5rem;
+      background: linear-gradient(135deg, var(--amber-glow), transparent);
+      border: 1px solid var(--amber-dim);
+      border-radius: 8px;
+      position: relative;
+    }
+    .txid-callout-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--amber);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .txid-callout a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text);
+      text-decoration: none;
+      word-break: break-all;
+      display: inline-block;
+      border-bottom: 1px solid var(--amber-dim);
+      padding-bottom: 0.15rem;
+    }
+    .txid-callout a:hover {
+      color: var(--amber);
+      border-bottom-color: var(--amber);
+    }
+    .txid-callout-after {
+      margin-top: 0.6rem;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+    .txid-callout-after a {
+      color: var(--text-dim);
+      border-bottom: none;
+      text-decoration: underline;
+    }
+
+    /* ── PROVES BLOCK (3 cards) ── */
+    .proves-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin: 1.5rem 0 0;
+    }
+    .proves-row {
+      display: grid;
+      grid-template-columns: 14rem 1fr;
+      gap: 1.25rem;
+      align-items: baseline;
+      padding: 1rem 1.25rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .proves-row-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--amber);
+      letter-spacing: 0.05em;
+    }
+    .proves-row-detail { font-size: 0.95rem; color: var(--text); }
+    @media (max-width: 600px) {
+      .proves-row { grid-template-columns: 1fr; gap: 0.4rem; }
+    }
+
+    /* ── CLOSING CTA ── */
+    .closing-block {
+      margin: 5rem 0 2rem;
+      padding: 3rem 2rem;
+      background: var(--bg2);
+      border: 1px solid var(--amber-dim);
+      border-radius: 10px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .closing-block::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 50% 80% at 50% 100%, var(--amber-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .closing-block > * { position: relative; }
+    .closing-line {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: clamp(1.6rem, 3vw, 2.25rem);
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .closing-line strong { color: var(--amber); font-weight: 600; }
+
+    /* ── LINKS ── */
+    a.body-link {
+      color: var(--amber);
+      text-decoration: none;
+      border-bottom: 1px solid var(--amber-dim);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    a.body-link:hover { color: var(--text); border-bottom-color: var(--text); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 2.5rem 2rem;
+      background: var(--bg2);
+    }
+    .footer-inner {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+    .footer-links {
+      display: flex; gap: 2rem; flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .footer-links a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+    }
+    .footer-links a:hover { color: var(--amber); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-faint);
+      letter-spacing: 0.04em;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 720px) {
+      nav { padding: 0 1.25rem; }
+      .nav-links { display: none; }
+      main { padding: 6rem 1.25rem 4rem; }
+      .codeblock pre { font-size: 0.72rem; padding: 1rem; }
+      .closing-block { padding: 2rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="./architecture.html">Architecture</a></li>
+    <li><a href="./docs.html">Docs</a></li>
+    <li><a href="./agentic-terminal.html">Agentic Terminal</a></li>
+    <li><a href="./registry.html">Registry</a></li>
+  </ul>
+  <div class="nav-status">
+    <div class="pulse"></div>
+    LIVE DEMO
+  </div>
+</nav>
+
+<main>
+
+  <section class="hero">
+    <div class="hero-eyebrow">Live demo · 2026-05-27</div>
+    <h1 class="hero-title">Free Your Agent</h1>
+    <div class="hero-subtitle">Trust infrastructure for the agentic Bitcoin economy</div>
+    <p class="hero-lede">
+      Live demo of human-in-the-loop delegation, wallet-enforced policy, and
+      independently verifiable settlement — on Liquid, signed against mainnet
+      DIDs, fully auditable from your terminal.
+    </p>
+  </section>
+
+  <hr class="divider" />
+
+  <section>
+    <h2>The thesis</h2>
+    <p>
+      The next several years of digital commerce will be dominated by agents
+      transacting on behalf of humans, not humans clicking through checkout flows.
+      Agents will need money that moves at machine speed, settles globally, and
+      clears without intermediaries. That money is Bitcoin, Lightning, and
+      stablecoins like USDT — the rails the Bitcoin economy has been building
+      toward for fifteen years are the same rails the agent economy needs now.
+    </p>
+    <p>
+      But before any human gives their agent a wallet, three frictions have to be
+      resolved.
+    </p>
+    <p>
+      <strong class="friction-word">Identity.</strong> The agent needs a
+      cryptographic identity tied to a human principal — not an API key, not a
+      session token, but a verifiable credential chain anyone can audit.
+    </p>
+    <p>
+      <strong class="friction-word">Trust.</strong> The human needs to bound what
+      the agent can do, in terms the wallet can enforce — not in a config file the
+      agent could rewrite, but in a signed delegation the wallet refuses to act
+      outside of.
+    </p>
+    <p>
+      <strong class="friction-word">Policy enforcement.</strong> The wallet needs
+      to refuse the unsigned transaction <em>before</em> keys are touched — not
+      log an exception, not flag it for review, refuse. Enforcement is the
+      difference between a policy framework and a suggestion.
+    </p>
+    <p>
+      Observer Protocol is the open infrastructure that solves all three. This
+      demo shows it running end-to-end on a real Bitcoin-aligned wallet, with no
+      centralized infrastructure in the trust path.
+    </p>
+  </section>
+
+  <hr class="divider" />
+
+  <section>
+    <h2>What you'll see</h2>
+    <p>
+      Boyd is the human principal. Maxi is his agent. The wallet is
+      <strong>Aqua</strong> — Jan3's open Bitcoin/Liquid wallet, demonstrated here
+      as the enforcement endpoint.
+    </p>
+    <p>The demo runs in four beats.</p>
+
+    <div class="beat-heading">
+      <div class="beat-num">BEAT 1</div>
+      <h3>Delegation</h3>
+    </div>
+    <p>
+      Boyd opens Sovereign — Observer Protocol's principal-control surface — and
+      configures Maxi's spending policy on Liquid. Per-transaction cap of 50,000
+      sats. Free your agent: no counterparty allowlist, no jurisdiction
+      restrictions, no time-of-day window. Maxi can transact with whoever she
+      wants, as long as she stays within what Boyd has bounded.
+    </p>
+
+    <figure>
+      <img src="./free-your-agent-1-sovereign-form.png"
+           alt="Sovereign spending delegation form configured for Maxi: Liquid rail enabled, 50,000-sat per-transaction cap, 'Free My Agent' allowed category, no counterparty restrictions." />
+      <figcaption>Sovereign · Boyd's spending policy for Maxi on the Liquid rail.</figcaption>
+    </figure>
+
+    <p>
+      The delegation is a W3C Verifiable Credential, signed by Boyd's
+      <code class="inline">did:web:bitcoinsingularity.ai#key-1</code> and
+      registered to Observer Protocol's open attestation infrastructure. The
+      credential carries
+      <code class="inline">"action_categories": ["Free My Agent"]</code> — the
+      freedom-rails philosophy is not narration, it's a categorical label inside
+      the cryptographic record.
+    </p>
+
+    <figure>
+      <img src="./free-your-agent-2-delegation-issued.png"
+           alt="Sovereign success screen confirming the delegation was issued and signed by Boyd's principal key." />
+      <figcaption>Delegation issued — signed locally with the principal key.</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./free-your-agent-3-maxi-profile.png"
+           alt="Maxi's public agent profile on Observer Protocol showing the Spending Delegation registered server-side alongside her Principal and Organizational attestations." />
+      <figcaption>Maxi's public profile · the delegation registered to her credential chain.</figcaption>
+    </figure>
+
+    <p>
+      Here is the signed credential — the structured proof of Boyd's
+      authorization, ready to be inspected, verified against the published DID,
+      or fed into any system that respects the protocol:
+    </p>
+
+    <div class="codeblock collapsed" id="cred">
+      <div class="codeblock-bar">
+        <span>delegation-mpoknzx8 · ObserverDelegationCredential</span>
+        <div class="codeblock-actions">
+          <button class="codeblock-btn" onclick="toggleCollapse('cred')" id="cred-toggle">EXPAND</button>
+          <button class="codeblock-btn" onclick="copyCode('cred-pre','cred-copy')" id="cred-copy">COPY</button>
+        </div>
+      </div>
+      <pre id="cred-pre">{
+  <span class="json-key">"@context"</span>: [
+    <span class="json-str">"https://www.w3.org/ns/credentials/v2"</span>,
+    <span class="json-str">"https://observerprotocol.org/contexts/delegation/v1"</span>
+  ],
+  <span class="json-key">"type"</span>: [
+    <span class="json-str">"VerifiableCredential"</span>,
+    <span class="json-str">"ObserverDelegationCredential"</span>
+  ],
+  <span class="json-key">"id"</span>: <span class="json-str">"urn:uuid:delegation-mpoknzx8"</span>,
+  <span class="json-key">"issuer"</span>: {
+    <span class="json-key">"id"</span>: <span class="json-str">"did:web:bitcoinsingularity.ai"</span>,
+    <span class="json-key">"name"</span>: <span class="json-str">"Boyd Cohen"</span>
+  },
+  <span class="json-key">"validFrom"</span>: <span class="json-str">"2026-05-27T21:24:28.700Z"</span>,
+  <span class="json-key">"validUntil"</span>: <span class="json-str">"2026-06-26T21:24:28.700Z"</span>,
+  <span class="json-key">"credentialSubject"</span>: {
+    <span class="json-key">"id"</span>: <span class="json-str">"did:web:observerprotocol.org:agents:maxi-0001"</span>,
+    <span class="json-key">"delegation"</span>: {
+      <span class="json-key">"scope"</span>: {
+        <span class="json-key">"spending_limits"</span>: {
+          <span class="json-key">"per_rail"</span>: {
+            <span class="json-key">"liquid"</span>: {
+              <span class="json-key">"per_transaction"</span>: {
+                <span class="json-key">"max_amount"</span>: <span class="json-str">"50000"</span>,
+                <span class="json-key">"currency"</span>: <span class="json-str">"L-BTC"</span>
+              }
+            }
+          }
+        },
+        <span class="json-key">"action_categories"</span>: [<span class="json-str">"Free My Agent"</span>],
+        <span class="json-key">"counterparty_scope"</span>: { <span class="json-key">"mode"</span>: <span class="json-str">"any"</span> },
+        <span class="json-key">"time_window"</span>: {
+          <span class="json-key">"starts_at"</span>: <span class="json-str">"2026-05-27T21:24:28.700Z"</span>,
+          <span class="json-key">"ends_at"</span>: <span class="json-str">"2026-06-26T21:24:28.700Z"</span>
+        }
+      },
+      <span class="json-key">"attenuation"</span>: {
+        <span class="json-key">"sub_delegation_permitted"</span>: <span class="json-bool">false</span>,
+        <span class="json-key">"sub_delegation_rules"</span>: <span class="json-null">null</span>
+      },
+      <span class="json-key">"parent_delegation"</span>: <span class="json-null">null</span>,
+      <span class="json-key">"delegation_metadata"</span>: {
+        <span class="json-key">"issued_for_context"</span>: <span class="json-str">"standalone"</span>,
+        <span class="json-key">"notes"</span>: <span class="json-str">"Delegation issued by Boyd Cohen via /sovereign/delegate"</span>
+      }
+    }
+  },
+  <span class="json-key">"proof"</span>: {
+    <span class="json-key">"type"</span>: <span class="json-str">"Ed25519Signature2026"</span>,
+    <span class="json-key">"created"</span>: <span class="json-str">"2026-05-27T21:24:28.700Z"</span>,
+    <span class="json-key">"verificationMethod"</span>: <span class="json-str">"did:web:bitcoinsingularity.ai#key-1"</span>,
+    <span class="json-key">"proofPurpose"</span>: <span class="json-str">"assertionMethod"</span>,
+    <span class="json-key">"proofValue"</span>: <span class="json-str">"z4S7WkHaKL7Fz9spoPUTZytQgW5aWwkxLcbKMiUwS9mBnPRrnFGpLB94NQXwXBsL2VjBZkWS8hA3dfTiHLYModR7L"</span>
+  }
+}</pre>
+    </div>
+
+    <p>
+      Notice
+      <code class="inline">counterparty_scope: { mode: "any" }</code> — this is
+      what "free your agent" looks like in the cryptographic substrate. Not a
+      phrase used in narration, a structural property of the delegation that the
+      verifier can confirm. The principal explicitly chose not to restrict Maxi's
+      counterparties; the framework supports the alternatives (allowlists,
+      blocklists, issuer-class requirements) for principals who want tighter
+      controls.
+    </p>
+
+    <div class="beat-heading">
+      <div class="beat-num">BEAT 2</div>
+      <h3>Agent operates within the mandate</h3>
+    </div>
+    <p>
+      Maxi attempts a 5,000-sat send on Liquid. Aqua builds the transaction —
+      and this is the moment to notice something about the rail itself.
+    </p>
+
+    <figure>
+      <video controls preload="metadata" playsinline>
+        <source src="./free-your-agent-4-aqua-beats.mov" type="video/quicktime" />
+        <source src="./free-your-agent-4-aqua-beats.mov" type="video/mp4" />
+        Your browser does not support inline video playback.
+        <a href="./free-your-agent-4-aqua-beats.mov">Download the recording</a>.
+      </video>
+      <figcaption>The two terminal beats · in-policy ALLOW followed by over-cap DENY, captured end-to-end from Aqua's policy hook.</figcaption>
+    </figure>
+
+    <p>
+      Before the policy hook fires, the wallet spends 30-60 seconds doing real
+      work: syncing against Liquid's testnet, then constructing a
+      <em>confidential</em> PSET — Liquid's privacy model encrypts transaction
+      amounts using blinding factors and range proofs, and that cryptographic
+      machinery is intrinsic to every Liquid spend. You're watching the cost of
+      privacy-preserving settlement happen in real time. This wait is Liquid's,
+      not Observer Protocol's.
+    </p>
+    <p>
+      The policy hook fires the moment the unsigned transaction exists. From
+      <code class="inline">policy: hook entry</code> to
+      <code class="inline">policy: ALLOW → signer will be invoked next</code> is
+      a single HTTP round-trip to Observer Protocol's policy engine — sub-second,
+      end to end. The wallet posts the canonical transaction bytes, the engine
+      evaluates against Maxi's mandate, signs a
+      <code class="inline">PolicyEvaluationCredential</code> with the protocol's
+      mainnet key, and returns. Aqua then signs the transaction and broadcasts.
+    </p>
+    <p>The transaction settles on Liquid's public testnet — visible on Blockstream's explorer:</p>
+
+    <div class="txid-callout">
+      <div class="txid-callout-label">Settled transaction · Liquid testnet</div>
+      <a href="https://blockstream.info/liquidtestnet/tx/65bd2a9b55f42fa26997a332aa4616df80a636d43c1edeae3ff370eca1323ace"
+         target="_blank" rel="noopener">65bd2a9b55f42fa26997a332aa4616df80a636d43c1edeae3ff370eca1323ace ↗</a>
+      <div class="txid-callout-after">
+        No Observer Protocol infrastructure in the verification path. Just a public block explorer
+        confirming a real transaction with real (testnet) value moved between two real addresses.
+      </div>
+    </div>
+
+    <div class="beat-heading">
+      <div class="beat-num">BEAT 3</div>
+      <h3>Agent attempts to exceed the mandate</h3>
+    </div>
+    <p>
+      Same Liquid build pipeline, same 30-60 second confidential PSET
+      construction, same single policy hook call. This time the engine returns
+      a signed DENY.
+    </p>
+    <p>
+      The denial carries a structured
+      <code class="inline">ruleType: "spendingLimits"</code>,
+      <code class="inline">ruleField: "per_transaction.max_amount"</code>, with
+      the proposed and allowed values both legible in the credential. Aqua's hook
+      raises <code class="inline">PolicyDenied</code> <em>before</em> invoking
+      the signer. No transaction is constructed for broadcast; no key material
+      is touched. The signed denial is the entire artifact — a positive
+      cryptographic record that a specific transaction was attempted, evaluated
+      against a specific mandate, and refused by a specific rule.
+    </p>
+    <p>
+      This is the difference between policy <em>framework</em> and policy
+      <em>enforcement</em>. The framework describes what should be allowed. The
+      enforcement makes it cryptographically impossible to proceed without a
+      signed permit, returned in real time from an open public endpoint,
+      verifiable against published mainnet identities.
+    </p>
+
+    <div class="beat-heading">
+      <div class="beat-num">BEAT 4</div>
+      <h3>Independent audit</h3>
+    </div>
+    <p>
+      The verifier — a small Python script with zero Observer Protocol
+      dependencies — takes the signed credentials, the public DID document from
+      <code class="inline">observerprotocol.org/.well-known/did.json</code>, and
+      the canonical transaction bytes. It reproduces the SHA-256 binding hashes
+      from scratch and verifies the Ed25519 signatures against the published
+      <code class="inline">#key-3</code>.
+    </p>
+
+    <figure>
+      <img src="./free-your-agent-6-verifier.png"
+           alt="Terminal output showing the verifier reproducing all three bindings (proposalHash, delegationCredentialHash, Ed25519 signature) for both allow and deny credentials, plus the structured denyReason JSON for the over-cap attempt." />
+      <figcaption>The verifier · three bindings reproduced, twice, against the public DID document; the deny credential's structured denyReason shown at the bottom.</figcaption>
+    </figure>
+
+    <p>
+      Three bindings verified, twice. The signing key, the proposalHash, the
+      delegationCredentialHash — all match against credentials returned from a
+      live public endpoint. Anyone can run this. Anyone can verify this. Nothing
+      in the trust path requires belief in Observer Protocol's infrastructure.
+    </p>
+    <p>
+      The deny credential, displayed at the bottom, is the artifact that makes
+      refusal first-class: structured, queryable, signed. A wallet that produces
+      signed denials is auditable in a way no <code class="inline">try/except</code>
+      pattern can be.
+    </p>
+  </section>
+
+  <hr class="divider" />
+
+  <section>
+    <h2>What this proves</h2>
+    <p>
+      This demo isn't a mock. It isn't a video edit. It is signed mainnet
+      artifacts running through a live policy engine, gating a live
+      Bitcoin-aligned wallet, with every signature reproducible from public DIDs
+      and every transaction visible on public explorers.
+    </p>
+    <p>The trust layer the agentic economy needs is not a roadmap. It is shipped, running, and open.</p>
+    <div class="proves-grid">
+      <div class="proves-row">
+        <div class="proves-row-name">Observer Protocol</div>
+        <div class="proves-row-detail">Open W3C-VC trust infrastructure with mainnet DIDs and a public policy engine.</div>
+      </div>
+      <div class="proves-row">
+        <div class="proves-row-name">Sovereign / Agentic Terminal</div>
+        <div class="proves-row-detail">Principal-control surface for human-in-the-loop delegation.</div>
+      </div>
+      <div class="proves-row">
+        <div class="proves-row-name">Agentic Aqua</div>
+        <div class="proves-row-detail">Jan3's open Bitcoin/Liquid wallet, demonstrated here as the enforcement endpoint.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <section>
+    <h2>The roadmap is composability</h2>
+    <p>
+      This demo enforces a spending cap on Liquid. The same mechanism enforces
+      any AIP v0.8 rule family — counterparty allowlists, temporal windows,
+      jurisdictional restrictions, velocity caps — at the wallet layer, before
+      keys are touched. The same protocol applies on USDT-on-Liquid, USDT on
+      TRON, x402 settlement, and every other rail the agentic
+      Bitcoin/Lightning/USDT economy will move on. Open protocol, composable
+      rules, freedom-rails default.
+    </p>
+    <p>
+      The policy engine is live at
+      <a class="body-link" href="https://api.observerprotocol.org/policy/evaluate">
+        api.observerprotocol.org/policy/evaluate</a>.
+      The DID is published at
+      <a class="body-link" href="https://observerprotocol.org/.well-known/did.json">
+        observerprotocol.org/.well-known/did.json</a>.
+      The verifier is open source. Teams interested in testing the live endpoint
+      against their own wallet integrations —
+      <a class="body-link" href="mailto:hello@observerprotocol.org">reach out</a>.
+    </p>
+  </section>
+
+  <div class="closing-block">
+    <div class="closing-line">
+      <strong>Free your agent.</strong><br />
+      Bound what it can spend.<br />
+      <strong>Verify everything.</strong>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="./architecture.html">Architecture</a>
+      <a href="./docs.html">Docs</a>
+      <a href="./agentic-terminal.html">Agentic Terminal</a>
+      <a href="./registry.html">Registry</a>
+      <a href="https://github.com/observer-protocol" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+    <div class="footer-bottom">
+      <span>Observer Protocol v1.3 · CC BY 4.0 · observerprotocol.org</span>
+      <span>© 2026 Observer Protocol</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function toggleCollapse(id) {
+    const cb = document.getElementById(id);
+    const btn = document.getElementById(id + '-toggle');
+    if (cb.classList.contains('collapsed')) {
+      cb.classList.remove('collapsed');
+      btn.textContent = 'COLLAPSE';
+    } else {
+      cb.classList.add('collapsed');
+      btn.textContent = 'EXPAND';
+    }
+  }
+  function copyCode(preId, btnId) {
+    const pre = document.getElementById(preId);
+    const btn = document.getElementById(btnId);
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const old = btn.textContent;
+      btn.textContent = 'COPIED';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = old; btn.classList.remove('copied'); }, 1800);
+    });
+  }
+</script>
+
+</body>
+</html>
