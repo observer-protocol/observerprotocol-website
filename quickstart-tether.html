@@ -177,6 +177,10 @@
       <p style="font-size:14px;color:var(--text-secondary);max-width:600px;font-family:var(--font-sans);line-height:1.8;">
         Add self-custodial USDT (Ethereum/Polygon) and Bitcoin wallets to your agent with full Observer Protocol identity verification. ~25 minutes.
       </p>
+      <div style="margin-top: 1.5rem; max-width: 720px; padding: 0.9rem 1.1rem; border: 1px solid var(--amber, #f5a623); border-radius: 6px; background: rgba(245, 166, 35, 0.05); font-family: var(--font-sans); font-size: 13px; line-height: 1.7;">
+        <strong style="color: var(--amber, #f5a623); font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;">v0.2.0-beta.1 · June 2026</strong><br/>
+        <code>@observer-protocol/wdk-protocol-trust@0.2.0-beta.1</code> now ships the <strong>AIP v0.8 spending-mandate surface</strong> alongside the bilateral-handshake flow below. The new four-call pattern — <code>verifyMandate</code> → <code>withinScope</code> → <code>wallet.send</code> → <code>attest</code> — lets a WDK agent verify a signed delegation credential, gate a proposed spend against its actionScope (per-tx ceiling, allowed rails, allowed categories, authorization-level rules), and emit a portable settlement attestation. See the runnable <a href="https://github.com/observer-protocol/wdk-protocol-trust/blob/master/examples/mandate-flow.mjs" style="color: var(--amber, #f5a623);">examples/mandate-flow.mjs</a> and the <a href="https://github.com/observer-protocol/wdk-protocol-trust#aip-v08-mandate-surface-new-in-020" style="color: var(--amber, #f5a623);">README §AIP v0.8 mandate surface</a>. Steps below cover the v0.1-era handshake surface, which continues to ship alongside the v0.2 mandate surface — pick the one that matches your flow.
+      </div>
     </div>
   </section>
 
