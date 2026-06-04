@@ -248,7 +248,7 @@ app.<span style="color:#f8c471;">post</span>(<span style="color:#86efac;">'/api/
         Reputation lookup answers <em>"should I accept this payment?"</em> For high-value flows that need <em>"this payment is defensible against later disputes"</em>, compose with <a href="https://github.com/observer-protocol/wdk-protocol-trust" style="color:var(--orange);">@observer-protocol/wdk-protocol-trust</a>. The trust module handles bilateral identity verification (sender + recipient both prove DIDs before settlement) and ERC-8004 chain anchoring of the receipt. Together they make agentic payments chargeback-resistant by construction.
       </p>
       <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1rem;max-width:680px;line-height:1.7;">
-        <strong style="color:var(--text-primary);">Live demo:</strong> <a href="https://observerprotocol.org/chargeback-prevention/wdk/" style="color:var(--orange);">observerprotocol.org/chargeback-prevention/wdk</a> walks the full Mercado Libre × USDT-on-x402 flow — soft-reject → magic-link authorization → bilateral handshake → cryptographically attested receipt.
+        <strong style="color:var(--text-primary);">Runnable example:</strong> <a href="https://github.com/observer-protocol/wdk-protocol-trust/blob/master/examples/mandate-flow.mjs" style="color:var(--orange);">examples/mandate-flow.mjs</a> in the wdk-protocol-trust repo walks the full <code>verifyMandate → withinScope → wallet.send → attest</code> flow end-to-end against a self-issued demo credential.
       </p>
     </div>
   </section>

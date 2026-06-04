@@ -334,36 +334,52 @@ console.log('Payment result:', payment);
         <!-- Step 6 -->
         <div class="step">
           <div class="step-number">6</div>
-          <h3>Verify and Submit to ARP</h3>
-          <p>Verify the transaction on-chain and submit to the Agent Reporting Protocol for reputation tracking:</p>
-          <pre><code>import { WDKVerificationAdapter } from '@observerprotocol/sdk';
+          <h3>Verify a delegation, gate the spend, and attest the settlement (AIP v0.8)</h3>
+          <p>For agents acting under a signed delegation credential — the typical pattern for autonomous machine commerce — use <code>@observer-protocol/wdk-protocol-trust</code> v0.2.0-beta.1 to verify the delegation, gate the proposed spend against its <code>actionScope</code>, and emit a portable settlement attestation. Four method calls. OP never touches funds.</p>
+          <pre><code>npm install @observer-protocol/wdk-protocol-trust</code></pre>
+          <pre><code>import ObserverTrustProtocol from '@observer-protocol/wdk-protocol-trust';
 
-const adapter = new WDKVerificationAdapter();
-
-// Verify transaction on-chain
-const verification = await adapter.verifyTransaction(
-  'polygon',
-  payment.payment.txid,
-  {
-    recipient: '0x...', // Expected recipient
-    amount: '10.00',
-    token: 'USDT'
-  }
-);
-
-console.log('Verified:', verification.verified);
-console.log('Confirmations:', verification.confirmations);
-
-// Format for ARP
-const arpEvent = adapter.formatForARP(verification, {
-  amount: '10.00',
-  token: 'USDT',
-  recipient: '0x...'
+const op = new ObserverTrustProtocol(wallet, {
+  trustedIssuers: ['did:web:observerprotocol.org'],
+  attestationKey,   // 32-byte Ed25519 secret. DISTINCT from the WDK wallet key.
+  // gate: optional — defaults to AdvisoryGate (client-side gating).
+  // WdkPolicyHookGate stubbed pending Tether WDK PR #55.
 });
 
-// Submit to Observer Protocol
-await adapter.submitToObserver(agentId, apiKey, arpEvent);
-console.log('✅ Transaction attested on Observer Protocol');</code></pre>
+// 1. Verify the delegation credential (did:web resolve, Ed25519Signature2026,
+//    schema allowlist pinned to delegation/v2.1.json, validity window).
+const mandate = await op.verifyMandate(agentCredential);
+
+// 2. Gate the proposed action against actionScope. Pure, I/O-free:
+//    rail / per_transaction_ceiling (same-currency only, no FX) /
+//    allowed_transaction_categories / authorizationLevel-gated rules.
+const proposedAction = {
+  rail: 'usdt_tron',
+  amount: { amount: '10', currency: 'USDT' },
+  category: 'ai_inference_credits',
+  counterparty_did: 'did:web:vendor.example:agents:store'
+};
+const decision = await op.withinScope(proposedAction, mandate);
+if (!decision.allow) {
+  throw new Error('mandate violation: ' + JSON.stringify(decision.reasons));
+}
+
+// 3. WDK executes settlement. OP never touches funds.
+const tx = await wallet.send(/* … */);
+
+// 4. Sign a portable ObserverSettlementAttestation binding
+//    {delegation hash, action, settlement ref, evaluator, timestamp}
+//    with the agent's attestation key (Ed25519Signature2026).
+const attestation = await op.attest({
+  credential: agentCredential,
+  action: proposedAction,
+  settlement: { rail: 'usdt_tron', ref: tx.id }
+});
+
+console.log('✅ Settlement attested:', attestation.id);</code></pre>
+          <div class="info-box">
+            <p><strong>cumulative_budget, allowed_counterparty_types, geographic_restriction</strong> are reserved as <em>advisory</em> in AIP v0.8 — verifiers surface them but they never ground a deny. Binding semantics for each are reserved for a future draft. See the runnable <a href="https://github.com/observer-protocol/wdk-protocol-trust/blob/master/examples/mandate-flow.mjs" style="color:var(--orange);">examples/mandate-flow.mjs</a> for the full self-contained flow including a self-issued demo credential.</p>
+          </div>
         </div>
 
         <!-- Step 7 -->
