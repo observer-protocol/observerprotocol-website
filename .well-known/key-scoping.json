@@ -47,7 +47,8 @@
         "ObserverDelegationCredential",
         "BitstringStatusListCredential",
         "TronTransactionReceipt",
-        "AgentActivityCredential"
+        "AgentActivityCredential",
+        "TransactionAttestation"
       ],
       "notes": "Scoped on-server runtime issuance key (the #key-3 pattern, applied to delegation/status-list/receipt issuance). Generated on-server at the 2026-06 keystate ceremony; never leaves the server. The API performs a boot-time fail-closed check that OP_SIGNING_KEY derives to this publicKeyMultibase AND that this fragment is assertionMethod-listed — a doc/runtime desync now refuses to start instead of issuing mis-scoped credentials. Fragment #key-4 deliberately skipped: reserved for the AIP v0.9 World ID linkage provisioning."
     }
