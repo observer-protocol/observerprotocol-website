@@ -1,8 +1,8 @@
 {
-  "scoping_version": 1,
+  "scoping_version": 2,
   "issuer": "did:web:observerprotocol.org",
-  "updated_at": "2026-05-24T00:00:00Z",
-  "description": "OP issuer key-scoping policy. Enumerates each key in the issuer DID document and the credential types each key is governance-authorised to sign. Informational only; the protocol does not enforce these constraints cryptographically. Verifiers MAY consume this document to detect mis-scoped issuance (e.g. an ObserverDelegationCredential signed by #key-3). See AIP v0.8 §3.4.",
+  "updated_at": "2026-06-10T00:00:00Z",
+  "description": "OP issuer key-scoping policy. Enumerates each key in the issuer DID document and the credential types each key is governance-authorised to sign. Informational only; the protocol does not enforce these constraints cryptographically. Verifiers MAY consume this document to detect mis-scoped issuance. See AIP v0.8 §3.4.",
   "keys": [
     {
       "id": "did:web:observerprotocol.org#key-1",
@@ -10,7 +10,12 @@
       "custody": "not_held",
       "rotated_out_at": "2026-05-21T00:00:00Z",
       "scoped_to_issuance_of": [],
-      "notes": "Retained in verificationMethod only — verifies historical credentials issued under this key (notably the Cryptorefills merchant attestation). MUST NOT be used to sign any new credential."
+      "legitimate_assertion_window": {
+        "from": "genesis",
+        "until": "2026-05-21T20:33:22Z",
+        "note": "#key-1 was the active assertion key from genesis until 2026-05-21T20:33:22Z (the #key-2 activation). Credentials whose proof.created falls within that window were validly issued under this key. Genuinely archival ones are intentionally NOT re-issued; strict verifiers that ignore historical assertion windows will reject them, which is expected for archival artifacts and is NOT a revocation. Still-relied-upon artifacts (site-linked, AT Directory, BD collateral — e.g. the Cryptorefills merchant attestation) were re-issued under #key-5 at the 2026-06 keystate ceremony."
+      },
+      "notes": "Retained in verificationMethod only — verifies historical credentials issued under this key. MUST NOT be used to sign any new credential under any circumstances. Issuance between 2026-05-21 and 2026-06-10 that referenced this key was mis-scoped (see ceremony 2026-06-keystate); affected credentials were re-issued under #key-5 (runtime) or #key-2 (offline org/principal). Historical-artifact handling: liveness split — live re-issued under #key-5, archival left as-is per the legitimate_assertion_window above. Custody correction: key-1 bytes were held in the service environment (contrary to the not_held claim published 2026-05-24) until the 2026-06-10 ceremony, when they were overwritten at the #key-5 cutover. This entry corrects the record."
     },
     {
       "id": "did:web:observerprotocol.org#key-2",
@@ -18,11 +23,10 @@
       "custody": "offline",
       "activated_at": "2026-05-21T20:33:22Z",
       "scoped_to_issuance_of": [
-        "ObserverDelegationCredential",
         "OrganizationalMembershipCredential",
-        "BitstringStatusListCredential"
+        "PrincipalAttestationCredential"
       ],
-      "notes": "Primary org root signing key. Lives only as an offline encrypted keyfile under the custodian's control. Signing is a deliberate manual offline action via the opkey CLI."
+      "notes": "Primary org root signing key. Lives only as an offline encrypted keyfile under the custodian's control. Signing is a deliberate manual offline action via the opkey CLI. NOTE: ObserverDelegationCredential and BitstringStatusListCredential issuance moved to #key-5 at the 2026-06-10 ceremony — runtime issuance cannot be served by an offline key."
     },
     {
       "id": "did:web:observerprotocol.org#key-3",
@@ -32,7 +36,20 @@
       "scoped_to_issuance_of": [
         "PolicyEvaluationCredential"
       ],
-      "notes": "Scoped on-server signing key for sub-100ms PolicyEvaluationCredential issuance. Held only on the policy evaluator server under restricted file permissions. Scoping is governance-only; the DID document cannot cryptographically enforce credential-type restrictions. Rotate independently of #key-2 if compromised; compromise invalidates evaluation credentials but does not threaten delegation credentials."
+      "notes": "Scoped on-server signing key for sub-100ms PolicyEvaluationCredential issuance. Held only on the policy evaluator server under restricted file permissions. Rotate independently of #key-2 if compromised."
+    },
+    {
+      "id": "did:web:observerprotocol.org#key-5",
+      "status": "active",
+      "custody": "on_server",
+      "activated_at": "2026-06-10T20:29:00Z",
+      "scoped_to_issuance_of": [
+        "ObserverDelegationCredential",
+        "BitstringStatusListCredential",
+        "TronTransactionReceipt",
+        "AgentActivityCredential"
+      ],
+      "notes": "Scoped on-server runtime issuance key (the #key-3 pattern, applied to delegation/status-list/receipt issuance). Generated on-server at the 2026-06 keystate ceremony; never leaves the server. The API performs a boot-time fail-closed check that OP_SIGNING_KEY derives to this publicKeyMultibase AND that this fragment is assertionMethod-listed — a doc/runtime desync now refuses to start instead of issuing mis-scoped credentials. Fragment #key-4 deliberately skipped: reserved for the AIP v0.9 World ID linkage provisioning."
     }
   ]
 }

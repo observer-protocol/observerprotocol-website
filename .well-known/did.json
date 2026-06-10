@@ -22,6 +22,12 @@
       "type": "Ed25519VerificationKey2020",
       "controller": "did:web:observerprotocol.org",
       "publicKeyMultibase": "z6MksDZqzjbfbMUBzhae4Bttm54J1vguf6F6Y4J2fh7YnCqr"
+    },
+    {
+      "id": "did:web:observerprotocol.org#key-5",
+      "type": "Ed25519VerificationKey2020",
+      "controller": "did:web:observerprotocol.org",
+      "publicKeyMultibase": "z6Mkuvvj9JbKv92hwrzN3LTT4wpjn3wKeGg8kQ3FpKmpX68y"
     }
   ],
   "authentication": [
@@ -29,6 +35,7 @@
   ],
   "assertionMethod": [
     "did:web:observerprotocol.org#key-2",
-    "did:web:observerprotocol.org#key-3"
+    "did:web:observerprotocol.org#key-3",
+    "did:web:observerprotocol.org#key-5"
   ]
 }
