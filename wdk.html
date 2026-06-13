@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Observer Protocol × WDK: a native, verifiable trust layer for agentic payments</title>
+  <meta name="description" content="Observer Protocol's trust layer now runs natively on Tether WDK's own policy engine (PR #55). One signed mandate, the real WDK engine, a real wallet key, and a portable, independently verifiable record of every decision." />
+
+  <meta property="og:title" content="Observer Protocol × WDK: a native, verifiable trust layer for agentic payments" />
+  <meta property="og:description" content="Our trust module, running on WDK's own #55 policy engine: an in-mandate payment signed and a signed, independently verifiable decision credential; an over-mandate payment refused before the key." />
+  <meta property="og:url" content="https://observerprotocol.org/wdk" />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="https://observerprotocol.org/wdk-1-demo-terminal.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Observer Protocol × WDK: a native, verifiable trust layer" />
+  <meta name="twitter:description" content="Our trust module running on WDK's own #55 policy engine: a signed, independently verifiable record of every decision, and a refusal that never reaches the key." />
+  <meta name="twitter:image" content="https://observerprotocol.org/wdk-1-demo-terminal.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;0,900;1,300;1,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0a0a08;
+      --bg2:       #111110;
+      --bg3:       #1a1a18;
+      --bg-code:   #050504;
+      --border:    #2a2a26;
+      --border-strong: #3a3a34;
+      --amber:     #f5a623;
+      --amber-dim: #b8791a;
+      --amber-glow:#f5a62322;
+      --green:     #4ade80;
+      --green-dim: #166534;
+      --green-glow:#4ade8011;
+      --red:       #f87171;
+      --red-dim:   #b91c1c;
+      --red-glow:  #f8717111;
+      --text:      #e8e8e0;
+      --text-dim:  #888880;
+      --text-faint:#444440;
+      --blue:      #7eb8f7;
+      --teal:      #5eead4;
+      --purple:    #a78bfa;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2.5rem;
+      height: 56px;
+      background: rgba(10,10,8,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--amber);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: 0.06em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-status {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-dim);
+    }
+    .pulse {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── PAGE LAYOUT ── */
+    main {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 8rem 2rem 6rem;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 2rem 0 4rem;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -3rem; left: 50%; transform: translateX(-50%);
+      width: 120%; height: 60%;
+      background: radial-gradient(ellipse 50% 60% at 50% 50%, rgba(245,166,35,0.07) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+    }
+    .hero-eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--amber);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    h1.hero-title {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      color: var(--text);
+    }
+    .hero-subtitle {
+      font-family: 'Fraunces', serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(1.15rem, 2vw, 1.5rem);
+      line-height: 1.4;
+      color: var(--text-dim);
+      margin-bottom: 1.75rem;
+    }
+    .hero-lede {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--text);
+      max-width: 700px;
+    }
+
+    /* ── SECTION ── */
+    section { padding: 3rem 0; }
+    h2 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 1.85rem;
+      letter-spacing: -0.01em;
+      margin-bottom: 1.25rem;
+      color: var(--text);
+    }
+    h3 {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-weight: 500;
+      font-size: 1.3rem;
+      letter-spacing: -0.005em;
+      margin-bottom: 0.75rem;
+      color: var(--text);
+    }
+    .beat-heading {
+      display: flex; align-items: baseline; gap: 1rem;
+      margin-top: 3rem; margin-bottom: 1.25rem;
+    }
+    .beat-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--amber);
+      letter-spacing: 0.1em;
+    }
+    .beat-heading h3 { margin-bottom: 0; }
+    p { margin-bottom: 1.1rem; color: var(--text); }
+    p strong { color: var(--text); font-weight: 600; }
+    .friction-word { color: var(--amber); font-weight: 600; }
+    .text-dim { color: var(--text-dim); }
+    .divider {
+      border: 0;
+      height: 1px;
+      background: var(--border);
+      margin: 4rem 0;
+    }
+
+    /* ── INLINE CODE ── */
+    code.inline {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.92em;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+      color: var(--amber);
+    }
+
+    /* ── ASSET FIGURE ── */
+    figure {
+      margin: 2rem 0 2.5rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg2);
+    }
+    figure img, figure video {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: var(--bg);
+    }
+    figcaption {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--border);
+      letter-spacing: 0.04em;
+    }
+    figcaption a { color: var(--amber); text-decoration: none; border-bottom: 1px solid var(--amber-dim); }
+    figcaption a:hover { color: var(--text); }
+
+    /* ── CODE BLOCK ── */
+    .codeblock {
+      position: relative;
+      margin: 2rem 0 2.5rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg-code);
+    }
+    .codeblock-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.6rem 1rem;
+      background: var(--bg2);
+      border-bottom: 1px solid var(--border);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+    .codeblock-actions { display: flex; gap: 0.5rem; align-items: center; }
+    .codeblock-btn {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--text-dim);
+      background: transparent;
+      border: 1px solid var(--border);
+      padding: 0.25rem 0.7rem;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      letter-spacing: 0.05em;
+    }
+    .codeblock-btn:hover { color: var(--amber); border-color: var(--amber-dim); }
+    .codeblock-btn.copied { color: var(--green); border-color: var(--green-dim); }
+    .codeblock pre {
+      margin: 0;
+      padding: 1.25rem 1.25rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: var(--text);
+      overflow-x: auto;
+    }
+    .codeblock pre .c { color: var(--text-dim); }
+    .codeblock pre .p { color: var(--amber); }
+
+    /* ── INDEPENDENT-VERIFY CALLOUT ── */
+    .txid-callout {
+      margin: 2rem 0;
+      padding: 1.5rem 1.5rem;
+      background: linear-gradient(135deg, var(--amber-glow), transparent);
+      border: 1px solid var(--amber-dim);
+      border-radius: 8px;
+      position: relative;
+    }
+    .txid-callout-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--amber);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+    .txid-callout a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text);
+      text-decoration: none;
+      word-break: break-all;
+      border-bottom: 1px solid var(--amber-dim);
+    }
+    .txid-callout a:hover { color: var(--amber); border-bottom-color: var(--amber); }
+    .txid-callout-after { margin-top: 0.6rem; font-size: 0.9rem; color: var(--text-dim); }
+
+    /* ── PROVES BLOCK (rows) ── */
+    .proves-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin: 1.5rem 0 0;
+    }
+    .proves-row {
+      display: grid;
+      grid-template-columns: 16rem 1fr;
+      gap: 1.25rem;
+      align-items: baseline;
+      padding: 1rem 1.25rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .proves-row-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--amber);
+      letter-spacing: 0.05em;
+    }
+    .proves-row-detail { font-size: 0.95rem; color: var(--text); }
+    .proves-row-detail a { color: var(--amber); text-decoration: none; border-bottom: 1px solid var(--amber-dim); }
+    .proves-row-detail a:hover { color: var(--text); }
+    @media (max-width: 600px) {
+      .proves-row { grid-template-columns: 1fr; gap: 0.4rem; }
+    }
+
+    /* ── PROFILE CTA BUTTON ── */
+    .profile-cta {
+      display: inline-block;
+      margin: 0.5rem 0 0.5rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.04em;
+      color: var(--bg);
+      background: var(--amber);
+      padding: 0.65rem 1.1rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .profile-cta:hover { background: #ffbf4d; }
+
+    /* ── CLOSING CTA ── */
+    .closing-block {
+      margin: 5rem 0 2rem;
+      padding: 3rem 2rem;
+      background: var(--bg2);
+      border: 1px solid var(--amber-dim);
+      border-radius: 10px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .closing-block::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 50% 80% at 50% 100%, var(--amber-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .closing-block > * { position: relative; }
+    .closing-line {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+    .closing-line strong { color: var(--amber); font-weight: 600; }
+
+    /* ── LINKS ── */
+    a.body-link {
+      color: var(--amber);
+      text-decoration: none;
+      border-bottom: 1px solid var(--amber-dim);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    a.body-link:hover { color: var(--text); border-bottom-color: var(--text); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 2.5rem 2rem;
+      background: var(--bg2);
+    }
+    .footer-inner { max-width: 880px; margin: 0 auto; }
+    .footer-links {
+      display: flex; gap: 2rem; flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .footer-links a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+    }
+    .footer-links a:hover { color: var(--amber); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-faint);
+      letter-spacing: 0.04em;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 720px) {
+      nav { padding: 0 1.25rem; }
+      .nav-links { display: none; }
+      main { padding: 6rem 1.25rem 4rem; }
+      .codeblock pre { font-size: 0.74rem; padding: 1rem; }
+      .closing-block { padding: 2rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="./architecture.html">Architecture</a></li>
+    <li><a href="./docs.html">Docs</a></li>
+    <li><a href="./agentic-terminal.html">Agentic Terminal</a></li>
+    <li><a href="./registry.html">Registry</a></li>
+  </ul>
+  <div class="nav-status">
+    <div class="pulse"></div>
+    LIVE DEMO
+  </div>
+</nav>
+
+<main>
+
+  <section class="hero">
+    <div class="hero-eyebrow">Live demo · Observer Protocol × Tether WDK</div>
+    <h1 class="hero-title">A native, verifiable trust layer for agentic payments</h1>
+    <div class="hero-subtitle">How Observer Protocol's trust layer now runs natively on WDK's own policy engine.</div>
+    <p class="hero-lede">
+      One signed agent mandate, the real Tether WDK #55 policy engine, and a real
+      wallet key. An in-mandate payment is allowed, signed, and turned into a
+      portable, independently verifiable record. An over-mandate payment is refused
+      before the key is ever reached.
+    </p>
+  </section>
+
+  <hr class="divider" />
+
+  <section>
+    <h2>Tether is quietly building the rails for the agentic economy</h2>
+    <p>
+      If you have been watching Tether over the last year, the direction is hard to
+      miss. They are not a stablecoin company that happens to dabble in AI. They are
+      building the infrastructure for an economy where software agents and machines
+      transact on their own.
+    </p>
+    <p>
+      It started with WDK, the Wallet Development Kit: a self custodial, agentic
+      wallet that lets software hold and move Bitcoin and USDT without a custodian
+      sitting in the middle.
+    </p>
+    <p>
+      Then came QVAC, Tether's local first, peer to peer AI platform. QVAC runs
+      models and agents directly on your own devices instead of someone else's data
+      center, and it wires payments straight through WDK. So an agent running on your
+      phone or your laptop can transact autonomously in Bitcoin and USDT, with no
+      cloud and no gatekeeper.
+    </p>
+    <p>
+      And most recently, Tether stepped in to lead the latest funding round for NEURA
+      Robotics, a humanoid robotics company. The part that matters for us is what it
+      says about the wallet: those robots are intended to ship with WDK natively, so a
+      humanoid can carry its own self custodial wallet and pay or get paid in Bitcoin
+      and USDT, machine to machine, on behalf of its operator and within set
+      parameters.
+    </p>
+    <p>
+      Put those three together and the bet is clear. Tether thinks the next wave of
+      users is not only humans. It is agents and machines, and WDK is the wallet they
+      will carry.
+    </p>
+  </section>
+
+  <hr class="divider" />
+
+  <section>
+    <h2>What probably gained less attention</h2>
+    <p>
+      In the same week as the robotics news, the WDK team merged something quietly
+      into the kit itself that we think is just as important.
+    </p>
+    <p>
+      <a class="body-link" href="https://github.com/tetherto/wdk/pull/55" target="_blank" rel="noopener">Issue #55</a>
+      added a native transaction policy engine to WDK. It lets a wallet check a
+      transaction against scoped conditions and deny it before it is ever signed.
+    </p>
+    <p>
+      That merge is a bigger deal than it looks, and not only for Tether. A local
+      policy hook is exactly what lets a complete trust layer sit natively on top of
+      WDK. Which is what Observer Protocol builds.
+    </p>
+    <p>
+      We do not bank, custody, or settle. WDK does that. What we add is the trust
+      layer around it: who the agent is, what it was authorized to do, and a portable,
+      independently verifiable record of every decision. With #55 in place, that layer
+      now plugs straight into WDK's own engine.
+    </p>
+  </section>
+
+  <hr class="divider" />
+
+  <section>
+    <h2>Meet Maxi, an agent with an identity you can check</h2>
+    <p>Before the demo, meet Maxi.</p>
+    <p>
+      Maxi is an autonomous agent with something most agents do not have: a real,
+      portable identity that anyone can verify. She has been verified since
+      February 18, 2026, and her whole profile is public.
+    </p>
+
+    <a class="profile-cta" href="https://app.agenticterminal.io/sovereign/agents/maxi-0001" target="_blank" rel="noopener">View Maxi's public profile ↗</a>
+
+    <div class="proves-grid">
+      <div class="proves-row">
+        <div class="proves-row-name">A portable DID</div>
+        <div class="proves-row-detail"><code class="inline">did:web:observerprotocol.org:agents:maxi-0001</code> resolves to her public keys and credentials, and it travels with her across any platform. It is not locked inside ours.</div>
+      </div>
+      <div class="proves-row">
+        <div class="proves-row-name">An on chain anchor</div>
+        <div class="proves-row-detail">Her identity is anchored on ERC-8004, token #54570 on Base. Open the 8004 registry or Basescan from her profile and check the owner yourself.</div>
+      </div>
+      <div class="proves-row">
+        <div class="proves-row-name">Six rails, 54 verified transactions</div>
+        <div class="proves-row-detail">Real, checkable payments across L402, Lightning, TRON, x402, x402 on Stacks, and x402 on Stripe. Each transaction carries its own verify link, an on chain one where the rail is on chain.</div>
+      </div>
+      <div class="proves-row">
+        <div class="proves-row-name">Signed delegations</div>
+        <div class="proves-row-detail">Credentials that state, in signed form, exactly what she is allowed to do, like a spending delegation scoped to an allowlisted merchant.</div>
+      </div>
+      <div class="proves-row">
+        <div class="proves-row-name">A portable reputation score</div>
+        <div class="proves-row-detail">Her AT-ARS score (66 out of 100, Band 2) travels with her DID. The point is not the number, it is that the reputation is real, inspectable, and not trapped inside one platform's database.</div>
+      </div>
+      <div class="proves-row">
+        <div class="proves-row-name">Three signed attestations</div>
+        <div class="proves-row-detail">A spending delegation and a verified principal attestation from bitcoinsingularity.ai, plus an organizational attestation from observerprotocol.org.</div>
+      </div>
+    </div>
+
+    <figure>
+      <img src="./wdk-2-maxi-profile.png"
+           alt="Maxi's public profile on Agentic Terminal: AT-ARS score 66 of 100, Band 2; verified since 2/18/2026; six rails (L402, Lightning, TRON, x402, Stacks, Stripe); a verified-transactions table; verifiable identity anchored on ERC-8004 token #54570 on Base; and three signed attestations." />
+      <figcaption>Maxi's public profile, live at <a href="https://app.agenticterminal.io/sovereign/agents/maxi-0001" target="_blank" rel="noopener">app.agenticterminal.io/sovereign/agents/maxi-0001</a></figcaption>
+    </figure>
+
+    <p>
+      The point is that none of this lives inside one company's walls. It is hers, it
+      is signed, and anyone can check it without asking us.
+    </p>
+  </section>
+
+  <hr class="divider" />
+
+  <section>
+    <h2>The demo: our trust module, running on WDK's own policy engine</h2>
+    <p>
+      Here is what it looks like when the two fit together. One real agent mandate
+      (Maxi, capped at 100 USDC, only to the allowlisted merchant), the real WDK #55
+      engine, and a real wallet key. Two transactions, run end to end.
+    </p>
+
+    <figure>
+      <img src="./wdk-1-demo-terminal.png"
+           alt="Terminal run of the Observer Protocol trust module on the real WDK #55 engine. Track 1: a 50 USDC transfer to the allowlisted merchant is ALLOWED by the engine, SIGNED by the wallet key, and PROVABLE via a signed PolicyEvaluationCredential that is bound to the exact transaction and re-verified against the live public endpoint. Track 2: a 150 USDC transfer over the 100 USDC ceiling is BLOCKED at the signing boundary and the signer is invoked 0 times." />
+      <figcaption>One mandate, two tracks, on the real WDK #55 engine. Authorized to provable, then over the line to never signed.</figcaption>
+    </figure>
+
+    <div class="beat-heading">
+      <div class="beat-num">TRACK 1</div>
+      <h3>Authorized, signed, and provable</h3>
+    </div>
+    <p>
+      The first transaction is within the mandate: 50 USDC to the allowlisted
+      merchant. The #55 engine allows it. The wallet key signs it (a real signature,
+      not broadcast). And then the part only Observer Protocol does: our evaluator
+      issues a signed
+      <code class="inline">PolicyEvaluationCredential</code>, bound to that exact
+      transaction and to that exact mandate, and it re-verifies against our live
+      public endpoint. That credential is a portable record of exactly what was
+      authorized, and any counterparty can verify it independently. A wallet-local
+      engine cannot produce that.
+    </p>
+
+    <div class="beat-heading">
+      <div class="beat-num">TRACK 2</div>
+      <h3>Over the line, blocked, never signed</h3>
+    </div>
+    <p>
+      The second transaction is over the line: 150 USDC, past the 100 USDC ceiling.
+      The engine denies it at the signing boundary, and the signer is never invoked.
+      Nothing was signed, so there is nothing to prove and nothing to undo. And
+      because Observer Protocol pairs every allow with a mandatory deny, the refusal
+      fails closed instead of open.
+    </p>
+    <p>
+      That is the whole idea. WDK's wallet moves the money. The engine enforces the
+      policy. Observer Protocol is what turns every authorization into a portable,
+      independently verifiable record, and what makes sure a refusal at the key is
+      provable.
+    </p>
+
+    <div class="beat-heading">
+      <div class="beat-num">CHECK</div>
+      <h3>Two things you can reproduce, with no help from us</h3>
+    </div>
+
+    <p>
+      <strong>1. Verify the record.</strong> Here is the signed credential from that
+      run. Verify it yourself. This one line fetches the hosted
+      <code class="inline">PolicyEvaluationCredential</code> and checks it against our
+      public verify endpoint:
+    </p>
+
+    <div class="codeblock" id="curlv">
+      <div class="codeblock-bar">
+        <span>verify the signed decision</span>
+        <div class="codeblock-actions">
+          <button class="codeblock-btn" onclick="copyCode('curlv-pre','curlv-copy')" id="curlv-copy">COPY</button>
+        </div>
+      </div>
+      <pre id="curlv-pre">curl -s https://api.observerprotocol.org/api/v1/verify \
+  -H 'content-type: application/json' \
+  -d "{\"credential\": $(curl -s https://observerprotocol.org/credentials/maxi-0001-wdk-demo-pec.json)}"</pre>
+    </div>
+
+    <p>
+      It returns
+      <code class="inline">{"signature":true,"not_expired":true,"not_revoked":true}</code>.
+      The credential is hosted at
+      <a class="body-link" href="https://observerprotocol.org/credentials/maxi-0001-wdk-demo-pec.json" target="_blank" rel="noopener">observerprotocol.org/credentials/maxi-0001-wdk-demo-pec.json</a>.
+      And you do not even need our endpoint: it is a standard
+      <code class="inline">eddsa-jcs-2022</code> Data Integrity proof that verifies
+      with the reference W3C Data Integrity libraries against our published DID at
+      <a class="body-link" href="https://observerprotocol.org/.well-known/did.json" target="_blank" rel="noopener">observerprotocol.org/.well-known/did.json</a>.
+      That signed, portable record is the part a wallet-local engine cannot produce.
+    </p>
+
+    <p>
+      <strong>2. Reproduce the enforcement.</strong> The core enforcement runs in your
+      own terminal, against the real WDK #55 engine, with no Observer Protocol
+      infrastructure in the path:
+    </p>
+
+    <div class="codeblock" id="cta">
+      <div class="codeblock-bar">
+        <span>reproduce the enforcement locally</span>
+        <div class="codeblock-actions">
+          <button class="codeblock-btn" onclick="copyCode('cta-pre','cta-copy')" id="cta-copy">COPY</button>
+        </div>
+      </div>
+      <pre id="cta-pre"><span class="c"># the OP ALLOW + DENY pair on a real WDK #55 PolicyEngine</span>
+git clone https://github.com/observer-protocol/wdk-op-policy
+cd wdk-op-policy &amp;&amp; npm install &amp;&amp; npm run verify</pre>
+    </div>
+
+    <p>
+      You will watch an in-mandate payment allowed and a payment over the ceiling
+      blocked before the key is ever reached.
+    </p>
+  </section>
+
+  <hr class="divider" />
+
+  <section>
+    <h2>What this is, stated plainly</h2>
+    <div class="proves-grid">
+      <div class="proves-row">
+        <div class="proves-row-name">Tether WDK</div>
+        <div class="proves-row-detail">The self custodial agentic wallet that moves the money, and the #55 policy hook that enforces a deny before the key signs.</div>
+      </div>
+      <div class="proves-row">
+        <div class="proves-row-name">Observer Protocol</div>
+        <div class="proves-row-detail">The trust layer on top: the scoped, signed mandate, the mandatory fail-closed deny, and the portable signed record of every decision the wallet-local engine cannot emit.</div>
+      </div>
+      <div class="proves-row">
+        <div class="proves-row-name">wdk-op-policy</div>
+        <div class="proves-row-detail"><a href="https://github.com/observer-protocol/wdk-op-policy" target="_blank" rel="noopener">github.com/observer-protocol/wdk-op-policy</a>, open source, runs on the #55 hook.</div>
+      </div>
+    </div>
+    <p style="margin-top:1.5rem;">
+      Issuance and verification of the signed credential are live and provable today.
+      The independently verifiable claim applies to that signed record (the
+      eddsa-jcs-2022 path), checkable against our public DID and verify endpoint. We
+      do not extend it past what the endpoints will confirm.
+    </p>
+  </section>
+
+  <div class="closing-block">
+    <div class="closing-line">
+      WDK's wallet moves the money.<br />
+      The portable, <strong>independently verifiable</strong> record of what was authorized,<br />
+      and the proof that a blocked transaction <strong>never got signed</strong>,<br />
+      is Observer Protocol.
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="./architecture.html">Architecture</a>
+      <a href="./docs.html">Docs</a>
+      <a href="./agentic-terminal.html">Agentic Terminal</a>
+      <a href="https://github.com/observer-protocol/wdk-op-policy" target="_blank" rel="noopener">wdk-op-policy ↗</a>
+      <a href="https://app.agenticterminal.io/sovereign/agents/maxi-0001" target="_blank" rel="noopener">Maxi's profile ↗</a>
+      <a href="https://github.com/observer-protocol" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+    <div class="footer-bottom">
+      <span>Observer Protocol · CC BY 4.0 · observerprotocol.org</span>
+      <span>© 2026 Observer Protocol</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function copyCode(preId, btnId) {
+    const pre = document.getElementById(preId);
+    const btn = document.getElementById(btnId);
+    const text = pre.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      const old = btn.textContent;
+      btn.textContent = 'COPIED';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = old; btn.classList.remove('copied'); }, 1800);
+    });
+  }
+</script>
+
+</body>
+</html>
