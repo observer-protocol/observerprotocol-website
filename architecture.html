@@ -532,16 +532,20 @@
       <div id="wallet-standards" class="arch-section-label">Wallet Abstractions · Multi-Rail Provisioning</div>
       <div class="arch-foundations">
         <div class="foundation-block">
-          <div class="foundation-title">Tether WDK · Wallet Development Kit <span class="live-badge">v0.2.0-beta.1 on npm</span></div>
-          <div class="foundation-body">Multi-rail wallet provisioning + identity binding for agentic commerce. <strong>@observer-protocol/wdk-protocol-trust</strong> + <strong>@observer-protocol/wdk-lightning-verifier</strong> compose with WDK to add bilateral trust handshake, ERC-8004 anchoring, and chargeback-resistant receipts. v0.2.0 ships the <strong>AIP v0.8 spending-mandate surface</strong> — <code>verifyMandate</code> resolves a signed delegation, <code>withinScope</code> gates a proposed spend against per-tx ceiling / rail / category / authorization-level rules (I/O-free, no FX), <code>attest</code> emits a portable settlement attestation, all behind a <strong>PolicyGate</strong> seam that will adapt to Tether WDK PR #55 when the in-WDK pre-sign hook lands.</div>
+          <div class="foundation-title">Tether WDK · Wallet Development Kit <span class="live-badge">wdk-op-policy · PR #55 · live</span></div>
+          <div class="foundation-body">Native enforcement on WDK's local transaction policy engine (PR #55, now merged). <strong>@observer-protocol/wdk-op-policy</strong> registers an ALLOW plus a mandatory, fail-closed DENY on the #55 hook: it verifies a signed delegation against the raw transaction and refuses an out-of-mandate spend before the key signs, then issues a portable, independently verifiable PolicyEvaluationCredential. The identity and Lightning modules (<strong>@observer-protocol/wdk-protocol-trust</strong>, <strong>@observer-protocol/wdk-lightning-verifier</strong>) add the bilateral trust handshake, ERC-8004 anchoring, and chargeback-resistant receipts alongside it. Live demo at observerprotocol.org/wdk.</div>
         </div>
         <div class="foundation-block">
           <div class="foundation-title">OWS · Open Wallet Standard <span class="live-badge">live</span></div>
           <div class="foundation-body">BIP-44-derived multi-chain agent vaults (EVM · Solana · Bitcoin). One vault, one identity, portable reputation. OWS-provisioned agents register on OP via the canonical SDK and inherit the full Observer Protocol trust surface.</div>
         </div>
         <div class="foundation-block">
-          <div class="foundation-title">MPP · Machine Payments Protocol <span class="live-badge">live</span></div>
-          <div class="foundation-body">Stripe-coauthored payment-session protocol for machine-to-machine settlement. Observer Protocol layers identity + reputation on top — every MPP / x402 seller can add agent reputation in one middleware line via the OP SDK.</div>
+          <div class="foundation-title">MPP / Tempo · Machine Payments Protocol <span class="live-badge">mppx-op-account live</span></div>
+          <div class="foundation-body"><strong>@observer-protocol/mppx-op-account</strong> is a drop-in viem account for MPP/Tempo (mppx) that verifies a signed, revocable delegation against every session escrow and voucher at the signing boundary, fail-closed: per-transaction ceiling, counterparty, temporal window, cross-session velocity. Composes with mppx unchanged, no core change. Same vendored core as the WDK and OWS engines.</div>
+        </div>
+        <div class="foundation-block">
+          <div class="foundation-title">Jan3 Aqua · Bitcoin / Liquid <span class="live-badge">live demo</span></div>
+          <div class="foundation-body">Native support for Jan3's Aqua wallet on Liquid. Aqua calls Observer Protocol's policy sidecar before signing: the evaluator checks the proposed transaction against a signed spending delegation and returns a signed decision, fail-closed. The "Free Your Agent" demo runs it end to end on Liquid, signed against mainnet DIDs (observerprotocol.org/free-your-agent).</div>
         </div>
       </div>
 

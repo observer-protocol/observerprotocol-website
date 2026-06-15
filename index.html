@@ -960,23 +960,40 @@
 
       <!-- WDK · highest priority -->
       <div class="wallet-card featured">
-        <div class="wallet-tag">Tether WDK · Extension modules · v0.2.0-beta.1 on npm</div>
+        <div class="wallet-tag">Tether WDK · Native policy engine · live demo</div>
         <h3>WDK <span class="wallet-h3-sub">Wallet Development Kit</span></h3>
         <p class="wallet-body">
-          Pre-payment mandate verification, bilateral identity handshake, and ERC-8004-anchored settlement attestations for the Tether WDK stack. v0.2.0 adds the <strong>AIP v0.8 spending-mandate surface</strong>: verify a signed delegation credential, gate a proposed spend against its actionScope (per-tx ceiling, allowed rails, allowed categories, authorization-level rules), and emit a portable settlement attestation — all without OP touching funds.
+          Observer Protocol runs natively on WDK's local transaction policy engine (PR #55). <strong>@observer-protocol/wdk-op-policy</strong> registers an ALLOW plus a mandatory, fail-closed DENY on the #55 hook: it verifies a signed delegation credential against the raw transaction and refuses an out-of-mandate spend before the key signs. OP's evaluator then issues a portable, independently verifiable PolicyEvaluationCredential. The identity and Lightning modules (wdk-protocol-trust, wdk-lightning-verifier) carry the bilateral handshake and ERC-8004 settlement attestations alongside it.
         </p>
         <div class="wallet-pills">
-          <span class="pill">verifyMandate · withinScope · attest</span>
-          <span class="pill">AIP v0.8 spending mandate</span>
-          <span class="pill">PolicyGate (WDK PR #55 seam)</span>
-          <span class="pill">Bilateral handshake</span>
-          <span class="pill">ERC-8004 anchored</span>
+          <span class="pill">wdk-op-policy (PR #55 hook)</span>
+          <span class="pill">ALLOW + mandatory DENY, fail-closed</span>
+          <span class="pill">signed PolicyEvaluationCredential</span>
+          <span class="pill">Bilateral handshake · ERC-8004</span>
         </div>
         <div class="wallet-links">
+          <a href="/wdk" class="wallet-link">Live demo →</a>
+          <a href="https://github.com/observer-protocol/wdk-op-policy" target="_blank" rel="noopener" class="wallet-link">wdk-op-policy ↗</a>
+          <a href="https://www.npmjs.com/package/@observer-protocol/wdk-op-policy" target="_blank" rel="noopener" class="wallet-link">npm ↗</a>
           <a href="https://github.com/observer-protocol/wdk-protocol-trust" target="_blank" rel="noopener" class="wallet-link">wdk-protocol-trust ↗</a>
-          <a href="https://www.npmjs.com/package/@observer-protocol/wdk-protocol-trust" target="_blank" rel="noopener" class="wallet-link">npm ↗</a>
           <a href="https://github.com/observer-protocol/wdk-lightning-verifier" target="_blank" rel="noopener" class="wallet-link">wdk-lightning-verifier ↗</a>
-          <a href="https://github.com/observer-protocol/wdk-protocol-trust/blob/master/examples/mandate-flow.mjs" target="_blank" rel="noopener" class="wallet-link">examples/mandate-flow.mjs ↗</a>
+        </div>
+      </div>
+
+      <!-- Aqua · Bitcoin/Liquid · live demo -->
+      <div class="wallet-card">
+        <div class="wallet-tag">Jan3 Aqua · Liquid · live demo</div>
+        <h3>Aqua <span class="wallet-h3-sub">Bitcoin / Liquid wallet</span></h3>
+        <p class="wallet-body">
+          Native support for Jan3's Aqua wallet on the Liquid network. Aqua calls Observer Protocol's policy sidecar before it signs: the evaluator checks the proposed transaction against a signed spending delegation and returns a signed decision, fail-closed, so an out-of-mandate spend is refused at the wallet. The "Free Your Agent" demo runs it end to end on Liquid, signed against mainnet DIDs.
+        </p>
+        <div class="wallet-pills">
+          <span class="pill">Liquid (USDt · L-BTC)</span>
+          <span class="pill">policy sidecar /evaluate</span>
+          <span class="pill">signed decision, fail-closed</span>
+        </div>
+        <div class="wallet-links">
+          <a href="/free-your-agent" class="wallet-link">Free Your Agent demo →</a>
         </div>
       </div>
 
@@ -985,32 +1002,34 @@
         <div class="wallet-tag">Open Wallet Foundation · Live</div>
         <h3>OWS <span class="wallet-h3-sub">Open Wallet Standard</span></h3>
         <p class="wallet-body">
-          BIP-44-derived multi-chain agent vaults across EVM, Solana, and Bitcoin. OWS-provisioned agents register on Observer Protocol via the canonical SDK and inherit the full trust surface.
+          BIP-44-derived multi-chain agent vaults across EVM, Solana, and Bitcoin. OWS-provisioned agents register on Observer Protocol via the canonical SDK and inherit the full trust surface. The <strong>ows-op-verify</strong> executable enforces the same signed mandate at the OWS signing boundary, fail-closed, from the same vendored core as the WDK and MPP engines.
         </p>
         <div class="wallet-pills">
-          <span class="pill">BIP-44 vaults</span>
-          <span class="pill">Multi-chain</span>
+          <span class="pill">ows-op-verify (enforcement engine)</span>
+          <span class="pill">BIP-44 vaults · Multi-chain</span>
           <span class="pill">Portable reputation</span>
         </div>
         <div class="wallet-links">
+          <a href="https://github.com/observer-protocol/ows-op-policy" target="_blank" rel="noopener" class="wallet-link">ows-op-policy ↗</a>
           <a href="/quickstart-ows.html" class="wallet-link">Quickstart →</a>
         </div>
       </div>
 
-      <!-- MPP -->
+      <!-- MPP / Tempo -->
       <div class="wallet-card">
-        <div class="wallet-tag">Stripe-coauthored · Live</div>
+        <div class="wallet-tag">MPP / Tempo · Live · mppx-op-account on npm</div>
         <h3>MPP <span class="wallet-h3-sub">Machine Payments Protocol</span></h3>
         <p class="wallet-body">
-          Payment-session protocol for machine-to-machine settlement. Observer Protocol layers identity and reputation onto every MPP transaction in one middleware line.
+          <strong>@observer-protocol/mppx-op-account</strong> is a drop-in viem account for MPP/Tempo (mppx). It verifies a signed, revocable delegation against every session escrow and voucher at the signing boundary, fail-closed: per-transaction ceiling, counterparty, temporal window, and a cross-session velocity cap. Composes with mppx unchanged, no core change.
         </p>
         <div class="wallet-pills">
-          <span class="pill">Payment session</span>
-          <span class="pill">M2M settlement</span>
-          <span class="pill">One middleware line</span>
+          <span class="pill">mppx-op-account · viem account</span>
+          <span class="pill">escrow + voucher enforcement</span>
+          <span class="pill">fail-closed at the key</span>
         </div>
         <div class="wallet-links">
-          <a href="https://github.com/observer-protocol/mpp-integration" target="_blank" rel="noopener" class="wallet-link">mpp-integration ↗</a>
+          <a href="https://github.com/observer-protocol/mppx-op-account" target="_blank" rel="noopener" class="wallet-link">mppx-op-account ↗</a>
+          <a href="https://www.npmjs.com/package/@observer-protocol/mppx-op-account" target="_blank" rel="noopener" class="wallet-link">npm ↗</a>
         </div>
       </div>
 
