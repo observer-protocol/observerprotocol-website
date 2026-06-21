@@ -1,7 +1,7 @@
 {
-  "scoping_version": 2,
+  "scoping_version": 3,
   "issuer": "did:web:observerprotocol.org",
-  "updated_at": "2026-06-10T00:00:00Z",
+  "updated_at": "2026-06-21T00:00:00Z",
   "description": "OP issuer key-scoping policy. Enumerates each key in the issuer DID document and the credential types each key is governance-authorised to sign. Informational only; the protocol does not enforce these constraints cryptographically. Verifiers MAY consume this document to detect mis-scoped issuance. See AIP v0.8 §3.4.",
   "keys": [
     {
@@ -51,6 +51,17 @@
         "TransactionAttestation"
       ],
       "notes": "Scoped on-server runtime issuance key (the #key-3 pattern, applied to delegation/status-list/receipt issuance). Generated on-server at the 2026-06 keystate ceremony; never leaves the server. The API performs a boot-time fail-closed check that OP_SIGNING_KEY derives to this publicKeyMultibase AND that this fragment is assertionMethod-listed — a doc/runtime desync now refuses to start instead of issuing mis-scoped credentials. Fragment #key-4 deliberately skipped: reserved for the AIP v0.9 World ID linkage provisioning."
+    },
+    {
+      "id": "did:web:observerprotocol.org#key-6",
+      "status": "active",
+      "custody": "local_managed",
+      "activated_at": "2026-06-21T00:00:00Z",
+      "scoped_to_issuance_of": [
+        "MerchantTrustCredential",
+        "BitstringStatusListCredential[merchant-trust]"
+      ],
+      "notes": "AT Directory merchant-trust issuance key. Used at build time to sign MerchantTrustCredentials and the merchant-trust BitstringStatusListCredential. Type Multikey (eddsa-jcs-2022 proof suite). Private key held in ~/.at-keys/merchant-vc-key-6.hex on the build machine (mode 600). Not held on the API server — signing is a deliberate build-time action. Rotate on directory rebuild if compromised."
     }
   ]
 }
