@@ -718,59 +718,6 @@ summary:hover { color: var(--text-muted); }
   line-height: 1.55;
 }
 
-/* ── Video section ─────────────────────────────────────── */
-.video-section {
-  padding: 2rem 0;
-  border-bottom: 1px solid var(--border);
-}
-.video-title {
-  font-family: var(--mono);
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--text);
-  margin-bottom: 0.4rem;
-}
-.video-sub {
-  font-size: 0.84rem;
-  color: var(--text-muted);
-  margin-bottom: 1.25rem;
-  line-height: 1.6;
-}
-.video-placeholder {
-  background: var(--surface);
-  border: 2px dashed rgba(59,130,246,0.2);
-  border-radius: var(--r);
-  padding: 3rem 2rem;
-  text-align: center;
-  color: var(--text-dim);
-}
-.video-placeholder-icon {
-  font-size: 2rem;
-  margin-bottom: 0.75rem;
-  opacity: 0.4;
-}
-.video-placeholder-text {
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  color: var(--text-dim);
-  line-height: 1.6;
-}
-.video-download {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  background: rgba(59,130,246,0.1);
-  border: 1px solid rgba(59,130,246,0.25);
-  border-radius: var(--r);
-  font-family: var(--mono);
-  font-size: 0.72rem;
-  color: var(--accent);
-  cursor: default;
-  opacity: 0.5;
-}
-
 /* ── Verify section ────────────────────────────────────── */
 .verify-section {
   padding: 2rem 0;
@@ -1425,25 +1372,6 @@ summary:hover { color: var(--text-muted); }
         This section moves to Tier 1 when live position data feeds the evaluator.
         Drawdown is not live-enforced in this record.
       </div>
-    </div>
-  </section>
-
-  <!-- ── Video ─────────────────────────────────────────── -->
-  <section class="video-section">
-    <div class="video-title">Execution walkthrough</div>
-    <p class="video-sub">
-      60-90 second screen recording. Sequence: mandate issued → proposal → DENY short-circuit
-      (swap_calls == 0, /swap never entered) → ALLOW settling on Solana mainnet (solscan finalized)
-      → verify both signatures. Captioned, legible muted.
-    </p>
-    <div class="video-placeholder">
-      <div class="video-placeholder-icon">▶</div>
-      <div class="video-placeholder-text">
-        Video pending recording.<br>
-        Storyboard: mandate issued · DENY (swap_calls=0 asserted) ·<br>
-        ALLOW (solscan slot 428476359 finalized) · verify-yourself steps.
-      </div>
-      <div class="video-download">⬇ Download raw file (pending)</div>
     </div>
   </section>
 
