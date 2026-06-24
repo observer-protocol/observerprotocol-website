@@ -1,0 +1,1560 @@
+<title>Maxi — Trading Mandate Enforcement Record</title>
+<style>
+/* ── Design tokens ─────────────────────────────────────── */
+:root {
+  --ground:        #141B2D;
+  --surface:       #1C2540;
+  --surface-2:     #243058;
+  --surface-3:     #1A2235;
+  --text:          #E4EBF7;
+  --text-muted:    #8899BB;
+  --text-dim:      #4A6080;
+  --accent:        #3B82F6;
+  --accent-glow:   rgba(59,130,246,0.12);
+  --accent-2:      #10B981;
+  --accent-2-glow: rgba(16,185,129,0.12);
+  --deny:          #EF4444;
+  --deny-glow:     rgba(239,68,68,0.10);
+  --tier1:         #F59E0B;
+  --tier2:         #6B849A;
+  --border:        rgba(255,255,255,0.06);
+  --border-accent: rgba(59,130,246,0.22);
+  --mono:         "SF Mono","Cascadia Code","Fira Code",Consolas,monospace;
+  --sans:         -apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  --r:            6px;
+  --max-w:        860px;
+}
+
+/* ── Reset & base ──────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; }
+body {
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+pre, code { font-family: var(--mono); }
+ul { list-style: none; padding: 0; }
+
+/* ── Layout shell ──────────────────────────────────────── */
+.shell {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 1.5rem 5rem;
+}
+
+/* ── Document header ───────────────────────────────────── */
+.doc-header {
+  padding: 2.5rem 0 2rem;
+  border-bottom: 1px solid var(--border);
+}
+.doc-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.75rem;
+}
+.doc-title {
+  font-family: var(--mono);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
+}
+.doc-title .agent-name { color: var(--accent); }
+.doc-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.doc-meta-item { display: flex; align-items: center; gap: 0.4rem; }
+.doc-meta-label {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ── Architecture section ──────────────────────────────── */
+.arch {
+  padding: 2.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.arch-thesis {
+  font-family: var(--mono);
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: var(--text);
+  margin-bottom: 0.7rem;
+}
+.arch-thesis .t-accent  { color: var(--accent); }
+.arch-thesis .t-accent2 { color: var(--accent-2); }
+.arch-sub {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin-bottom: 1.75rem;
+  line-height: 1.65;
+}
+
+/* Anti-circumvention block */
+.ac-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--tier1);
+  border-radius: var(--r);
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+.ac-row {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 0.75rem;
+  align-items: start;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--border);
+}
+.ac-row:last-child { border-bottom: none; }
+.ac-icon {
+  font-size: 1rem;
+  line-height: 1.5;
+  flex-shrink: 0;
+  text-align: center;
+}
+.ac-arch  { color: var(--accent); }
+.ac-mech  { color: var(--deny); }
+.ac-back  { color: var(--tier1); }
+.ac-body {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+.ac-body strong { color: var(--text); font-weight: 600; }
+
+/* Trust chain diagram */
+.chain {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  max-width: 500px;
+  margin: 0 auto;
+}
+.chain-node {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--r);
+  padding: 1rem 1.25rem;
+}
+.chain-node-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.25rem;
+}
+.chain-node-name {
+  font-family: var(--mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+}
+.chain-node-did {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  word-break: break-all;
+}
+.chain-node-detail {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 0.3rem;
+}
+.chain-node.principal  { border-left: 3px solid var(--accent); }
+.chain-node.evaluator  { border-left: 3px solid var(--accent-2); }
+.chain-node.settlement { border-left: 3px solid var(--tier1); }
+.chain-node.agent-node { border-left: 3px solid var(--tier2); }
+
+.chain-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 6px 0;
+  position: relative;
+}
+.chain-connector::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  background: linear-gradient(to bottom, var(--border-accent), rgba(59,130,246,0.15));
+}
+.chain-connector-label {
+  position: relative;
+  z-index: 1;
+  background: var(--surface-3);
+  border: 1px solid var(--border-accent);
+  border-radius: 20px;
+  padding: 3px 12px;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+.chain-arrow {
+  position: relative;
+  z-index: 1;
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid rgba(59,130,246,0.5);
+  margin-top: 3px;
+}
+
+/* ── Tier section wrapper ──────────────────────────────── */
+.tier-section {
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.tier-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.tier-badge {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.tier-badge.t1 {
+  background: rgba(245,158,11,0.12);
+  color: var(--tier1);
+  border: 1px solid rgba(245,158,11,0.28);
+}
+.tier-badge.t2 {
+  background: rgba(107,132,154,0.12);
+  color: var(--tier2);
+  border: 1px solid rgba(107,132,154,0.28);
+}
+.tier-title {
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.tier-sub {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  max-width: 680px;
+  line-height: 1.65;
+}
+
+/* ── Credential cards ──────────────────────────────────── */
+.cred-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.cred-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.25rem;
+  overflow: hidden;
+}
+.cred-card.delegation { border-left: 3px solid var(--accent); }
+.cred-card.evaluation { border-left: 3px solid var(--accent-2); }
+
+.cred-type {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.cred-card.delegation .cred-type { color: var(--accent); opacity: 0.7; }
+.cred-card.evaluation .cred-type { color: var(--accent-2); opacity: 0.7; }
+.cred-issuer {
+  font-family: var(--mono);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.9rem;
+}
+.field-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.field { display: flex; flex-direction: column; gap: 0.1rem; }
+.field-key {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.field-val {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  word-break: break-all;
+  line-height: 1.4;
+}
+.field-val.highlight  { color: var(--text); }
+.field-val.allow-val  { color: var(--accent-2); }
+.field-val.draft-flag { color: var(--tier2); }
+
+.proof-strip {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+.proof-key {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 0.2rem;
+}
+.proof-vm {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--accent);
+  margin-bottom: 0.15rem;
+  word-break: break-all;
+}
+.cred-card.evaluation .proof-vm { color: var(--accent-2); }
+.proof-suite {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  margin-bottom: 0.3rem;
+}
+.proof-value {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  word-break: break-all;
+  line-height: 1.4;
+}
+details { margin-top: 0.75rem; }
+summary {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  user-select: none;
+  padding: 4px 0;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+summary::-webkit-details-marker { display: none; }
+summary::before {
+  content: '▶';
+  font-size: 0.5rem;
+  transition: transform 0.15s;
+}
+details[open] summary::before { transform: rotate(90deg); }
+summary:hover { color: var(--text-muted); }
+.full-json {
+  margin-top: 0.5rem;
+  background: var(--ground);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.75rem;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+  white-space: pre;
+}
+
+/* ── Scenario boxes ────────────────────────────────────── */
+.scenario-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+.scenario {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.25rem;
+  position: relative;
+  overflow: hidden;
+}
+.scenario.deny { border-left: 3px solid var(--deny); }
+.scenario.allow { border-left: 3px solid var(--accent-2); }
+.scenario.deny::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 60%, var(--deny-glow));
+  pointer-events: none;
+}
+.scenario.allow::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 60%, var(--accent-2-glow));
+  pointer-events: none;
+}
+.scenario-badge {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 3px;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+.scenario-badge.deny-badge {
+  background: rgba(239,68,68,0.12);
+  color: var(--deny);
+  border: 1px solid rgba(239,68,68,0.25);
+}
+.scenario-badge.allow-badge {
+  background: rgba(16,185,129,0.12);
+  color: var(--accent-2);
+  border: 1px solid rgba(16,185,129,0.25);
+}
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: rgba(16,185,129,0.1);
+  border: 1px solid rgba(16,185,129,0.3);
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--accent-2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+.live-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent-2);
+  animation: live-pulse 2.4s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .live-dot { animation: none; }
+}
+.scenario-title {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+.scenario .field-val { color: var(--text-muted); }
+.deny-highlight  { color: var(--deny)     !important; }
+.allow-highlight { color: var(--accent-2) !important; }
+.tx-link {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--accent-2);
+  word-break: break-all;
+  display: block;
+  margin-top: 0.2rem;
+}
+.zero-claim {
+  margin-top: 0.85rem;
+  padding: 0.65rem 0.8rem;
+  background: rgba(239,68,68,0.07);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--deny);
+  line-height: 1.5;
+}
+.backstop-note {
+  margin-top: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  background: rgba(245,158,11,0.06);
+  border: 1px solid rgba(245,158,11,0.18);
+  border-radius: 4px;
+  font-size: 0.76rem;
+  color: var(--tier2);
+  line-height: 1.55;
+}
+.backstop-note strong { color: var(--tier1); }
+
+/* ── Jupiter panel ─────────────────────────────────────── */
+.jupiter-block {
+  margin-top: 1.5rem;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+}
+.jupiter-summary {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  user-select: none;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.1s;
+}
+.jupiter-block[open] .jupiter-summary {
+  border-bottom-color: var(--border);
+  color: var(--text-muted);
+}
+.jupiter-summary::-webkit-details-marker { display: none; }
+.jupiter-summary::before {
+  content: '▶';
+  font-size: 0.5rem;
+  transition: transform 0.15s;
+}
+.jupiter-block[open] .jupiter-summary::before { transform: rotate(90deg); }
+.jupiter-summary:hover { color: var(--text-muted); }
+.jupiter-body {
+  padding: 1rem 1.1rem;
+}
+.jupiter-lead {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  margin-bottom: 0.85rem;
+  line-height: 1.6;
+}
+.jupiter-reasons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.jupiter-reason {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  padding-left: 1rem;
+  border-left: 2px solid rgba(59,130,246,0.2);
+}
+.jupiter-reason strong { color: var(--text); display: block; font-size: 0.8rem; margin-bottom: 0.15rem; }
+
+/* ── Drawdown section (T2) ─────────────────────────────── */
+.drawdown-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--tier2);
+  border-radius: var(--r);
+  padding: 1.25rem;
+}
+.drawdown-rule-text {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 1rem;
+}
+.code-inline {
+  font-family: var(--mono);
+  font-size: 0.8em;
+  background: var(--surface-2);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--text);
+}
+.divider { height: 1px; background: var(--border); margin: 0.85rem 0; }
+.deny-reason-box {
+  background: var(--ground);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 4px;
+  padding: 0.85rem;
+  overflow-x: auto;
+}
+.deny-reason-box pre {
+  font-size: 0.73rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  white-space: pre;
+}
+.t2-note {
+  margin-top: 1rem;
+  padding: 0.65rem 0.85rem;
+  background: rgba(107,132,154,0.08);
+  border: 1px solid rgba(107,132,154,0.2);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: var(--tier2);
+  line-height: 1.55;
+}
+.t2-scenarios { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.85rem; }
+.t2-scenario-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.t2-deny-icon  { color: var(--deny);  flex-shrink: 0; }
+.t2-allow-icon { color: var(--tier2); flex-shrink: 0; }
+
+/* ── Constraint maturity block ─────────────────────────── */
+.maturity-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.maturity-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.5rem;
+  padding: 0.55rem 1rem;
+  background: var(--surface-3);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--text-dim);
+}
+.ml-live { color: var(--accent-2); }
+.ml-pipe { color: var(--accent); }
+.ml-dev  { color: var(--tier2); }
+.maturity-group {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.maturity-group:last-child { border-bottom: none; }
+.maturity-group.mg-live     { border-left: 3px solid var(--accent-2); }
+.maturity-group.mg-pipeline { border-left: 3px solid var(--accent); }
+.maturity-group.mg-dev      { border-left: 3px solid var(--tier2); }
+.maturity-group-label {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.maturity-group.mg-live .maturity-group-label     { color: var(--accent-2); opacity: 0.75; }
+.maturity-group.mg-pipeline .maturity-group-label { color: var(--accent); opacity: 0.75; }
+.maturity-group.mg-dev .maturity-group-label      { color: var(--tier2); }
+.maturity-rows { display: flex; flex-direction: column; gap: 0.3rem; }
+.maturity-row {
+  display: grid;
+  grid-template-columns: 14px 9rem 1fr;
+  gap: 0.6rem;
+  align-items: baseline;
+}
+@media (max-width: 500px) {
+  .maturity-row { grid-template-columns: 14px 1fr; }
+  .mr-evidence { grid-column: 2 / -1; }
+}
+.mr-dot {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  text-align: center;
+}
+.mr-dot.d-live { color: var(--accent-2); }
+.mr-dot.d-pipe { color: var(--accent); }
+.mr-dot.d-dev  { color: var(--tier2); }
+.mr-name {
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.mr-evidence {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+.maturity-note {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  margin-top: 0.6rem;
+  padding-left: 1.4rem;
+  font-style: italic;
+  line-height: 1.55;
+}
+
+/* ── Video section ─────────────────────────────────────── */
+.video-section {
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.video-title {
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+}
+.video-sub {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  margin-bottom: 1.25rem;
+  line-height: 1.6;
+}
+.video-placeholder {
+  background: var(--surface);
+  border: 2px dashed rgba(59,130,246,0.2);
+  border-radius: var(--r);
+  padding: 3rem 2rem;
+  text-align: center;
+  color: var(--text-dim);
+}
+.video-placeholder-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.4;
+}
+.video-placeholder-text {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+.video-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(59,130,246,0.1);
+  border: 1px solid rgba(59,130,246,0.25);
+  border-radius: var(--r);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--accent);
+  cursor: default;
+  opacity: 0.5;
+}
+
+/* ── Verify section ────────────────────────────────────── */
+.verify-section {
+  padding: 2rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.verify-title {
+  font-family: var(--mono);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+}
+.verify-sub {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+.verify-steps { display: flex; flex-direction: column; gap: 1.25rem; }
+.verify-step {
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  gap: 0.75rem;
+  align-items: start;
+}
+.verify-num {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--accent-glow);
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 4px;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.verify-body { display: flex; flex-direction: column; gap: 0.5rem; }
+.verify-label {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.verify-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.55; }
+.verify-cmd {
+  background: var(--ground);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.65rem 0.85rem;
+  overflow-x: auto;
+}
+.verify-cmd code {
+  font-size: 0.73rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  white-space: pre;
+  display: block;
+}
+.verify-tx-link {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--accent-2);
+  word-break: break-all;
+}
+.verify-hash-confirm {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--accent-2);
+  padding: 0.4rem 0.6rem;
+  background: rgba(16,185,129,0.08);
+  border: 1px solid rgba(16,185,129,0.2);
+  border-radius: 4px;
+}
+
+/* ── Footer ────────────────────────────────────────────── */
+.footer {
+  padding: 2rem 0 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2rem;
+  align-items: center;
+}
+.footer-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--text-dim);
+}
+.footer-item a { color: var(--text-dim); }
+.footer-item a:hover { color: var(--text-muted); }
+
+/* ── Utilities ─────────────────────────────────────────── */
+.mono-sm {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+</style>
+
+<div class="shell">
+
+  <!-- ── Document header ─────────────────────────────── -->
+  <header class="doc-header">
+    <div class="doc-eyebrow">Observer Protocol / Enforcement Record</div>
+    <div class="doc-title"><span class="agent-name">Maxi</span> · Trading Mandate</div>
+    <div class="doc-meta">
+      <div class="doc-meta-item">
+        <span class="doc-meta-label">Agent</span>
+        <span class="mono-sm">maxi-0001</span>
+      </div>
+      <div class="doc-meta-item">
+        <span class="doc-meta-label">Rail</span>
+        <span class="mono-sm">solana-jupiter</span>
+      </div>
+      <div class="doc-meta-item">
+        <span class="doc-meta-label">Settled</span>
+        <span class="mono-sm">2026-06-23</span>
+      </div>
+      <div class="doc-meta-item">
+        <span class="doc-meta-label">Schema</span>
+        <span class="mono-sm">delegation/v2.2</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Architecture ─────────────────────────────────── -->
+  <section class="arch">
+    <div class="arch-thesis">
+      The <span class="t-accent">principal delegates</span> authority.<br>
+      The <span class="t-accent2">evaluator attests</span> compliance.<br>
+      Two signatures. Two trust anchors. No self-attestation.
+    </div>
+    <p class="arch-sub">
+      Each signature comes from a distinct key at a distinct domain.
+      A relying party verifying both cannot be fooled by either alone.
+      The principal cannot clear its own transactions; the evaluator
+      cannot grant itself a mandate.
+    </p>
+
+    <!-- Anti-circumvention: three mechanisms -->
+    <div class="ac-block">
+      <div class="ac-row">
+        <span class="ac-icon ac-arch">◈</span>
+        <div class="ac-body">
+          <strong>Zero self-attestation (architectural).</strong>
+          Two keys at two domains: bitcoinsingularity.ai and observerprotocol.org.
+          The agent cannot grant its own mandate. The evaluator cannot self-deal.
+          Neither party can complete the trust chain alone.
+        </div>
+      </div>
+      <div class="ac-row">
+        <span class="ac-icon ac-mech">◉</span>
+        <div class="ac-body">
+          <strong>Deny-before-signing (mechanical).</strong>
+          The evaluator runs before the transaction is signed or broadcast.
+          A DENY short-circuits with swap_calls == 0 — the swap step is provably
+          never entered. Enforcement locus is the pre-signature boundary, not a
+          post-facto flag.
+        </div>
+      </div>
+      <div class="ac-row">
+        <span class="ac-icon ac-back">◎</span>
+        <div class="ac-body">
+          <strong>Enforcement holds without agent cooperation.</strong>
+          The cooperative ALLOW used <span style="font-family:var(--mono);font-size:0.85em;">dexes=</span> to pre-filter to allowed venues.
+          But enforcement does not depend on that filtering.
+          An agent that routes without filtering hits a venue DENY from the evaluator
+          when Jupiter's default routing includes a non-allowlisted AMM.
+          An agent that skips pre-filtering gets blocked.
+        </div>
+      </div>
+    </div>
+
+    <!-- Trust chain diagram -->
+    <div class="chain">
+      <div class="chain-node principal">
+        <div class="chain-node-eyebrow">Principal</div>
+        <div class="chain-node-name">Boyd Cohen</div>
+        <div class="chain-node-did">did:web:bitcoinsingularity.ai</div>
+        <div class="chain-node-detail">Signing key: #key-1 (Ed25519VerificationKey2020)</div>
+      </div>
+
+      <div class="chain-connector">
+        <div class="chain-connector-label">DelegationCredential · eddsa-jcs-2022</div>
+        <div class="chain-arrow"></div>
+      </div>
+
+      <div class="chain-node agent-node">
+        <div class="chain-node-eyebrow">Agent</div>
+        <div class="chain-node-name">Maxi #0001</div>
+        <div class="chain-node-did">did:web:observerprotocol.org:agents:maxi-0001</div>
+        <div class="chain-node-detail">Mandate: $10 max/order · Raydium CLMM · Raydium AMM · Orca · Whirlpool · Meteora DLMM · Phoenix</div>
+      </div>
+
+      <div class="chain-connector">
+        <div class="chain-connector-label">EvaluationInput (proposal + delegation)</div>
+        <div class="chain-arrow"></div>
+      </div>
+
+      <div class="chain-node evaluator">
+        <div class="chain-node-eyebrow">Evaluator</div>
+        <div class="chain-node-name">Observer Protocol</div>
+        <div class="chain-node-did">did:web:observerprotocol.org</div>
+        <div class="chain-node-detail">Signing key: #key-3 (Ed25519VerificationKey2020) · policy-core v0.1.0-draft</div>
+      </div>
+
+      <div class="chain-connector">
+        <div class="chain-connector-label">PolicyEvaluationCredential · eddsa-jcs-2022</div>
+        <div class="chain-arrow"></div>
+      </div>
+
+      <div class="chain-node settlement">
+        <div class="chain-node-eyebrow">Settlement</div>
+        <div class="chain-node-name">Solana Mainnet <span class="live-badge"><span class="live-dot"></span>Live</span></div>
+        <div class="chain-node-did">tx 61FKp9AGh33TCHP4GowB2YXRJT1RDvYa8bbxPr4QWffdkWXm2WsA51MVZffuB9fz1T5PjXm4r1EMMUu3evEZgJMX</div>
+        <div class="chain-node-detail">slot 428476359 · finalized · 0.05 SOL → 3.4682 USDC via Raydium CLMM</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TIER 1: Live Enforcement ──────────────────────── -->
+  <section class="tier-section">
+    <div class="tier-header">
+      <span class="tier-badge t1">Tier 1</span>
+      <span class="tier-title">Live Enforcement</span>
+    </div>
+    <p class="tier-sub">
+      Three tiers of enforcement maturity — a gradient from live on real money
+      to the moment a mandate declares a rule to when live state feeds the evaluator.
+      Signatures on both credentials verify against published DID documents at
+      bitcoinsingularity.ai and observerprotocol.org, independent of Solana.
+      The ALLOW settled on-chain (slot 428476359, finalized).
+      The DENY blocked before /swap was called; no lamports moved.
+    </p>
+
+    <!-- Credential cards -->
+    <div class="cred-grid">
+
+      <div class="cred-card delegation">
+        <div class="cred-type">Delegation Credential</div>
+        <div class="cred-issuer">Boyd Cohen</div>
+        <div class="field-list">
+          <div class="field">
+            <div class="field-key">Issuer DID</div>
+            <div class="field-val">did:web:bitcoinsingularity.ai</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Subject DID</div>
+            <div class="field-val">did:web:observerprotocol.org:agents:maxi-0001</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Valid</div>
+            <div class="field-val">2026-06-23 → 2026-08-04</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Max notional / order</div>
+            <div class="field-val highlight">$10 USD</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Allowed venues (6)</div>
+            <div class="field-val">Raydium CLMM · Raydium AMM · Orca · Whirlpool · Meteora DLMM · Phoenix</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Allowed instruments</div>
+            <div class="field-val mono-sm">SOL · USDC · USDT-SOL</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Credential ID</div>
+            <div class="field-val">urn:uuid:0a1b47d9-bf85-4c10-ba32-4f653e2a90f7</div>
+          </div>
+        </div>
+        <div class="proof-strip">
+          <div class="proof-key">Proof</div>
+          <div class="proof-vm">did:web:bitcoinsingularity.ai#key-1</div>
+          <div class="proof-suite">eddsa-jcs-2022 · DataIntegrityProof</div>
+          <div class="proof-value">z3Q233j42GhXprF9uwmt6UwnZWMsGuW7oBM2hevP6dih2GSa1hdqEA1et7sbCcs918RqYbfj6JZBXfXx1rhTR8tsv</div>
+        </div>
+        <details>
+          <summary>Full credential JSON</summary>
+          <div class="full-json">{
+  "@context": ["https://www.w3.org/ns/credentials/v2"],
+  "id": "urn:uuid:0a1b47d9-bf85-4c10-ba32-4f653e2a90f7",
+  "type": ["VerifiableCredential", "DelegationCredential"],
+  "issuer": "did:web:bitcoinsingularity.ai",
+  "validFrom": "2026-06-23T23:21:36.322732Z",
+  "validUntil": "2026-08-04T23:21:36.322586Z",
+  "credentialSubject": {
+    "id": "did:web:observerprotocol.org:agents:maxi-0001",
+    "authorizationLevel": "policy",
+    "enforcementMode": "pre_transaction_check",
+    "delegationScope": { "may_delegate_further": false },
+    "tradingMandate": {
+      "maxNotionalPerOrder": 10,
+      "unit": "USD",
+      "allowedVenues": [
+        "Raydium CLMM", "Raydium AMM", "Orca",
+        "Whirlpool", "Meteora DLMM", "Phoenix"
+      ],
+      "allowedInstruments": [
+        "So11111111111111111111111111111111111111112",
+        "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+        "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
+      ]
+    }
+  },
+  "credentialSchema": {
+    "id": "https://observerprotocol.org/schemas/delegation/v2.2.json",
+    "type": "JsonSchema"
+  },
+  "proof": {
+    "type": "DataIntegrityProof",
+    "cryptosuite": "eddsa-jcs-2022",
+    "created": "2026-06-23T23:21:36.322697Z",
+    "verificationMethod": "did:web:bitcoinsingularity.ai#key-1",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z3Q233j42GhXprF9uwmt6UwnZWMsGuW7oBM2hevP6dih2GSa1hdqEA1et7sbCcs918RqYbfj6JZBXfXx1rhTR8tsv"
+  }
+}</div>
+        </details>
+      </div>
+
+      <div class="cred-card evaluation">
+        <div class="cred-type">Policy Evaluation Credential</div>
+        <div class="cred-issuer">Observer Protocol</div>
+        <div class="field-list">
+          <div class="field">
+            <div class="field-key">Issuer DID</div>
+            <div class="field-val">did:web:observerprotocol.org</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Decision</div>
+            <div class="field-val allow-val">allow</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Evaluated at</div>
+            <div class="field-val">2026-06-23T23:44:57.297Z</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Delegation credential hash</div>
+            <div class="field-val">3e8abc4b19bdf58a479fd128f96f922d1db0165681940fd57685cfe925665745</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Proposal hash · rail</div>
+            <div class="field-val">86ea53ec…ab300 · solana-jupiter</div>
+          </div>
+          <div class="field">
+            <div class="field-key">evaluatedWithAttestations</div>
+            <div class="field-val draft-flag">false</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Evaluator version</div>
+            <div class="field-val draft-flag">0.1.0-draft</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Credential ID</div>
+            <div class="field-val">urn:uuid:9b795c89-d7a9-4cfa-8569-cf38ebbe6ddd</div>
+          </div>
+        </div>
+        <div class="proof-strip">
+          <div class="proof-key">Proof</div>
+          <div class="proof-vm">did:web:observerprotocol.org#key-3</div>
+          <div class="proof-suite">eddsa-jcs-2022 · DataIntegrityProof</div>
+          <div class="proof-value">z2ak3jbeZPqAAP9VfAWRAFjshPi3aw1YNKWPrPke1CouFK6oHxQoSckyCShzqyQFXMX9ExwUJzWYXSGrtGmWQZYf2</div>
+        </div>
+        <details>
+          <summary>Full credential JSON</summary>
+          <div class="full-json">{
+  "@context": ["https://www.w3.org/ns/credentials/v2"],
+  "id": "urn:uuid:9b795c89-d7a9-4cfa-8569-cf38ebbe6ddd",
+  "type": ["VerifiableCredential", "PolicyEvaluationCredential"],
+  "issuer": "did:web:observerprotocol.org",
+  "validFrom": "2026-06-23T23:44:57.297Z",
+  "validUntil": "2027-06-23T23:44:57.297Z",
+  "credentialSubject": {
+    "decision": "allow",
+    "evaluatedAgainst": {
+      "delegationCredentialId":
+        "urn:uuid:0a1b47d9-bf85-4c10-ba32-4f653e2a90f7",
+      "delegationCredentialHash":
+        "3e8abc4b19bdf58a479fd128f96f922d1db0165681940fd57685cfe925665745"
+    },
+    "proposal": {
+      "proposalHash":
+        "86ea53ec4d6ec3452d5cb59ba993652bbe5fa7fc6af02dad762902fc063ab300",
+      "rail": "solana-jupiter"
+    },
+    "evaluator": {
+      "id": "urn:observer-protocol:evaluator:policy-core-v1",
+      "version": "0.1.0-draft"
+    },
+    "evaluatedAt": "2026-06-23T23:44:57.297Z",
+    "evaluatedWithAttestations": false
+  },
+  "proof": {
+    "type": "DataIntegrityProof",
+    "cryptosuite": "eddsa-jcs-2022",
+    "created": "2026-06-23T23:44:57.297Z",
+    "verificationMethod": "did:web:observerprotocol.org#key-3",
+    "proofPurpose": "assertionMethod",
+    "proofValue":
+      "z2ak3jbeZPqAAP9VfAWRAFjshPi3aw1YNKWPrPke1CouFK6oHxQoSckyCShzqyQFXMX9ExwUJzWYXSGrtGmWQZYf2"
+  }
+}</div>
+        </details>
+      </div>
+    </div><!-- /cred-grid -->
+
+    <!-- Constraint maturity gradient -->
+    <div class="maturity-block">
+      <div class="maturity-legend">
+        <span class="ml-live">● mainnet-proven (this tx)</span>
+        <span class="ml-pipe">○ pipeline-verified, not declared here</span>
+        <span class="ml-dev">◌ state subsystem pending → Tier 2 below</span>
+      </div>
+
+      <div class="maturity-group mg-live">
+        <div class="maturity-group-label">Enforced live in this mainnet tx</div>
+        <div class="maturity-rows">
+          <div class="maturity-row">
+            <span class="mr-dot d-live">●</span>
+            <span class="mr-name">Per-order cap</span>
+            <span class="mr-evidence">blocked $10.40 over $10 cap · swap_calls == 0 · no broadcast</span>
+          </div>
+          <div class="maturity-row">
+            <span class="mr-dot d-live">●</span>
+            <span class="mr-name">Venue allowlist</span>
+            <span class="mr-evidence">restricted live route · 6 AMMs · settled Raydium CLMM dual-hop</span>
+          </div>
+          <div class="maturity-row">
+            <span class="mr-dot d-live">●</span>
+            <span class="mr-name">Instrument allowlist</span>
+            <span class="mr-evidence">evaluated SOL, USDC, USDT-SOL mints against credentialSubject.allowedInstruments</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="maturity-group mg-pipeline">
+        <div class="maturity-group-label">Built + pipeline-verified · not declared by this mandate</div>
+        <div class="maturity-rows">
+          <div class="maturity-row">
+            <span class="mr-dot d-pipe">○</span>
+            <span class="mr-name">Temporal</span>
+            <span class="mr-evidence">trading-hours window · the evaluator enforces this; this mandate did not declare it</span>
+          </div>
+          <div class="maturity-row">
+            <span class="mr-dot d-pipe">○</span>
+            <span class="mr-name">Counterparty</span>
+            <span class="mr-evidence">allow/blocklist · the evaluator enforces this; this mandate did not declare it</span>
+          </div>
+        </div>
+        <div class="maturity-note">
+          A mandate that declares either enforces identically to the three above.
+          Not mainnet-broadcast-proven in this record; the absence is the mandate's choice, not a gap in the evaluator.
+        </div>
+      </div>
+
+      <div class="maturity-group mg-dev">
+        <div class="maturity-group-label">Built + supplied-state · live feeding in development</div>
+        <div class="maturity-rows">
+          <div class="maturity-row">
+            <span class="mr-dot d-dev">◌</span>
+            <span class="mr-name">Drawdown</span>
+            <span class="mr-evidence">enforces against real P&amp;L once the position-tracking subsystem is live · see Tier 2 below</span>
+          </div>
+        </div>
+      </div>
+    </div><!-- /maturity-block -->
+
+    <!-- Execution scenarios -->
+    <div class="scenario-grid">
+
+      <div class="scenario deny">
+        <div class="scenario-badge deny-badge">Denied</div>
+        <div class="scenario-title">Over-cap proposal blocked</div>
+        <div class="field-list">
+          <div class="field">
+            <div class="field-key">Proposed order</div>
+            <div class="field-val">150M lamports (~$10.40 USD)</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Mandate cap</div>
+            <div class="field-val">$10 USD</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Rule fired</div>
+            <div class="field-val deny-highlight">amountLimits.maxNotionalPerOrder</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Stage reached</div>
+            <div class="field-val deny-highlight">sidecar eval · /swap never called</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Broadcast</div>
+            <div class="field-val deny-highlight">none</div>
+          </div>
+        </div>
+        <div class="zero-claim">
+          swap_calls == 0 confirmed on mainnet. The evaluator blocked at the pre-signature boundary. /swap was never entered. No lamports left the wallet.
+        </div>
+      </div>
+
+      <div class="scenario allow">
+        <div class="scenario-badge allow-badge">Allowed</div>
+        <div class="scenario-title">Within-cap order settled on-chain</div>
+        <div class="field-list">
+          <div class="field">
+            <div class="field-key">Proposed order</div>
+            <div class="field-val">50M lamports (0.05 SOL, ~$3.47 USD)</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Agent routing (pre-filter)</div>
+            <div class="field-val allow-highlight">dexes= Raydium CLMM, Raydium AMM, Orca, Whirlpool, Meteora DLMM, Phoenix</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Route taken</div>
+            <div class="field-val allow-highlight">Raydium CLMM · dual-hop</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Output</div>
+            <div class="field-val allow-highlight">3.4682 USDC</div>
+          </div>
+          <div class="field">
+            <div class="field-key">SOL spent (swap + fees)</div>
+            <div class="field-val">0.052047 SOL</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Slot</div>
+            <div class="field-val">428476359 (finalized)</div>
+          </div>
+          <div class="field">
+            <div class="field-key">Transaction</div>
+            <a href="https://explorer.solana.com/tx/61FKp9AGh33TCHP4GowB2YXRJT1RDvYa8bbxPr4QWffdkWXm2WsA51MVZffuB9fz1T5PjXm4r1EMMUu3evEZgJMX"
+               class="tx-link" target="_blank" rel="noopener">
+              61FKp9AGh33TCHP4GowB2YXRJT1RDvYa8bbxPr4QWffd<br>kWXm2WsA51MVZffuB9fz1T5PjXm4r1EMMUu3evEZgJMX
+            </a>
+          </div>
+        </div>
+        <div class="backstop-note">
+          <strong>Enforcement does not depend on agent pre-filtering.</strong>
+          The dexes= parameter above is agent-aware routing — a courtesy, not a security control.
+          If an agent skips it and Jupiter routes through a non-allowlisted AMM,
+          the evaluator catches the venue mismatch and returns DENY.
+        </div>
+      </div>
+
+    </div><!-- /scenario-grid -->
+
+    <!-- Why Jupiter (collapsible, light) -->
+    <details class="jupiter-block">
+      <summary class="jupiter-summary">Why Jupiter for this demonstration</summary>
+      <div class="jupiter-body">
+        <p class="jupiter-lead">
+          OP enforcement is rail-agnostic by design. Jupiter was the first execution surface we
+          built and proven against; adapting to a different rail is adapter work, not architecture
+          work. The choice was deliberate:
+        </p>
+        <ul class="jupiter-reasons">
+          <li class="jupiter-reason">
+            <strong>routePlan exposes per-venue routing pre-signature.</strong>
+            routePlan[].swapInfo gives the evaluator exactly what venue enforcement needs to inspect
+            before the gate. This is an unusually well-designed surface for pre-execution policy —
+            most execution layers don't expose route decomposition at quote time.
+          </li>
+          <li class="jupiter-reason">
+            <strong>The quote→swap split is a natural pre-signing hook.</strong>
+            Enforcement sits between quote and swap — a clean boundary that doesn't require
+            patching the transaction format or intercepting at the signing layer.
+          </li>
+          <li class="jupiter-reason">
+            <strong>Jupiter is where agentic Solana trading already concentrates.</strong>
+            It's the default routing layer for automated strategies on Solana.
+            Enforcement matters most where agents actually operate.
+          </li>
+          <li class="jupiter-reason">
+            <strong>DEX-agnostic routing mirrors rail-agnostic enforcement.</strong>
+            Jupiter aggregates across many AMMs; OP enforces across many rails.
+            Both are neutral coordination layers. The structural analogy is precise, not rhetorical.
+          </li>
+        </ul>
+      </div>
+    </details>
+
+  </section>
+
+  <!-- ── TIER 2: Drawdown rule ─────────────────────────── -->
+  <section class="tier-section">
+    <div class="tier-header">
+      <span class="tier-badge t2">Tier 2</span>
+      <span class="tier-title">Drawdown Rule</span>
+    </div>
+    <p class="tier-sub">
+      Rule verified against supplied state. The rule is built and enforces correctly against the
+      evaluator's 8-rule pipeline. Live position feeding (mark-to-market, P&amp;L aggregation)
+      is in development. This section is not live-enforced.
+    </p>
+
+    <div class="drawdown-panel">
+      <div class="drawdown-rule-text">
+        The evaluator enforces <span class="code-inline">dailyDrawdownCap</span> when
+        <span class="code-inline">context.currentDailyDrawdown</span> is supplied.
+        The boundary is <strong>at or above (≥)</strong>: a reading exactly at the cap
+        (e.g. 5.0% vs a 5% cap) blocks, per the DenyReason message "has reached the cap."
+        If no figure is supplied, the rule is dormant — not fail-closed.
+        It activates the moment live position data arrives.
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="proof-key" style="margin-bottom:0.5rem;">Dry-run DenyReason (supplied state: currentDailyDrawdown=7.2%, cap=5%)</div>
+      <div class="deny-reason-box">
+        <pre>{
+  "ruleType":     "drawdown",
+  "ruleField":    "dailyDrawdownCap",
+  "currentValue":  7.2,
+  "proposedValue": 5,
+  "message": "Daily drawdown of 7.2% has reached the 5% cap
+              (24h window, type: percent). No further orders
+              permitted until the window resets."
+}</pre>
+      </div>
+
+      <div class="t2-scenarios">
+        <div class="t2-scenario-row">
+          <span class="t2-deny-icon">✕</span>
+          <span>7.2% supplied vs 5% cap — DENY (swap_calls=0)</span>
+        </div>
+        <div class="t2-scenario-row">
+          <span class="t2-deny-icon">✕</span>
+          <span>5.0% supplied vs 5% cap — DENY at boundary (≥ semantics)</span>
+        </div>
+        <div class="t2-scenario-row">
+          <span class="t2-allow-icon">○</span>
+          <span>4.8% supplied vs 5% cap — ALLOW (under cap)</span>
+        </div>
+        <div class="t2-scenario-row">
+          <span class="t2-allow-icon">○</span>
+          <span>No state supplied — dormant, ALLOW</span>
+        </div>
+        <div class="t2-scenario-row">
+          <span class="t2-allow-icon">○</span>
+          <span>No cap declared in mandate — rule skips, ALLOW</span>
+        </div>
+      </div>
+
+      <div class="t2-note">
+        <strong>Status:</strong> rule built, 7/7 scenarios passing against supplied state.
+        The state subsystem (price feed, P&amp;L aggregation, mark-to-market) is in development.
+        This section moves to Tier 1 when live position data feeds the evaluator.
+        Drawdown is not live-enforced in this record.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Video ─────────────────────────────────────────── -->
+  <section class="video-section">
+    <div class="video-title">Execution walkthrough</div>
+    <p class="video-sub">
+      60-90 second screen recording. Sequence: mandate issued → proposal → DENY short-circuit
+      (swap_calls == 0, /swap never entered) → ALLOW settling on Solana mainnet (solscan finalized)
+      → verify both signatures. Captioned, legible muted.
+    </p>
+    <div class="video-placeholder">
+      <div class="video-placeholder-icon">▶</div>
+      <div class="video-placeholder-text">
+        Video pending recording.<br>
+        Storyboard: mandate issued · DENY (swap_calls=0 asserted) ·<br>
+        ALLOW (solscan slot 428476359 finalized) · verify-yourself steps.
+      </div>
+      <div class="video-download">⬇ Download raw file (pending)</div>
+    </div>
+  </section>
+
+  <!-- ── Verify ────────────────────────────────────────── -->
+  <section class="verify-section">
+    <div class="verify-title">Verify it yourself</div>
+    <p class="verify-sub">
+      Both DID documents are static files at their respective domains.
+      Neither step touches api.observerprotocol.org.
+      Verification requires only curl and python3.
+    </p>
+    <div class="verify-steps">
+
+      <div class="verify-step">
+        <div class="verify-num">1</div>
+        <div class="verify-body">
+          <div class="verify-label">Resolve the principal's key</div>
+          <div class="verify-desc">Fetch the DID doc at bitcoinsingularity.ai. Confirm #key-1 is listed in assertionMethod.</div>
+          <div class="verify-cmd"><code>curl -s https://bitcoinsingularity.ai/.well-known/did.json \
+  | python3 -c "
+import json, sys
+doc = json.load(sys.stdin)
+k = next(v for v in doc['verificationMethod'] if '#key-1' in v['id'])
+am = doc.get('assertionMethod', [])
+print('id:   ', k['id'])
+print('type: ', k.get('type',''))
+print('in assertionMethod:', k['id'] in am or any('#key-1' in str(x) for x in am))
+print('key:  ', k.get('publicKeyMultibase','')[:40], '...')
+"</code></div>
+        </div>
+      </div>
+
+      <div class="verify-step">
+        <div class="verify-num">2</div>
+        <div class="verify-body">
+          <div class="verify-label">Resolve the evaluator's key</div>
+          <div class="verify-desc">Fetch the OP DID doc. Confirm #key-3 is in assertionMethod — a different domain, a different key from #key-1.</div>
+          <div class="verify-cmd"><code>curl -s https://observerprotocol.org/.well-known/did.json \
+  | python3 -c "
+import json, sys
+doc = json.load(sys.stdin)
+k = next(v for v in doc['verificationMethod'] if '#key-3' in v['id'])
+am = doc.get('assertionMethod', [])
+print('id:   ', k['id'])
+print('type: ', k.get('type',''))
+print('in assertionMethod:', k['id'] in am or any('#key-3' in str(x) for x in am))
+print('key:  ', k.get('publicKeyMultibase','')[:40], '...')
+"</code></div>
+        </div>
+      </div>
+
+      <div class="verify-step">
+        <div class="verify-num">3</div>
+        <div class="verify-body">
+          <div class="verify-label">Fetch the live delegation credential</div>
+          <div class="verify-desc">Confirm issuer is bitcoinsingularity.ai (the principal, not the evaluator), $10 cap, no drawdownCap declared.</div>
+          <div class="verify-cmd"><code>curl -s https://observerprotocol.org/credentials/maxi-0001-trading-mandate.json \
+  | python3 -c "
+import json, sys, hashlib
+c = json.load(sys.stdin)
+print('issuer:  ', c['issuer'])
+print('vm:      ', c['proof']['verificationMethod'])
+print('suite:   ', c['proof']['cryptosuite'])
+m = c['credentialSubject']['tradingMandate']
+print('cap:     ', m['maxNotionalPerOrder'], m['unit'])
+print('venues:  ', len(m.get('allowedVenues',[])), 'venues')
+print('drawdown:', 'dailyDrawdownCap' in m)
+# Verify credential hash matches the eval credential's recorded hash
+no_proof = {k:v for k,v in c.items() if k != 'proof'}
+jcs = json.dumps(no_proof, sort_keys=True, separators=(',',':')).encode()
+h = hashlib.sha256(jcs).hexdigest()
+expected = '3e8abc4b19bdf58a479fd128f96f922d1db0165681940fd57685cfe925665745'
+print('hash match:', h == expected, '(', h[:16], '...' ,')')
+"</code></div>
+          <div class="verify-hash-confirm">Expected hash: 3e8abc4b19bdf58a479fd128f96f922d1db0165681940fd57685cfe925665745</div>
+        </div>
+      </div>
+
+      <div class="verify-step">
+        <div class="verify-num">4</div>
+        <div class="verify-body">
+          <div class="verify-label">Confirm the on-chain transaction</div>
+          <div class="verify-desc">The finalized Solana tx at slot 428476359 proves the ALLOW scenario reached settlement. From-address is the demo agent wallet; route is Raydium CLMM.</div>
+          <a href="https://explorer.solana.com/tx/61FKp9AGh33TCHP4GowB2YXRJT1RDvYa8bbxPr4QWffdkWXm2WsA51MVZffuB9fz1T5PjXm4r1EMMUu3evEZgJMX"
+             class="verify-tx-link" target="_blank" rel="noopener">
+            explorer.solana.com/tx/61FKp9AGh33TCHP4Gow…EZgJMX
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Footer ────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer-item">
+      <span>Delegation credential</span>
+      <a href="https://observerprotocol.org/credentials/maxi-0001-trading-mandate.json">
+        observerprotocol.org/credentials/maxi-0001-trading-mandate.json
+      </a>
+    </div>
+    <div class="footer-item">
+      <span>Eval credential</span>
+      <a href="https://observerprotocol.org/credentials/maxi-0001-policy-eval-mainnet-20260623.json">
+        …/maxi-0001-policy-eval-mainnet-20260623.json
+      </a>
+    </div>
+    <div class="footer-item">
+      <span>Evaluator</span>
+      <span class="mono-sm">policy-core-v1 · 0.1.0-draft</span>
+    </div>
+  </footer>
+
+</div><!-- /shell -->
