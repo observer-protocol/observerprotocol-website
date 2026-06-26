@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hermes Agents — Observer Protocol</title>
-  <meta name="description" content="A fail-closed spend gate for Hermes agents. Set what your agent can pay and how much — enforced below the skill layer.">
+  <meta name="description" content="A fail-closed spend gate for Hermes agents. Cap how much your agent can pay per transaction, how much over any rolling 24 hours, and which rails it can use — enforced below the skill layer.">
   <link rel="stylesheet" href="shared-styles.css">
 
   <style>
@@ -333,8 +333,9 @@
       border-radius: 50%;
       flex-shrink: 0;
     }
-    .tier-dot.live { background: var(--verified); box-shadow: 0 0 6px rgba(34,197,94,0.4); }
-    .tier-dot.soon { background: var(--border-bright); }
+    .tier-dot.live  { background: var(--verified); box-shadow: 0 0 6px rgba(34,197,94,0.4); }
+    .tier-dot.limit { background: var(--orange); box-shadow: 0 0 6px rgba(247,147,26,0.35); }
+    .tier-dot.soon  { background: var(--border-bright); }
     .tier-line {
       width: 1px;
       flex: 1;
@@ -348,8 +349,9 @@
       text-transform: uppercase;
       margin-bottom: 0.4rem;
     }
-    .tier-status.live { color: var(--verified); }
-    .tier-status.soon { color: var(--text-dim); }
+    .tier-status.live  { color: var(--verified); }
+    .tier-status.limit { color: var(--orange); }
+    .tier-status.soon  { color: var(--text-dim); }
     .tier-title {
       font-size: 14px;
       font-weight: 500;
@@ -478,7 +480,7 @@
     <div class="reading-col">
       <div class="hero-eyebrow">Hermes Agents</div>
       <h1>Your agent can hold a wallet. A malicious skill <em>shouldn't be able to drain it.</em></h1>
-      <p class="hero-sub">A fail-closed spend gate for Hermes agents. Set what your agent can pay and how much — enforced below the skill layer, so a hostile skill can't move your money outside the rules you set. One command to install.</p>
+      <p class="hero-sub">A fail-closed spend gate for Hermes agents. Cap how much your agent can pay per transaction, how much over any rolling 24 hours, and which rails it can use — your agent checks every spend against a mandate you signed, and anything outside it is denied. One command to install. Open source.</p>
       <div class="hero-actions">
         <a href="https://github.com/observer-protocol/hermes-gate" class="btn btn-primary" target="_blank" rel="noopener">Get Started on GitHub →</a>
         <a href="https://github.com/observer-protocol/hermes-gate/blob/main/docs/developer-guide.md" class="btn btn-outline" target="_blank" rel="noopener">Read the Developer Guide</a>
@@ -497,7 +499,7 @@
         <div class="incident-desc">
           Lost by an agent named Bankrbot in May 2026.
           <span>No key stolen. No smart-contract bug. No system breached.</span>
-          An attacker granted the agent a permission token, then posted an instruction encoded in Morse code. The agent's language model decoded it, and the agent executed the transfer. The agent was authorized, and a guardrail tied to <em>who was asking</em> rather than <em>what the agent was allowed to do</em> let a valid-looking instruction through.<sup><a href="#fn1" id="ref1">[1]</a></sup>
+          An attacker granted the agent a permission token, then posted an instruction encoded in Morse code. The agent's language model decoded it, and the agent executed the transfer. As the security firm that analyzed it put it: neither piece did anything wrong by its own logic. The agent was authorized, and it did exactly what it was asked.<sup><a href="#fn1" id="ref1">[1]</a></sup>
         </div>
       </div>
 
@@ -530,32 +532,9 @@
       <div class="section-eyebrow">The Gap</div>
       <h2>The layer no framework closes yet</h2>
 
-      <p class="prose">Agent frameworks have done real work on operational security. Hermes ships seven layers of it. OpenClaw ships its own cascading policy and device pairing.<sup><a href="#fn4" id="ref4">[4]</a><a href="#fn5" id="ref5">[5]</a></sup> None of them govern what an authorized agent is <strong>allowed to spend.</strong></p>
+      <p class="prose">Agent frameworks have done real work on operational security. Hermes ships seven layers of it — user authentication, dangerous-command approval, container isolation, credential filtering, context scanning, cross-session isolation, input sanitization.<sup><a href="#fn4" id="ref4">[4]</a></sup> OpenClaw ships its own cascading policy and device pairing.<sup><a href="#fn5" id="ref5">[5]</a></sup></p>
 
-      <ul class="gap-list">
-        <li>
-          <span class="gap-icon">✓</span>
-          <span><strong>User authentication</strong> — Hermes handles it</span>
-        </li>
-        <li>
-          <span class="gap-icon">✓</span>
-          <span><strong>Dangerous-command approval</strong> — Hermes handles it</span>
-        </li>
-        <li>
-          <span class="gap-icon">✓</span>
-          <span><strong>Container isolation, credential filtering, context scanning</strong> — Hermes handles it</span>
-        </li>
-        <li>
-          <span class="gap-icon" style="color: rgba(239,68,68,0.6);">✗</span>
-          <span><strong>Spend limits</strong> — absent across every agent framework<sup><a href="#fn6" id="ref6">[6]</a></sup></span>
-        </li>
-        <li>
-          <span class="gap-icon" style="color: rgba(239,68,68,0.6);">✗</span>
-          <span><strong>Per-transaction policy</strong> — absent</span>
-        </li>
-      </ul>
-
-      <p class="prose">That's not a Hermes shortcoming. The authority layer is absent across every agent framework. The industry is hardening the host and leaving the authority surface open. That's the layer we build.</p>
+      <p class="prose" style="margin-top: 1rem;">None of them govern <strong>what an authorized agent is allowed to spend.</strong> No spend limits, no counterparty restrictions, no per-transaction policy. That's not a Hermes shortcoming — the authority layer is absent across every agent framework.<sup><a href="#fn6" id="ref6">[6]</a></sup> The industry is hardening the host and leaving the authority surface open. That's the layer we build.</p>
     </div>
   </div>
 
@@ -582,8 +561,8 @@
       <div class="pillars">
         <div class="pillar">
           <div class="pillar-label">Installation</div>
-          <div class="pillar-title">Three commands, one time</div>
-          <div class="pillar-body">Generate your keys and mandate, provision the accounts, verify the gate is live — then your agent's wallet is gated. No account, no domain, no service to phone home to. Verifies offline.</div>
+          <div class="pillar-title">One command</div>
+          <div class="pillar-body">Install, generate your keys, set your limits — your agent's wallet is gated. No account, no domain, no service to phone home to. Verifies offline.</div>
         </div>
         <div class="pillar">
           <div class="pillar-label">Authority</div>
@@ -592,12 +571,12 @@
         </div>
         <div class="pillar">
           <div class="pillar-label">Enforcement</div>
-          <div class="pillar-title">Below the skill layer</div>
-          <div class="pillar-body">A hostile skill can't reach the signing key — it has to go through the gate, and the gate defaults to deny. The wallet key lives in a separate user account the agent can't read.</div>
+          <div class="pillar-title">The key is out of reach</div>
+          <div class="pillar-body">Your agent can't read the wallet key — it lives in a separate user account. The only path to a signed payment is through the gate, which checks every spend against your mandate and defaults to deny.</div>
         </div>
         <div class="pillar">
           <div class="pillar-label">Ownership</div>
-          <div class="pillar-title">Open source, MIT</div>
+          <div class="pillar-title">Open source, Apache-2.0</div>
           <div class="pillar-body">Self-hosted, yours, no lock-in. The mandate, the key, the gate — all local, all yours. Nothing leaves your machine to authorize a transaction.</div>
         </div>
       </div>
@@ -626,7 +605,18 @@
           <div>
             <div class="tier-status live">Live now</div>
             <div class="tier-title">Protection from malicious skills</div>
-            <div class="tier-body">A hostile skill, a prompt injection, a poisoned MCP server trying to make your agent act outside your mandate — stopped at the gate, fail-closed. This is the threat the community has been burned by, and this closes it. Binding enforcement is live for EVM stablecoins (USDT, USDC); Lightning support is advisory in this version.</div>
+            <div class="tier-body">A hostile skill, a prompt injection, a poisoned MCP server trying to make your agent overspend through its normal payment flow — checked against your mandate and denied, fail-closed. This is the threat the community has been burned by, and this closes it. Binding enforcement is live for EVM stablecoins (USDT, USDC); Lightning support is advisory in this version.</div>
+          </div>
+        </div>
+        <div class="tier">
+          <div class="tier-marker">
+            <div class="tier-dot limit"></div>
+            <div class="tier-line"></div>
+          </div>
+          <div>
+            <div class="tier-status limit">Honest boundary</div>
+            <div class="tier-title">What this tier does and doesn't stop</div>
+            <div class="tier-body">Today the gate works by your agent calling it before each spend — it's a check a compliant agent runs against a mandate it can't rewrite. What that means: it protects against skills trying to push an honest agent past your limits, but it trusts the agent to route payments through the gate in the first place. An agent that's been compromised deeply enough to bypass the gate, or one that misreports what it's about to do, isn't stopped by this tier. Closing that — making the check unbypassable, enforced in the call path itself — is the enforcement tier below.</div>
           </div>
         </div>
         <div class="tier">
@@ -636,8 +626,19 @@
           </div>
           <div>
             <div class="tier-status soon">Coming next</div>
-            <div class="tier-title">Protection from your own agent</div>
-            <div class="tier-body">Today's gate enforces against what your agent <em>says</em> it's doing. The next tier enforces against the <em>actual transaction</em> — so even a compromised, hallucinating, or rogue agent can't move funds outside your mandate. Same gate, wired one level deeper. It brings binding Lightning enforcement with it.</div>
+            <div class="tier-title">Unbypassable enforcement</div>
+            <div class="tier-body">Today's gate is a check your agent calls and trusts itself to route through. The next tier moves enforcement into the call path itself — every payment intercepted and checked against your mandate whether or not the agent cooperates, and against the <em>actual transaction</em> rather than what the agent says it's doing. That closes both the bypass gap and the compromised-or-misreporting-agent gap, and it brings binding Lightning enforcement with it.</div>
+          </div>
+        </div>
+        <div class="tier">
+          <div class="tier-marker">
+            <div class="tier-dot soon"></div>
+            <div class="tier-line"></div>
+          </div>
+          <div>
+            <div class="tier-status soon">Coming next</div>
+            <div class="tier-title">Counterparty controls</div>
+            <div class="tier-body">Today the gate caps amount (per-transaction and rolling 24-hour) and restricts which rails your agent can use. Allow/block lists for <em>who</em> it can pay are on the roadmap.</div>
           </div>
         </div>
         <div class="tier">
@@ -695,13 +696,13 @@
       </div>
       <div class="footnote" id="fn6">
         <span class="footnote-num">6</span>
-        <span class="footnote-body">Direct reading of Hermes and OpenClaw security documentation, June 2026 — neither enforces spend limits or transaction-level policy.</span>
+        <span class="footnote-body">Direct reading of Hermes and OpenClaw security documentation, June 2026 — neither enforces spend limits, counterparty restrictions, or transaction-level policy.</span>
       </div>
     </div>
   </div>
 
   <footer class="footer container">
-    <span>Observer Protocol · Open Source · MIT</span>
+    <span>Observer Protocol · Open Source · Apache-2.0</span>
     <div class="footer-links">
       <a href="architecture.html">Architecture</a>
       <a href="agents.html">Agents</a>
