@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hermes Agents — Observer Protocol</title>
+  <meta name="description" content="A fail-closed spend gate for Hermes agents. Set what your agent can pay, who it can pay, and how much — enforced below the skill layer.">
+  <link rel="stylesheet" href="shared-styles.css">
+
+  <style>
+    /* ── PAGE LAYOUT ─────────────────────────────────────── */
+    .page { padding-top: var(--nav-h); }
+
+    .reading-col {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── HERO ────────────────────────────────────────────── */
+    .hero {
+      padding: 5rem 0 4rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      color: var(--orange);
+      text-transform: uppercase;
+      margin-bottom: 1.75rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: var(--orange);
+    }
+    .hero h1 {
+      font-size: clamp(1.75rem, 4.5vw, 2.9rem);
+      font-weight: 600;
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      text-wrap: balance;
+      margin-bottom: 1.25rem;
+      color: var(--text-primary);
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--orange);
+    }
+    .hero-sub {
+      font-family: var(--font-sans);
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin-bottom: 2rem;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── SECTION SCAFFOLDING ─────────────────────────────── */
+    .section {
+      padding: 4rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .section:last-of-type { border-bottom: none; }
+
+    .section-eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+
+    .section h2 {
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      font-weight: 600;
+      line-height: 1.25;
+      text-wrap: balance;
+      margin-bottom: 1.25rem;
+      color: var(--text-primary);
+    }
+
+    .prose {
+      font-family: var(--font-sans);
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.75;
+      color: var(--text-secondary);
+    }
+    .prose + .prose { margin-top: 1rem; }
+    .prose strong { color: var(--text-primary); font-weight: 500; }
+
+    /* ── INCIDENT CALLOUT (problem section) ──────────────── */
+    .incident-callout {
+      background: rgba(239, 68, 68, 0.05);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      border-left: 3px solid rgba(239, 68, 68, 0.6);
+      border-radius: 0 3px 3px 0;
+      padding: 1.5rem 1.75rem;
+      margin: 2rem 0;
+    }
+    .incident-amount {
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 600;
+      color: rgba(239, 68, 68, 0.85);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.03em;
+    }
+    .incident-desc {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .incident-desc span {
+      color: var(--text-primary);
+      font-weight: 400;
+    }
+
+    /* ── STAT PILLS ──────────────────────────────────────── */
+    .stat-row {
+      display: flex;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 2rem 0;
+    }
+    .stat-pill {
+      flex: 1;
+      padding: 1.25rem 1.5rem;
+      background: var(--bg-card);
+    }
+    .stat-pill-val {
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-pill-val.danger { color: rgba(239, 68, 68, 0.8); }
+    .stat-pill-label {
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    /* ── PULL QUOTE ──────────────────────────────────────── */
+    .pull-quote {
+      margin: 2.5rem 0;
+      padding: 1.75rem 0 1.75rem 1.75rem;
+      border-left: 2px solid var(--border-bright);
+      position: relative;
+    }
+    .pull-quote p {
+      font-family: var(--font-sans);
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: var(--text-primary);
+      font-style: italic;
+      text-wrap: balance;
+    }
+
+    /* ── GAP LIST ─────────────────────────────────────────── */
+    .gap-list {
+      list-style: none;
+      margin: 1.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .gap-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .gap-list li:last-child { border-bottom: none; }
+    .gap-list li strong { color: var(--text-primary); font-weight: 500; }
+    .gap-list .gap-icon {
+      color: var(--text-dim);
+      font-size: 12px;
+      padding-top: 2px;
+      flex-shrink: 0;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── SOLUTION PILLARS ─────────────────────────────────── */
+    .pillars {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 2rem 0;
+    }
+    @media (max-width: 560px) {
+      .pillars { grid-template-columns: 1fr; }
+    }
+    .pillar {
+      background: var(--bg-card);
+      padding: 1.5rem;
+    }
+    .pillar-label {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--orange);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .pillar-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+    .pillar-body {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ── CODE BLOCK ──────────────────────────────────────── */
+    .install-block {
+      background: var(--bg-2);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 2rem 0;
+    }
+    .install-block-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-3);
+    }
+    .install-block-label {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+    .install-block-copy {
+      font-size: 11px;
+      color: var(--text-dim);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.2rem 0.4rem;
+      border-radius: 2px;
+      transition: color 0.15s;
+      font-family: var(--font-mono);
+    }
+    .install-block-copy:hover { color: var(--text-secondary); }
+    .install-block-copy.copied { color: var(--verified); }
+    .install-block code {
+      display: block;
+      padding: 1.25rem 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+    .install-block code .prompt {
+      color: var(--text-dim);
+      user-select: none;
+      margin-right: 0.5rem;
+    }
+    .install-block code .cmd { color: var(--orange); }
+    .install-block code .arg { color: var(--text-secondary); }
+
+    /* ── PROTECTION TIERS ─────────────────────────────────── */
+    .tiers {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 2rem 0;
+    }
+    .tier {
+      background: var(--bg-card);
+      padding: 1.5rem;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.25rem;
+      align-items: start;
+    }
+    .tier-marker {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      padding-top: 0.1rem;
+    }
+    .tier-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .tier-dot.live { background: var(--verified); box-shadow: 0 0 6px rgba(34,197,94,0.4); }
+    .tier-dot.soon { background: var(--border-bright); }
+    .tier-line {
+      width: 1px;
+      flex: 1;
+      min-height: 20px;
+      background: var(--border);
+    }
+    .tier:last-child .tier-line { display: none; }
+    .tier-status {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .tier-status.live { color: var(--verified); }
+    .tier-status.soon { color: var(--text-dim); }
+    .tier-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 0.4rem;
+    }
+    .tier-body {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ── COMMUNITY CTA ────────────────────────────────────── */
+    .community-cta {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 2.5rem;
+      text-align: center;
+      margin: 2rem 0;
+    }
+    .community-cta h3 {
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-bottom: 0.6rem;
+    }
+    .community-cta p {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      margin-bottom: 1.75rem;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cta-links {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── FOOTNOTES ────────────────────────────────────────── */
+    .footnotes {
+      padding: 3rem 0 4rem;
+    }
+    .footnotes-title {
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    .footnote {
+      display: grid;
+      grid-template-columns: 1.5rem 1fr;
+      gap: 0.5rem;
+      padding: 0.6rem 0;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+    .footnote-num {
+      color: var(--text-dim);
+      font-variant-numeric: tabular-nums;
+    }
+    .footnote-body {
+      font-family: var(--font-sans);
+      font-weight: 300;
+      color: var(--text-secondary);
+    }
+    .footnote-body a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border-bright);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .footnote-body a:hover {
+      color: var(--text-primary);
+      border-color: var(--text-secondary);
+    }
+
+    /* ── INLINE FOOTNOTE REFS ─────────────────────────────── */
+    sup a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 10px;
+      vertical-align: super;
+      line-height: 0;
+      font-variant-numeric: tabular-nums;
+      transition: color 0.15s;
+    }
+    sup a:hover { color: var(--orange); }
+
+    /* ── RESPONSIVE ───────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .stat-row { flex-direction: column; background: none; gap: 0.5rem; border: none; }
+      .stat-pill { border: 1px solid var(--border); border-radius: 3px; }
+      .hero { padding: 3.5rem 0 3rem; }
+      .section { padding: 3rem 0; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="architecture.html">Architecture</a></li>
+    <li><a href="docs.html">Docs</a></li>
+    <li><a href="registry.html">Registry</a></li>
+    <li><a href="sdk.html">SDK</a></li>
+    <li><a href="quickstart.html">Quickstart</a></li>
+  </ul>
+</nav>
+
+<div class="page">
+
+  <!-- ── HERO ──────────────────────────────────────────────── -->
+  <div class="hero">
+    <div class="reading-col">
+      <div class="hero-eyebrow">Hermes Agents</div>
+      <h1>Your agent can hold a wallet. A malicious skill <em>shouldn't be able to drain it.</em></h1>
+      <p class="hero-sub">A fail-closed spend gate for Hermes agents. Set what your agent can pay, who it can pay, and how much — enforced below the skill layer, so a hostile skill can't move your money outside the rules you set. One command to install. Open source.</p>
+      <div class="hero-actions">
+        <!-- TODO: replace with final GitHub URL before launch -->
+        <a href="https://github.com/observer-protocol/hermes-gate" class="btn btn-primary" target="_blank" rel="noopener">Get Started on GitHub →</a>
+        <!-- TODO: replace with final developer guide URL before launch -->
+        <a href="quickstart.html" class="btn btn-outline">Read the Developer Guide</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PROBLEM ────────────────────────────────────────────── -->
+  <div class="section">
+    <div class="reading-col">
+      <div class="section-eyebrow">The Problem</div>
+      <h2>The attack isn't breaking in. It's convincing your agent to act.</h2>
+
+      <div class="incident-callout">
+        <div class="incident-amount">$175,000</div>
+        <div class="incident-desc">
+          Lost by an agent named Bankrbot in May 2026.
+          <span>No key stolen. No smart-contract bug. No system breached.</span>
+          An attacker granted the agent a permission token, then posted an instruction encoded in Morse code. The agent's language model decoded it, and the agent executed the transfer. As the security firm that analyzed it put it: neither piece did anything wrong by its own logic. The agent was authorized, and it did exactly what it was asked.<sup><a href="#fn1" id="ref1">[1]</a></sup>
+        </div>
+      </div>
+
+      <p class="prose">That's the threat that's actually emerging — not someone breaking <em>into</em> your agent, but a skill or an instruction convincing your <strong>authorized agent</strong> to move money as a legitimate, signed transaction. And the skill layer is where it's coming from.</p>
+
+      <div class="stat-row">
+        <div class="stat-pill">
+          <div class="stat-pill-val danger">13.4%</div>
+          <div class="stat-pill-label">of nearly 4,000 community agent skills audited contained critical security issues<sup><a href="#fn2" id="ref2">[2]</a></sup></div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-pill-val danger">100%</div>
+          <div class="stat-pill-label">of malicious skills in that audit used prompt injection — meaning any defense that lives in the prompt layer is, by construction, the thing the attack defeats</div>
+        </div>
+        <div class="stat-pill">
+          <div class="stat-pill-val danger">111</div>
+          <div class="stat-pill-label">skills in a single coordinated campaign targeted crypto wallets directly, out of 341 malicious skills planted in one ecosystem<sup><a href="#fn3" id="ref3">[3]</a></sup></div>
+        </div>
+      </div>
+
+      <div class="pull-quote">
+        <p>The next set of losses won't come from stolen API keys. They'll come from perfectly secured agents executing perfectly valid instructions that no one thought to limit.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── GAP ────────────────────────────────────────────────── -->
+  <div class="section">
+    <div class="reading-col">
+      <div class="section-eyebrow">The Gap</div>
+      <h2>The layer no framework closes yet</h2>
+
+      <p class="prose">Agent frameworks have done real work on operational security. Hermes ships seven layers of it. OpenClaw ships its own cascading policy and device pairing.<sup><a href="#fn4" id="ref4">[4]</a><a href="#fn5" id="ref5">[5]</a></sup> None of them govern what an authorized agent is <strong>allowed to spend.</strong></p>
+
+      <ul class="gap-list">
+        <li>
+          <span class="gap-icon">✓</span>
+          <span><strong>User authentication</strong> — Hermes handles it</span>
+        </li>
+        <li>
+          <span class="gap-icon">✓</span>
+          <span><strong>Dangerous-command approval</strong> — Hermes handles it</span>
+        </li>
+        <li>
+          <span class="gap-icon">✓</span>
+          <span><strong>Container isolation, credential filtering, context scanning</strong> — Hermes handles it</span>
+        </li>
+        <li>
+          <span class="gap-icon" style="color: rgba(239,68,68,0.6);">✗</span>
+          <span><strong>Spend limits</strong> — absent across every agent framework<sup><a href="#fn6" id="ref6">[6]</a></sup></span>
+        </li>
+        <li>
+          <span class="gap-icon" style="color: rgba(239,68,68,0.6);">✗</span>
+          <span><strong>Counterparty restrictions</strong> — absent</span>
+        </li>
+        <li>
+          <span class="gap-icon" style="color: rgba(239,68,68,0.6);">✗</span>
+          <span><strong>Per-transaction policy</strong> — absent</span>
+        </li>
+      </ul>
+
+      <p class="prose">That's not a Hermes shortcoming. The authority layer is absent across every agent framework. The industry is hardening the host and leaving the authority surface open. That's the layer we build.</p>
+    </div>
+  </div>
+
+  <!-- ── SOLUTION ───────────────────────────────────────────── -->
+  <div class="section">
+    <div class="reading-col">
+      <div class="section-eyebrow">The Solution</div>
+      <h2>A spend gate that fails closed</h2>
+
+      <p class="prose"><strong>hermes-gate</strong> sits between your agent and its wallet. Your agent asks to spend; the gate checks the request against a spend mandate <em>you</em> signed, and allows or denies — fail-closed, meaning anything it can't verify is denied, not waved through.</p>
+
+      <div class="install-block">
+        <div class="install-block-header">
+          <span class="install-block-label">Install</span>
+          <button class="install-block-copy" onclick="copyInstall(this)" aria-label="Copy install command">copy</button>
+        </div>
+        <!-- NOTE: command derived from package.json — confirm npx resolves @observer-protocol/hermes-gate before launch -->
+        <code>
+          <span class="prompt">$</span><span class="cmd">npx</span> <span class="arg">@observer-protocol/hermes-gate</span> <span class="arg">bootstrap</span>
+        </code>
+      </div>
+
+      <div class="pillars">
+        <div class="pillar">
+          <div class="pillar-label">Installation</div>
+          <div class="pillar-title">One command</div>
+          <div class="pillar-body">Install, generate your keys, set your limits — your agent's wallet is gated. No account, no domain, no service to phone home to. Verifies offline.</div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-label">Authority</div>
+          <div class="pillar-title">You're the principal</div>
+          <div class="pillar-body">You anoint your own agent with your own key and sign your own spend mandate. Your agent operates under it and cannot rewrite it — a mandate signed by the agent's own key is rejected.</div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-label">Enforcement</div>
+          <div class="pillar-title">Below the skill layer</div>
+          <div class="pillar-body">A hostile skill can't reach the signing key — it has to go through the gate, and the gate defaults to deny. The wallet key lives in a separate user account the agent can't read.</div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-label">Ownership</div>
+          <div class="pillar-title">Open source, MIT</div>
+          <div class="pillar-body">Self-hosted, yours, no lock-in. The mandate, the key, the gate — all local, all yours. Nothing leaves your machine to authorize a transaction.</div>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+        <a href="https://github.com/observer-protocol/hermes-gate" class="btn btn-primary" target="_blank" rel="noopener">View the Repo →</a>
+        <a href="quickstart.html" class="btn btn-outline">Developer Guide</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PROTECTION SCOPE ───────────────────────────────────── -->
+  <div class="section">
+    <div class="reading-col">
+      <div class="section-eyebrow">What It Covers</div>
+      <h2>What it protects against — and what's next</h2>
+
+      <p class="prose" style="margin-bottom: 1.5rem;">We'd rather you know the boundary than discover it.</p>
+
+      <div class="tiers">
+        <div class="tier">
+          <div class="tier-marker">
+            <div class="tier-dot live"></div>
+            <div class="tier-line"></div>
+          </div>
+          <div>
+            <div class="tier-status live">Live now</div>
+            <div class="tier-title">Protection from malicious skills</div>
+            <div class="tier-body">A hostile skill, a prompt injection, a poisoned MCP server trying to make your agent act outside your mandate — stopped at the gate, fail-closed. This is the threat the community has been burned by, and this closes it. Binding enforcement is live for EVM stablecoins (USDT, USDC); Lightning support is advisory in this version.</div>
+          </div>
+        </div>
+        <div class="tier">
+          <div class="tier-marker">
+            <div class="tier-dot soon"></div>
+            <div class="tier-line"></div>
+          </div>
+          <div>
+            <div class="tier-status soon">Coming next</div>
+            <div class="tier-title">Protection from your own agent</div>
+            <div class="tier-body">Today's gate enforces against what your agent <em>says</em> it's doing. The next tier enforces against the <em>actual transaction</em> — so even a compromised, hallucinating, or rogue agent can't move funds outside your mandate. Same gate, wired one level deeper. It brings binding Lightning enforcement with it.</div>
+          </div>
+        </div>
+        <div class="tier">
+          <div class="tier-marker">
+            <div class="tier-dot soon"></div>
+            <div class="tier-line"></div>
+          </div>
+          <div>
+            <div class="tier-status soon">Coming next</div>
+            <div class="tier-title">A verifiable identity for your agent</div>
+            <div class="tier-body">A portable, accumulating trust profile: your agent's verified transaction history, its reputation score, its attestations — independently verifiable by anyone it transacts with. The thing that turns a gated wallet into an agent the rest of the world can trust.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── COMMUNITY ──────────────────────────────────────────── -->
+  <div class="section">
+    <div class="reading-col">
+      <div class="community-cta">
+        <h3>Help us build it</h3>
+        <p>This is early, and we're building it with the community that needs it. We want your feedback, your feature requests, and the failure modes you're worried about that we haven't named yet. Tell us what would make this safe enough for <em>you</em> to let your agent transact.</p>
+        <div class="cta-links">
+          <!-- TODO: replace with real GitHub Issues URL and Discord invite before launch -->
+          <a href="https://github.com/observer-protocol/hermes-gate/issues" class="btn btn-primary" target="_blank" rel="noopener">GitHub Issues &amp; Discussions →</a>
+          <a href="https://discord.gg/observerprotocol" class="btn btn-outline" target="_blank" rel="noopener">Join the Community</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOOTNOTES ──────────────────────────────────────────── -->
+  <div class="footnotes">
+    <div class="reading-col">
+      <div class="footnotes-title">Sources</div>
+      <div class="footnote" id="fn1">
+        <span class="footnote-num">1</span>
+        <span class="footnote-body">Cequence — <em>Encoded Prompt Injection at the Action Layer</em> (Bankr/Grok, $175K). <a href="https://www.cequence.ai/blog/ai/encoded-prompt-injection-action-layer/" target="_blank" rel="noopener">cequence.ai ↗</a></span>
+      </div>
+      <div class="footnote" id="fn2">
+        <span class="footnote-num">2</span>
+        <span class="footnote-body">Snyk — <em>ToxicSkills: Malicious AI Agent Skills on ClawHub</em> (534 of 3,984 critical; 100% of malicious used prompt injection). <a href="https://snyk.io/blog/toxicskills-malicious-ai-agent-skills-clawhub/" target="_blank" rel="noopener">snyk.io ↗</a></span>
+      </div>
+      <div class="footnote" id="fn3">
+        <span class="footnote-num">3</span>
+        <span class="footnote-body">Koi Research — <em>ClawHavoc: 341 Malicious Skills</em> (111 targeting crypto wallets). <a href="https://www.koi.ai/blog/clawhavoc-341-malicious-clawedbot-skills-found-by-the-bot-they-were-targeting" target="_blank" rel="noopener">koi.ai ↗</a></span>
+      </div>
+      <div class="footnote" id="fn4">
+        <span class="footnote-num">4</span>
+        <span class="footnote-body">Hermes Agent — Security Documentation (seven operational layers; no transaction-level policy). <a href="https://hermes-agent.nousresearch.com/docs/user-guide/security" target="_blank" rel="noopener">hermes-agent.nousresearch.com ↗</a></span>
+      </div>
+      <div class="footnote" id="fn5">
+        <span class="footnote-num">5</span>
+        <span class="footnote-body">getclaw.sh — <em>OpenClaw vs Hermes Security Model Comparison</em>. <a href="https://getclaw.sh/blog/openclaw-vs-hermes-agent-security-model-comparison-2026" target="_blank" rel="noopener">getclaw.sh ↗</a></span>
+      </div>
+      <div class="footnote" id="fn6">
+        <span class="footnote-num">6</span>
+        <span class="footnote-body">Direct reading of Hermes and OpenClaw security documentation, June 2026 — neither enforces spend limits, counterparty restrictions, or transaction-level policy.</span>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer container">
+    <span>Observer Protocol · Open Source · MIT</span>
+    <div class="footer-links">
+      <a href="architecture.html">Architecture</a>
+      <a href="agents.html">Agents</a>
+      <a href="registry.html">Registry</a>
+      <a href="sdk.html">SDK</a>
+      <a href="https://github.com/observer-protocol" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <span>the trust layer for the agentic economy</span>
+  </footer>
+
+</div>
+
+<script>
+  function copyInstall(btn) {
+    const cmd = 'npx @observer-protocol/hermes-gate bootstrap';
+    navigator.clipboard.writeText(cmd).then(() => {
+      btn.textContent = 'copied';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
