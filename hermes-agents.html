@@ -289,7 +289,6 @@
     .install-block-copy.copied { color: var(--verified); }
     .install-block code {
       display: block;
-      padding: 1.25rem 1.5rem;
       font-family: var(--font-mono);
       font-size: 14px;
       color: var(--text-primary);
@@ -579,17 +578,18 @@
           <span class="install-block-label">Install</span>
           <button class="install-block-copy" onclick="copyInstall(this)" aria-label="Copy install command">copy</button>
         </div>
-        <!-- NOTE: command derived from package.json — confirm npx resolves @observer-protocol/hermes-gate before launch -->
-        <code>
-          <span class="prompt">$</span><span class="cmd">npx</span> <span class="arg">@observer-protocol/hermes-gate</span> <span class="arg">bootstrap</span>
+        <code style="display:flex; flex-direction:column; gap:0.6rem; padding:1.25rem 1.5rem;">
+          <span><span class="prompt">$</span><span class="cmd">npx</span> <span class="arg">@observer-protocol/hermes-gate</span> <span class="arg">bootstrap generate</span></span>
+          <span><span class="prompt">$</span><span class="cmd">npx</span> <span class="arg">@observer-protocol/hermes-gate</span> <span class="arg">bootstrap provision</span></span>
+          <span><span class="prompt">$</span><span class="cmd">npx</span> <span class="arg">@observer-protocol/hermes-gate</span> <span class="arg">bootstrap verify</span></span>
         </code>
       </div>
 
       <div class="pillars">
         <div class="pillar">
           <div class="pillar-label">Installation</div>
-          <div class="pillar-title">One command</div>
-          <div class="pillar-body">Install, generate your keys, set your limits — your agent's wallet is gated. No account, no domain, no service to phone home to. Verifies offline.</div>
+          <div class="pillar-title">Three commands, one time</div>
+          <div class="pillar-body">Generate your keys and mandate, provision the accounts, verify the gate is live — then your agent's wallet is gated. No account, no domain, no service to phone home to. Verifies offline.</div>
         </div>
         <div class="pillar">
           <div class="pillar-label">Authority</div>
@@ -668,9 +668,9 @@
         <h3>Help us build it</h3>
         <p>This is early, and we're building it with the community that needs it. We want your feedback, your feature requests, and the failure modes you're worried about that we haven't named yet. Tell us what would make this safe enough for <em>you</em> to let your agent transact.</p>
         <div class="cta-links">
-          <!-- TODO: replace with real GitHub Issues URL and Discord invite before launch -->
+          <!-- GitHub URL live once repo is public; Discord invite confirmed -->
           <a href="https://github.com/observer-protocol/hermes-gate/issues" class="btn btn-primary" target="_blank" rel="noopener">GitHub Issues &amp; Discussions →</a>
-          <a href="https://discord.gg/observerprotocol" class="btn btn-outline" target="_blank" rel="noopener">Join the Community</a>
+          <a href="https://discord.gg/9AAZzUdBT" class="btn btn-outline" target="_blank" rel="noopener">Join the Community</a>
         </div>
       </div>
     </div>
@@ -723,7 +723,7 @@
 
 <script>
   function copyInstall(btn) {
-    const cmd = 'npx @observer-protocol/hermes-gate bootstrap';
+    const cmd = 'npx @observer-protocol/hermes-gate bootstrap generate';
     navigator.clipboard.writeText(cmd).then(() => {
       btn.textContent = 'copied';
       btn.classList.add('copied');
