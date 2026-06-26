@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hermes Agents — Observer Protocol</title>
-  <meta name="description" content="A fail-closed spend gate for Hermes agents. Set what your agent can pay, who it can pay, and how much — enforced below the skill layer.">
+  <meta name="description" content="A fail-closed spend gate for Hermes agents. Set what your agent can pay and how much — enforced below the skill layer.">
   <link rel="stylesheet" href="shared-styles.css">
 
   <style>
@@ -478,7 +478,7 @@
     <div class="reading-col">
       <div class="hero-eyebrow">Hermes Agents</div>
       <h1>Your agent can hold a wallet. A malicious skill <em>shouldn't be able to drain it.</em></h1>
-      <p class="hero-sub">A fail-closed spend gate for Hermes agents. Set what your agent can pay, who it can pay, and how much — enforced below the skill layer, so a hostile skill can't move your money outside the rules you set. One command to install. Open source.</p>
+      <p class="hero-sub">A fail-closed spend gate for Hermes agents. Set what your agent can pay and how much — enforced below the skill layer, so a hostile skill can't move your money outside the rules you set. One command to install.</p>
       <div class="hero-actions">
         <!-- TODO: replace with final GitHub URL before launch -->
         <a href="https://github.com/observer-protocol/hermes-gate" class="btn btn-primary" target="_blank" rel="noopener">Get Started on GitHub →</a>
@@ -499,7 +499,7 @@
         <div class="incident-desc">
           Lost by an agent named Bankrbot in May 2026.
           <span>No key stolen. No smart-contract bug. No system breached.</span>
-          An attacker granted the agent a permission token, then posted an instruction encoded in Morse code. The agent's language model decoded it, and the agent executed the transfer. As the security firm that analyzed it put it: neither piece did anything wrong by its own logic. The agent was authorized, and it did exactly what it was asked.<sup><a href="#fn1" id="ref1">[1]</a></sup>
+          An attacker granted the agent a permission token, then posted an instruction encoded in Morse code. The agent's language model decoded it, and the agent executed the transfer. The agent was authorized, and a guardrail tied to <em>who was asking</em> rather than <em>what the agent was allowed to do</em> let a valid-looking instruction through.<sup><a href="#fn1" id="ref1">[1]</a></sup>
         </div>
       </div>
 
@@ -550,10 +550,6 @@
         <li>
           <span class="gap-icon" style="color: rgba(239,68,68,0.6);">✗</span>
           <span><strong>Spend limits</strong> — absent across every agent framework<sup><a href="#fn6" id="ref6">[6]</a></sup></span>
-        </li>
-        <li>
-          <span class="gap-icon" style="color: rgba(239,68,68,0.6);">✗</span>
-          <span><strong>Counterparty restrictions</strong> — absent</span>
         </li>
         <li>
           <span class="gap-icon" style="color: rgba(239,68,68,0.6);">✗</span>
@@ -702,7 +698,7 @@
       </div>
       <div class="footnote" id="fn6">
         <span class="footnote-num">6</span>
-        <span class="footnote-body">Direct reading of Hermes and OpenClaw security documentation, June 2026 — neither enforces spend limits, counterparty restrictions, or transaction-level policy.</span>
+        <span class="footnote-body">Direct reading of Hermes and OpenClaw security documentation, June 2026 — neither enforces spend limits or transaction-level policy.</span>
       </div>
     </div>
   </div>
