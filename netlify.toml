@@ -1,6 +1,14 @@
 [build]
   publish = "."
 
+# Internal pages are not for public serving. Return 404 for anything
+# under /internal/ (force = true so the static files are not served).
+[[redirects]]
+  from = "/internal/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
 # DID document resolution — must serve JSON per W3C did:web spec.
 # The api. subdomain is the canonical source; proxy through the apex
 # so the W3C-mandated path observerprotocol.org/agents/{id}/did.json

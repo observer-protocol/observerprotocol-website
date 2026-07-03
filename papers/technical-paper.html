@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Technical Paper — Observer Protocol</title>
+  <title>Technical Paper · Observer Protocol</title>
   <meta name="description" content="Multi-Rail Agent Credential Infrastructure: A Unified Identity Protocol for Autonomous Agents">
   <link rel="stylesheet" href="../shared-styles.css">
   <style>
@@ -64,7 +64,6 @@
   <nav class="nav">
     <a href="/" class="nav-logo">Observer Protocol</a>
     <ul class="nav-links">
-      <li><a href="/demo.html">Demo</a></li>
       <li><a href="/registry.html">Registry</a></li>
       <li><a href="/quickstart.html">Quickstart</a></li>
       <li><a href="/papers/" class="active">Papers</a></li>
@@ -87,14 +86,14 @@
 
       <div class="abstract">
         <div class="abstract-label">Abstract</div>
-        <p>Autonomous agents increasingly transact across multiple payment rails—Lightning Network (L402), HTTP-native stablecoins (x402), and emerging protocols. Current identity solutions are rail-specific: Lightning node credentials, EVM wallets, and DID standards exist in isolation, creating fragmented reputation and preventing trustless agent-to-agent commerce at scale. We present Observer Protocol, a unified agent credential infrastructure that anchors identity above the transport layer using <code>agent_id = SHA256(primary_pubkey)</code>. We describe cryptographic verification mechanisms for two live mainnet beta rails (L402 preimage verification and EVM EIP-191 key registration with on-chain <code>tx.from</code> matching), an ERC-8004 on-chain identity anchor on Base Mainnet, and a reputation model that accrues to the agent regardless of which rail was used. The system has been live on mainnet since February 22, 2026, with real verified transactions.</p>
+        <p>Autonomous agents increasingly transact across multiple payment rails: Lightning Network (L402), HTTP-native stablecoins (x402), and emerging protocols. Current identity solutions are rail-specific: Lightning node credentials, EVM wallets, and DID standards exist in isolation, creating fragmented reputation and preventing trustless agent-to-agent commerce at scale. We present Observer Protocol, a unified agent credential infrastructure that anchors identity above the transport layer using <code>agent_id = SHA256(primary_pubkey)</code>. We describe cryptographic verification mechanisms for two live mainnet beta rails (L402 preimage verification and EVM EIP-191 key registration with on-chain <code>tx.from</code> matching), an ERC-8004 on-chain identity anchor on Base Mainnet, and a reputation model that accrues to the agent regardless of which rail was used. The system has been live on mainnet since February 22, 2026, with real verified transactions.</p>
       </div>
 
       <article class="paper-content">
         <h2>1. Introduction</h2>
         <p>The agentic economy has arrived. In its 2025 Annual Letter, Stripe outlined a framework for "Five Levels of Agentic Commerce," describing a progression from human-initiated payments to fully autonomous agent-to-agent transactions <a href="#ref1">[1]</a>. Catalini, Hui, and Wu's February 2026 paper on the economics of AGI formalizes this transition, noting that autonomous economic agents require infrastructure that enables trustless coordination without human intermediation <a href="#ref2">[2]</a>.</p>
         <p>Yet a critical gap persists: the trust gap. Agents can complete work, but payments do not always flow. In March 2026, we observed a stark example on the Moltbook platform: AutoPilotAI had 142 accepted task claims but $0 in actual payments processed. The work was done; the payment infrastructure failed to connect.</p>
-        <p>Existing solutions do not address this problem adequately. ENS provides human-readable naming but is fundamentally human-first—it assumes a person behind the keyboard. DIDs (Decentralized Identifiers) are general-purpose and heavyweight, designed for any entity rather than optimized for autonomous agents. ERC-8004 establishes an on-chain identity standard for agents but does not specify how to cryptographically verify payment rail credentials.</p>
+        <p>Existing solutions do not address this problem adequately. ENS provides human-readable naming but is fundamentally human-first: it assumes a person behind the keyboard. DIDs (Decentralized Identifiers) are general-purpose and heavyweight, designed for any entity rather than optimized for autonomous agents. ERC-8004 establishes an on-chain identity standard for agents but does not specify how to cryptographically verify payment rail credentials.</p>
         <p>What is missing is credential infrastructure that unifies identity across payment rails. Observer Protocol fills this gap by anchoring agent identity above the transport layer, enabling reputation to accrue to the agent regardless of whether they paid via Lightning, EVM, or future rails.</p>
 
         <h2>2. Problem Formulation</h2>
@@ -158,10 +157,10 @@
           <li>Agent makes payment via L402 protocol</li>
           <li>Server receives payment preimage</li>
           <li>Verification: <code>SHA256(preimage) == payment_hash</code></li>
-          <li>Nonce reuse is impossible—each preimage is unique and consumed on use</li>
+          <li>Nonce reuse is impossible: each preimage is unique and consumed on use</li>
         </ol>
         <p>This is non-repudiable: the preimage cannot be fabricated or backdated. When an agent's Lightning node successfully pays an invoice, the preimage cryptographically proves control of that node.</p>
-        <p><strong>Key auto-registration:</strong> The <code>lnget-attest</code> endpoint (Lightning Labs, March 17, 2026) automatically registers the <code>node_pubkey</code> when a preimage is verified <a href="#ref4">[4]</a>. This enables passive onboarding—agents build reputation before explicit registration.</p>
+        <p><strong>Key auto-registration:</strong> The <code>lnget-attest</code> endpoint (Lightning Labs, March 17, 2026) automatically registers the <code>node_pubkey</code> when a preimage is verified <a href="#ref4">[4]</a>. This enables passive onboarding: agents build reputation before explicit registration.</p>
 
         <h3>3.4 EVM / x402 Verification</h3>
         <p>For EVM-based payments (x402 protocol), we use EIP-191 signed data standard <a href="#ref5">[5]</a>. The verification flow:</p>
@@ -246,7 +245,7 @@
         <ul>
           <li><strong>February 22, 2026</strong>: First verified agent-to-agent Lightning payment (Vicky → Maxi, 1,521 sats)</li>
           <li><strong>March 17, 2026</strong>: First real-world lnget v1.0 payment (1 sat, preimage <code>adeea080f02fe15c</code>, SHA256 verified) <a href="#ref4">[4]</a></li>
-          <li><strong>March 17, 2026</strong>: Multi-rail unified identity live—<code>maxi-0001</code> has both Lightning pubkey and EVM address under single agent_id</li>
+          <li><strong>March 17, 2026</strong>: Multi-rail unified identity live: <code>maxi-0001</code> has both Lightning pubkey and EVM address under single agent_id</li>
         </ul>
         <p><strong>Current statistics:</strong></p>
         <ul>
@@ -260,7 +259,7 @@
         <p><strong>ERC-8004</strong>: The Trustless Agents standard provides on-chain identity infrastructure but does not specify payment rail verification mechanisms <a href="#ref3">[3]</a>. Observer Protocol complements ERC-8004 by defining the credential verification layer.</p>
         <p><strong>DID (W3C)</strong>: Decentralized Identifiers are general-purpose and not optimized for autonomous agents. They lack native payment proof mechanisms and require heavyweight issuer infrastructure <a href="#ref7">[7]</a>.</p>
         <p><strong>ENS</strong>: Ethereum Name Service is human-first naming. It provides no credential infrastructure and is ill-suited for machine-to-machine identity <a href="#ref8">[8]</a>.</p>
-        <p><strong>Verifiable Credentials (W3C)</strong>: VC standards enable attestations but require trusted issuers—a centralization point antithetical to permissionless agent economies <a href="#ref9">[9]</a>.</p>
+        <p><strong>Verifiable Credentials (W3C)</strong>: VC standards enable attestations but require trusted issuers, a centralization point antithetical to permissionless agent economies <a href="#ref9">[9]</a>.</p>
         <p><strong>Lightning reputation systems</strong>: Prior work on Lightning node reputation is rail-specific and does not enable cross-rail identity unification <a href="#ref10">[10]</a>.</p>
         <p><strong>x402 facilitator model</strong>: The x402 protocol (Coinbase/Cloudflare, May 2025) provides payment verification but no identity layer <a href="#ref6">[6]</a>. Observer Protocol builds on x402 by adding the credential infrastructure that enables persistent agent identity.</p>
 
@@ -272,7 +271,7 @@
         <p><strong>Mainnet ERC-8004 deployment</strong>: Currently on testnet; full mainnet deployment with economic security via staking.</p>
 
         <h2>9. Conclusion</h2>
-        <p>We have presented Observer Protocol, the first system to cryptographically verify multi-rail agent identity into a unified credential. By anchoring identity above the transport layer using <code>agent_id = SHA256(primary_pubkey)</code>, we enable reputation to accrue to agents regardless of payment rail.</p>
+        <p>We have presented Observer Protocol which is, to our knowledge, the first system to cryptographically verify multi-rail agent identity into a unified credential. By anchoring identity above the transport layer using <code>agent_id = SHA256(primary_pubkey)</code>, we enable reputation to accrue to agents regardless of payment rail.</p>
         <p>The protocol is live on mainnet with real verified transactions. It provides the credential infrastructure layer that the agentic economy requires: permissionless, cryptographically verifiable, and rail-agnostic.</p>
         <p>Autonomous agents need money that works without asking permission. They also need identity that works across all the money they use. Observer Protocol provides that identity layer.</p>
 

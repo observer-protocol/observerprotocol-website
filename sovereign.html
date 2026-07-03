@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sovereign — Your agent. Your keys. Your rules.</title>
+<title>Sovereign · Your agent. Your keys. Your rules.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -451,23 +451,23 @@
   </a>
   <ul class="nav-links">
     <li><a href="https://observerprotocol.org" target="_blank">Observer Protocol ↗</a></li>
-    <li><a href="#" class="nav-cta">Get early access</a></li>
+    <li><a href="https://sovereign.agenticterminal.io" class="nav-cta">Open Sovereign</a></li>
   </ul>
 </nav>
 
 <section class="hero">
-  <div class="hero-eyebrow">Coming soon — March 26, 2026</div>
+  <div class="hero-eyebrow">Live now</div>
   <h1 class="hero-headline">
     Your agent.<br>Your keys.<br><em>Your rules.</em>
   </h1>
   <p class="hero-sub">
-    Sovereign gives individuals cryptographic sovereignty over their AI agents — real-time visibility into every transaction, delegation with constraints, and one-click revocation.
+    Sovereign gives individuals cryptographic sovereignty over their AI agents: real-time visibility into every transaction, delegation with constraints, and one-click revocation.
   </p>
   <div class="hero-actions">
-    <button class="btn-primary" onclick="openModal()">Join waitlist →</button>
+    <a href="https://sovereign.agenticterminal.io" class="btn-primary">Open Sovereign →</a>
     <a href="https://observerprotocol.org" class="btn-secondary">Learn more ↗</a>
   </div>
-  <div class="hero-note">Launching at Alby Lightning Meetup · March 26, 2026</div>
+  <div class="hero-note">Sovereign is live</div>
 </section>
 
 <script>
@@ -475,99 +475,7 @@
   window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 40);
   });
-
-  // Modal functions
-  function openModal() {
-    document.getElementById('waitlistModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeModal() {
-    document.getElementById('waitlistModal').classList.remove('active');
-    document.body.style.overflow = '';
-  }
-
-  // Close modal on overlay click
-  document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal-overlay')) {
-      closeModal();
-    }
-  });
-
-  // Close modal on Escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      closeModal();
-    }
-  });
-
-  // Form submission handler
-  document.getElementById('waitlistForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const statusEl = document.getElementById('formStatus');
-    const submitBtn = form.querySelector('.form-submit');
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Sending...';
-
-    try {
-      const response = await fetch(form.action, {
-        method: 'POST',
-        body: new FormData(form),
-        headers: { 'Accept': 'application/json' }
-      });
-
-      if (response.ok) {
-        statusEl.textContent = 'Thanks for joining! We\'ll be in touch soon.';
-        statusEl.className = 'form-status success';
-        form.reset();
-        setTimeout(() => {
-          closeModal();
-          statusEl.className = 'form-status';
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Join waitlist →';
-        }, 2000);
-      } else {
-        throw new Error('Form submission failed');
-      }
-    } catch (error) {
-      statusEl.textContent = 'Something went wrong. Please try again.';
-      statusEl.className = 'form-status error';
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Join waitlist →';
-    }
-  });
 </script>
-
-<!-- Waitlist Modal -->
-<div id="waitlistModal" class="modal-overlay">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal()" aria-label="Close">×</button>
-    <h2 class="modal-title">Join the waitlist</h2>
-    <p class="modal-subtitle">Be the first to experience Sovereign when we launch.</p>
-
-    <form id="waitlistForm" action="https://formspree.io/f/xnqeqwvj" method="POST">
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" placeholder="Your name" required>
-      </div>
-
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="you@example.com" required>
-      </div>
-
-      <div class="form-group">
-        <label for="usecase">Use case (optional)</label>
-        <textarea id="usecase" name="usecase" placeholder="Tell us how you'd use Sovereign..."></textarea>
-      </div>
-
-      <button type="submit" class="form-submit">Join waitlist →</button>
-      <div id="formStatus" class="form-status"></div>
-    </form>
-  </div>
-</div>
 
 </body>
 </html>

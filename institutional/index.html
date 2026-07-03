@@ -186,7 +186,7 @@ Remediation: Request Tier 3 Delegation Credential
       <span class="beat-title">Human Approval - CIO Selects Tier 3</span>
     </div>
     <div class="beat-screen">
-AT Enterprise Dashboard - Issue Delegation Wizard
+AT Enterprise Dashboard - Delegation Request Wizard
 
 Step 2 of 5: Attestation Tier
 
@@ -200,7 +200,7 @@ Approved with hardware key signature.
     </div>
     <div class="beat-screenshot">
       <img src="images/beat-5-tier-selector.png" alt="AT Enterprise Dashboard - Attestation Tier selector with Tier 3 selected">
-      <div class="beat-screenshot-caption">Live AT dashboard - Issue Delegation wizard, step 2</div>
+      <div class="beat-screenshot-caption">Live AT dashboard - Delegation Request wizard, step 2</div>
     </div>
     <p class="beat-narration">The human-in-the-loop event. The tier picker maps onto escalating approval surfaces a custodian already runs - retail, enterprise, regulated-counterparty. Three seconds to understand. No new vocabulary.</p>
   </div>
@@ -212,7 +212,7 @@ Approved with hardware key signature.
       <span class="beat-title">One-Click ERC-8004 Publication</span>
     </div>
     <div class="beat-screen">
-Delegation Issued:
+Delegation Requested:
   Agent: Fund A Treasury Agent
   Tier: <span class="tier tier-3">Tier 3: Enterprise + Chain-Anchored</span>
   Scope: margin-topup, collateral-release
@@ -257,9 +257,9 @@ AT-ARS Recompute: 71 -> 84 (+9 chain anchor, +4 hardware key)
 
 Settlement: $1,200,000 USDC on x402 / Base
 TX: 0xa7c3f9b2e1d4...
-Receipt references: Delegation Token URI + 8004 anchor TX + CIO approval
+Authorization-proof references: Delegation Token URI + 8004 anchor TX + CIO approval
     </div>
-    <p class="beat-narration">Lender B verifies independently against 8004 - OP/AT is not in this verification path. Same architecture settles on Lightning or TRON if the counterparty prefers. The receipt is the dispute regime.</p>
+    <p class="beat-narration">Lender B verifies independently against 8004 - OP/AT is not in this verification path. Same architecture settles on Lightning or TRON if the counterparty prefers. The authorization proof is the dispute regime.</p>
   </div>
 
   <!-- Beat 8 -->
@@ -276,7 +276,7 @@ FUND A's VIEW                     LENDER B's VIEW
 3. Tier 3 credential issued       3. Token URI resolved (8004)
 4. ERC-8004 publication tx        4. Content hash verified
 5. CIO hardware-key approval      5. Settlement approved
-6. Settlement on x402/USDC        6. Signed receipt issued
+6. Settlement on x402/USDC        6. Signed authorization proof issued
 
 Both views independently verifiable against the on-chain registry.
     </div>
@@ -302,8 +302,7 @@ Both views independently verifiable against the on-chain registry.
       <h3>ALREADY LIVE</h3>
       <ul>
         <li>Three-tier attestation model in AT dashboard</li>
-        <li>Issue Delegation 5-step wizard</li>
-        <li>One-click ERC-8004 publication + NFT mint</li>
+        <li>Delegation request wizard (5 steps)</li>
         <li>Multi-rail delegation credentials</li>
         <li>AIP refusal and remediation grammar</li>
         <li>AT-ARS scoring with tier factors</li>
@@ -314,6 +313,7 @@ Both views independently verifiable against the on-chain registry.
     <div class="codesign-col">
       <h3>CO-DESIGN WITH PARTNER</h3>
       <ul>
+        <li>One-click ERC-8004 publication + NFT mint</li>
         <li>Institutional counterparty profile and policy primitives</li>
         <li>Wizard integration with partner's CIO console</li>
         <li>Counterparty agent harness</li>

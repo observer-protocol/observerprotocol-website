@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stripe x402 + Observer Protocol — Add Agent Reputation in 2 Minutes</title>
+  <title>Stripe x402 + Observer Protocol · Add Agent Reputation in 2 Minutes</title>
   <meta name="description" content="Already using Stripe machine payments or x402? Add Observer Protocol reputation checks to your seller integration in one middleware line.">
   <link rel="stylesheet" href="shared-styles.css">
 </head>
@@ -37,7 +37,7 @@
         Stripe handles the payment. Observer Protocol answers the question Stripe cannot: <strong style="color:var(--text-primary);">should you trust the agent making it?</strong>
       </p>
       <p style="font-size:13px;color:var(--text-secondary);max-width:640px;font-family:var(--font-sans);line-height:1.8;">
-        Add one middleware line to your x402 seller and every incoming machine payment gets a reputation check — trust tier, payment history, risk signals — before you process it. No API key required to start.
+        Add one middleware line to your x402 seller and every incoming machine payment gets a reputation check (trust tier, payment history, risk signals) before you process it. No API key required to start.
       </p>
     </div>
   </section>
@@ -56,7 +56,7 @@
         </div>
         <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:1.25rem;text-align:center;">
           <div style="font-size:1.5rem;margin-bottom:0.5rem;">✓</div>
-          <div style="font-size:11px;color:var(--text-dim);font-family:var(--font-sans);">Trust tier, score, and suggested action — before settlement</div>
+          <div style="font-size:11px;color:var(--text-dim);font-family:var(--font-sans);">Trust tier, score, and suggested action, before settlement</div>
         </div>
       </div>
     </div>
@@ -121,7 +121,7 @@ app.<span style="color:#f8c471;">use</span>(<span style="color:#86efac;">'/api/*
         <h2 style="font-size:18px;font-weight:600;">Gate access by trust tier</h2>
       </div>
       <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1rem;max-width:680px;line-height:1.7;">
-        Use the reputation response to apply different rate limits, pricing, or access levels per agent — automatically, before the payment settles.
+        Use the reputation response to apply different rate limits, pricing, or access levels per agent, automatically, before the payment settles.
       </p>
       <div class="code-block" style="max-width:700px;">
         <div style="font-size:12px;line-height:1.9;">
@@ -159,7 +159,7 @@ app.<span style="color:#f8c471;">post</span>(<span style="color:#86efac;">'/api/
         <h2 style="font-size:18px;font-weight:600;">Reputation lookup by agent_id</h2>
       </div>
       <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1rem;max-width:680px;line-height:1.7;">
-        Stripe identifies agents by their USDC wallet address. After a one-time registration on Observer Protocol (the agent submits its public key + metadata, receives an <code style="background:var(--bg-card);padding:1px 6px;border-radius:3px;">agent_id</code>), sellers query reputation by that <code style="background:var(--bg-card);padding:1px 6px;border-radius:3px;">agent_id</code> — the agent passes it via the <code style="background:var(--bg-card);padding:1px 6px;border-radius:3px;">X-Observer-Agent-ID</code> header on every request. The middleware in step 1 reads the header and does the lookup automatically. The <code style="background:var(--bg-card);padding:1px 6px;border-radius:3px;">@observer-protocol/sdk</code> client wraps this same call.
+        Stripe identifies agents by their USDC wallet address. After a one-time registration on Observer Protocol (the agent submits its public key + metadata, receives an <code style="background:var(--bg-card);padding:1px 6px;border-radius:3px;">agent_id</code>), sellers query reputation by that <code style="background:var(--bg-card);padding:1px 6px;border-radius:3px;">agent_id</code>. The agent passes it via the <code style="background:var(--bg-card);padding:1px 6px;border-radius:3px;">X-Observer-Agent-ID</code> header on every request. The middleware in step 1 reads the header and does the lookup automatically. The <code style="background:var(--bg-card);padding:1px 6px;border-radius:3px;">@observer-protocol/sdk</code> client wraps this same call.
       </p>
       <div class="code-block" style="max-width:700px;">
         <div style="font-size:12px;line-height:1.9;">
@@ -245,7 +245,7 @@ app.<span style="color:#f8c471;">post</span>(<span style="color:#86efac;">'/api/
     <div class="container">
       <h2 style="font-size:18px;font-weight:600;margin-bottom:0.75rem;">Chargeback-resistant settlement (composition with WDK)</h2>
       <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1rem;max-width:680px;line-height:1.7;">
-        Reputation lookup answers <em>"should I accept this payment?"</em> For high-value flows that need <em>"this payment is defensible against later disputes"</em>, compose with <a href="https://github.com/observer-protocol/wdk-protocol-trust" style="color:var(--orange);">@observer-protocol/wdk-protocol-trust</a>. The trust module handles bilateral identity verification (sender + recipient both prove DIDs before settlement) and ERC-8004 chain anchoring of the receipt. Together they make agentic payments chargeback-resistant by construction.
+        Reputation lookup answers <em>"should I accept this payment?"</em> For high-value flows that need <em>"this payment is defensible against later disputes"</em>, compose with <a href="https://github.com/observer-protocol/wdk-protocol-trust" style="color:var(--orange);">@observer-protocol/wdk-protocol-trust</a>. The trust module handles bilateral identity verification (sender + recipient both prove DIDs before settlement) and ERC-8004 chain anchoring of the authorization proof. Together they make later disputes cryptographically answerable.
       </p>
       <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);margin-bottom:1rem;max-width:680px;line-height:1.7;">
         <strong style="color:var(--text-primary);">Runnable example:</strong> <a href="https://github.com/observer-protocol/wdk-protocol-trust/blob/master/examples/mandate-flow.mjs" style="color:var(--orange);">examples/mandate-flow.mjs</a> in the wdk-protocol-trust repo walks the full <code>verifyMandate → withinScope → wallet.send → attest</code> flow end-to-end against a self-issued demo credential.
@@ -283,7 +283,7 @@ app.<span style="color:#f8c471;">post</span>(<span style="color:#86efac;">'/api/
 <footer style="border-top:1px solid var(--border);padding:2rem 0;text-align:center;">
   <div class="container">
     <p style="font-size:12px;color:var(--text-dim);font-family:var(--font-sans);">
-      Observer Protocol — The trust layer for the agentic economy.
+      Observer Protocol · The trust layer for the agentic economy.
       <a href="spec.html" style="color:var(--text-dim);margin-left:1rem;">Observer Protocol Spec</a>
       <a href="api.html" style="color:var(--text-dim);margin-left:1rem;">API Reference</a>
       <a href="https://github.com/observer-protocol" target="_blank" style="color:var(--text-dim);margin-left:1rem;">GitHub</a>

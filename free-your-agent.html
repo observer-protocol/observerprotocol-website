@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Free Your Agent — Observer Protocol</title>
+  <title>Free Your Agent · Observer Protocol</title>
   <meta name="description" content="A live demo of human-in-the-loop delegation, wallet-enforced policy, and independently verifiable settlement on Liquid, signed against mainnet DIDs." />
 
-  <meta property="og:title" content="Free Your Agent — Observer Protocol" />
+  <meta property="og:title" content="Free Your Agent · Observer Protocol" />
   <meta property="og:description" content="A live demo of human-in-the-loop delegation, wallet-enforced policy, and independently verifiable settlement on Liquid, signed against mainnet DIDs." />
   <meta property="og:url" content="https://observerprotocol.org/free-your-agent" />
   <meta property="og:type" content="article" />
   <meta property="og:image" content="https://observerprotocol.org/free-your-agent-1-sovereign-form.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Free Your Agent — Observer Protocol" />
+  <meta name="twitter:title" content="Free Your Agent · Observer Protocol" />
   <meta name="twitter:description" content="Live demo of human-in-the-loop delegation, wallet-enforced policy, and independently verifiable settlement on Liquid." />
   <meta name="twitter:image" content="https://observerprotocol.org/free-your-agent-1-sovereign-form.png" />
 
@@ -458,7 +458,7 @@
     <div class="hero-subtitle">Trust infrastructure for the agentic Bitcoin economy</div>
     <p class="hero-lede">
       Live demo of human-in-the-loop delegation, wallet-enforced policy, and
-      independently verifiable settlement — on Liquid, signed against mainnet
+      independently verifiable settlement, on Liquid, signed against mainnet
       DIDs, fully auditable from your terminal.
     </p>
   </section>
@@ -472,7 +472,7 @@
       transacting on behalf of humans, not humans clicking through checkout flows.
       Agents will need money that moves at machine speed, settles globally, and
       clears without intermediaries. That money is Bitcoin, Lightning, and
-      stablecoins like USDT — the rails the Bitcoin economy has been building
+      stablecoins like USDT. The rails the Bitcoin economy has been building
       toward for fifteen years are the same rails the agent economy needs now.
     </p>
     <p>
@@ -481,18 +481,18 @@
     </p>
     <p>
       <strong class="friction-word">Identity.</strong> The agent needs a
-      cryptographic identity tied to a human principal — not an API key, not a
+      cryptographic identity tied to a human principal: not an API key, not a
       session token, but a verifiable credential chain anyone can audit.
     </p>
     <p>
       <strong class="friction-word">Trust.</strong> The human needs to bound what
-      the agent can do, in terms the wallet can enforce — not in a config file the
+      the agent can do, in terms the wallet can enforce: not in a config file the
       agent could rewrite, but in a signed delegation the wallet refuses to act
       outside of.
     </p>
     <p>
       <strong class="friction-word">Policy enforcement.</strong> The wallet needs
-      to refuse the unsigned transaction <em>before</em> keys are touched — not
+      to refuse the unsigned transaction <em>before</em> keys are touched: not
       log an exception, not flag it for review, refuse. Enforcement is the
       difference between a policy framework and a suggestion.
     </p>
@@ -509,7 +509,7 @@
     <h2>What you'll see</h2>
     <p>
       Boyd is the human principal. Maxi is his agent. The wallet is
-      <strong>Aqua</strong> — Jan3's open Bitcoin/Liquid wallet, demonstrated here
+      <strong>Aqua</strong>, Jan3's open Bitcoin/Liquid wallet, demonstrated here
       as the enforcement endpoint.
     </p>
     <p>The demo runs in four beats.</p>
@@ -519,7 +519,7 @@
       <h3>Delegation</h3>
     </div>
     <p>
-      Boyd opens Sovereign — Observer Protocol's principal-control surface — and
+      Boyd opens Sovereign, Observer Protocol's principal-control surface, and
       configures Maxi's spending policy on Liquid. Per-transaction cap of 50,000
       sats. Free your agent: no counterparty allowlist, no jurisdiction
       restrictions, no time-of-day window. Maxi can transact with whoever she
@@ -537,7 +537,7 @@
       <code class="inline">did:web:bitcoinsingularity.ai#key-1</code> and
       registered to Observer Protocol's open attestation infrastructure. The
       credential carries
-      <code class="inline">"action_categories": ["Free My Agent"]</code> — the
+      <code class="inline">"action_categories": ["Free My Agent"]</code>. The
       freedom-rails philosophy is not narration, it's a categorical label inside
       the cryptographic record.
     </p>
@@ -545,7 +545,7 @@
     <figure>
       <img src="./free-your-agent-2-delegation-issued.png"
            alt="Sovereign success screen confirming the delegation was issued and signed by Boyd's principal key." />
-      <figcaption>Delegation issued — signed locally with the principal key.</figcaption>
+      <figcaption>Delegation issued, signed locally with the principal key.</figcaption>
     </figure>
 
     <figure>
@@ -555,7 +555,7 @@
     </figure>
 
     <p>
-      Here is the signed credential — the structured proof of Boyd's
+      Here is the signed credential: the structured proof of Boyd's
       authorization, ready to be inspected, verified against the published DID,
       or fed into any system that respects the protocol:
     </p>
@@ -628,7 +628,7 @@
 
     <p>
       Notice
-      <code class="inline">counterparty_scope: { mode: "any" }</code> — this is
+      <code class="inline">counterparty_scope: { mode: "any" }</code>. This is
       what "free your agent" looks like in the cryptographic substrate. Not a
       phrase used in narration, a structural property of the delegation that the
       verifier can confirm. The principal explicitly chose not to restrict Maxi's
@@ -642,7 +642,7 @@
       <h3>Agent operates within the mandate</h3>
     </div>
     <p>
-      Maxi attempts a 5,000-sat send on Liquid. Aqua builds the transaction —
+      Maxi attempts a 5,000-sat send on Liquid. Aqua builds the transaction,
       and this is the moment to notice something about the rail itself.
     </p>
 
@@ -659,7 +659,7 @@
     <p>
       Before the policy hook fires, the wallet spends 30-60 seconds doing real
       work: syncing against Liquid's testnet, then constructing a
-      <em>confidential</em> PSET — Liquid's privacy model encrypts transaction
+      <em>confidential</em> PSET. Liquid's privacy model encrypts transaction
       amounts using blinding factors and range proofs, and that cryptographic
       machinery is intrinsic to every Liquid spend. You're watching the cost of
       privacy-preserving settlement happen in real time. This wait is Liquid's,
@@ -669,13 +669,13 @@
       The policy hook fires the moment the unsigned transaction exists. From
       <code class="inline">policy: hook entry</code> to
       <code class="inline">policy: ALLOW → signer will be invoked next</code> is
-      a single HTTP round-trip to Observer Protocol's policy engine — sub-second,
+      a single HTTP round-trip to Observer Protocol's policy engine: sub-second,
       end to end. The wallet posts the canonical transaction bytes, the engine
       evaluates against Maxi's mandate, signs a
       <code class="inline">PolicyEvaluationCredential</code> with the protocol's
       mainnet key, and returns. Aqua then signs the transaction and broadcasts.
     </p>
-    <p>The transaction settles on Liquid's public testnet — visible on Blockstream's explorer:</p>
+    <p>The transaction settles on Liquid's public testnet, visible on Blockstream's explorer:</p>
 
     <div class="txid-callout">
       <div class="txid-callout-label">Settled transaction · Liquid testnet</div>
@@ -703,14 +703,14 @@
       the proposed and allowed values both legible in the credential. Aqua's hook
       raises <code class="inline">PolicyDenied</code> <em>before</em> invoking
       the signer. No transaction is constructed for broadcast; no key material
-      is touched. The signed denial is the entire artifact — a positive
+      is touched. The signed denial is the entire artifact: a positive
       cryptographic record that a specific transaction was attempted, evaluated
       against a specific mandate, and refused by a specific rule.
     </p>
     <p>
       This is the difference between policy <em>framework</em> and policy
       <em>enforcement</em>. The framework describes what should be allowed. The
-      enforcement makes it cryptographically impossible to proceed without a
+      enforcement refuses to proceed without a
       signed permit, returned in real time from an open public endpoint,
       verifiable against published mainnet identities.
     </p>
@@ -720,8 +720,8 @@
       <h3>Independent audit</h3>
     </div>
     <p>
-      The verifier — a small Python script with zero Observer Protocol
-      dependencies — takes the signed credentials, the public DID document from
+      The verifier, a small Python script with zero Observer Protocol
+      dependencies, takes the signed credentials, the public DID document from
       <code class="inline">observerprotocol.org/.well-known/did.json</code>, and
       the canonical transaction bytes. It reproduces the SHA-256 binding hashes
       from scratch and verifies the Ed25519 signatures against the published
@@ -736,7 +736,7 @@
 
     <p>
       Three bindings verified, twice. The signing key, the proposalHash, the
-      delegationCredentialHash — all match against credentials returned from a
+      delegationCredentialHash: all match against credentials returned from a
       live public endpoint. Anyone can run this. Anyone can verify this. Nothing
       in the trust path requires belief in Observer Protocol's infrastructure.
     </p>
@@ -781,8 +781,8 @@
     <h2>The roadmap is composability</h2>
     <p>
       This demo enforces a spending cap on Liquid. The same mechanism enforces
-      any AIP v0.8 rule family — counterparty allowlists, temporal windows,
-      jurisdictional restrictions, velocity caps — at the wallet layer, before
+      any AIP v0.8 rule family (counterparty allowlists, temporal windows,
+      jurisdictional restrictions, velocity caps) at the wallet layer, before
       keys are touched. The same protocol applies on USDT-on-Liquid, USDT on
       TRON, x402 settlement, and every other rail the agentic
       Bitcoin/Lightning/USDT economy will move on. Open protocol, composable
@@ -796,7 +796,7 @@
       <a class="body-link" href="https://observerprotocol.org/.well-known/did.json">
         observerprotocol.org/.well-known/did.json</a>.
       The verifier is open source. Teams interested in testing the live endpoint
-      against their own wallet integrations —
+      against their own wallet integrations:
       <a class="body-link" href="mailto:hello@observerprotocol.org">reach out</a>.
     </p>
   </section>

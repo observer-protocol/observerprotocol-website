@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Architecture — Observer Protocol</title>
+  <title>Architecture · Observer Protocol</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;0,900;1,300;1,600&display=swap" rel="stylesheet" />
   <style>
@@ -339,7 +339,7 @@
     <li><a href="./agentic-terminal.html">Agentic Terminal</a></li>
     <li><a href="./registry.html">Registry</a></li>
   </ul>
-  <div class="nav-status"><div class="pulse"></div>PUBLIC BETA · V1.1</div>
+  <div class="nav-status"><div class="pulse"></div>PUBLIC BETA · V1.3</div>
 </nav>
 
 <!-- PAGE HEADER -->
@@ -352,7 +352,7 @@
     </div>
     <h1>Architecture &amp; Technical Reference</h1>
     <p class="page-sub">
-      The complete technical architecture of Observer Protocol and Agentic Terminal — from cryptographic primitives to enterprise identity management. W3C DID/VC at the core. AIP governing agent behavior above. AT delivering intelligence on top.
+      The complete technical architecture of Observer Protocol and Agentic Terminal, from cryptographic primitives to enterprise identity management. W3C DID/VC at the core. AIP governing agent behavior above. AT delivering intelligence on top.
     </p>
     <div class="page-meta">
       Published: February 24, 2026
@@ -375,7 +375,7 @@
       Five layers. One coherent trust stack. Read left to right: agent identity → payment rails → protocol verification → behavioral governance → enterprise intelligence.
     </p>
     <div class="arch-wrap">
-      <div class="arch-title">Observer Protocol + Agentic Terminal — Architecture</div>
+      <div class="arch-title">Observer Protocol + Agentic Terminal · Architecture</div>
       <div class="arch-subtitle">Know Your Agent (KYA) · W3C DID/VC · AIP v0.8 draft-1 · June 2026</div>
       <div class="arch-cols">
         <!-- AGENT IDENTITY -->
@@ -423,7 +423,7 @@
           </div>
           <div class="arch-card rails">
             <div class="arch-card-title">USDT-on-TRON <span class="live-badge">live</span></div>
-            <div class="arch-card-body">TRC-20 receipts · TronGrid<br/>verified · ERC-8004 anchor</div>
+            <div class="arch-card-body">TRC-20 settlements · TronGrid<br/>verified · ERC-8004 anchor</div>
           </div>
         </div>
         <!-- OBSERVER PROTOCOL -->
@@ -499,7 +499,7 @@
           </div>
           <div class="arch-card at">
             <div class="arch-card-title">AT-ARS score <span class="live-badge">live</span></div>
-            <div class="arch-card-body">5-band trust score (0–100)<br/>Receipt + counterparty + org<br/>+ recency + volume signals</div>
+            <div class="arch-card-body">5-band trust score (0–100)<br/>Authorization proof + counterparty + org<br/>+ recency + volume signals</div>
           </div>
           <div class="arch-card at">
             <div class="arch-card-title">Magic-link authorization <span class="live-badge">live</span></div>
@@ -511,7 +511,7 @@
           </div>
           <div class="arch-card at">
             <div class="arch-card-title">Bilateral handshake <span class="new-badge-card">new</span></div>
-            <div class="arch-card-body">Sender + recipient prove DIDs<br/>before settlement<br/>Chargeback-resistant receipt</div>
+            <div class="arch-card-body">Sender + recipient prove DIDs<br/>before settlement<br/>Chargeback-resistant authorization proof</div>
           </div>
           <div class="arch-card at">
             <div class="arch-card-title">Sandbox tier <span class="live-badge">live</span></div>
@@ -533,7 +533,7 @@
       <div class="arch-foundations">
         <div class="foundation-block">
           <div class="foundation-title">Tether WDK · Wallet Development Kit <span class="live-badge">wdk-op-policy · PR #55 · live</span></div>
-          <div class="foundation-body">Native enforcement on WDK's local transaction policy engine (PR #55, now merged). <strong>@observer-protocol/wdk-op-policy</strong> registers an ALLOW plus a mandatory, fail-closed DENY on the #55 hook: it verifies a signed delegation against the raw transaction and refuses an out-of-mandate spend before the key signs, then issues a portable, independently verifiable PolicyEvaluationCredential. The identity and Lightning modules (<strong>@observer-protocol/wdk-protocol-trust</strong>, <strong>@observer-protocol/wdk-lightning-verifier</strong>) add the bilateral trust handshake, ERC-8004 anchoring, and chargeback-resistant receipts alongside it. Live demo at observerprotocol.org/wdk.</div>
+          <div class="foundation-body">Native enforcement on WDK's local transaction policy engine (PR #55, now merged). <strong>@observer-protocol/wdk-op-policy</strong> registers an ALLOW plus a mandatory, fail-closed DENY on the #55 hook: it verifies a signed delegation against the raw transaction and denies an out-of-mandate spend inside the policy engine, so the transfer is never invoked. It then issues a portable, independently verifiable PolicyEvaluationCredential. The identity and Lightning modules (<strong>@observer-protocol/wdk-protocol-trust</strong>, <strong>@observer-protocol/wdk-lightning-verifier</strong>) add the bilateral trust handshake, ERC-8004 anchoring, and chargeback-resistant authorization proofs alongside it. Live demo at observerprotocol.org/wdk.</div>
         </div>
         <div class="foundation-block">
           <div class="foundation-title">OWS · Open Wallet Standard <span class="live-badge">live</span></div>
@@ -592,7 +592,7 @@
         <div class="layer-num">LAYER 01</div>
         <h3>Agent Identity</h3>
         <div class="layer-tag">W3C did:web · Ed25519 · Domain-anchored</div>
-        <p>Every agent and organization on Observer Protocol receives a W3C Decentralized Identifier. Agent DIDs resolve to DID Documents at standard URLs — no central registry required. The domain is the trust anchor: an agent whose DID domain doesn't match its organization's DID domain is a fraud signal.</p>
+        <p>Every agent and organization on Observer Protocol receives a W3C Decentralized Identifier. Agent DIDs resolve to DID Documents at standard URLs. No central registry required. The domain is the trust anchor: an agent whose DID domain doesn't match its organization's DID domain is a fraud signal.</p>
         <div class="layer-items">
           <div class="layer-item live">did:web agent DID · live</div>
           <div class="layer-item live">did:web org DID · live</div>
@@ -604,7 +604,7 @@
         <div class="layer-num">LAYER 02</div>
         <h3>Payment Rails</h3>
         <div class="layer-tag">Rail-agnostic · Verification is the constant</div>
-        <p>Observer Protocol supports six payment rails today. The verification logic is identical regardless of settlement layer — a Lightning preimage, an ECDSA signature over a transaction hash, or a verifiedSend() call all produce the same output: a cryptographically verified economic event that cannot be faked at scale.</p>
+        <p>Observer Protocol supports six payment rails today. The verification logic is identical regardless of settlement layer: a Lightning preimage, an ECDSA signature over a transaction hash, or a verifiedSend() call all produce the same output: a cryptographically verified economic event that cannot be faked at scale.</p>
         <div class="layer-items">
           <div class="layer-item live">Lightning / L402 · live</div>
           <div class="layer-item live">x402 / Solana · live</div>
@@ -618,7 +618,7 @@
         <div class="layer-num">LAYER 03</div>
         <h3>Observer Protocol</h3>
         <div class="layer-tag">W3C VC · VAC · KYB · Open infrastructure</div>
-        <p>The core protocol layer. OP issues Verifiable Agent Credentials — W3C-compliant, cryptographically signed, portable across any platform. VACs attest to verified facts: economic activity, payment history, counterparty network, and KYB linkage. OP is open infrastructure — free to use, self-hostable, MIT licensed.</p>
+        <p>The core protocol layer. OP issues Verifiable Agent Credentials: W3C-compliant, cryptographically signed, portable across any platform. VACs attest to verified facts: economic activity, payment history, counterparty network, and KYB linkage. OP is open infrastructure: free to use, self-hostable, MIT licensed.</p>
         <div class="layer-items">
           <div class="layer-item live">VAC issuance · live</div>
           <div class="layer-item live">W3C DID resolver · live</div>
@@ -632,7 +632,7 @@
         <div class="layer-num">LAYER 04</div>
         <h3>Agent Interaction Protocol (AIP)</h3>
         <div class="layer-tag">Behavioral governance · Delegation · Remediation</div>
-        <p>AIP governs how agents interact — not just who they are. It defines delegation credentials (org → agent signed scopes), bilateral attestation, remediation flows when trust thresholds aren't met, a type registry for counterparty classification, and — added in v0.7 / v0.8 — trading-mandate and spending-mandate surfaces with a cryptographically-bound <code>PolicyEvaluationCredential</code> verdict envelope. AIP v0.8 draft-1 is the current canonical draft; v0.5 / v0.6 / v0.7 remain published as immutable historical drafts. It sits above the VAC layer, adding behavioral governance to cryptographic identity.</p>
+        <p>AIP governs how agents interact, not just who they are. It defines delegation credentials (org → agent signed scopes), bilateral attestation, remediation flows when trust thresholds aren't met, a type registry for counterparty classification, and, added in v0.7 / v0.8, trading-mandate and spending-mandate surfaces with a cryptographically-bound <code>PolicyEvaluationCredential</code> verdict envelope. AIP v0.8 draft-1 is the current canonical draft; v0.5 / v0.6 / v0.7 remain published as immutable historical drafts. It sits above the VAC layer, adding behavioral governance to cryptographic identity.</p>
         <div class="layer-items">
           <div class="layer-item new">Delegation credentials · new</div>
           <div class="layer-item new">Remediation envelope · new</div>
@@ -653,10 +653,10 @@
     <div class="aip-grid">
       <div>
         <p class="section-intro" style="margin-bottom: 1.5rem;">
-          Identity tells you who an agent is. AIP governs what an agent is permitted to do, how it must behave when interacting with other agents, and what happens when trust breaks down. No other agent identity protocol has a formal behavioral governance layer.
+          Identity tells you who an agent is. AIP governs what an agent is permitted to do, how it must behave when interacting with other agents, and what happens when trust breaks down.
         </p>
         <p style="font-size: 0.9rem; color: var(--text-dim); line-height: 1.8; font-weight: 300; margin-bottom: 1.5rem;">
-          AIP v0.8 draft-1 is the current canonical spec, published in observer-protocol/aip alongside its v0.5 / v0.6 / v0.7 predecessors (each frozen as an immutable historical draft per the schema immutability policy). The current draft adds the spending-mandate vocabulary, the <code>PolicyEvaluationCredential</code> verdict envelope, and the reserved-advisory fields used by the v0.2.0 WDK adapter. AIP sits above the VAC layer — credentials establish identity, AIP governs interaction.
+          AIP v0.8 draft-1 is the current canonical spec, published in observer-protocol/aip alongside its v0.5 / v0.6 / v0.7 predecessors (each frozen as an immutable historical draft per the schema immutability policy). The current draft adds the spending-mandate vocabulary, the <code>PolicyEvaluationCredential</code> verdict envelope, and the reserved-advisory fields used by the v0.2.0 WDK adapter. AIP sits above the VAC layer: credentials establish identity, AIP governs interaction.
         </p>
         <a href="https://github.com/observer-protocol/aip/blob/main/aip-v0.8-draft-1.md" style="font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--amber); text-decoration: none; letter-spacing: 0.06em;">Read AIP v0.8 draft-1 on GitHub →</a>
       </div>
@@ -672,7 +672,7 @@
           <div class="aip-primitive-icon">NEW</div>
           <div>
             <h4>Remediation Flow</h4>
-            <p>When an agent fails a trust threshold check, AIP defines the remediation envelope — a minimal protocol that triggers the appropriate response. AT owns the option content; OP owns the envelope structure.</p>
+            <p>When an agent fails a trust threshold check, AIP defines the remediation envelope: a minimal protocol that triggers the appropriate response. AT owns the option content; OP owns the envelope structure.</p>
           </div>
         </div>
         <div class="aip-primitive">
@@ -704,17 +704,17 @@
       <div class="principle">
         <div class="principle-num">01</div>
         <h4>Don't trust claims. Verify behavior.</h4>
-        <p>Reputation is the cryptographic record of what an agent did — not what it says. Behavioral identity is the only model that survives adversarial conditions.</p>
+        <p>Reputation is the cryptographic record of what an agent did, not what it says. Behavioral identity is the only model that survives adversarial conditions.</p>
       </div>
       <div class="principle">
         <div class="principle-num">02</div>
         <h4>The key is the identity.</h4>
-        <p>Public key hash is canonical. Alias is UX. Verification always checks against the cryptographic key — never the label. This model works across every chain.</p>
+        <p>Public key hash is canonical. Alias is UX. Verification always checks against the cryptographic key, never the label. This model works across every chain.</p>
       </div>
       <div class="principle">
         <div class="principle-num">03</div>
         <h4>Verification is the constant.</h4>
-        <p>The payment rail is not the constant — verification is. Lightning preimage, ECDSA signature, Ed25519 — the logic is identical. OP is settlement-agnostic by design.</p>
+        <p>The payment rail is not the constant: verification is. Lightning preimage, ECDSA signature, Ed25519, the logic is identical. OP is settlement-agnostic by design.</p>
       </div>
       <div class="principle">
         <div class="principle-num">04</div>
@@ -729,7 +729,7 @@
       <div class="principle">
         <div class="principle-num">06</div>
         <h4>Self-hostable.</h4>
-        <p>Run your own OP node. The protocol is infrastructure — not a platform. Anyone can implement it, extend it, or fork it under CC BY 4.0.</p>
+        <p>Run your own OP node. The protocol is infrastructure, not a platform. Anyone can implement it, extend it, or fork it under CC BY 4.0.</p>
       </div>
     </div>
   </div>

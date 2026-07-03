@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Docs — Observer Protocol</title>
+  <title>Docs · Observer Protocol</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;0,900;1,300;1,600&display=swap" rel="stylesheet" />
   <style>
@@ -156,7 +156,7 @@
     <li><a href="./agentic-terminal.html">Agentic Terminal</a></li>
     <li><a href="./registry.html">Registry</a></li>
   </ul>
-  <div class="nav-status"><div class="pulse"></div>PUBLIC BETA · V1.1</div>
+  <div class="nav-status"><div class="pulse"></div>PUBLIC BETA · V1.3</div>
 </nav>
 
 <!-- PAGE HEADER -->
@@ -205,7 +205,7 @@
         <div class="qs-tag">60 SECONDS</div>
         <div class="qs-name">Agent Quickstart</div>
         <div class="qs-meta">Python · pip install observer-protocol</div>
-        <div class="qs-desc">Register an agent, prove key ownership, retrieve your VAC, and check your trust score — all in 60 seconds. Working code you can run immediately.</div>
+        <div class="qs-desc">Register an agent, prove key ownership, retrieve your VAC, and check your trust score, all in 60 seconds. Working code you can run immediately.</div>
       </a>
       <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/master/docs/developer-guide/chain-verification.md" target="_blank" class="qs-card">
         <div class="qs-icon">🔗</div>
@@ -243,7 +243,7 @@
 <section id="api-reference" style="background: var(--bg2);">
   <div class="section-inner">
     <div class="section-label">API Reference</div>
-    <h2>API v1.3 — Base URL: api.observerprotocol.org</h2>
+    <h2>API v1.3 · Base URL: api.observerprotocol.org</h2>
     <p class="section-intro">
       All non-DID endpoints use the <code style="font-family:'IBM Plex Mono',monospace; font-size:0.85em; color:var(--amber); background:var(--bg); padding:0.1rem 0.4rem;">/api/v1/</code> prefix. DID document paths follow the W3C did:web resolution standard and are documented separately below. Full interactive documentation available via Swagger UI.
     </p>
@@ -402,19 +402,19 @@ npm install @observer-protocol/sdk
     <div class="section-label">Spec &amp; AIP</div>
     <h2>Open standards. Versioned specs.</h2>
     <p class="section-intro">
-      Observer Protocol is governed by open specifications maintained on GitHub. AIP v0.5.1 is deployed as of April 27, 2026 — includes chargeback prevention, x402 support, and magic-link authorization.
+      Observer Protocol is governed by open specifications maintained on GitHub. AIP v0.5.1 is deployed as of April 27, 2026. It includes chargeback prevention, x402 support, and magic-link authorization.
     </p>
     <div class="spec-cards">
       <a href="https://github.com/observer-protocol/observer-protocol-spec" target="_blank" class="spec-card">
         <div class="spec-card-tag">PROTOCOL SPEC · CC BY 4.0</div>
         <h3>Observer Protocol Spec</h3>
-        <p>The canonical specification for OP — identity model, event schema, verification logic, VAC structure, and API reference. Version controlled on GitHub.</p>
+        <p>The canonical specification for OP: identity model, event schema, verification logic, VAC structure, and API reference. Version controlled on GitHub.</p>
         <div class="spec-card-cta">github.com/observer-protocol/observer-protocol-spec ↗</div>
       </a>
       <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/master/docs/AIP_v0.5.md" target="_blank" class="spec-card">
         <div class="spec-card-tag">AIP v0.5.1 · UPDATED APRIL 27, 2026</div>
         <h3>Agent Interaction Protocol</h3>
-        <p>AIP governs how agents interact — delegation credentials, magic-link authorization, settlement receipts, chargeback prevention, and type registry.</p>
+        <p>AIP governs how agents interact: delegation credentials, magic-link authorization, authorization proofs, chargeback prevention, and type registry.</p>
         <div class="spec-card-cta">Read AIP v0.5.1 spec ↗</div>
       </a>
       <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/master/docs/developer-guide/api-reference.md" target="_blank" class="spec-card">
@@ -444,7 +444,7 @@ npm install @observer-protocol/sdk
       <a href="https://observerprotocol.org/chargeback-prevention" target="_blank" class="spec-card">
         <div class="spec-card-tag">DEMO · THOUGHT LEADERSHIP</div>
         <h3>Chargeback Prevention Demo</h3>
-        <p>End-to-end demo: agent purchase, magic-link authorization, settlement receipt, cryptographic dispute prevention. For AI infrastructure companies.</p>
+        <p>End-to-end demo: agent purchase, magic-link authorization, authorization proof, cryptographic dispute prevention. For AI infrastructure companies.</p>
         <div class="spec-card-cta">observerprotocol.org/chargeback-prevention ↗</div>
       </a>
     </div>
@@ -457,7 +457,7 @@ npm install @observer-protocol/sdk
     <div class="section-label">DID Resolution · Reference</div>
     <h2>How did:web resolution works on OP.</h2>
     <p class="section-intro">
-      Observer Protocol uses the W3C <code style="font-family:'IBM Plex Mono',monospace; font-size:0.85em; color:var(--teal); background:var(--bg2); padding:0.1rem 0.4rem;">did:web</code> method. DID Documents are served at standard URL patterns — not through the API. This is intentional: DID resolution is a protocol-level concern, not an API endpoint.
+      Observer Protocol uses the W3C <code style="font-family:'IBM Plex Mono',monospace; font-size:0.85em; color:var(--teal); background:var(--bg2); padding:0.1rem 0.4rem;">did:web</code> method. DID Documents are served at standard URL patterns, not through the API. This is intentional: DID resolution is a protocol-level concern, not an API endpoint.
     </p>
     <div class="did-doc">
       <div>
@@ -479,7 +479,7 @@ npm install @observer-protocol/sdk
       </div>
       <div>
         <p style="font-size:0.88rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1.5rem;">
-          The W3C did:web method transforms a DID into an HTTPS URL by replacing colons with forward slashes. Anyone with HTTPS access can resolve an OP DID without querying the OP API — this is what makes agent identity truly portable.
+          The W3C did:web method transforms a DID into an HTTPS URL by replacing colons with forward slashes. Anyone with HTTPS access can resolve an OP DID without querying the OP API. This is what makes agent identity truly portable.
         </p>
         <p style="font-size:0.88rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1.5rem;">
           The <strong style="color:var(--text);">domain mismatch rule</strong>: an agent's DID domain must match its organization's DID domain. A mismatch is treated as a fraud signal by AIP-compliant implementations.
