@@ -343,7 +343,7 @@ const op = new ObserverTrustProtocol(wallet, {
   trustedIssuers: ['did:web:observerprotocol.org'],
   attestationKey,   // 32-byte Ed25519 secret. DISTINCT from the WDK wallet key.
   // gate: optional — defaults to AdvisoryGate (client-side gating).
-  // WdkPolicyHookGate stubbed pending Tether WDK PR #55.
+  // WdkPolicyHookGate rides the merged WDK PR #55 policy hook (see @observer-protocol/wdk-op-policy).
 });
 
 // 1. Verify the delegation credential (did:web resolve, Ed25519Signature2026,

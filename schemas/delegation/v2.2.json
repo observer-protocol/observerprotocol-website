@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://observerprotocol.org/schemas/delegation/v2.2.json",
+  "title": "ObserverDelegationCredential subject - v2.2 (reserved)",
+  "$comment": "This version number is reserved for a parked draft and was never released. The URL is kept permanently resolvable because published credentials have pinned it. It imposes no constraints; validate substantive requirements against the schema version referenced by the credential's issuer. See /schemas/delegation/ for published versions.",
+  "type": "object"
+}
