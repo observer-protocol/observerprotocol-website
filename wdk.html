@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Observer Protocol × WDK: a native, verifiable trust layer for agentic payments</title>
-  <meta name="description" content="Observer Protocol's trust layer now runs natively on Tether WDK's own local transaction policy engine (PR #55). One signed mandate, the real WDK engine, a real wallet key, and a portable, independently verifiable record of every decision." />
+  <meta name="description" content="Observer Protocol's trust layer now runs natively on Tether WDK's own local transaction policy engine (PR #55). One signed mandate, the real WDK engine, a real wallet key, and a portable, independently verifiable record of OP's own evaluation of each authorization against that mandate." />
 
   <meta property="og:title" content="Observer Protocol × WDK: a native, verifiable trust layer for agentic payments" />
   <meta property="og:description" content="Our trust module, running on WDK's own local transaction policy engine: an in-mandate payment signed and a signed, independently verifiable decision credential; an over-mandate payment refused before the key." />
@@ -13,7 +13,7 @@
   <meta property="og:image" content="https://observerprotocol.org/wdk-1-demo-terminal.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Observer Protocol × WDK: a native, verifiable trust layer" />
-  <meta name="twitter:description" content="Our trust module running on WDK's own local transaction policy engine: a signed, independently verifiable record of every decision, and a refusal that never reaches the key." />
+  <meta name="twitter:description" content="Our trust module running on WDK's own local transaction policy engine: a signed, independently verifiable record of OP's own evaluation of the same mandate, and a refusal that never reaches the key." />
   <meta name="twitter:image" content="https://observerprotocol.org/wdk-1-demo-terminal.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -480,7 +480,9 @@
     <p>
       And most recently, Tether stepped in to lead the latest funding round for NEURA
       Robotics, a humanoid robotics company. The part that matters for us is what it
-      says about the wallet: those robots are intended to ship with WDK natively, so a
+      says about the wallet: per
+      <a class="body-link" href="https://tether.io/news/tether-to-lead-neura-robotics-series-c-financing-one-of-the-largest-up-to-1-4bn-robotics-physical-ai-investment-rounds-on-record-to-power-the-financial-and-intelligence-layer/" target="_blank" rel="noopener">Tether's announcement</a>,
+      the deal includes integrating WDK into NEURA's robots, so a
       humanoid can carry its own self custodial wallet and pay or get paid in Bitcoin
       and USDT, machine to machine, on behalf of its operator and within set
       parameters.
@@ -577,13 +579,13 @@
     <h2>The demo: our trust module, running on WDK's own local transaction policy engine</h2>
     <p>
       Here is what it looks like when the two fit together. One real agent mandate
-      (Maxi, capped at 100 USDC, only to the allowlisted merchant), WDK's real local transaction policy
+      (Maxi, capped at 100 USDT, only to the allowlisted merchant), WDK's real local transaction policy
       engine, and a real wallet key. Two transactions, run end to end.
     </p>
 
     <figure>
       <img src="./wdk-1-demo-terminal.png"
-           alt="Terminal run of the Observer Protocol trust module on WDK's real local transaction policy engine. Track 1: a 50 USDC transfer to the allowlisted merchant is ALLOWED by the engine, SIGNED by the wallet key, and PROVABLE via a signed PolicyEvaluationCredential that is bound to the exact transaction and re-verified against the live public endpoint. Track 2: a 150 USDC transfer over the 100 USDC ceiling is BLOCKED at the signing boundary and the signer is invoked 0 times." />
+           alt="Terminal run of the Observer Protocol trust module on WDK's real local transaction policy engine. Track 1: a 50 USDT transfer to the allowlisted merchant is ALLOWED by the engine, SIGNED by the wallet key, and PROVABLE via a signed PolicyEvaluationCredential that is bound to the exact transaction and re-verified against the live public endpoint. Track 2: a 150 USDT transfer over the 100 USDT ceiling is BLOCKED at the signing boundary and the signer is invoked 0 times." />
       <figcaption>One mandate, two tracks, on WDK's real local transaction policy engine. Authorized to provable, then over the line to never signed.</figcaption>
     </figure>
 
@@ -592,10 +594,10 @@
       <h3>Authorized, signed, and provable</h3>
     </div>
     <p>
-      The first transaction is within the mandate: 50 USDC to the allowlisted
+      The first transaction is within the mandate: 50 USDT to the allowlisted
       merchant. The policy engine allows it. The wallet key signs it (a real signature,
       not broadcast). And then the part only Observer Protocol does: our evaluator
-      issues a signed
+      independently evaluates the same mandate and issues a signed
       <code class="inline">PolicyEvaluationCredential</code>, bound to that exact
       transaction and to that exact mandate, and it re-verifies against our live
       public endpoint. That credential is a portable record of exactly what was
@@ -608,7 +610,7 @@
       <h3>Over the line, blocked, never signed</h3>
     </div>
     <p>
-      The second transaction is over the line: 150 USDC, past the 100 USDC ceiling.
+      The second transaction is over the line: 150 USDT, past the 100 USDT ceiling.
       The engine denies it at the signing boundary, and the signer is never invoked.
       Nothing was signed, so there is nothing to prove and nothing to undo. And
       because Observer Protocol pairs every allow with a mandatory deny, the refusal
@@ -692,7 +694,7 @@ cd wdk-op-policy &amp;&amp; npm install &amp;&amp; npm run verify</pre>
       </div>
       <div class="proves-row">
         <div class="proves-row-name">Observer Protocol</div>
-        <div class="proves-row-detail">The trust layer on top: the scoped, signed mandate, the mandatory fail-closed deny, and the portable signed record of every decision the wallet-local engine cannot emit.</div>
+        <div class="proves-row-detail">The trust layer on top: the scoped, signed mandate, the mandatory fail-closed deny, and the portable signed record of OP's own evaluation of each authorization, which the wallet-local engine cannot emit.</div>
       </div>
       <div class="proves-row">
         <div class="proves-row-name">wdk-op-policy</div>
