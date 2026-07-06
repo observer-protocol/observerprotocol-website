@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your agent can now pay for anything. Nothing checks whether it was allowed to. · Observer Protocol</title>
+  <meta name="description" content="Announcing OP Crossrail: one signed, portable mandate, enforced natively at each rail's own boundary, before the payment exists. x402, Lightning, and Tether WDK engines, open source and on npm." />
+  <meta property="og:title" content="Your agent can now pay for anything. Nothing checks whether it was allowed to." />
+  <meta property="og:description" content="OP Crossrail. Delegate once. Enforced before the payment exists." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://observerprotocol.org/blog/op-crossrail" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a08; --bg2: #111110; --border: #2a2a26;
+      --amber: #f5a623; --amber-dim: #b8791a; --green: #4ade80; --red: #f87171;
+      --text: #e8e8e0; --text-dim: #888880; --text-faint: #444440; --teal: #5eead4;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-size: 17px; line-height: 1.65; overflow-x: hidden; }
+    a { color: var(--amber); text-decoration: none; }
+    a:hover, a:focus-visible { text-decoration: underline; }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1rem 2.5rem; background: rgba(10,10,8,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--text); font-size: .95rem; }
+    .nav-links { display: flex; gap: 1.6rem; list-style: none; }
+    .nav-links a { color: var(--text-dim); font-size: .85rem; }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+
+    article { max-width: 720px; margin: 0 auto; padding: 8.5rem 2rem 4rem; }
+    .dateline { font-family: 'IBM Plex Mono', monospace; font-size: .75rem; letter-spacing: .18em; color: var(--amber); margin-bottom: 1.2rem; }
+    h1 { font-size: clamp(1.7rem, 4.4vw, 2.5rem); line-height: 1.18; font-weight: 600; letter-spacing: -.02em; text-wrap: balance; }
+    .standfirst { margin-top: 1.1rem; font-family: 'IBM Plex Mono', monospace; font-size: .95rem; color: var(--text-dim); font-style: italic; }
+    h2 { font-size: 1.35rem; font-weight: 600; letter-spacing: -.01em; margin: 2.6rem 0 1rem; text-wrap: balance; }
+    p { color: var(--text-dim); margin: 1rem 0; }
+    p strong, p b { color: var(--text); font-weight: 500; }
+    code { font-family: 'IBM Plex Mono', monospace; font-size: .85em; background: var(--bg2); border: 1px solid var(--border); padding: .1em .35em; color: var(--teal); }
+    .cta-block { margin-top: 2.8rem; border-top: 1px solid var(--border); padding-top: 1.6rem; }
+    .cta-block p { margin: .45rem 0; color: var(--text); }
+    .cta-block p span { color: var(--text-dim); }
+    footer { max-width: 720px; margin: 0 auto; padding: 0 2rem 3rem; color: var(--text-faint); font-family: 'IBM Plex Mono', monospace; font-size: .72rem; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="/crossrail">OP Crossrail</a></li>
+    <li><a href="/architecture.html">Architecture</a></li>
+    <li><a href="/docs.html">Docs</a></li>
+    <li><a href="/agentic-terminal.html">Agentic Terminal</a></li>
+  </ul>
+</nav>
+
+<article>
+  <div class="dateline">JULY 7, 2026 · ANNOUNCEMENT</div>
+  <!-- h1 pending final copy freeze (Boyd may swap the title before Monday) -->
+  <h1>Your agent can now pay for anything. Nothing checks whether it was allowed to.</h1>
+  <p class="standfirst">OP Crossrail. Delegate once. Enforced before the payment exists.</p>
+
+  <p>On July 1, <a href="https://blog.cloudflare.com/monetization-gateway/" target="_blank" rel="noopener">Cloudflare announced the Monetization Gateway</a>: any API, dataset, or MCP tool behind Cloudflare can now charge agents per call, settled in stablecoins over x402. It is a serious piece of infrastructure, and it completes one half of agentic commerce. The seller side is gated at the edge. The buyer side, the agent holding the keys, is governed by nothing.</p>
+
+  <p>x402's design principle is that the payment itself is the credential. That is elegant, and it is also the gap: a payment proves the agent had funds. It proves nothing about whether the agent's principal authorized the spend, at what limit, on which rails. As agents gain the ability to pay for anything, nobody in the flow is checking what they are allowed to pay for.</p>
+
+  <p>Today we are releasing the missing half.</p>
+
+  <h2>One credential, three rails, and a payment that never existed</h2>
+
+  <p>OP Crossrail is a buyer-side enforcement layer for agent payments: one signed, portable mandate, enforced natively at each rail's own boundary, before the payment exists.</p>
+
+  <p>Here is the launch demo, committed as a transcript in the repo. A principal signs one delegation: $5.00 per rolling 24 hours, across every rail the agent operates on. Conversion rates are attested inside the credential itself, no oracle, no runtime dependency on us. Then the agent goes shopping.</p>
+
+  <p>It buys an API call from a seller running Cloudflare's x402-proxy-template, unmodified, exactly as Cloudflare ships it: 402, sign, pay, 200. It pays a 5,940-sat Lightning invoice through the L402 flow. It moves 2 USDT on TRON through the policy engine running on the WDK's policy hook (Tether's PR #55). Two more x402 calls, and the budget sits at exactly $5.00, spent to the cent across three rails under one credential.</p>
+
+  <p>Then it tries once more, and this is the part that matters. The payment is not declined. It is not reversed. It never comes into existence. The mandate check runs inside the standard x402 client, before the signer, and a denial means the EIP-3009 signature is never created. There is nothing to settle, nothing to dispute, nothing to claw back. The seller's resource stays behind its 402.</p>
+
+  <p>The next Lightning attempt is refused at the pre-payment hook. The next TRON transfer is refused inside the WDK policy engine, the transfer is never invoked. Three rails, three enforcement points: the key, the hook, the engine. One shared budget, one append-only decision log.</p>
+
+  <p>Nothing in the demo is staged. Every take settled against the production x402.org facilitator, on-chain on Base Sepolia: the first take at blocks 43667763&ndash;64, the committed take at blocks 43793016&ndash;43793058, and every transaction hash is committed in the repo's <a href="https://github.com/observer-protocol/x402-op-authorize/blob/main/demo/FIDELITY-NOTES.md" target="_blank" rel="noopener">fidelity notes</a>, independently checkable on any Base Sepolia explorer. The buyer wallet holds zero ETH; the facilitator broadcasts and pays gas. When we re-probed the facilitator with an already-settled payload, it returned <code>invalid_exact_evm_nonce_already_used</code>: Coinbase's own infrastructure attesting that our authorization was consumed on-chain. The repo also ships a local facilitator that simulates only the settlement hop, for self-contained CI runs; the fidelity notes label which configuration produced what, per take, stated plainly.</p>
+
+  <h2>What shipping fail-closed actually requires</h2>
+
+  <p>A detail from the build that says more about the product than any feature list. Adding the TRON rail surfaced a subtle attack: our counterparty matching, like most EVM tooling, folded addresses to lowercase before comparing. Correct for hex, wrong for base58, which is case-sensitive, an attacker could grind for a keypair whose address lowercases to an allowlisted one. The shipped core now matches exact-case on non-EVM rails, and there is a conformance case proving a case-twiddled variant of an allowlisted TRON address is rejected. Every engine runs against a 245-case parity harness so that a verdict on one rail is the same verdict on every rail.</p>
+
+  <p>That is what enforcement means to us: fail-closed by default, deny anything unestablishable, and count the worst case the key could authorize, not the best case the server reports. It is also why unknown assets deny. If the principal had not attested a USDT rate inside that credential, the TRON leg would have refused with "no principal-attested rate." Stale rates are the principal's own risk, by construction. That is what self-custody of authority means.</p>
+
+  <h2>Open, and structurally so</h2>
+
+  <p>Three engines ship with Crossrail today, MIT-licensed, on npm: <code>@observer-protocol/x402-op-authorize</code>, <code>@observer-protocol/l402-op-authorize</code>, and <code>@observer-protocol/wdk-op-policy</code>, plus the shared core they all run on, <code>@observer-protocol/policy-engine</code>. Credentials are W3C Verifiable Credentials; everything in the demo verifies without us, offline. To our knowledge, this is the first open enforcement layer spanning both 402 lineages, x402 and L402, plus wallet-SDK signers under one credential.</p>
+
+  <p>The enforcement layer is free, and not as a pricing decision. Metering the check would break fail-closed operation and portability, so it cannot be metered, by anyone, and that is the point. Engines for MPP/Tempo and OWS already exist and join Crossrail as their integrations enter the public set; Liquid, via Jan3's Aqua policy hook, is next; the Monetization Gateway's native cloudflare:402 scheme is on the roadmap, and we are waitlisted for the Gateway. Governance, issuance, caps, revocation, and audit, the things principals actually operate, live in Agentic Terminal.</p>
+
+  <h2>Why buyer-side, and why every rail</h2>
+
+  <p>Agents will transact for consumers and enterprises at real scale: API access today, procurement, travel, and portfolios next. And the reason today's agent economy runs on micropayments is not that agents are small. Ticket size is the industry's only risk control: nobody lets an agent move ten thousand dollars when nothing enforces what it may do. Enforcement at the signing boundary replaces smallness as the risk control. That is what unlocks everything above the penny.</p>
+
+  <p>Payments will never converge on one rail; they never have, and the same week Cloudflare shipped the Gateway, <a href="https://joinopenstandard.com/blog/introducing-open-usd" target="_blank" rel="noopener">more than 140 companies announced OUSD</a>: Visa, Mastercard, Stripe, and BlackRock in the consortium, and the chains committing in public within days, Solana and <a href="https://www.theblock.co/post/406736/visa-stripe-coinbase-join-open-usd-stablecoin-shares-reserve-revenue" target="_blank" rel="noopener">Tempo natively from day one</a>, Stellar and Aptos alongside. The money itself is now multi-rail by design. Enforcement that cannot be bypassed must live at each rail's own signing moment, and signing moments are irreducibly per-rail. Put those two facts together and only one architecture survives: a portable mandate, enforced natively at every boundary, on every rail your agent touches.</p>
+
+  <p><strong>Delegate once. Enforced before the payment exists.</strong></p>
+
+  <div class="cta-block">
+    <p><strong>Read the transcript, run the demo, break the harness:</strong> <a href="https://github.com/observer-protocol/x402-op-authorize/blob/main/demo/TRANSCRIPT.txt" target="_blank" rel="noopener">github.com/observer-protocol/x402-op-authorize</a></p>
+    <p><strong>The product:</strong> <a href="/crossrail">observerprotocol.org/crossrail</a></p>
+    <p><strong>Governance for your agents:</strong> <a href="https://app.agenticterminal.io" target="_blank" rel="noopener">app.agenticterminal.io</a></p>
+    <!-- Video CTA intentionally omitted: added as a same-day edit once Monday's assembly is live. Do not merge a dead placeholder. -->
+  </div>
+</article>
+
+<footer>Observer Protocol · verifiable, not asserted</footer>
+
+</body>
+</html>

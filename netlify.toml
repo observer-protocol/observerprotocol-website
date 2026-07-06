@@ -9,6 +9,12 @@
   status = 404
   force = true
 
+# OP Crossrail product page — canonical extension-less URL.
+[[redirects]]
+  from = "/crossrail"
+  to = "/crossrail.html"
+  status = 200
+
 # DID document resolution — must serve JSON per W3C did:web spec.
 # The api. subdomain is the canonical source; proxy through the apex
 # so the W3C-mandated path observerprotocol.org/agents/{id}/did.json

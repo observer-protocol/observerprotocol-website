@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OP Crossrail · Delegate once. Enforced before the payment exists.</title>
+  <meta name="description" content="OP Crossrail is the buyer-side, multi-rail spend-enforcement layer: one signed portable credential (W3C VC), one cross-rail budget, enforcement before the payment exists. Open source: x402, L402, and Tether-WDK engines plus the shared core." />
+  <meta property="og:title" content="OP Crossrail" />
+  <meta property="og:description" content="Delegate once. Enforced before the payment exists. One signed credential, one cross-rail budget, enforced at every rail's own boundary." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://observerprotocol.org/crossrail" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a08; --bg2: #111110; --bg3: #1a1a18; --border: #2a2a26;
+      --amber: #f5a623; --amber-dim: #b8791a; --green: #4ade80; --green-dim: #166534;
+      --red: #f87171; --text: #e8e8e0; --text-dim: #888880; --text-faint: #444440;
+      --teal: #5eead4;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+    a { color: var(--amber); text-decoration: none; }
+    a:hover, a:focus-visible { text-decoration: underline; }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1rem 2.5rem; background: rgba(10,10,8,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--text); font-size: .95rem; }
+    .nav-links { display: flex; gap: 1.6rem; list-style: none; }
+    .nav-links a { color: var(--text-dim); font-size: .85rem; }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+    .nav-status { display: flex; align-items: center; gap: .5rem; font-family: 'IBM Plex Mono', monospace; font-size: .7rem; letter-spacing: .12em; color: var(--green); }
+    .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+    @media (prefers-reduced-motion: reduce) { .pulse { animation: none; } }
+
+    .wrap { max-width: 900px; margin: 0 auto; padding: 0 2.5rem; }
+    header.hero { padding: 9rem 0 4rem; border-bottom: 1px solid var(--border); background: radial-gradient(ellipse at 50% -20%, #f5a62311, transparent 60%); }
+    .kicker { font-family: 'IBM Plex Mono', monospace; font-size: .75rem; letter-spacing: .22em; color: var(--amber); margin-bottom: 1.2rem; }
+    h1 { font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.12; font-weight: 600; letter-spacing: -.02em; max-width: 21ch; text-wrap: balance; }
+    .hero-sub { margin-top: 1.4rem; font-size: 1.12rem; color: var(--text-dim); max-width: 62ch; }
+    .hero-sub strong { color: var(--text); font-weight: 500; }
+    .hero-ctas { margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: .85rem; padding: .7rem 1.3rem; border: 1px solid var(--amber-dim); color: var(--amber); }
+    .btn:hover { background: #f5a62315; text-decoration: none; }
+    .btn.solid { background: var(--amber); color: #0a0a08; font-weight: 600; }
+    .btn.solid:hover { background: #ffbe45; }
+
+    section { padding: 3.6rem 0; border-bottom: 1px solid var(--border); }
+    .section-label { font-family: 'IBM Plex Mono', monospace; font-size: .72rem; letter-spacing: .22em; color: var(--amber); text-transform: uppercase; margin-bottom: 1.1rem; }
+    h2 { font-size: 1.45rem; font-weight: 600; margin-bottom: 1rem; letter-spacing: -.01em; }
+    p { color: var(--text-dim); max-width: 72ch; margin-bottom: .9rem; }
+    p strong, li strong { color: var(--text); font-weight: 500; }
+
+    .engines { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.4rem 0; }
+    @media (max-width: 760px) { .engines { grid-template-columns: 1fr; } }
+    .engine { background: var(--bg2); border: 1px solid var(--border); padding: 1.1rem 1.2rem; }
+    .engine h3 { font-family: 'IBM Plex Mono', monospace; font-size: .95rem; color: var(--text); margin-bottom: .5rem; }
+    .engine .locus { font-family: 'IBM Plex Mono', monospace; font-size: .7rem; letter-spacing: .1em; color: var(--red); display: block; margin-bottom: .5rem; }
+    .engine p { font-size: .88rem; margin: 0; }
+    .core-line { font-size: .95rem; }
+
+    .installs { background: var(--bg2); border: 1px solid var(--border); padding: 1rem 1.2rem; font-family: 'IBM Plex Mono', monospace; font-size: .82rem; line-height: 1.9; color: var(--teal); overflow-x: auto; margin: 1.2rem 0; }
+    .installs .c { color: var(--text-faint); }
+
+    .terminal { background: #050505; border: 1px solid var(--border); padding: 1.2rem 1.4rem; font-family: 'IBM Plex Mono', monospace; font-size: .8rem; line-height: 1.75; overflow-x: auto; margin: 1.4rem 0; }
+    .terminal .dim { color: var(--text-faint); }
+    .terminal .row { white-space: pre; color: var(--text-dim); }
+    .terminal .ok { color: var(--green); font-weight: 600; }
+    .terminal .deny { color: var(--red); font-weight: 600; }
+    .tsep { border: 0; border-top: 1px dashed var(--border); margin: .7rem 0; }
+
+    .claim { border-left: 2px solid var(--amber); padding: .2rem 0 .2rem 1.2rem; margin: 1.6rem 0; font-size: 1.05rem; color: var(--text); max-width: 62ch; }
+    .planes { margin-top: 1.2rem; display: grid; gap: 0; border: 1px solid var(--border); }
+    .plane { display: grid; grid-template-columns: 220px 1fr; gap: 1rem; padding: 1rem 1.2rem; background: var(--bg2); }
+    .plane + .plane { border-top: 1px solid var(--border); }
+    @media (max-width: 700px) { .plane { grid-template-columns: 1fr; gap: .3rem; } }
+    .plane .pn { font-family: 'IBM Plex Mono', monospace; font-size: .8rem; color: var(--text); }
+    .plane .pn span { display: block; font-size: .68rem; letter-spacing: .12em; color: var(--amber); margin-top: .2rem; }
+    .plane p { font-size: .88rem; margin: 0; max-width: none; }
+
+    footer { padding: 2.4rem 0 3rem; }
+    .footer-inner { display: flex; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; font-size: .85rem; }
+    .footer-links { display: flex; gap: 1.4rem; flex-wrap: wrap; }
+    .footer-links a { color: var(--text-dim); }
+    .footer-bottom { color: var(--text-faint); font-family: 'IBM Plex Mono', monospace; font-size: .72rem; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="./architecture.html">Architecture</a></li>
+    <li><a href="./docs.html">Docs</a></li>
+    <li><a href="./agentic-terminal.html">Agentic Terminal</a></li>
+    <li><a href="./registry.html">Registry</a></li>
+  </ul>
+  <div class="nav-status"><div class="pulse"></div>OPEN SOURCE</div>
+</nav>
+
+<div class="wrap">
+
+<header class="hero">
+  <div class="kicker">OP CROSSRAIL</div>
+  <h1>Delegate once. Enforced before the payment exists.</h1>
+  <p class="hero-sub">One signed, portable credential (W3C VC). One cross-rail budget. <strong>Buyer-side spend enforcement at every rail's own boundary.</strong> The layer is the product; engines are its per-rail instances.</p>
+  <div class="hero-ctas">
+    <a class="btn solid" href="https://github.com/observer-protocol/x402-op-authorize/blob/main/demo/TRANSCRIPT.txt" target="_blank" rel="noopener">Read the transcript</a>
+    <a class="btn" href="/blog/op-crossrail/">Read the announcement</a>
+  </div>
+</header>
+
+<section>
+  <div class="section-label">Open source today</div>
+  <h2>Three engines and the shared core. MIT, on npm.</h2>
+  <div class="engines">
+    <div class="engine">
+      <h3>x402 · USDC on Base</h3>
+      <span class="locus">DENIAL AT THE KEY</span>
+      <p>No EIP-3009 signature ever exists. The deny is thrown inside the unmodified x402 client; nothing settles, the resource stays 402.</p>
+    </div>
+    <div class="engine">
+      <h3>L402 · Lightning</h3>
+      <span class="locus">DENIAL AT THE PRE-PAYMENT HOOK</span>
+      <p>The invoice is refused before payment, from the same shared budget as every other rail.</p>
+    </div>
+    <div class="engine">
+      <h3>WDK · USDT on TRON</h3>
+      <span class="locus">DENIAL INSIDE THE POLICY ENGINE</span>
+      <p>Runs on Tether's merged WDK policy hook (PR #55). The transfer is never invoked.</p>
+    </div>
+  </div>
+  <p class="core-line">The shared core carries one credential, one rolling budget, and one append-only decision log. A 245-case parity harness keeps every engine identical on verdicts.</p>
+  <div class="installs">
+    <span class="c"># the layer</span><br/>
+    npm install @observer-protocol/policy-engine<br/>
+    <span class="c"># the engines</span><br/>
+    npm install @observer-protocol/x402-op-authorize<br/>
+    npm install @observer-protocol/l402-op-authorize<br/>
+    npm install @observer-protocol/wdk-op-policy
+  </div>
+</section>
+
+<section>
+  <div class="section-label">The proof</div>
+  <h2>One mandate, three rails, denied on every rail.</h2>
+  <p>Committed transcript, 2026-07-03. One $5.00 rolling-24h mandate, signed once. Consumed across three rails, to exactly $5.00. Then the next attempt on each rail was refused from the same shared budget.</p>
+  <div class="terminal" role="img" aria-label="Transcript summary: three allowed payments across three rails, then three denials at three distinct enforcement points">
+    <div class="dim">$ one mandate · $5.00 / rolling 24h · one shared cross-rail budget</div>
+    <hr class="tsep" />
+    <div class="row"><span class="ok">ALLOW</span>  x402       $0.01 USDC via Cloudflare's unmodified x402-proxy-template</div>
+    <div class="row"><span class="ok">ALLOW</span>  Lightning  5,940-sat L402 invoice · same ledger</div>
+    <div class="row"><span class="ok">ALLOW</span>  TRON       2 USDT TRC-20 through the real WDK policy engine · same ledger</div>
+    <hr class="tsep" />
+    <div class="dim">budget consumed: 5.00 of 5.00 · next attempt on each rail:</div>
+    <div class="row"><span class="deny">DENY</span>   x402       at the key · ObserverDenyError inside the client · no signature exists · resource stays 402</div>
+    <div class="row"><span class="deny">DENY</span>   Lightning  at the pre-payment hook</div>
+    <div class="row"><span class="deny">DENY</span>   TRON       inside the policy engine · the transfer is never invoked</div>
+  </div>
+  <p>Verified against the production x402.org facilitator; settled on-chain on Base Sepolia (blocks 43667763-64); the buyer wallet holds zero ETH. Conversion rates are attested inside the signed credential (USDC=1, USDT=1, sat=0.0005): no oracle anywhere in the flow.</p>
+  <p class="claim">To our knowledge, the first open enforcement layer spanning both 402 lineages (x402, L402) plus wallet-SDK signers under one credential.</p>
+</section>
+
+<section>
+  <div class="section-label">Where it's going</div>
+  <p>Engines exist today for MPP/Tempo (<code>mppx-op-account</code>, public with its integration) and OWS (<a href="https://github.com/observer-protocol/ows-op-policy" target="_blank" rel="noopener">ows-op-policy</a>), and the enforcement pattern is demonstrated against Aqua's live policy hook (Bitcoin/Liquid); each joins Crossrail as its integration enters the public set. The Monetization Gateway's native cloudflare:402 scheme is a roadmap engine; we are waitlisted.</p>
+</section>
+
+<section style="border-bottom: none;">
+  <div class="section-label">Free to enforce, forever</div>
+  <div class="planes">
+    <div class="plane">
+      <div class="pn">Credential plane<span>OPEN</span></div>
+      <p>Portable identity and mandates: W3C DID/VC, ERC-8004. Yours on every rail, forever.</p>
+    </div>
+    <div class="plane">
+      <div class="pn">Enforcement plane<span>OP CROSSRAIL · FREE</span></div>
+      <p>MIT and structurally unmeterable. Every enforcement point is free by design.</p>
+    </div>
+    <div class="plane">
+      <div class="pn">Governance &amp; trust services<span>AGENTIC TERMINAL</span></div>
+      <p>Issuance, caps, revocation, audit, KYB, anchoring. <a href="./agentic-terminal.html">Open Agentic Terminal</a></p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="/blog/op-crossrail/">Announcement</a>
+      <a href="https://github.com/observer-protocol/x402-op-authorize" target="_blank" rel="noopener">x402-op-authorize ↗</a>
+      <a href="https://github.com/observer-protocol/l402-op-authorize" target="_blank" rel="noopener">l402-op-authorize ↗</a>
+      <a href="https://github.com/observer-protocol/wdk-op-policy" target="_blank" rel="noopener">wdk-op-policy ↗</a>
+      <a href="https://github.com/observer-protocol/op-policy-engine" target="_blank" rel="noopener">policy-engine ↗</a>
+    </div>
+    <div class="footer-bottom">Observer Protocol · verifiable, not asserted</div>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>
