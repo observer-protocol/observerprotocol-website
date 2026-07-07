@@ -1,5 +1,8 @@
 # Observer Protocol: Portable Verification Infrastructure for the AI Agent Economy
 
+> **Note (July 2026):** This whitepaper predates OP Crossrail (launched July 2026). Terminology has since been revised: receipts are now authorization proofs. For current framing see the launch post: https://observerprotocol.org/blog/op-crossrail.
+
+
 **Version 0.9 — Draft for Review**
 **March 2026**
 
