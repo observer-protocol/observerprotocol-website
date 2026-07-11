@@ -35,6 +35,12 @@
       "type": "Multikey",
       "controller": "did:web:observerprotocol.org",
       "publicKeyMultibase": "z6Mknzjokbt9zZKAGYofvjzPcPwazvVMFDhSmaqg1LSXeU3T"
+    },
+    {
+      "id": "did:web:observerprotocol.org#key-7",
+      "type": "Ed25519VerificationKey2020",
+      "controller": "did:web:observerprotocol.org",
+      "publicKeyMultibase": "z6Mkqt6mW5djbCCQeFQBgdu4P2xYYjZkNzy6zddVRYoz4jH6"
     }
   ],
   "authentication": [
@@ -44,6 +50,7 @@
     "did:web:observerprotocol.org#key-2",
     "did:web:observerprotocol.org#key-3",
     "did:web:observerprotocol.org#key-5",
-    "did:web:observerprotocol.org#key-6"
+    "did:web:observerprotocol.org#key-6",
+    "did:web:observerprotocol.org#key-7"
   ]
 }

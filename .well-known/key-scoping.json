@@ -1,7 +1,7 @@
 {
-  "scoping_version": 3,
+  "scoping_version": 4,
   "issuer": "did:web:observerprotocol.org",
-  "updated_at": "2026-06-21T00:00:00Z",
+  "updated_at": "2026-07-10T00:00:00Z",
   "description": "OP issuer key-scoping policy. Enumerates each key in the issuer DID document and the credential types each key is governance-authorised to sign. Informational only; the protocol does not enforce these constraints cryptographically. Verifiers MAY consume this document to detect mis-scoped issuance. See AIP v0.8 §3.4.",
   "keys": [
     {
@@ -62,6 +62,14 @@
         "BitstringStatusListCredential[merchant-trust]"
       ],
       "notes": "AT Directory merchant-trust issuance key. Used at build time to sign MerchantTrustCredentials and the merchant-trust BitstringStatusListCredential. Type Multikey (eddsa-jcs-2022 proof suite). Private key held in ~/.at-keys/merchant-vc-key-6.hex on the build machine (mode 600). Not held on the API server — signing is a deliberate build-time action. Rotate on directory rebuild if compromised."
+    },
+    {
+      "id": "did:web:observerprotocol.org#key-7",
+      "status": "active",
+      "custody": "on_server",
+      "activated_at": "2026-07-10T00:00:00Z",
+      "scoped_to_issuance_of": ["HostedVerificationResponse"],
+      "notes": "Scoped signing key for op-verify-service response proofs only (the #key-3 pattern applied to the hosted verification surface at verify.observerprotocol.org). Signs verification RESPONSES, never credentials. Generated on-server and confined to the op-verify service user in its own /etc/op-verify directory; the verify service reads no other key, and no other service can read this one (fenced by user ownership). The service performs the same boot-time fail-closed check as #key-5: it refuses to start unless this fragment is assertionMethod-listed AND its key derives to this publicKeyMultibase. Rotate independently if verify.observerprotocol.org is compromised — a service-level compromise yields this key only."
     }
   ]
 }
