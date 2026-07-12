@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OP Enforcement · Denied at the Key</title>
+  <meta name="description" content="Watch an over-budget x402 payment refused at the key, inside the unmodified x402 client, before the EIP-3009 authorization is signed. A real recorded verdict from the production Observer Protocol run, not a mock." />
+  <meta property="og:title" content="OP Enforcement · Denied at the Key" />
+  <meta property="og:description" content="An over-budget x402 USDC payment refused at the key, before the EIP-3009 signature. No signature exists, nothing settles. Real recorded production verdict." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://observerprotocol.org/enforcement" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a08; --bg2: #111110; --bg3: #1a1a18; --border: #2a2a26;
+      --amber: #f5a623; --amber-dim: #b8791a; --amber-soft: #f5a62318;
+      --green: #4ade80; --red: #f87171; --hot: #ff7a59;
+      --text: #e8e8e0; --text-dim: #888880; --text-faint: #444440;
+      --mono: 'IBM Plex Mono', ui-monospace, monospace;
+      --sans: 'IBM Plex Sans', -apple-system, system-ui, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+    a { color: var(--amber); text-decoration: none; }
+    a:hover, a:focus-visible { text-decoration: underline; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1rem 2.5rem; background: rgba(10,10,8,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: var(--mono); font-weight: 600; color: var(--text); font-size: .95rem; }
+    .nav-links { display: flex; gap: 1.6rem; list-style: none; }
+    .nav-links a { color: var(--text-dim); font-size: .85rem; }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+    .nav-status { display: flex; align-items: center; gap: .5rem; font-family: var(--mono); font-size: .7rem; letter-spacing: .12em; color: var(--green); }
+    .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+    @media (max-width: 640px) { nav { padding: .9rem 1.25rem; } .nav-links { display: none; } }
+
+    .wrap { max-width: 760px; margin: 0 auto; padding: 0 1.5rem; }
+    .stage { padding: 8rem 0 4rem; display: flex; flex-direction: column; gap: 2rem; }
+
+    .eyebrow { font-family: var(--mono); font-size: .72rem; letter-spacing: .22em; text-transform: uppercase; color: var(--amber); }
+    h1 { font-family: var(--mono); font-weight: 600; text-wrap: balance; font-size: clamp(1.7rem, 4.8vw, 2.5rem); line-height: 1.12; letter-spacing: -.01em; }
+    .lede { max-width: 60ch; color: var(--text-dim); font-size: 1.05rem; }
+    .lede strong { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
+
+    .console { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; background: linear-gradient(180deg, var(--bg3), var(--bg2)); box-shadow: 0 24px 70px -30px #000; }
+    .console-bar { display: flex; align-items: center; gap: .6rem; padding: .7rem 1rem; border-bottom: 1px solid var(--border); background: #ffffff05; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--amber); }
+    .running .dot { animation: dotpulse 1.4s ease-out infinite; }
+    @keyframes dotpulse { 0% { box-shadow: 0 0 0 0 var(--amber-soft); } 70% { box-shadow: 0 0 0 9px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+    .console-title { font-family: var(--mono); font-size: .78rem; color: var(--text-dim); flex: 1; }
+    .console-tag { font-family: var(--mono); font-size: .64rem; letter-spacing: .16em; text-transform: uppercase; padding: .2rem .5rem; border-radius: 999px; border: 1px solid var(--border); color: var(--text-faint); }
+    .console-tag[data-state="running"] { color: var(--amber); border-color: var(--amber); }
+    .console-tag[data-state="denied"] { color: var(--amber); border-color: var(--amber); background: var(--amber-soft); }
+
+    .tape { padding: .5rem 1rem 1rem; display: flex; flex-direction: column; }
+    .step { display: grid; grid-template-columns: 5.5rem 1fr; gap: .5rem .9rem; padding: .85rem 0; border-top: 1px dashed var(--border); }
+    .step:first-child { border-top: none; }
+    .step[data-step="4"], .step[data-step="5"] { grid-template-columns: 1fr; }
+    .gutter { font-family: var(--mono); font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint); padding-top: .15rem; }
+    .gutter.req { color: var(--text-dim); }
+    .gutter.ok { color: var(--green); }
+    .line { font-size: .95rem; }
+    .line.mono, .mono { font-family: var(--mono); }
+    .line.small { font-size: .8rem; }
+    .throw-note { margin: 0 0 .6rem; }
+    .dim { color: var(--text-faint); }
+    .k { color: var(--text); }
+    .num { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--text); }
+    .num.hot { color: var(--hot); font-weight: 600; }
+
+    .js .step { opacity: 0; transform: translateY(6px); }
+    .js .step.show { opacity: 1; transform: none; transition: opacity .45s ease, transform .45s ease; }
+
+    .verdict { background: var(--amber-soft); border: 1px solid var(--amber); border-radius: 10px; padding: .9rem 1rem; margin: .4rem 0; }
+    .verdict-head { display: flex; align-items: baseline; gap: .8rem; margin-bottom: .5rem; flex-wrap: wrap; }
+    .verdict-code { font-family: var(--mono); font-size: .8rem; color: var(--text-dim); }
+    .verdict-word { font-family: var(--mono); font-weight: 700; letter-spacing: .16em; font-size: 1.02rem; color: var(--amber); }
+    .js .verdict.show .verdict-word { animation: stamp .5s cubic-bezier(.2,1.4,.3,1) both; }
+    @keyframes stamp { 0% { transform: scale(1.5); opacity: 0; } 60% { opacity: 1; } 100% { transform: scale(1); } }
+    .json { margin: 0; font-family: var(--mono); font-size: .76rem; line-height: 1.55; color: var(--text-dim); white-space: pre-wrap; word-break: break-word; overflow-x: auto; }
+    .json .key { color: var(--text); }
+    .json .str { color: var(--amber); }
+    .json .num { color: var(--green); }
+    .json .p { color: var(--text-faint); }
+
+    .safe .line { color: var(--text); font-size: .95rem; }
+    .safe .line strong { color: var(--green); }
+
+    .controls { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; padding: .9rem 1rem 1.1rem; border-top: 1px solid var(--border); background: #ffffff04; }
+    #replay { font-family: var(--mono); font-size: .76rem; letter-spacing: .04em; color: var(--bg); background: var(--amber); border: none; padding: .5rem 1rem; border-radius: 8px; cursor: pointer; transition: filter .15s ease, transform .1s ease; }
+    #replay:hover { filter: brightness(1.08); }
+    #replay:active { transform: translateY(1px); }
+    #replay:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+    .provenance { font-size: .76rem; color: var(--text-faint); flex: 1; min-width: 15rem; }
+
+    .closing { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem; font-family: var(--mono); font-size: .82rem; color: var(--text-dim); padding-top: .5rem; }
+    .closing .cta { color: var(--amber); border-bottom: 1px solid transparent; }
+    .closing .cta:hover { border-bottom-color: var(--amber); text-decoration: none; }
+
+    footer { border-top: 1px solid var(--border); padding: 2.5rem 0; }
+    .footer-inner { max-width: 760px; margin: 0 auto; padding: 0 1.5rem; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 1.2rem; margin-bottom: 1rem; }
+    .footer-links a { font-family: var(--mono); font-size: .8rem; color: var(--text-dim); }
+    .footer-bottom { font-family: var(--mono); font-size: .75rem; color: var(--text-faint); letter-spacing: .04em; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .js .step { opacity: 1; transform: none; transition: none; }
+      .pulse, .running .dot { animation: none; }
+      .js .verdict.show .verdict-word { animation: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="./crossrail">Crossrail</a></li>
+    <li><a href="./hermes-agents.html">Hermes Agents</a></li>
+    <li><a href="./architecture.html">Architecture</a></li>
+    <li><a href="./docs.html">Docs</a></li>
+  </ul>
+  <div class="nav-status"><div class="pulse"></div>OPEN SOURCE</div>
+</nav>
+
+<main class="wrap">
+  <div class="stage" aria-label="Observer Protocol enforcement demonstration">
+    <header>
+      <span class="eyebrow">Observer Protocol &middot; x402 enforcement</span>
+      <h1>The signature is never created. The payment never exists.</h1>
+      <p class="lede">
+        An agent holds one mandate its owner signed once: a <strong>$5.00</strong> rolling-24h
+        budget, shared across x402, Lightning, and TRON. The budget is already spent. The agent
+        tries one more <strong>$0.01</strong> USDC payment on Base. Watch Observer Protocol refuse
+        it inside the unmodified x402 client, before the EIP-3009 authorization is ever signed.
+      </p>
+    </header>
+
+    <section class="console" aria-label="Enforcement transcript">
+      <div class="console-bar">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="console-title">x402-op-authorize &middot; withX402Client</span>
+        <span class="console-tag" id="statusTag" data-state="idle">standby</span>
+      </div>
+
+      <div class="tape" id="tape">
+        <div class="step" data-step="1">
+          <span class="gutter">mandate</span>
+          <div class="line"><span class="k">signed once</span> &middot; $5.00 rolling-24h budget, shared across x402 / Lightning / TRON</div>
+          <div class="line small dim">buyer wallet holds <span class="num">0</span> ETH &middot; EIP-3009 payer-gasless on Base Sepolia</div>
+        </div>
+
+        <div class="step" data-step="2">
+          <span class="gutter">ledger</span>
+          <div class="line">prior spend has reached the full <span class="num">$5.00</span> of the budget</div>
+        </div>
+
+        <div class="step" data-step="3">
+          <span class="gutter req">x402</span>
+          <div class="line">agent proposes one more <span class="num hot">$0.01</span> USDC payment through the unmodified x402 client</div>
+          <div class="line small dim">the client calls the Observer-wrapped signer to produce the EIP-3009 authorization</div>
+        </div>
+
+        <div class="step verdict" data-step="4">
+          <div class="verdict-head">
+            <span class="verdict-code">ObserverDenyError</span>
+            <span class="verdict-word">DENIED AT THE KEY</span>
+          </div>
+          <p class="line small dim throw-note">thrown inside the x402 client, before the EIP-3009 authorization is signed</p>
+          <pre class="json" aria-label="Verbatim recorded decision"><span class="p">{</span>
+  <span class="key">"kind"</span>: <span class="str">"x402-payment"</span>,
+  <span class="key">"decision"</span>: <span class="str">"deny"</span>,
+  <span class="key">"reason"</span>: <span class="str">"[cross-rail] projected rolling-24h cross-rail spend
+            5.01 USD exceeds the budget 5 USD (this payment:
+            0.01 USD as USDC at the principal-attested rate 1)"</span>,
+  <span class="key">"chain_id"</span>: <span class="str">"eip155:84532"</span>,
+  <span class="key">"asset"</span>: <span class="str">"0x036cbd53842c5426634e7929541ec2318f3dcf7e"</span>,
+  <span class="key">"amount"</span>: <span class="str">"10000"</span>,
+  <span class="key">"recipient"</span>: <span class="str">"0x0000000000000000000000000000000000&hellip;dEaD"</span>
+<span class="p">}</span></pre>
+        </div>
+
+        <div class="step safe" data-step="5">
+          <span class="gutter ok">held</span>
+          <div class="line">
+            No EIP-3009 signature exists, so <strong>nothing settled and the resource is still 402</strong>.
+            The deny was thrown at the key, before the payment could come into existence. No funds moved,
+            and there was no signed authorization to undo.
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="replay" type="button">Replay</button>
+        <span class="provenance">
+          Recorded from take 5 of the OP Crossrail run against the production x402.org facilitator,
+          on-chain Base Sepolia settlement, committed 2026-07-06. The decision above is the real
+          <span class="mono">ObserverDenyError</span> record from <span class="mono">x402-op-authorize</span>, not a mock or a diagram.
+        </span>
+      </div>
+    </section>
+
+    <div class="closing">
+      <span>Delegate once. Enforced before the payment exists.</span>
+      <a class="cta" href="/crossrail">See the three-rail proof &rarr;</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="/crossrail">Crossrail</a>
+      <a href="https://github.com/observer-protocol/x402-op-authorize" target="_blank" rel="noopener">x402-op-authorize &#8599;</a>
+      <a href="https://github.com/observer-protocol/l402-op-authorize" target="_blank" rel="noopener">l402-op-authorize &#8599;</a>
+      <a href="https://github.com/observer-protocol/wdk-op-policy" target="_blank" rel="noopener">wdk-op-policy &#8599;</a>
+      <a href="https://github.com/observer-protocol/op-policy-engine" target="_blank" rel="noopener">policy-engine &#8599;</a>
+    </div>
+    <div class="footer-bottom">Observer Protocol &middot; verifiable, not asserted</div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    root.classList.add("js");
+    var steps = Array.prototype.slice.call(document.querySelectorAll(".step"));
+    var tag = document.getElementById("statusTag");
+    var consoleEl = document.querySelector(".console");
+    var replay = document.getElementById("replay");
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var timers = [];
+
+    function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+    function setTag(state, label) { tag.setAttribute("data-state", state); tag.textContent = label; }
+
+    function run() {
+      clearTimers();
+      steps.forEach(function (s) { s.classList.remove("show"); });
+      consoleEl.classList.add("running");
+      setTag("running", "evaluating");
+
+      if (reduce) {
+        steps.forEach(function (s) { s.classList.add("show"); });
+        consoleEl.classList.remove("running");
+        setTag("denied", "denied");
+        return;
+      }
+
+      var delays = [150, 1050, 1900, 2850, 3750];
+      steps.forEach(function (s, i) {
+        timers.push(setTimeout(function () {
+          s.classList.add("show");
+          if (s.classList.contains("verdict")) { consoleEl.classList.remove("running"); setTag("denied", "denied"); }
+        }, delays[i]));
+      });
+    }
+
+    replay.addEventListener("click", run);
+    run();
+  })();
+</script>
+
+</body>
+</html>
