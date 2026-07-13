@@ -1,6 +1,14 @@
 # Observer Protocol: Portable Verification Infrastructure for the AI Agent Economy
 
-> **Note (July 2026):** This whitepaper predates OP Crossrail (launched July 2026). Terminology has since been revised: receipts are now authorization proofs. For current framing see the launch post: https://observerprotocol.org/blog/op-crossrail.
+> **ARCHIVED — RETIRED DOCUMENT (retired 2026-07-13).** This whitepaper is no
+> longer maintained and is preserved unchanged at its original date for
+> reference only. It is stale and, in places, inaccurate against the shipped
+> system. A whitepaper carries roadmap and point-in-time specifics that go stale
+> constantly, so it is the wrong artifact to maintain: the durable direction
+> lives on the site (https://observerprotocol.org) and the ground truth lives in
+> the public repositories (https://github.com/observer-protocol). This document
+> is superseded by both. Do not cite it as current. It has been unlinked from
+> our surfaces and de-indexed intentionally.
 
 
 **Version 0.9 — Draft for Review**

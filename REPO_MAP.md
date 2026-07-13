@@ -10,7 +10,7 @@ This repository contains the **public-facing website and schema publishing layer
 - **Canonical schemas** (`schemas/`) — **COPIED FROM** `observer-protocol/schemas/`, served at observerprotocol.org/schemas/*
 - **Test issuer DIDs** (`test-issuers/`) — DID documents for E2E testing (e.g., `did:web:observerprotocol.org:test-issuers:kyb-test-1`)
 - **Netlify configuration** (`netlify.toml`) — Redirects, headers, deployment settings
-- **Architecture papers** (`papers/`, `whitepaper.md`) — Published research and specifications
+- **Architecture papers** (`papers/`) — Published research and specifications. (`whitepaper.md` / `whitepaper.docx` are RETIRED as of 2026-07-13: archived-in-place, unlinked, de-indexed — superseded by the site and the public repos. Not maintained.)
 - **Registry page** (`registry.html`) — Public agent registry listing
 - **OWS demo assets** (`ows/`) — OWS (Open Wallet Standard) demo materials
 - **Shared styles** (`shared-styles.css`) — CSS used across all pages

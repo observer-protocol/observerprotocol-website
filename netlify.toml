@@ -69,6 +69,17 @@
     Access-Control-Allow-Origin = "*"
     Cache-Control = "public, max-age=300"
 
+# Retired whitepaper (2026-07-13): kept reachable as a dated archived doc but
+# de-indexed so search engines drop it. Unlinked from all site surfaces.
+[[headers]]
+  for = "/whitepaper.md"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+[[headers]]
+  for = "/whitepaper.docx"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
 [[headers]]
   for = "/*"
   [headers.values]
