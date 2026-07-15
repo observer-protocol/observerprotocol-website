@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://observerprotocol.org/schemas/delegation/v2.4.json",
   "title": "Observer Protocol Delegation Credential v2.4",
-  "description": "v2.4 extends v2.1/v2.3: ADDS the spending-delegation container (credentialSubject.delegation.scope.spending_limits.per_rail, closed shape) so one credential carries both the structural envelope the verifier requires AND the per-rail/per-asset limits the hosted engine reads. authorizationLevel/authorizationConfig no longer forced on shapes that omit them (the allOf if-branches now require authorizationLevel to be PRESENT before firing). New URL; v2.3 frozen. Does NOT relax the envelope.",
+  "description": "v2.4 extends v2.1/v2.3: ADDS the spending-delegation container (credentialSubject.delegation.scope.spending_limits.per_rail, closed shape) so one credential carries both the structural envelope the verifier requires AND the per-rail/per-asset limits the hosted engine reads. authorizationLevel/authorizationConfig no longer forced on shapes that omit them (the allOf if-branches now require authorizationLevel to be PRESENT before firing). CORRECTS the proof block to describe the issued suite (DataIntegrityProof / eddsa-jcs-2022, base58btc multibase proofValue); the legacy Ed25519Signature2020/2026 proof shape was inherited from v2.1/v2.3 unexamined and is fixed here. New URL; v2.3 frozen. Does NOT relax the envelope.",
   "type": "object",
   "required": [
     "@context",
@@ -933,8 +933,10 @@
     },
     "proof": {
       "type": "object",
+      "description": "W3C VC Data Integrity proof describing the suite OP actually issues since the 2026-06-05 migration: DataIntegrityProof with cryptosuite eddsa-jcs-2022, proofValue as base58btc multibase (z-prefixed). The v2.1/v2.3 lineage carried the legacy Ed25519Signature2020/2026 proof shape unexamined; that suite is rejected by the OP verifier and is corrected here. proof is left open (no additionalProperties:false) to admit standard DI proof options (e.g. expires, domain).",
       "required": [
         "type",
+        "cryptosuite",
         "created",
         "verificationMethod",
         "proofPurpose",
@@ -942,7 +944,10 @@
       ],
       "properties": {
         "type": {
-          "const": "Ed25519Signature2026"
+          "const": "DataIntegrityProof"
+        },
+        "cryptosuite": {
+          "const": "eddsa-jcs-2022"
         },
         "created": {
           "type": "string",
@@ -957,7 +962,7 @@
         },
         "proofValue": {
           "type": "string",
-          "pattern": "^[1-9A-HJ-NP-Za-km-z]+$"
+          "pattern": "^z[1-9A-HJ-NP-Za-km-z]+$"
         }
       }
     }
