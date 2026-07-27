@@ -653,7 +653,7 @@
         Your browser does not support inline video playback.
         <a href="./free-your-agent-4-aqua-beats.mov">Download the recording</a>.
       </video>
-      <figcaption>The two terminal beats · in-policy ALLOW followed by over-cap DENY, captured end-to-end from Aqua's policy hook.</figcaption>
+      <figcaption>The two terminal beats · in-policy ALLOW followed by over-cap DENY, captured end-to-end from the policy hook in an instrumented Aqua build. The hook is not in shipped Aqua, and only the Liquid path is hooked.</figcaption>
     </figure>
 
     <p>
@@ -673,7 +673,7 @@
       end to end. The wallet posts the canonical transaction bytes, the engine
       evaluates against Maxi's mandate, signs a
       <code class="inline">PolicyEvaluationCredential</code> with the protocol's
-      mainnet key, and returns. Aqua then signs the transaction and broadcasts.
+      published key, and returns. Aqua then signs the transaction and broadcasts.
     </p>
     <p>The transaction settles on Liquid's public testnet, visible on Blockstream's explorer:</p>
 
@@ -700,7 +700,8 @@
       The denial carries a structured
       <code class="inline">ruleType: "spendingLimits"</code>,
       <code class="inline">ruleField: "per_transaction.max_amount"</code>, with
-      the proposed and allowed values both legible in the credential. Aqua's hook
+      the proposed and allowed values both legible in the credential. The
+      instrumented build's hook
       raises <code class="inline">PolicyDenied</code> <em>before</em> invoking
       the signer. No transaction is constructed for broadcast; no key material
       is touched. The signed denial is the entire artifact: a positive
@@ -712,7 +713,7 @@
       <em>enforcement</em>. The framework describes what should be allowed. The
       enforcement refuses to proceed without a
       signed permit, returned in real time from an open public endpoint,
-      verifiable against published mainnet identities.
+      verifiable against published did:web identities.
     </p>
 
     <div class="beat-heading">
@@ -753,16 +754,16 @@
   <section>
     <h2>What this proves</h2>
     <p>
-      This demo isn't a mock. It isn't a video edit. It is signed mainnet
-      artifacts running through a live policy engine, gating a live
-      Bitcoin-aligned wallet, with every signature reproducible from public DIDs
-      and every transaction visible on public explorers.
+      This demo isn't a mock. It isn't a video edit. It is signed artifacts
+      running through a live policy engine, gating a live Bitcoin-aligned
+      wallet on Liquid testnet, with every signature reproducible from public
+      DIDs and every transaction visible on public explorers.
     </p>
     <p>The trust layer the agentic economy needs is not a roadmap. It is shipped, running, and open.</p>
     <div class="proves-grid">
       <div class="proves-row">
         <div class="proves-row-name">Observer Protocol</div>
-        <div class="proves-row-detail">Open W3C-VC trust infrastructure with mainnet DIDs and a public policy engine.</div>
+        <div class="proves-row-detail">Open W3C-VC trust infrastructure with published did:web identities and a public policy engine.</div>
       </div>
       <div class="proves-row">
         <div class="proves-row-name">Sovereign / Agentic Terminal</div>
