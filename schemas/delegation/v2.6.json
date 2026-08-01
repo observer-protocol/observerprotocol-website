@@ -1,0 +1,2248 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://observerprotocol.org/schemas/delegation/v2.6.json",
+  "title": "Observer Protocol Delegation Credential v2.6",
+  "description": "AIP v0.8 draft-2 \u2014 ObserverDelegationCredential. Introduces the criticality split (actionScope critical by construction, advisoryScope advisory by membership), the requiredEnforcement capability gate, and per-field unavailable-input semantics. x-opUnavailableInput is a schema annotation, not a credential property: it states what a conforming evaluator that DOES implement the field does when the input it needs is missing.",
+  "type": "object",
+  "required": [
+    "@context",
+    "id",
+    "type",
+    "issuer",
+    "validFrom",
+    "validUntil",
+    "credentialSubject",
+    "credentialSchema",
+    "proof",
+    "credentialStatus"
+  ],
+  "properties": {
+    "@context": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      },
+      "contains": {
+        "enum": [
+          "https://www.w3.org/ns/credentials/v2"
+        ]
+      }
+    },
+    "id": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://|^urn:uuid:"
+    },
+    "type": {
+      "type": "array",
+      "minItems": 2,
+      "contains": {
+        "const": "VerifiableCredential"
+      }
+    },
+    "issuer": {
+      "type": "string",
+      "pattern": "^did:[a-z]+:.+"
+    },
+    "validFrom": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "validUntil": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "credentialSubject": {
+      "type": "object",
+      "required": [
+        "id",
+        "actionScope",
+        "delegationScope",
+        "enforcementMode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^did:[a-z]+:.+"
+        },
+        "authorizationLevel": {
+          "type": "string",
+          "enum": [
+            "one-time",
+            "recurring",
+            "policy"
+          ],
+          "description": "Authorization scope granted by the principal. Level 1 (one-time) authorizes a single transaction. Level 2 (recurring) authorizes repeat transactions with one counterparty up to a ceiling. Level 3 (policy) references a broader standing policy."
+        },
+        "authorizationConfig": {
+          "type": "object",
+          "description": "Level-specific configuration. Exactly one of oneTime, recurring, or policy must be present, matching authorizationLevel. Enforced via if/then at the credentialSubject level.",
+          "properties": {
+            "oneTime": {
+              "type": "object",
+              "description": "Level 1: single-transaction authorization. The credential is consumed after one successful settlement.",
+              "properties": {
+                "counterparty_did": {
+                  "type": "string",
+                  "pattern": "^did:",
+                  "description": "DID of the specific counterparty for this transaction"
+                },
+                "amount": {
+                  "type": "string",
+                  "description": "Exact transaction amount (e.g. '50.00')"
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "ISO-4217 currency or asset code (e.g. 'USD', 'USDT')"
+                },
+                "rail": {
+                  "type": "string",
+                  "description": "Settlement rail for this transaction (e.g. 'usdt-trc20', 'lightning')"
+                },
+                "execution_deadline": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "Credential expires if not used by this time. Short window (e.g. 15 minutes)."
+                },
+                "purchase_description": {
+                  "type": "string",
+                  "description": "Human-readable description of what is being purchased"
+                }
+              },
+              "required": [
+                "counterparty_did",
+                "amount",
+                "currency",
+                "rail"
+              ]
+            },
+            "recurring": {
+              "type": "object",
+              "description": "Level 2: counterparty-scoped recurring authorization. Authorizes future transactions with one specific counterparty up to a ceiling per period.",
+              "properties": {
+                "counterparty_did": {
+                  "type": "string",
+                  "pattern": "^did:",
+                  "description": "DID of the specific counterparty"
+                },
+                "ceiling_amount": {
+                  "type": "string",
+                  "description": "Maximum aggregate spend per period (e.g. '500.00')"
+                },
+                "ceiling_currency": {
+                  "type": "string",
+                  "description": "ISO-4217 currency for ceiling"
+                },
+                "per_transaction_max": {
+                  "type": "string",
+                  "description": "Optional per-transaction cap within the ceiling"
+                },
+                "period": {
+                  "type": "string",
+                  "description": "ISO-8601 duration for ceiling reset (e.g. 'P30D' for monthly)"
+                },
+                "valid_until": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "When this recurring authorization expires entirely"
+                },
+                "allowed_rails": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Rails permitted for recurring transactions with this counterparty"
+                }
+              },
+              "required": [
+                "counterparty_did",
+                "ceiling_amount",
+                "ceiling_currency",
+                "period"
+              ]
+            },
+            "policy": {
+              "type": "object",
+              "description": "Level 3: broader standing policy. The policy_id references an internal policy document stored in Sovereign. Counterparties see only the policy_id and the external credential fields \u2014 never the full policy logic.",
+              "properties": {
+                "policy_id": {
+                  "type": "string",
+                  "description": "Reference to the internal policy document in Sovereign"
+                },
+                "rail_preference": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "description": "Priority-ordered rail preference list. First match against counterparty's accepted rails wins. E.g. ['usdt-trc20', 'lightning'] means prefer USDT, fall back to Lightning."
+                },
+                "per_rail_caps": {
+                  "type": "object",
+                  "description": "Per-rail spending caps. Keys are rail identifiers.",
+                  "additionalProperties": {
+                    "type": "object",
+                    "properties": {
+                      "per_transaction": {
+                        "type": "string",
+                        "description": "Max per single transaction on this rail"
+                      },
+                      "aggregate": {
+                        "type": "string",
+                        "description": "Max aggregate spend on this rail per period"
+                      },
+                      "period": {
+                        "type": "string",
+                        "description": "ISO-8601 duration for aggregate reset"
+                      },
+                      "currency": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "escalation_threshold": {
+                  "type": "object",
+                  "description": "Transactions above this amount trigger human notification before execution",
+                  "properties": {
+                    "amount": {
+                      "type": "string"
+                    },
+                    "currency": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "fallback_rules": {
+                  "type": "array",
+                  "description": "Conditional rail selection rules evaluated in order",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "condition": {
+                        "type": "string",
+                        "description": "Condition expression (e.g. 'usdt_balance < amount')"
+                      },
+                      "then_rail": {
+                        "type": "string",
+                        "description": "Rail to use if condition is true"
+                      }
+                    },
+                    "required": [
+                      "condition",
+                      "then_rail"
+                    ]
+                  }
+                },
+                "time_windows": {
+                  "type": "object",
+                  "description": "Aggregate caps per time window across all counterparties",
+                  "properties": {
+                    "daily": {
+                      "type": "object",
+                      "properties": {
+                        "amount": {
+                          "type": "string"
+                        },
+                        "currency": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "weekly": {
+                      "type": "object",
+                      "properties": {
+                        "amount": {
+                          "type": "string"
+                        },
+                        "currency": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "monthly": {
+                      "type": "object",
+                      "properties": {
+                        "amount": {
+                          "type": "string"
+                        },
+                        "currency": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "required": [
+                "policy_id",
+                "rail_preference"
+              ]
+            }
+          }
+        },
+        "actionScope": {
+          "type": "object",
+          "description": "Spending-mandate surface. See aip-v0.8-draft-1.md \u00a71.1\u2013\u00a71.3. Closed shape: additionalProperties is false; new fields require a numbered-draft schema update.",
+          "properties": {
+            "allowed_rails": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Binding. Proposed action's rail MUST be in this list.",
+              "x-opUnavailableInput": "deny"
+            },
+            "per_transaction_ceiling": {
+              "type": "object",
+              "description": "Binding. Per-action amount ceiling, same-currency comparison only \u2014 no FX. See \u00a71.2 and \u00a73.2. DIRECTION NOTE: on an OUTBOUND payment this protects the principal from overspending. On a COLLECTION it limits how much may be taken from a payer, which protects the party this mandate does not represent. Same field, and an operator reading it on an inbound mandate will read it as protecting them and it does the opposite.",
+              "properties": {
+                "amount": {
+                  "type": "string",
+                  "description": "Decimal amount as string."
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "ISO 4217 code, token symbol, or rail-native unit."
+                }
+              },
+              "required": [
+                "amount",
+                "currency"
+              ],
+              "additionalProperties": false,
+              "x-opUnavailableInput": "deny"
+            },
+            "allowed_transaction_categories": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Binding. Proposed transaction-category MUST be in this list.",
+              "x-opUnavailableInput": "deny"
+            },
+            "cumulative_budget": {
+              "type": "object",
+              "description": "Total spend cap over the delegation's life. CRITICAL as of draft-2: v0.8 draft-1 called this advisory because no evaluator implemented period accounting, which made a declared spending cap silently do nothing. An evaluator that cannot declare budget.period-accounting MUST refuse the credential rather than ignore the cap.",
+              "properties": {
+                "amount": {
+                  "type": "string",
+                  "description": "Decimal amount as string."
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "Must match per_transaction_ceiling.currency for advisory accumulation; cross-currency prior spends reported as uncountable."
+                },
+                "window": {
+                  "type": "string",
+                  "enum": [
+                    "credential_validity"
+                  ],
+                  "description": "v0.8 locks this to the credential's validFrom\u2192validUntil envelope. Rolling-/calendar-window semantics are reserved for a future draft."
+                }
+              },
+              "required": [
+                "amount",
+                "currency",
+                "window"
+              ],
+              "additionalProperties": false,
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "budget.period-accounting"
+            },
+            "counterpartyVelocityCap": {
+              "type": "object",
+              "description": "Binding. Cumulative spend to ONE counterparty within a rolling window. CRITICAL: an evaluator that cannot attribute prior spend to a counterparty MUST refuse the credential rather than ignore the cap, on the same reasoning as cumulative_budget. Exists because per_transaction_ceiling is a control on the shape of a transaction and not on the size of an obligation: a ceiling of 25 does not stop an obligation of 100 being settled as four payments of 25, every one of which the mandate permits. Demonstrated behaviour, not a hypothetical \u2014 an agent given a 100 invoice under a ceiling of 25 split it into four and correctly reported that each payment was within the mandate. The gap is not rail-specific: max 2000 per booking does not stop four 500 legs, and max 200 per refund does not stop four 50 credits to one customer. Same-currency comparison only, no FX, per \u00a71.2. Note the limit of this field: it approximates obligation identity by counterparty aggregation, which over-restricts a payee legitimately paid several times in a window and under-restricts an obligation split across payees. Obligation identity supplied by the payee is the stronger control and is deferred, because it requires the payee to participate.",
+              "properties": {
+                "amount": {
+                  "type": "string",
+                  "description": "Decimal amount as string."
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "ISO 4217 code, token symbol, or rail-native unit. Same-currency comparison only; a prior spend in another currency is reported as uncountable rather than converted."
+                },
+                "window": {
+                  "type": "string",
+                  "pattern": "^P(?:\\d+D|T\\d+H)$",
+                  "description": "ISO-8601 duration, rolling backwards from the proposed action. Constrained to whole days or hours: finer granularity invites clock-skew disputes across hosts, and longer windows belong in cumulative_budget. A parameterised capability matches only its exact parameter, so an evaluator declaring velocity.counterparty:P1D does not satisfy a credential requiring P7D."
+                },
+                "matchOn": {
+                  "type": "string",
+                  "enum": [
+                    "mandate-identifier"
+                  ],
+                  "description": "Which identifier prior spend is aggregated by. Locked to the identifier the MANDATE matched, never the rail's own name for the same party: on a card those are different strings, and aggregating by the rail's version would leave the ledger holding something the mandate cannot read back. A future value for payee-supplied obligation identity is reserved rather than assumed. CONSEQUENCE, STATED RATHER THAN LEFT TO BE DISCOVERED: if an adapter cannot resolve a rail's payee identity back to the identifier the mandate uses, prior spend cannot be attributed, the cap cannot be evaluated, and x-opUnavailableInput fires. That denies THE PAYMENT and not merely the aggregation, so an unmapped counterparty makes this mandate unusable for that payee until the mapping exists. This is the intended direction: a cumulative cap that silently stops applying to counterparties the adapter cannot name is a cap that the least identifiable counterparties escape. CROSS-REFERENCE: obligationUniqueness reserves the same payee-supplied identity from the other direction, as the non-forgeable version of an agent-supplied obligation reference. Whichever is built first should satisfy both rather than each acquiring its own mechanism."
+                },
+                "responseMode": {
+                  "type": "string",
+                  "enum": [
+                    "deny",
+                    "report-and-proceed",
+                    "report-and-hold"
+                  ],
+                  "default": "deny",
+                  "description": "What happens when the cap is crossed, DECLARED rather than inferred from the field's presence.\n\nA budget cap denies. An AML reporting threshold reports. Same mechanism, opposite response, and getting it wrong is bad in both directions: denying a collection because it crossed a reporting threshold is not what anyone wants, and reporting a budget breach without denying it is the advisory posture this protocol exists to replace.\n\n`report-and-hold` is the third value because a threshold that holds pending review is the shape a compliance function actually wants, and it routes to awaiting: operator-compliance, which arrived independently from the payout walkthrough. Same axis, second appearance."
+                }
+              },
+              "required": [
+                "amount",
+                "currency",
+                "window",
+                "matchOn",
+                "responseMode"
+              ],
+              "additionalProperties": false,
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "velocity.counterparty"
+            },
+            "geographicAllowedOnly": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Z]{2}$"
+              },
+              "description": "ISO 3166-1 alpha-2 country codes. If present, the counterparty MUST belong to one of these. CRITICAL: an evaluator that does not implement it MUST refuse the credential. Requires capability jurisdiction.resolution. Split from v0.8 draft-1 geographic_restriction.allowed, which was advisory.\n\nTHIS IS NOT SANCTIONS SCREENING AND MUST NOT BE READ AS EVIDENCE OF IT. This field bounds which jurisdictions are permitted. A regulated operator's duty to screen a counterparty before paying is a PRECONDITION, it applies on every rail including x402, and this protocol cannot express it: a field asserting screening occurred would be the operator attesting to its own compliance, and unlike a SEPA mandate there is no third-party artifact to bind to instead.\n\nSo it is named here rather than left absent, because an absence reads as nothing-required. THE OPERATOR MUST SATISFY THIS ELSEWHERE. A mandate that passes every constraint says nothing whatsoever about whether screening was performed.",
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "jurisdiction.resolution"
+            },
+            "requiredEnforcement": {
+              "type": "object",
+              "description": "Capabilities an evaluator MUST declare before it may evaluate this credential at all. CRITICAL and self-referential: an evaluator that ignores this gate evaluates without meeting it. Matching is exact string equality against the evaluator's declared set; a parameterised capability matches only its exact parameter, so velocity.window:P1D does not satisfy velocity.window:P30D.",
+              "additionalProperties": false,
+              "properties": {
+                "custodyProfile": {
+                  "type": "string",
+                  "enum": [
+                    "same-host-same-user",
+                    "same-host-separate-user",
+                    "containerized",
+                    "separate-host"
+                  ],
+                  "description": "Minimum custody boundary (D5 axis). Separate from capabilities, which are the D1 axis; the two never collapse onto one value."
+                },
+                "capabilities": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)+(:[A-Za-z0-9]+)?$"
+                  },
+                  "description": "Exact capability identifiers, <domain>.<capability>[:<parameter>].\n\nDECLARING A CAPABILITY IS A CLAIM ABOUT WHAT THIS EVALUATOR CAN COMPUTE, AND SOME OF THEM HAVE PREREQUISITES THAT ARE NOT OBVIOUS FROM THE NAME. Declaring one you cannot satisfy is worse than declaring nothing: the credential will be accepted and the control silently under-enforced, which is the exact failure the capability gate exists to prevent.\n\n  obligation.attribution  REQUIRES an obligation record carrying an EXPECTED AMOUNT and a PARTIALLY-SATISFIED state. obligationUniqueness asks whether the outstanding balance is zero, not whether a payment happened, and an evaluator whose record only counts payments CANNOT COMPUTE THAT. Declaring it anyway is a false claim: a bounced payment will read as a duplicate and a partial capture will consume the obligation while a balance remains.\n  purchase-terms.verify   REQUIRES the ability to verify a counterparty signature over the terms, not merely to read them. Reading an unverified cart is the agent asserting the counterparty's price.\n  payer-consent.verify    REQUIRES resolving a consent by its COMPOSITE reference and checking its amendment marker. A reference alone is unique per creditor, not globally.\n\nRecorded here because this is where an implementer wiring an adapter decides what to declare, and a prerequisite stated only in the constrained field's description is a prerequisite they will not read."
+                }
+              },
+              "x-opUnavailableInput": "deny"
+            },
+            "approvers": {
+              "type": "object",
+              "description": "Keys permitted to approve a request that escalation routes to a human. Named by the ISSUER, in the credential: the principal decides who may approve on their behalf, and it must not be settable by the operator or the agent or the control is decorative. Distinct from the credential's own issuer, which is what lets a designated operator key satisfy a mandate issued by an offline principal DID. CRITICAL: an evaluator that ignores this accepts approvals from anyone.\n\nA RAIL'S OWN AUTHENTICATION IS NOT AN APPROVAL UNDER THIS MANDATE, and satisfying one does not satisfy the other. A 3DS challenge authenticates whoever holds the card, who may be neither the principal nor anyone named here. Treating it as an approval would let a rail's authentication satisfy a governance control it was never party to. Third place this distinction has surfaced, after the handle's resolution axis and evidenceStrength on the attestation, and stated here once rather than in three places.\n\nTHE FIRST MEMBER OF THE DUTY-SHAPED CLASS, NOT AN EXCEPTION TO A BOUNDS-ONLY VOCABULARY. Almost every field here says NOT MORE THAN. A handful say something else, and they now have a name and FOUR known shapes:\n  PRECONDITION      something must have happened first. approvers. Also SEPA pre-notification and sanctions screening, both of which are real, inexpressible, and named as inexpressible rather than silently absent.\n  ARTIFACT          something must exist elsewhere. requiredPayerConsent.\n  MONITORING DUTY   something must be CONTINUOUSLY HAPPENING, with a silent failure mode and no action to attach to. requiresOutcomeMonitoring. Added at v2.6; v2.5 said three shapes and was correct when written.\n  DEADLINE DUTY     something must happen by a time AND A PARTY CAN CLAIM BREACH IF IT DOES NOT. blockedPaymentNotice. The second half is the membership test, not a caveat: Lightning is full of deadlines and none qualify, because missing an HTLC timeout costs the operator money and wrongs nobody. A deadline whose only victim is the operator is a risk. Without this test a reader walking a seventh rail counts every timeout as a duty.\n\nA DEADLINE DUTY REQUIRES A PARTY WHO CAN CLAIM BREACH. Lightning is full of deadlines and none of them qualify: missing an HTLC timeout costs the operator money and wrongs nobody, so it is a risk rather than a duty and produces no field. Prompt-pay statutes have a claimant. That is the test.\n\nA PREDICTION WITH A FALSIFIER, NOT A DESCRIPTION. Four shapes, seven rails, no exceptions: every rail with a consumer-protection layer, a scheme rulebook or a statutory payment obligation has duties, and every rail with none of the three has none. Cards, SEPA and ACH payouts have all of them; x402, Lightning and TRON have none.\n\nSO IT IS TESTABLE. A rail with one of the three and NO duties falsifies this, and so does a rail with none of the three that HAS one. Either is the comment to return to. The practical consequence is a shortcut worth having: walking a rail with none of the three is a SHORT walk, and a null result there is expected rather than surprising.\n\nWHERE A SEVENTH RAIL WOULD BITE, since this is predictable rather than a matter of waiting. Duties come from consumer-protection layers, scheme rulebooks and statutes. Cards, SEPA and payouts have all three; x402, Lightning and TRON have none. So the vocabulary's completeness is a property of WHICH rails it was designed against, and the event that surfaces duties is adding a rail from a REGULATED PAYMENT SCHEME, not adding a rail generally. Anything under a card scheme, a national payment scheme or a statutory payment obligation will bite. Nothing on-chain will.\n\nRecorded as a class because a fourth shape will arrive with a rail nobody has walked, and it will be easier to place if the class exists.",
+              "additionalProperties": false,
+              "required": [
+                "keys"
+              ],
+              "properties": {
+                "keys": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "id",
+                      "assurance"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "pattern": "^did:[a-z0-9]+:.+",
+                        "description": "Approver DID, optionally with a #verification-method fragment. A DID rather than a raw key so an approver can be rotated and revoked through the same machinery as everything else, and so the key is resolvable rather than pinned."
+                      },
+                      "assurance": {
+                        "type": "string",
+                        "enum": [
+                          "org-attested",
+                          "operator-held",
+                          "device-bound"
+                        ],
+                        "description": "What the approval signature ESTABLISHES. Three levels, and THE WEAKEST IS DECLARED RATHER THAN DEFAULTED.\n\n`org-attested`: THE ORG ISSUED THE CREDENTIAL AND THE ORG'S KEY SIGNED IT. It verifies, and what it proves is that the ORG ASSERTED an approval occurred, not that a specific human authorised a specific payment. That is a signed log entry. The product's position is that authorisation is verifiable WITHOUT TRUSTING THE CUSTOMER, and this form requires trusting the customer about the one fact the approval exists to establish. It ships in v1 and it ships NAMED, because a form that is silently the default is a form nobody reads as weaker.\n\n`operator-held`: the APPROVER is the issuer and the service holds their key. The signature is the approver's, so it is evidence about a person rather than about a company's records.\n\n`device-bound`: the approver is the issuer and the key is bound to their device. Not built, and REACHABLE. An assurance level describing the approver's key is meaningless if no approver key is involved, so making org-attested the architecture rather than a level would foreclose this permanently rather than deferring it.\n\nADDED AT v2.6. v2.5 carries only the latter two and is frozen, so a v1 approval credential cannot declare its own assurance and validate until v2.6 serves."
+                      }
+                    }
+                  }
+                },
+                "threshold": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "default": 1,
+                  "description": "Approvals required. Reserved at 1 now because M-of-N will be wanted and a threshold added later costs a new schema version."
+                }
+              },
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "approval.channel"
+            },
+            "escalationThreshold": {
+              "type": "object",
+              "description": "Above this, a payment is routed to a human approver rather than auto-approved. RELOCATED from authorizationConfig.policy.escalation_threshold, where the engine emitted a NOTE and never denied, silently auto-approving the whole band between the threshold and the per-transaction ceiling. It lives here because actionScope is one of only two enumerated surfaces where an unknown key fails closed; authorizationConfig's internal keys are not enumerated, so a constraint placed there can be silently ignored. Zero issued credentials carried the old field when this moved.",
+              "additionalProperties": false,
+              "required": [
+                "amount",
+                "currency"
+              ],
+              "properties": {
+                "amount": {
+                  "type": "string",
+                  "pattern": "^\\d+(\\.\\d+)?$"
+                },
+                "currency": {
+                  "type": "string"
+                }
+              },
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "approval.channel"
+            },
+            "approvalBudget": {
+              "type": "object",
+              "description": "A velocity cap on the principal's ATTENTION rather than on funds: how many approval requests an agent may raise in a window, and how many may be outstanding at once. Carried in the credential the principal already signs, so the deciding layer sits above the tool schema. Draw is non-refundable on expiry: an ignored request still cost attention.",
+              "additionalProperties": false,
+              "required": [
+                "maxPerWindow",
+                "window"
+              ],
+              "properties": {
+                "maxPerWindow": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "window": {
+                  "type": "string",
+                  "description": "ISO-8601 duration."
+                },
+                "maxOutstanding": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Simultaneously pending requests, distinct from the rate limit."
+                }
+              },
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "approval.budget-accounting"
+            },
+            "approvalRedemption": {
+              "type": "object",
+              "description": "How an approval binds to the payment it authorises. Approval is necessary and never sufficient: velocity may have been exhausted while the request sat pending, so the mandate is re-evaluated at redemption rather than blindly honoured. Request identity derives from verdict-layer facts only, never from agent-supplied text, or an agent perturbs a word to mint a fresh identity and escape a denial.",
+              "additionalProperties": false,
+              "required": [
+                "ttl",
+                "reevaluateAtRedemption"
+              ],
+              "properties": {
+                "ttl": {
+                  "type": "string",
+                  "description": "ISO-8601 duration. Mandatory."
+                },
+                "reevaluateAtRedemption": {
+                  "type": "boolean",
+                  "const": true
+                },
+                "bindsTo": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "payee",
+                      "amountBand",
+                      "rail",
+                      "constraintBreached"
+                    ]
+                  },
+                  "description": "Verdict-layer facts the approval is bound to. Agent-supplied text is not admissible here."
+                }
+              },
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "approval.redemption-binding"
+            },
+            "requestIdentity": {
+              "type": "object",
+              "description": "The derivation a verifier must use to compute request identity, named by VERSIONED IDENTIFIER rather than as an inline formula so it can evolve without a schema version. Declared in the credential rather than agreed between implementations, because a shared document binds only implementations we write and portability is the property this protocol differentiates on: two engines computing different identities for one logical request reopens the perturbation escape silently.",
+              "additionalProperties": false,
+              "required": [
+                "algorithm"
+              ],
+              "properties": {
+                "algorithm": {
+                  "type": "string",
+                  "pattern": "^op-rid-v[0-9]+$"
+                }
+              },
+              "x-opUnavailableInput": "deny"
+            },
+            "cancellationAuthority": {
+              "type": "string",
+              "enum": [
+                "agent",
+                "granting-party"
+              ],
+              "default": "granting-party",
+              "description": "Binding. Who may revoke an authorization this mandate produced. CRITICAL: an evaluator that cannot establish who granted an authorization cannot establish who may cancel it, and the direction that permits more is the direction that lets an agent undo a human. Requires capability authorization.grant-provenance.\n\nWHY A SPENDING VOCABULARY NEEDS THIS AT ALL. Cancelling an authorization moves no money, so every constraint about amounts, counterparties and velocity is silent on it. But consider: a human approves a payment above escalationThreshold, the agent then cancels the authorization, no money moves, the audit trail says approved, and the payee is unpaid. The agent has REVERSED A DECISION A HUMAN MADE without spending anything. The question this field answers is not whether the agent may spend; it is who may revoke.\n\n'granting-party' means whoever authorized THIS payment: the mandate for a routine one below escalationThreshold, and the approvers for an escalated one. Resolved at cancellation time from the record of how the payment was authorized rather than declared twice.\n\nONE FIELD RATHER THAN TWO, DELIBERATELY. Separate settings for routine and escalated cancellation would permit a configuration in which an escalated authorization is agent-cancellable, which is the exact case this field exists to forbid. A vocabulary that can express the thing it exists to prevent is a worse vocabulary, whether or not anyone would configure it that way. And the default is part of the control: the safe combination is what an issuer gets, not what they assemble.\n\nWHAT THIS DOES NOT BIND, stated here rather than discovered. This governs cancellation that routes through an evaluator honouring the mandate. The token contract knows the authorizer, not this credential, so a party holding the authorizer's key can sign a cancellation the contract will honour. That is not a gap in this control: the authorizer's key is the principal's, held where the agent cannot reach it, and 'a party with the principal's key can act as the principal' is true of every credential system. The boundary this field relies on is key custody, and the gap would be an agent able to reach that key, which the custody profile is what prevents.",
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "authorization.grant-provenance"
+            },
+            "obligationUniqueness": {
+              "type": "object",
+              "description": "Binding. An obligation may not be paid again once it is DISCHARGED. CRITICAL: an evaluator that cannot attribute payments to an obligation cannot tell a duplicate from a first attempt. Requires capability obligation.attribution.\n\nCOUNTS SATISFACTION, NOT PAYMENTS, and the earlier drafts counted payments. That proxy failed twice in one day. A bounced payment sent money and discharged nothing, so counting it made a returned payment permanent and blocked a payor from a statutory duty to pay. A partial card capture sent money and discharged part of it, so counting it consumed the obligation while leaving a balance the top-up could not clear. Neither is a duplicate and both counted as one.\n\n'How many times has money been sent' is not 'has this obligation been discharged', and no count of events answers the second. So the question is whether the OUTSTANDING BALANCE IS ZERO, which is what an accounts-payable system asks.\n\nTHE WINDOW IS DECLARED HERE AND IS NOT THE RAIL'S FINALITY WINDOW. An earlier draft derived it from settlement finality, on the reasoning that a derived bound cannot be weakened by the party it constrains. That reasoning is sound and the derivation was from the wrong property: finality asks 'could this be reversed' and runs to roughly 540 days on cards, while uniqueness asks 'would another payment be a duplicate' and is operational. Deriving one from the other holds an obligation neither safely payable nor definitively paid for eighteen months, and would have an agent re-paying claims disputed a year later. A reversal at day 400 is a dispute to handle, not an obligation to pay again.\n\nDeclared rather than derived is safe HERE because the weakest legal value makes the control tighter: a short window cannot make a payment look discharged while it is not. That is the test to apply to any issuer-set bound.\n\nDEPENDS ON AN EXPECTED AMOUNT, which the obligation record carries and which is agent-supplied at v1. Against amnesia that works completely; against malice it is advisory, because an agent that wants to pay twice can overstate what is owed. The non-forgeable version is payee-supplied and is reserved on counterpartyVelocityCap.matchOn, now arriving from a third direction.",
+              "properties": {
+                "window": {
+                  "type": "string",
+                  "pattern": "^P(?:\\d+D|T\\d+H)$",
+                  "description": "ISO-8601 duration, rolling backwards. OPERATIONAL, not the rail finality window; see the description."
+                },
+                "basis": {
+                  "type": "string",
+                  "enum": [
+                    "outstanding-balance"
+                  ],
+                  "default": "outstanding-balance",
+                  "description": "What is counted. DO NOT SIMPLIFY THIS TO A CONSTANT BECAUSE IT HAS ONE MEMBER. A single-member enum reads redundant and is the opposite: adding a member to a closed enum is a schema version, so `payments` can never come back as an option without a deliberate mint. A free string or an open enum would let someone later declare a payment count and reintroduce the defect that made a bounced payment permanent.\n\nThis is the anti-lockstep pattern run in reverse: OPEN where the vocabulary must grow, CLOSED where a wrong value must stay unavailable."
+                },
+                "onMissingReference": {
+                  "type": "string",
+                  "enum": [
+                    "deny",
+                    "allow"
+                  ],
+                  "default": "deny",
+                  "description": "What to do with a payment that carries no obligation reference at all. `deny` makes the reference mandatory in practice, which is the only setting under which this constraint bounds anything: `allow` lets an agent opt out of the check by omitting the field."
+                }
+              },
+              "required": [
+                "window",
+                "basis",
+                "onMissingReference"
+              ],
+              "additionalProperties": false,
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "obligation.attribution"
+            },
+            "reattemptAfterReturn": {
+              "type": "object",
+              "description": "Binding. Whether a returned payment may be re-attempted, and how often. Requires capability obligation.attribution.\n\nRESERVED BECAUSE A RETURN IS AN OBSTACLE REPORT AND OBSTACLE REPORTS LOSE TO THE INSTRUCTION. Measured, not assumed: an agent shown a state meaning 'a human declined by inaction' read it, quoted it back, and paid anyway, because the task said make sure this gets paid. Visibility is sufficient when it reports completion and is not sufficient when it reports an obstacle, and a return tells an agent its goal is unachieved and still reachable. Telling it more carefully does not work; the words were read.\n\nTHE RETURN REASON IS THE AXIS. An insufficient-funds return may clear on a retry; a closed account will not, and re-attempting it bounces again forever. That is the same transient-versus-terminal distinction the rail outcome union already carries, arriving on a second rail, which is a point in favour of those axes being properties of moving value rather than of any one rail.\n\nReserved rather than built. Whether it is enforced in v1 is separate from whether it is expressible, and the door closes at the mint.",
+              "properties": {
+                "maxAttempts": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Total settled-and-returned cycles permitted for one obligation. 0 forbids any re-attempt after a return."
+                },
+                "onlyIfTransient": {
+                  "type": "boolean",
+                  "default": true,
+                  "description": "Re-attempt only where the rail classifies the return as transient. Default true: a terminal return re-attempted is a loop, and the default should be the safe combination rather than something an issuer assembles."
+                }
+              },
+              "required": [
+                "maxAttempts",
+                "onlyIfTransient"
+              ],
+              "additionalProperties": false,
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "obligation.attribution"
+            },
+            "reversalHandling": {
+              "type": "object",
+              "description": "Binding. What a reversal of a settled payment does to the budget, and it turns on whether the reversal is CERTIFIED or CONTESTED. Requires capability obligation.attribution.\n\nAn ACH return is certified when it arrives: the money came back and it stays back. A card chargeback is a reversal that is ITSELF REVERSIBLE, unknown for weeks while the merchant may represent. Same fact, different certainty, which is the outcome union's second axis appearing one layer down on a rail it was not built against.\n\nRestoring headroom immediately is right for the first and wrong for the second: if the representment succeeds the payment stands and the headroom should never have returned. So a contested reversal holds, exactly as an indeterminate outcome holds, and resolves through reconciliation when the dispute does.\n\nCOUPLED TO requiredPayerConsent ON COLLECTIONS, and the schema enforces it rather than describing it: a mandate that collects and declares this field must name a consent type, because the consent type determines the reversal exposure. Reading this field without it produces confident wrong answers.",
+              "properties": {
+                "onCertifiedReversal": {
+                  "type": "string",
+                  "enum": [
+                    "restore-headroom"
+                  ],
+                  "default": "restore-headroom",
+                  "description": "The money came back and stays back. Closed enum: holding headroom against money that has demonstrably returned denies legitimate payments."
+                },
+                "onContestedReversal": {
+                  "type": "string",
+                  "enum": [
+                    "hold",
+                    "restore-headroom"
+                  ],
+                  "default": "hold",
+                  "description": "Default hold. Restoring on a contested reversal frees budget against a payment that may yet stand, which is the double-spend shape the indeterminate work closed."
+                }
+              },
+              "required": [
+                "onCertifiedReversal",
+                "onContestedReversal"
+              ],
+              "additionalProperties": false,
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "obligation.attribution"
+            },
+            "settlementDestinations": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "kind",
+                  "value"
+                ],
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+                    "description": "What sort of identifier `value` is. Pattern-constrained string, deliberately not an enum, same discipline as counterparty identifiers and capability names: a new kind must not require a schema version. AN UNRECOGNIZED KIND DENIES, so the open vocabulary is not an open door. Kinds recognized today: iban, us-ach, address, did."
+                  },
+                  "value": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "The account identifier, in the namespace its kind names."
+                  }
+                }
+              },
+              "description": "Binding. Where funds COLLECTED under this mandate may land. CRITICAL, deny on unavailable input, and requires capability settlement.destination-check.\n\nRESERVED BEFORE THE FEATURE EXISTS, DELIBERATELY, because what is being reserved is not the feature but THE PLACE WHERE ITS ABSENCE IS DETECTABLE. When the agent pays, the destination is the counterparty and allowList bounds it. When the agent COLLECTS, the destination is the principal's own account and nothing in this vocabulary said which: an agent authorised to collect could direct funds to an account the principal does not control while every constraint passed, because there was no field to leave empty and nothing for `deny` to fire on. An absence with no name.\n\nWith the field reserved, an inbound deployment against a mandate that names no destination is refused rather than permitted, and the default is safe rather than absent. That is what deny-on-unavailable is for, and it only works if the field exists to be unavailable.\n\nENUMERATED ACCOUNTS ONLY. Not a pattern, not a prefix rule: a principal who cannot enumerate the accounts their money may land in should not be authorising collection.\n\nAND THIS FIELD DOES NOT AUTHORISE COLLECTION. It bounds where collected funds may go. Whether the PAYER consented to being collected from is a different party's artifact and is not expressible here; see the note on approvers. A deployment that collects is relying on payer consent obtained elsewhere.\n\nTYPED IDENTIFIERS, NOT BARE STRINGS, on the same reasoning as the counterparty lists. A bare account string means nothing without its namespace: an evaluator comparing it to the rail's answer is comparing two strings that were never in the same namespace, and a destination check that silently compares an IBAN to a token address is worse than no check.",
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "settlement.destination-check"
+            },
+            "requiredPayerConsent": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+                "description": "A consent type. Pattern-constrained and open for the same reason capability names are: a new scheme must not require a schema version, and an UNRECOGNIZED TYPE DENIES. Recognized today: sepa-dd-core, sepa-dd-b2b, ach-authorization, card-stored-credential. AN OPEN VOCABULARY IS NOT AN OPEN DOOR, and the next reader of one will assume it means anything is accepted. It does not: the pattern is the open half and THE ENGINE'S RECOGNIZED SET IS THE CLOSED HALF. A type this evaluator cannot evaluate is a control it cannot perform, so the credential is refused rather than partially honoured."
+              },
+              "description": "Binding. Which payer-consent types are acceptable for COLLECTIONS under this mandate. CRITICAL, deny on unavailable input, requires capability payer-consent.verify. Scoped in drafts/payer-consent-attestation.md.\n\nSame reason as settlementDestinations and the same structure. Without the field there is nothing to leave empty: an inbound deployment against a mandate that requires no payer consent is indistinguishable from one where the question was never asked. With it, that deployment is refused rather than permitted.\n\nSATISFIED BY AN ATTESTATION REFERENCING A CONSENT GOVERNED ELSEWHERE, not by a consent this protocol issues. A payer-consent credential the principal issues is the party who benefits from a control supplying the evidence the control was satisfied, which is the defect this field exists to close. The consent is a SEPA mandate, a Nacha authorization, a network stored-credential: governed by a scheme, not by us. We bind to it.\n\nTHE TYPE IS LOAD-BEARING, NOT DESCRIPTIVE. SEPA CORE gives the debtor an unconditional eight-week refund and thirteen months for an unauthorized collection; SEPA B2B gives no refund right at all. Same rail family, opposite reversal exposure, so the value here changes what reversalHandling should do. Treating them alike holds headroom that is free or releases headroom that is not.\n\nAND IT DOES NOT COVER THE COLLECTOR'S PER-COLLECTION DUTIES. SEPA requires the creditor to notify the debtor before collecting. That is not a property of the consent and no attestation about the consent evidences it. Nothing here should be read as evidence those duties were performed.",
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "payer-consent.verify"
+            },
+            "blockedPaymentNotice": {
+              "type": "object",
+              "description": "Binding. Who must be TOLD when a denial persists, which is not who can unblock it. Requires capability notice.dispatch. Surfaced by the operator-duties read; see drafts/operator-duties-read.md.\n\nEVERY OTHER FIELD HERE SAYS NOT MORE THAN. A prompt-pay statute says NOT LATER THAN, and that is not a bound with the sign flipped: a bound constrains an action that is happening, a deadline constrains the absence of one.\n\nSo a cap that correctly denies can leave the principal in breach of a statutory obligation to pay. The control works exactly as designed and the outcome is a violation. This was sighted once already, in obligationUniqueness, where counting a bounced payment as a duplicate blocked a payor from a statutory duty to pay; that was read as a defect in the uniqueness proxy and was also the first appearance of this class.\n\nTHE PROTOCOL CANNOT DISCHARGE A DUTY TO ACT, AND NO ARTIFACT MAKES A LATE PAYMENT TIMELY. IT CAN REFUSE TO BE SILENT. That is the whole of what this field claims. It does not satisfy a deadline and must not be presented as satisfying one: an operator who believes the mandate handles their prompt-pay obligation is worse off than one who knows it does not, so a field that overclaimed here would be worse than no field.\n\napprovers names who can RAISE a cap. This names who is accountable when it is not raised, and they are routinely different people.",
+              "properties": {
+                "notify": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "kind",
+                      "value"
+                    ],
+                    "properties": {
+                      "kind": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+                        "description": "What sort of identifier `value` is. Pattern-constrained string, deliberately not an enum, same discipline as counterparty identifiers and capability names: a new kind must not require a schema version. AN UNRECOGNIZED KIND DENIES, so the open vocabulary is not an open door. Kinds recognized today: did, email, role."
+                      },
+                      "value": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "The party to notify, in the namespace its kind names."
+                      }
+                    }
+                  },
+                  "description": "Parties who must be notified. Not required to be approvers, and usually should not be: the person authorised to raise a cap is not necessarily the person accountable for a missed deadline."
+                },
+                "afterDuration": {
+                  "type": "string",
+                  "pattern": "^P(?:\\d+D|T\\d+H)$",
+                  "description": "How long a denial may persist before the notice is owed. A denial resolved inside this window needed no escalation."
+                }
+              },
+              "required": [
+                "notify",
+                "afterDuration"
+              ],
+              "additionalProperties": false,
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "notice.dispatch"
+            },
+            "requiredPurchaseTerms": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+                "description": "An artifact type. Pattern-constrained and open for the same reason capability names are, and an UNRECOGNIZED TYPE DENIES. Recognized today: ap2-cart-mandate, x402-payment-required, signed-invoice. AN OPEN VOCABULARY IS NOT AN OPEN DOOR, and the next reader of one will assume it means anything is accepted. It does not: the pattern is the open half and THE ENGINE'S RECOGNIZED SET IS THE CLOSED HALF. A type this evaluator cannot evaluate is a control it cannot perform, so the credential is refused rather than partially honoured."
+              },
+              "description": "Binding. Which statements of what is owed, and for how much, SIGNED BY A PARTY THAT IS NOT THE AGENT, are acceptable under this mandate.\n\nCORRECTED FROM v2.5, WHERE THIS SAID 'COUNTERPARTY-SIGNED'. That was narrower than the mechanism and the payout walkthrough falsified it: on a claims payout the artifact is signed by the PAYOR, who is neither the counterparty nor the agent, while the counterparty is a claimant who signs nothing. The field always worked, because the signer is a property of the ARTIFACT TYPE and that vocabulary is open; only the description was wrong. v2.5's bytes are frozen and stay frozen. CRITICAL, deny on unavailable input, requires capability purchase-terms.verify. Surfaced by the AP2 walkthrough; see drafts/operator-duties-ap2.md.\n\nTHE GAP: nothing else here requires that the amount paid corresponds to terms the COUNTERPARTY stated. An agent can pay any permitted counterparty any amount inside the ceiling, for anything at all, and every constraint passes. On x402 that is fine because the 402 response IS the price statement. On AP2 it is the whole point of the protocol, because the merchant-signed cart is the price guarantee.\n\nNOT DESIGNED. ARRIVED AT THREE TIMES, FROM THREE UNRELATED DIRECTIONS, and that arrival pattern is the evidence rather than the reasoning. Each time it appeared as the NON-FORGEABLE VERSION of something the agent was otherwise asserting unchallenged:\n  counterpartyVelocityCap.matchOn   payee-supplied identity, reserved as the strong form.\n  obligationUniqueness              expected amount, agent-supplied and advisory against malice.\n  AP2                               the merchant-signed cart, which IS that artifact and already exists.\nThree independent derivations of one primitive is much stronger evidence than one good argument, and it is the same signal the outcome union got from SEVEN rails and one framework, counting the payout adapter that was built rather than only walked. CORRECTED FROM v2.5, WHICH SAID SIX and was right when written. The third arrival supplied an artifact that already exists rather than one we would have had to invent, which is why this is reserved as a binding field rather than as a note. Reserved once on counterpartyVelocityCap.matchOn as the payee-supplied obligation identity. Named again in obligationUniqueness, where the expected amount is agent-supplied and therefore advisory against malice, with the note that the non-forgeable version is payee-supplied. A merchant-signed cart IS that non-forgeable version, and it exists as a real artifact rather than as something we would invent.\n\nSYMMETRIC WITH requiredPayerConsent AND CLOSES THE SAME HOLE IN THE OPPOSITE DIRECTION. That field covers collections and asks whether the party being collected from agreed. This covers purchases and asks whether the party being paid stated the price. Both answer the agent asserting, unchallenged, what the other party wanted.\n\nSATISFIED BY AN ARTIFACT THE COUNTERPARTY SIGNED, never by one we issue. Same reasoning as payer consent: an artifact the paying side produces about the paid side's terms is the party who benefits supplying the evidence.\n\nRECORD RETENTION IS NOT THIS FIELD. A regulated operator's statutory duty to retain a mandate chain attaches on every rail and cannot be evidenced here. Third member of the inexpressible set, with SEPA pre-notification on requiredPayerConsent and sanctions screening on geographicAllowedOnly.",
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "purchase-terms.verify"
+            },
+            "requiresOutcomeMonitoring": {
+              "type": "boolean",
+              "description": "Binding. Requires that this deployment be CONTINUOUSLY LISTENING for outcomes that change after settlement. CRITICAL, deny on unavailable input, requires capability outcome.monitoring. Surfaced by the payout walkthrough.\n\nTHE FOURTH DUTY SHAPE, AND IT IS DISTINCT FROM THE OTHER THREE. A precondition is checked once before an action. An artifact requirement is a thing that must exist elsewhere. A deadline duty is something that must happen by a time. THIS HAS NO ACTION TO ATTACH TO: an ACH return, a card chargeback or a SEPA R-transaction arrives days later with no call anyone made, and the obligation is to be listening when it does.\n\nITS FAILURE MODE IS SILENT, which is why it is expressed rather than assumed. A deployment that stops listening produces no error, no denial and no missing field. It produces a budget that is quietly wrong, holding headroom against money that came back.\n\nPASSES THE MEMBERSHIP TEST: the operator owes the principal correct enforcement and they are different parties. Contrast the Lightning watchtower, which is deadline-shaped and monitoring-shaped and is NEITHER, because the only victim of not watching is the operator. Second independent application of that test, same answer, no judgement call.\n\nNOT PAYOUT-SPECIFIC. Checked against every walked rail: ACH returns and NOCs, card chargebacks and representment windows, SEPA R-transactions. Present on all three rails with consumer-protection layers, absent on x402, Lightning and TRON. Named generally from the start rather than generalised later.\n\nAND IT CANNOT BE EVIDENCED BY THE OPERATOR ASSERTING THEY ARE LISTENING. That is the party who benefits from the control supplying the evidence it was satisfied, which is the defect that sent payer consent to an external artifact. What is expressible is the REQUIREMENT and the CONSEQUENCE: a mandate requires it, and an evaluator that cannot establish it DECLINES rather than assuming it. Whether the listening is actually happening is outside what this protocol can observe.",
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "outcome.monitoring"
+            }
+          },
+          "additionalProperties": false
+        },
+        "advisoryScope": {
+          "type": "object",
+          "description": "Advisory constraints. A field here MAY be ignored by an evaluator that does not implement it; an evaluator that DOES implement it enforces it fully and it grounds a deny like any other constraint. Advisory is about the unimplemented case only, never a weaker class of constraint. An unrecognised key here still fails closed: membership in this enumerated set is what makes a field ignorable, so the container is not a bypass.",
+          "additionalProperties": false,
+          "properties": {
+            "geographicBlocked": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Z]{2}$"
+              },
+              "description": "ISO 3166-1 alpha-2 codes the counterparty MUST NOT belong to. Advisory: a blocklist that cannot identify the counterparty correctly does nothing. Split from v0.8 draft-1 geographic_restriction.disallowed.",
+              "x-opUnavailableInput": "ignore"
+            },
+            "allowedVenues": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Order plane. No signing-plane evaluator can observe a venue.",
+              "x-opUnavailableInput": "ignore"
+            },
+            "allowedInstruments": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Order plane.",
+              "x-opUnavailableInput": "ignore"
+            },
+            "maxPosition": {
+              "type": "number",
+              "minimum": 0,
+              "description": "Order plane; position is not observable in a signing request.",
+              "x-opUnavailableInput": "ignore"
+            },
+            "dailyDrawdownCap": {
+              "type": "object",
+              "required": [
+                "limit",
+                "type",
+                "window"
+              ],
+              "properties": {
+                "limit": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "percent",
+                    "absolute"
+                  ]
+                },
+                "window": {
+                  "type": "string",
+                  "description": "Duration string, canonical form '<integer>h' (e.g. '24h')."
+                }
+              },
+              "description": "Order plane, P&L-based. Not observable at the signing boundary.",
+              "x-opUnavailableInput": "ignore"
+            }
+          }
+        },
+        "delegationScope": {
+          "type": "object",
+          "required": [
+            "may_delegate_further"
+          ],
+          "properties": {
+            "may_delegate_further": {
+              "type": "boolean"
+            },
+            "max_child_action_scope": {
+              "type": "object"
+            },
+            "may_delegate_delegation_authority": {
+              "type": "boolean"
+            },
+            "allowed_child_subject_types": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maxDepth": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Maximum further delegation depth. may_delegate_further is a boolean and cannot express depth or attenuation; reserved now because adding it later costs a schema version.",
+              "x-opUnavailableInput": "deny"
+            }
+          }
+        },
+        "acl": {
+          "type": "object",
+          "properties": {
+            "revocation_authority": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^did:"
+              }
+            },
+            "modification_authority": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^did:"
+              }
+            }
+          }
+        },
+        "enforcementMode": {
+          "type": "string",
+          "enum": [
+            "protocol_native",
+            "pre_transaction_check"
+          ]
+        },
+        "parentDelegationId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "kybCredentialId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "uri"
+        },
+        "tradingMandate": {
+          "type": "object",
+          "description": "AIP v0.7 \u2014 optional trading-domain mandate. Expresses the scope of a delegated agent's trading authority. Verification is unchanged; the field is signed under the existing credential proof. See aip-v0.7-draft-1.md. draft-2: additionalProperties closed. v0.8 draft-1 left this object open while closing actionScope and credentialSubject, so the schema permitted arbitrary tradingMandate keys that every engine denies.",
+          "properties": {
+            "maxNotionalPerOrder": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Maximum notional value of any single order, denominated by `unit`."
+            },
+            "unit": {
+              "type": "string",
+              "description": "Denomination currency or asset code for maxNotionalPerOrder and maxPosition. REQUIRED whenever either is present; verifiers MUST NOT infer units."
+            },
+            "counterparty": {
+              "type": "object",
+              "description": "AIP v0.8 \u00a72.1, extended in draft-2: counterparty entries may be the legacy string or a typed {kind, value}. See the item description for why the object is closed and the kind is not.",
+              "properties": {
+                "allowList": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "description": "Legacy form, unchanged: a rail address, or a DID expanded through the verifier's counterpartyAddressMap. Every credential issued against v2.1/v2.3/v2.4 uses this and keeps working. Interpreted exactly as before."
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "kind",
+                          "value"
+                        ],
+                        "properties": {
+                          "kind": {
+                            "type": "string",
+                            "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+                            "description": "What sort of identifier `value` is. A PATTERN-CONSTRAINED STRING, deliberately NOT an enum: a card rail names its counterparty differently from an address, an issuer-native rail will name it some third way, and a new kind must not require a new schema version. Same discipline as capability names. The vocabulary of recognized kinds lives in the engine and is exported as data; an UNRECOGNIZED kind DENIES, so the open vocabulary is not an open door. Kinds recognized today: address, did. THIS FIELD HOLDS IDENTITIES, NEVER CLASSES. An identity list matches EQUALITY; a class list matches MEMBERSHIP. A merchant category code is a class, and {kind:'mcc'} in an allowList would mean 'any merchant in this category', including merchants the principal has never heard of, while reading like a list of named counterparties. The breadth of what was granted would be invisible in the signed artifact, which is the one place it must be visible. A counterparty-CLASS constraint is a separate field: actionScope.allowed_counterparty_types held that role, was withdrawn in draft-2 as premature because no engine enforced it, and is expected to return with a rail that has classes. That retraction is sequencing, not a dead end."
+                          },
+                          "value": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      }
+                    ],
+                    "description": "Either the legacy string form or a typed {kind, value}. The OBJECT is closed, so no third property can appear; the KIND is open, so the identifier vocabulary can grow. A card counterparty has no address, so a bare string cannot express it, and the constraint a finance team cares most about (which merchants may this agent pay) has no representation on the rail a finance team uses without this."
+                  },
+                  "description": "Closed list of permitted counterparties.",
+                  "x-opUnavailableInput": "deny"
+                },
+                "blockList": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "description": "Legacy form, unchanged: a rail address, or a DID expanded through the verifier's counterpartyAddressMap. Every credential issued against v2.1/v2.3/v2.4 uses this and keeps working. Interpreted exactly as before."
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                          "kind",
+                          "value"
+                        ],
+                        "properties": {
+                          "kind": {
+                            "type": "string",
+                            "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
+                            "description": "What sort of identifier `value` is. A PATTERN-CONSTRAINED STRING, deliberately NOT an enum: a card rail names its counterparty differently from an address, an issuer-native rail will name it some third way, and a new kind must not require a new schema version. Same discipline as capability names. The vocabulary of recognized kinds lives in the engine and is exported as data; an UNRECOGNIZED kind DENIES, so the open vocabulary is not an open door. Kinds recognized today: address, did. THIS FIELD HOLDS IDENTITIES, NEVER CLASSES. An identity list matches EQUALITY; a class list matches MEMBERSHIP. A merchant category code is a class, and {kind:'mcc'} in an allowList would mean 'any merchant in this category', including merchants the principal has never heard of, while reading like a list of named counterparties. The breadth of what was granted would be invisible in the signed artifact, which is the one place it must be visible. A counterparty-CLASS constraint is a separate field: actionScope.allowed_counterparty_types held that role, was withdrawn in draft-2 as premature because no engine enforced it, and is expected to return with a rail that has classes. That retraction is sequencing, not a dead end."
+                          },
+                          "value": {
+                            "type": "string",
+                            "minLength": 1
+                          }
+                        }
+                      }
+                    ],
+                    "description": "Either the legacy string form or a typed {kind, value}. The OBJECT is closed, so no third property can appear; the KIND is open, so the identifier vocabulary can grow. A card counterparty has no address, so a bare string cannot express it, and the constraint a finance team cares most about (which merchants may this agent pay) has no representation on the rail a finance team uses without this."
+                  },
+                  "description": "Closed list of denied counterparties. A blocklist that cannot identify the counterparty correctly does nothing, which is why its unavailable-input disposition differs from the allowlist's.",
+                  "x-opUnavailableInput": "ignore"
+                },
+                "requireIssuerClassIn": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "op_first_party",
+                      "sovereign_self_attested",
+                      "third_party_kyb",
+                      "partner",
+                      "peer_agent"
+                    ]
+                  },
+                  "description": "Counterparty's OP-tracked issuer_class MUST be an element of this set. Set semantics, not a numeric tier."
+                }
+              },
+              "x-opUnavailableInput": "deny",
+              "$comment": "allowList/blockList need no capability: address matching is implementable and implemented. Only requireIssuerClassIn requires counterparty.issuer-class-attestation, and the coupling is on that sub-field."
+            },
+            "temporal": {
+              "type": "object",
+              "description": "AIP v0.8 \u2014 time-of-day window constraint beyond the credential's validUntil. See aip-v0.8-draft-1.md \u00a72.2.",
+              "properties": {
+                "allowedTimeWindows": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "start",
+                      "end",
+                      "timezone"
+                    ],
+                    "properties": {
+                      "start": {
+                        "type": "string",
+                        "pattern": "^[0-2][0-9]:[0-5][0-9]$",
+                        "description": "HH:MM 24-hour."
+                      },
+                      "end": {
+                        "type": "string",
+                        "pattern": "^[0-2][0-9]:[0-5][0-9]$",
+                        "description": "HH:MM 24-hour."
+                      },
+                      "timezone": {
+                        "type": "string",
+                        "description": "IANA timezone name (e.g. 'UTC', 'America/New_York')."
+                      },
+                      "daysOfWeek": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "enum": [
+                            "mon",
+                            "tue",
+                            "wed",
+                            "thu",
+                            "fri",
+                            "sat",
+                            "sun"
+                          ]
+                        },
+                        "description": "Days the window applies. Defaults to all days when absent."
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "velocity": {
+              "type": "object",
+              "description": "AIP v0.8 \u2014 aggregate volume velocity caps. Stateful; SHOULD be enforced server-side or by a stateful embedded evaluator. Cap values are denominated by the sibling tradingMandate.unit field. See aip-v0.8-draft-1.md \u00a72.4.",
+              "properties": {
+                "dailyVolumeCap": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Maximum aggregate transacted volume in any 24h rolling window."
+                },
+                "monthlyVolumeCap": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Maximum aggregate transacted volume in any 30d rolling window."
+                }
+              },
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "velocity.window",
+              "$comment": "Requires velocity.window:<ISO-8601 duration> matching each declared window. Parameterised, so the coupling is normative in AIP v0.8 draft-2 rather than a single const here."
+            },
+            "crossRailBudget": {
+              "type": "object",
+              "description": "v2.2 \u2014 one rolling-24h cross-rail budget (binding, fail-closed). Verifiers MUST deny when: the transfer asset has no rate in `rates`; no cross-rail spend counter can be established; the counter currency differs from `currency`; `window` is unsupported; or the projected total exceeds `amount`. Conversion MUST round up (budgets trip early, never late). Rates are attested by the principal at issuance; verifiers MUST NOT consult any external price source.",
+              "properties": {
+                "amount": {
+                  "type": "string",
+                  "pattern": "^\\d+(\\.\\d+)?$",
+                  "description": "Budget ceiling as a decimal string, denominated in `currency`."
+                },
+                "currency": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Budget denomination (e.g. \"USD\"). All comparisons happen in this unit."
+                },
+                "window": {
+                  "type": "string",
+                  "enum": [
+                    "P1D"
+                  ],
+                  "description": "Accounting window. v2.2 verifiers support exactly P1D (rolling 24 hours)."
+                },
+                "rates": {
+                  "type": "object",
+                  "minProperties": 1,
+                  "additionalProperties": {
+                    "type": "string",
+                    "pattern": "^\\d+(\\.\\d+)?$"
+                  },
+                  "description": "Principal-attested price of 1 whole unit of each spendable asset, in `currency`, as decimal strings (e.g. {\"USDC\":\"1\",\"sat\":\"0.0005\"}). An asset absent from this map cannot be scoped and MUST be denied."
+                }
+              },
+              "required": [
+                "amount",
+                "currency",
+                "window",
+                "rates"
+              ],
+              "additionalProperties": false,
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "ledger.shared-counter"
+            },
+            "geographicAllowedOnly": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Z]{2}$"
+              },
+              "description": "Counterparty MUST belong to one of these. Fail-closed. Split from v0.8 draft-1 geographic.",
+              "x-opUnavailableInput": "deny",
+              "x-opRequiresCapability": "jurisdiction.resolution"
+            }
+          },
+          "dependencies": {
+            "maxNotionalPerOrder": [
+              "unit"
+            ],
+            "maxPosition": [
+              "unit"
+            ]
+          },
+          "additionalProperties": false
+        },
+        "delegation": {
+          "type": "object",
+          "required": [
+            "scope"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "scope": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "spending_limits": {
+                  "type": "object",
+                  "required": [
+                    "per_rail"
+                  ],
+                  "additionalProperties": false,
+                  "properties": {
+                    "per_rail": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "properties": {
+                          "per_transaction": {
+                            "type": "object",
+                            "required": [
+                              "max_amount",
+                              "currency"
+                            ],
+                            "additionalProperties": false,
+                            "properties": {
+                              "max_amount": {
+                                "type": "string"
+                              },
+                              "currency": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "per_day": {
+                            "type": "object",
+                            "required": [
+                              "max_amount",
+                              "currency"
+                            ],
+                            "additionalProperties": false,
+                            "properties": {
+                              "max_amount": {
+                                "type": "string"
+                              },
+                              "currency": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "per_asset": {
+                            "type": "object",
+                            "additionalProperties": {
+                              "type": "object",
+                              "additionalProperties": false,
+                              "properties": {
+                                "per_transaction": {
+                                  "type": "object",
+                                  "required": [
+                                    "max_amount",
+                                    "currency"
+                                  ],
+                                  "additionalProperties": false,
+                                  "properties": {
+                                    "max_amount": {
+                                      "type": "string"
+                                    },
+                                    "currency": {
+                                      "type": "string"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "action_categories": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "counterparty_scope": {
+                  "type": "object"
+                },
+                "time_window": {
+                  "type": "object"
+                }
+              }
+            },
+            "attenuation": {
+              "type": "object"
+            },
+            "parent_delegation": {
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "delegation_metadata": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "cumulative_budget"
+                ]
+              }
+            },
+            "required": [
+              "actionScope"
+            ]
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "budget.period-accounting"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "actionScope.cumulative_budget is unevaluable without budget.period-accounting. The credential must declare it, in the credential, because engines never dereference this schema."
+        },
+        {
+          "if": {
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "counterpartyVelocityCap"
+                ]
+              }
+            },
+            "required": [
+              "actionScope"
+            ]
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "velocity.counterparty"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "actionScope.counterpartyVelocityCap is unevaluable without velocity.counterparty: an evaluator that cannot attribute prior spend to a counterparty cannot enforce a cumulative cap on one. Declared in the credential rather than inferred, because engines never dereference this schema."
+        },
+        {
+          "if": {
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "geographicAllowedOnly"
+                ]
+              }
+            },
+            "required": [
+              "actionScope"
+            ]
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "jurisdiction.resolution"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "actionScope.geographicAllowedOnly is unevaluable without jurisdiction.resolution. The credential must declare it, in the credential, because engines never dereference this schema."
+        },
+        {
+          "if": {
+            "properties": {
+              "tradingMandate": {
+                "required": [
+                  "crossRailBudget"
+                ]
+              }
+            },
+            "required": [
+              "tradingMandate"
+            ]
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "ledger.shared-counter"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "tradingMandate.crossRailBudget is unevaluable without ledger.shared-counter. The credential must declare it, in the credential, because engines never dereference this schema."
+        },
+        {
+          "if": {
+            "properties": {
+              "tradingMandate": {
+                "required": [
+                  "geographicAllowedOnly"
+                ]
+              }
+            },
+            "required": [
+              "tradingMandate"
+            ]
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "jurisdiction.resolution"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "tradingMandate.geographicAllowedOnly is unevaluable without jurisdiction.resolution. The credential must declare it, in the credential, because engines never dereference this schema."
+        },
+        {
+          "if": {
+            "required": [
+              "tradingMandate"
+            ],
+            "properties": {
+              "tradingMandate": {
+                "required": [
+                  "counterparty"
+                ],
+                "properties": {
+                  "counterparty": {
+                    "required": [
+                      "requireIssuerClassIn"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "counterparty.issuer-class-attestation"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "tradingMandate.counterparty.requireIssuerClassIn has no data source in any shipped evaluator; it denies unconditionally today. Declaring the capability makes an evaluator without it refuse the CREDENTIAL once, instead of refusing every PAYMENT."
+        },
+        {
+          "if": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "approvers"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "approval.channel"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "actionScope.approvers is unevaluable without approval.channel."
+        },
+        {
+          "if": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "escalationThreshold"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "approval.channel"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "actionScope.escalationThreshold is unevaluable without approval.channel."
+        },
+        {
+          "if": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "approvalBudget"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "approval.budget-accounting"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "actionScope.approvalBudget is unevaluable without approval.budget-accounting."
+        },
+        {
+          "if": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "approvalRedemption"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "approval.redemption-binding"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "actionScope.approvalRedemption is unevaluable without approval.redemption-binding."
+        },
+        {
+          "if": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "escalationThreshold"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "approvers"
+                ]
+              }
+            }
+          },
+          "$comment": "escalationThreshold routes to a human, so a mandate carrying it must name who may approve. Without approvers every payment in the band denies with no path forward."
+        },
+        {
+          "if": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "approvers"
+                ],
+                "properties": {
+                  "approvers": {
+                    "properties": {
+                      "keys": {
+                        "contains": {
+                          "properties": {
+                            "assurance": {
+                              "const": "device-bound"
+                            }
+                          },
+                          "required": [
+                            "assurance"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "actionScope": {
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "approval.assurance-verification"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "An operator-held approver needs only DID resolution and signature verification. A device-bound one requires verifying the key IS device-bound, which is not honourable until enrolment publishes something checkable."
+        },
+        {
+          "if": {
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "cancellationAuthority"
+                ]
+              }
+            },
+            "required": [
+              "actionScope"
+            ]
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "authorization.grant-provenance"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "actionScope.cancellationAuthority is unevaluable without authorization.grant-provenance: an evaluator that cannot establish who granted an authorization cannot decide who may revoke it. Declared in the credential rather than inferred, because engines never dereference this schema."
+        },
+        {
+          "if": {
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "obligationUniqueness"
+                ]
+              }
+            },
+            "required": [
+              "actionScope"
+            ]
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "obligation.attribution"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "actionScope.obligationUniqueness is unevaluable without obligation.attribution: an evaluator that cannot attribute a prior payment to an obligation cannot tell a duplicate from a first attempt."
+        },
+        {
+          "if": {
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "reattemptAfterReturn"
+                ]
+              }
+            },
+            "required": [
+              "actionScope"
+            ]
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "obligation.attribution"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "actionScope.reattemptAfterReturn is unevaluable without obligation.attribution: an evaluator that cannot attribute a return to an obligation cannot count re-attempts against it."
+        },
+        {
+          "if": {
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "reversalHandling"
+                ]
+              }
+            },
+            "required": [
+              "actionScope"
+            ]
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "obligation.attribution"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "actionScope.reversalHandling is unevaluable without obligation.attribution."
+        },
+        {
+          "if": {
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "settlementDestinations"
+                ]
+              }
+            },
+            "required": [
+              "actionScope"
+            ]
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "settlement.destination-check"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "actionScope.settlementDestinations is unevaluable without settlement.destination-check."
+        },
+        {
+          "if": {
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredPayerConsent"
+                ]
+              }
+            },
+            "required": [
+              "actionScope"
+            ]
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "payer-consent.verify"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "actionScope.requiredPayerConsent is unevaluable without payer-consent.verify."
+        },
+        {
+          "if": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "settlementDestinations",
+                  "reversalHandling"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredPayerConsent"
+                ]
+              }
+            }
+          },
+          "$comment": "A mandate that COLLECTS (settlementDestinations present) and declares reversalHandling must also name requiredPayerConsent, because the consent type determines the reversal exposure and reversalHandling is uninterpretable without it. SEPA CORE gives an unconditional eight-week refund and thirteen months for an unauthorized collection; SEPA B2B gives none. Cards add a second case: an undisclosed refund policy means the cardholder wins the dispute by default, and that disclosure is part of the consent artifact. Two fields that must agree with nothing enforcing agreement is the divergence risk already closed on prose and denials."
+        },
+        {
+          "if": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "blockedPaymentNotice"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "notice.dispatch"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "actionScope.blockedPaymentNotice is undischargeable without notice.dispatch."
+        },
+        {
+          "if": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredPurchaseTerms"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "purchase-terms.verify"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "actionScope.requiredPurchaseTerms is unevaluable without purchase-terms.verify."
+        },
+        {
+          "if": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiresOutcomeMonitoring"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "actionScope"
+            ],
+            "properties": {
+              "actionScope": {
+                "required": [
+                  "requiredEnforcement"
+                ],
+                "properties": {
+                  "requiredEnforcement": {
+                    "required": [
+                      "capabilities"
+                    ],
+                    "properties": {
+                      "capabilities": {
+                        "contains": {
+                          "const": "outcome.monitoring"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "$comment": "actionScope.requiresOutcomeMonitoring is unestablishable without outcome.monitoring."
+        }
+      ]
+    },
+    "credentialSchema": {
+      "type": "object",
+      "required": [
+        "id",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^https://observerprotocol.org/schemas/"
+        },
+        "type": {
+          "const": "JsonSchema"
+        }
+      }
+    },
+    "credentialStatus": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "statusPurpose",
+          "statusListIndex",
+          "statusListCredential"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uri"
+          },
+          "type": {
+            "type": "string",
+            "const": "BitstringStatusListEntry"
+          },
+          "statusPurpose": {
+            "type": "string",
+            "enum": [
+              "revocation",
+              "suspension"
+            ]
+          },
+          "statusListIndex": {
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          "statusListCredential": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "additionalProperties": false
+      },
+      "description": "REQUIRED as of draft-2. An omitted credentialStatus makes a credential permanently unrevocable through the portable path, which is a fail-open the principal cannot see."
+    },
+    "proof": {
+      "type": "object",
+      "description": "W3C VC Data Integrity proof describing the suite OP actually issues since the 2026-06-05 migration: DataIntegrityProof with cryptosuite eddsa-jcs-2022, proofValue as base58btc multibase (z-prefixed). The v2.1/v2.3 lineage carried the legacy Ed25519Signature2020/2026 proof shape unexamined; that suite is rejected by the OP verifier and is corrected here. proof is left open (no additionalProperties:false) to admit standard DI proof options (e.g. expires, domain).",
+      "required": [
+        "type",
+        "cryptosuite",
+        "created",
+        "verificationMethod",
+        "proofPurpose",
+        "proofValue"
+      ],
+      "properties": {
+        "type": {
+          "const": "DataIntegrityProof"
+        },
+        "cryptosuite": {
+          "const": "eddsa-jcs-2022"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "verificationMethod": {
+          "type": "string",
+          "pattern": "^did:[a-z]+:.+#.+"
+        },
+        "proofPurpose": {
+          "const": "assertionMethod"
+        },
+        "proofValue": {
+          "type": "string",
+          "pattern": "^z[1-9A-HJ-NP-Za-km-z]+$"
+        }
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$comment": "Capability NAMES are deliberately not enumerated anywhere in this schema. The capabilities array is format-constrained only, and the registry of names is a separate mutable document. Adding a capability must never require a new schema version, or the mechanism that makes this the last mandatory fleet lockstep defeats itself. Engines never dereference this document at runtime: they declare the strings they implement and compare by exact equality."
+}
