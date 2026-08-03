@@ -89,10 +89,15 @@ const verdict = await verifyCredentialObject(
 
     <p style="margin-top:2.5rem;">
       <span class="dim">
-        A hosted one-call verifier exists at <code>verify.observerprotocol.org</code> but currently
-        requires a partner bearer token, and there is no self-serve way to obtain one yet. Until that
-        opens, the offline path above is the instruction &mdash; and it is the stronger claim regardless,
-        because it needs nothing from us at the moment of verification.
+A hosted one-call verifier is also available at
+        <a href="https://verify.observerprotocol.org/health"><code>verify.observerprotocol.org</code></a>
+        &mdash; <code>POST /v1/verify</code>, open and unauthenticated, rate limited. It returns a
+        verdict signed with <code>did:web:observerprotocol.org#key-7</code>, so its answer is checkable
+        against the same DID document as everything else.
+        <br><br>
+        <strong>The offline path above stays the primary instruction.</strong> It needs nothing from us
+        at the moment of verification and cannot be rate limited, revoked or taken down. The hosted
+        endpoint is a convenience for getting an answer in one call, not a dependency.
       </span>
     </p>
 

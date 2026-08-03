@@ -71,11 +71,13 @@ const verdict = await verifyCredentialObject(mandate, config, Date.now());</div>
 
     <p class="lead" style="margin-top:2.5rem;">
       <span class="dim">
-        Two things this page will not tell you to do. The <code>@observer-protocol/sdk</code> and
-        <code>@observerprotocol/sdk</code> packages are deprecated &mdash; use the adapters and the
-        policy engine instead. And the hosted verifier at <code>verify.observerprotocol.org</code>
-        currently requires a partner bearer token with no self-serve way to get one, so the offline
-        path above is the instruction until that opens.
+        The <code>@observer-protocol/sdk</code> and <code>@observerprotocol/sdk</code> packages are
+        deprecated &mdash; use the adapters and the policy engine instead.
+        <br><br>
+        A hosted verifier is also open at
+        <a href="https://verify.observerprotocol.org/health"><code>verify.observerprotocol.org</code></a>
+        (<code>POST /v1/verify</code>, no token, rate limited), returning a signed verdict. Offline
+        verification above remains the primary path: it needs nothing from us and cannot be revoked.
       </span>
     </p>
 
