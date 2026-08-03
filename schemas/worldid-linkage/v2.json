@@ -1,0 +1,135 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://observerprotocol.org/schemas/worldid-linkage/v2.json",
+  "title": "World ID Linkage Credential Schema v2",
+  "description": "JSON Schema for WorldIDLinkageCredential Verifiable Credentials. Binds an Observer Protocol agent's credential to a World ID proof-of-personhood. Revocable via credentialStatus; the signed credential body is immutable. v2 adds credentialSubject.proofType (action_proof vs session_proof) for the World ID 4.0 session-proof model; v1 is frozen (schema-immutability policy). See aip-v0.9-worldid-linking.md §5.5.",
+  "type": "object",
+  "required": [
+    "@context",
+    "id",
+    "type",
+    "issuer",
+    "validFrom",
+    "credentialSubject",
+    "credentialSchema",
+    "proof"
+  ],
+  "properties": {
+    "@context": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "contains": { "enum": ["https://www.w3.org/ns/credentials/v2"] }
+    },
+    "id": { "type": "string", "format": "uri", "pattern": "^https://|^urn:uuid:" },
+    "type": {
+      "type": "array",
+      "minItems": 2,
+      "contains": { "const": "VerifiableCredential" }
+    },
+    "issuer": { "type": "string", "pattern": "^did:[a-z]+:.+" },
+    "validFrom": { "type": "string", "format": "date-time" },
+    "validUntil": { "type": "string", "format": "date-time" },
+    "credentialSubject": {
+      "type": "object",
+      "required": [
+        "id",
+        "humanSubject",
+        "worldIdNullifier",
+        "worldIdRpId",
+        "worldIdAction",
+        "worldIdAppId",
+        "verificationPath",
+        "proofType",
+        "verifiedAt"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^did:[a-z]+:.+",
+          "description": "The OP agent DID this binding belongs to (subject of the credential)."
+        },
+        "humanSubject": {
+          "type": "string",
+          "pattern": "^did:[a-z]+:.+",
+          "description": "The human principal's DID — the same principal referenced by the agent's PrincipalAttestationCredential."
+        },
+        "worldIdNullifier": {
+          "type": "string",
+          "description": "World ID nullifier hash returned by IDKit. Private: exposed only to authorized verifiers via scoped exchange, never on the public profile. On a session_proof binding this is OP re-asserting the stored canonical nullifier, not a freshly-proven value. See aip-v0.9 §4, §5.5."
+        },
+        "worldIdRpId": {
+          "type": "string",
+          "pattern": "^rp_[0-9a-f]+$",
+          "description": "The World ID 4.0 relying-party identifier (rp_...) the nullifier is scoped to. Under 4.0 a nullifier is only meaningful relative to (rp_id, action), so the credential records the rp_id as the nullifier's namespace anchor — a nullifier without its rp_id is not independently interpretable. Single OP-controlled rp_id across all OP surfaces (§3). See aip-v0.9 §3."
+        },
+        "worldIdAction": {
+          "type": "string",
+          "const": "observer-protocol-agent-link",
+          "description": "The OP-global Worldcoin action the (first) proof was generated for. The nullifier is scoped to (worldIdRpId, worldIdAction). Fixed in v0.9 to enforce the OP-wide sybil-resistance invariant. See aip-v0.9 §3."
+        },
+        "worldIdAppId": {
+          "type": "string",
+          "description": "Worldcoin Developer Portal app_id (app_...) under which the action is registered — the portal/config identifier (deep links, portal settings), NOT the nullifier namespace (that is worldIdRpId). See aip-v0.9 §3, §13."
+        },
+        "verificationPath": {
+          "type": "string",
+          "enum": ["on-chain", "off-chain"],
+          "description": "How OP verified the World ID proof at bind time. Default off-chain. See aip-v0.9 §7."
+        },
+        "proofType": {
+          "type": "string",
+          "enum": ["action_proof", "session_proof"],
+          "description": "Which World ID 4.0 proof backed this binding: action_proof (fresh one-time proof, first issuance) or session_proof (OP re-asserting the stored nullifier via a session proof, every subsequent bind or re-bind). Assurance signal; not derivable from priorBindingId. See aip-v0.9 §5.5."
+        },
+        "verifiedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When OP verified the proof and created the binding."
+        },
+        "priorBindingId": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "description": "On a re-bind after revocation, the id of the prior (revoked) WorldIDLinkageCredential. Null or absent on a first bind. See aip-v0.9 §6."
+        }
+      }
+    },
+    "credentialSchema": {
+      "type": "object",
+      "required": ["id", "type"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^https://observerprotocol.org/schemas/" },
+        "type": { "const": "JsonSchema" }
+      }
+    },
+    "credentialStatus": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "statusPurpose", "statusListIndex", "statusListCredential"],
+        "properties": {
+          "id": { "type": "string", "format": "uri" },
+          "type": { "type": "string", "const": "BitstringStatusListEntry" },
+          "statusPurpose": { "type": "string", "enum": ["revocation", "suspension"] },
+          "statusListIndex": { "type": "string", "pattern": "^[0-9]+$" },
+          "statusListCredential": { "type": "string", "format": "uri" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "proof": {
+      "type": "object",
+      "required": ["type", "cryptosuite", "created", "verificationMethod", "proofPurpose", "proofValue"],
+      "properties": {
+        "type": { "const": "DataIntegrityProof" },
+        "cryptosuite": { "const": "eddsa-jcs-2022" },
+        "created": { "type": "string", "format": "date-time" },
+        "verificationMethod": { "type": "string", "pattern": "^did:[a-z]+:.+#.+" },
+        "proofPurpose": { "const": "assertionMethod" },
+        "proofValue": { "type": "string", "pattern": "^[1-9A-HJ-NP-Za-km-z]+$" }
+      }
+    }
+  },
+  "additionalProperties": false
+}

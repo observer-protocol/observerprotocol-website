@@ -1,0 +1,126 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://observerprotocol.org/schemas/policy-engine/policy.schema.json",
+  "title": "Policy Engine — tradingMandate schema (AIP v0.8)",
+  "description": "Standalone JSON Schema for the tradingMandate sub-object of an ObserverDelegationCredential. Useful when authoring policy content before embedding it in a credential and signing. The authoritative on-credential schema for AIP v0.8 credentials is observerprotocol.org/schemas/delegation/v2.1.json; this schema mirrors the tradingMandate sub-tree of that document. The earlier observerprotocol.org/schemas/delegation/v2.json URL remains frozen for credentials issued under AIP v0.7 (e.g. the maxi-0001 demo). See the aip repository SCHEMA_POLICY.md for the immutability policy.",
+  "type": "object",
+  "properties": {
+    "allowedVenues": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Closed list of venue identifiers the agent MAY transact on. A venue not present is denied."
+    },
+    "allowedInstruments": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Closed list of permitted assets, pairs, or instrument classes."
+    },
+    "maxNotionalPerOrder": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum notional value of any single order, denominated by `unit`."
+    },
+    "maxPosition": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Maximum aggregate open exposure under this mandate, denominated by `unit`."
+    },
+    "unit": {
+      "type": "string",
+      "description": "Denomination currency or asset code for maxNotionalPerOrder, maxPosition, and the velocity caps. REQUIRED whenever any of those is present; verifiers MUST NOT infer units."
+    },
+    "dailyDrawdownCap": {
+      "type": "object",
+      "description": "Loss ceiling that, if breached, places further action outside the mandate. P&L-based (distinct from velocity volume caps).",
+      "required": ["limit", "type", "window"],
+      "properties": {
+        "limit": { "type": "number", "minimum": 0 },
+        "type": { "type": "string", "enum": ["percent", "absolute"] },
+        "window": { "type": "string", "description": "Duration string, canonical form '<integer>h' (e.g. '24h')." }
+      }
+    },
+    "counterparty": {
+      "type": "object",
+      "description": "AIP v0.8 — counterparty controls.",
+      "properties": {
+        "allowList": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Closed list of permitted counterparties. Entries SHOULD be DIDs; raw rail-specific addresses accepted as fallback."
+        },
+        "blockList": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Closed list of denied counterparties. DID or address strings."
+        },
+        "requireIssuerClassIn": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["op_first_party", "sovereign_self_attested", "third_party_kyb", "partner", "peer_agent"]
+          },
+          "description": "Counterparty's OP-tracked issuer_class MUST be an element of this set. Set semantics, not a numeric tier."
+        }
+      }
+    },
+    "temporal": {
+      "type": "object",
+      "description": "AIP v0.8 — time-of-day window constraint beyond the credential's validUntil.",
+      "properties": {
+        "allowedTimeWindows": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["start", "end", "timezone"],
+            "properties": {
+              "start": { "type": "string", "pattern": "^[0-2][0-9]:[0-5][0-9]$", "description": "HH:MM 24-hour." },
+              "end": { "type": "string", "pattern": "^[0-2][0-9]:[0-5][0-9]$", "description": "HH:MM 24-hour." },
+              "timezone": { "type": "string", "description": "IANA timezone name (e.g. 'UTC', 'America/New_York')." },
+              "daysOfWeek": {
+                "type": "array",
+                "items": { "type": "string", "enum": ["mon", "tue", "wed", "thu", "fri", "sat", "sun"] },
+                "description": "Days the window applies. Defaults to all days when absent."
+              }
+            }
+          }
+        }
+      }
+    },
+    "geographic": {
+      "type": "object",
+      "description": "AIP v0.8 — jurisdictional constraints on counterparties. Requires counterparty attestation data carrying jurisdiction.",
+      "properties": {
+        "blockedJurisdictions": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[A-Z]{2}$" },
+          "description": "ISO 3166-1 alpha-2 country codes; counterparty MUST NOT belong to any. Fail-open if jurisdiction unknown."
+        },
+        "allowedJurisdictionsOnly": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[A-Z]{2}$" },
+          "description": "ISO 3166-1 alpha-2 country codes; if present, counterparty MUST belong to one of these. Fail-closed if jurisdiction unknown."
+        }
+      }
+    },
+    "velocity": {
+      "type": "object",
+      "description": "AIP v0.8 — aggregate volume velocity caps. Stateful; SHOULD be enforced server-side or by a stateful embedded evaluator. Cap values are denominated by the sibling tradingMandate.unit field.",
+      "properties": {
+        "dailyVolumeCap": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum aggregate transacted volume in any 24h rolling window."
+        },
+        "monthlyVolumeCap": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Maximum aggregate transacted volume in any 30d rolling window."
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "maxNotionalPerOrder": ["unit"],
+    "maxPosition": ["unit"]
+  }
+}
