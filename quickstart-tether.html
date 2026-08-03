@@ -210,9 +210,14 @@
         <div class="step">
           <div class="step-number">1</div>
           <h3>Install Dependencies</h3>
-          <p>Install the WDK packages and Observer Protocol SDK:</p>
+          <p>Install the WDK packages and the Observer Protocol WDK adapter:</p>
           <pre><code>npm install @tetherto/wdk @tetherto/wdk-wallet-evm @tetherto/wdk-wallet-btc
-npm install @observerprotocol/sdk</code></pre>
+npm install @observer-protocol/wdk-op-policy</code></pre>
+          <div class="info-box">
+            <p><strong>Changed 2026-08-03.</strong> This step used to say <code class="inline-code">@observerprotocol/sdk</code>,
+            which is a different npm scope, deprecated and unmaintained since April. The adapter above is the
+            package this quickstart actually uses, and it is the one under active release.</p>
+          </div>
           
           <div class="info-box">
             <p><strong>Note:</strong> The WDK uses native modules for cryptography. Make sure you have Python and build tools installed. On most systems: <code class="inline-code">npm install -g node-gyp</code></p>

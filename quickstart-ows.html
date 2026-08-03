@@ -127,13 +127,15 @@ ows wallet create --name <span class="string">"agent-treasury"</span>
       <div class="step">
         <div class="step-header">
           <div class="step-num">2</div>
-          <h2>Install OP SDK</h2>
+          <h2>Install the OWS adapter</h2>
         </div>
         <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-sans);line-height:1.7;margin-bottom:1rem;">
-          Add the Observer Protocol SDK to your project:
+          Add the Open Wallet Standard verification adapter to your project. This page previously said
+          <code>@observer-protocol/sdk</code>, which is deprecated and unmaintained — the adapter below is
+          what this quickstart actually uses:
         </p>
         <div class="code-block">
-npm install @observer-protocol/sdk
+npm install @observer-protocol/ows-op-verify
         </div>
       </div>
 

@@ -1,10 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta http-equiv="refresh" content="0; url=/docs" />
-  <title>Redirecting...</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quickstart — Observer Protocol</title>
+  <meta name="description" content="Start here: verify a credential, integrate a rail, or read the spec. Observer Protocol quickstart.">
+  <link rel="stylesheet" href="shared-styles.css">
+  <style>
+    .wrap { max-width: 780px; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+    .path { border: 1px solid var(--border); border-radius: 4px; padding: 1.25rem 1.4rem; margin: 1rem 0; }
+    .path h2 { font-size: 1.05rem; margin: 0 0 .5rem; }
+    .path p { margin: 0 0 .75rem; color: var(--text-secondary); font-size: 13.5px; line-height: 1.7; }
+    .code-block { background: #111; border: 1px solid var(--border); border-radius: 4px; padding: .8rem 1rem; font-family: monospace; font-size: 12.5px; overflow-x: auto; margin: .6rem 0; white-space: pre; }
+    .dim { color: var(--text-secondary); }
+    .rails a { display: inline-block; margin: 0 .8rem .4rem 0; font-size: 13px; }
+    p.lead { line-height: 1.75; color: var(--text-secondary); font-size: 14px; }
+    code { background: #1a1a1a; padding: .1rem .35rem; border-radius: 3px; font-size: 12.5px; }
+  </style>
 </head>
 <body>
-  <p>Redirecting to <a href="./docs.html">/docs</a>...</p>
+  <div class="wrap">
+    <h1>Quickstart</h1>
+    <p class="lead">Three things people arrive wanting to do. Pick one.</p>
+
+    <div class="path">
+      <h2>1. Verify a credential someone gave you</h2>
+      <p>
+        Offline, from npm. No API key, no token, and no call back to Observer at verification time.
+        This is the same code path our hosted verifier runs.
+      </p>
+      <div class="code-block">npm install @observer-protocol/policy-engine</div>
+      <div class="code-block">import { verifyCredentialObject } from '@observer-protocol/policy-engine';
+
+const verdict = await verifyCredentialObject(mandate, config, Date.now());</div>
+      <p>
+        Checks issuer, structure, validity window, the <code>eddsa-jcs-2022</code> proof against the
+        issuer's DID document, and revocation. Fails closed.
+        <a href="./sdk.html">Full details &rarr;</a>
+      </p>
+    </div>
+
+    <div class="path">
+      <h2>2. Integrate a rail</h2>
+      <p>One adapter per rail. Each enforces a signed delegation at the signer boundary.</p>
+      <div class="rails">
+        <a href="./quickstart-x402.html">x402</a>
+        <a href="./quickstart-l402.html">L402</a>
+        <a href="./quickstart-lightning.html">Lightning</a>
+        <a href="./quickstart-tether.html">Tether WDK</a>
+        <a href="./quickstart-ows.html">Open Wallet Standard</a>
+        <a href="./quickstart-solana.html">Solana</a>
+        <a href="./quickstart-stripe.html">Stripe MPP</a>
+        <a href="./quickstart-alby.html">Alby</a>
+        <a href="./quickstart-lnget.html">lnget</a>
+      </div>
+    </div>
+
+    <div class="path">
+      <h2>3. Read the specification</h2>
+      <p>
+        The Agentic Identity Protocol drafts and the delegation schemas.
+        <br>
+        <a href="https://github.com/observer-protocol/aip">github.com/observer-protocol/aip</a>
+        &middot;
+        <a href="/schemas/delegation/v2.6.json">delegation v2.6</a>
+        &middot;
+        <a href="/.well-known/did.json">issuer DID document</a>
+      </p>
+    </div>
+
+    <p class="lead" style="margin-top:2.5rem;">
+      <span class="dim">
+        Two things this page will not tell you to do. The <code>@observer-protocol/sdk</code> and
+        <code>@observerprotocol/sdk</code> packages are deprecated &mdash; use the adapters and the
+        policy engine instead. And the hosted verifier at <code>verify.observerprotocol.org</code>
+        currently requires a partner bearer token with no self-serve way to get one, so the offline
+        path above is the instruction until that opens.
+      </span>
+    </p>
+
+    <p style="margin-top:2rem;"><a href="./docs.html">All documentation &rarr;</a></p>
+  </div>
 </body>
 </html>

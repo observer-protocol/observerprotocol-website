@@ -214,12 +214,12 @@
         <div class="qs-meta">x402 / USDC · Lightning · TRON · Solana · ERC-8004</div>
         <div class="qs-desc">Verify transactions on any supported rail. x402 dual verification (Coinbase facilitator + Base RPC). Lightning three-tier model. TRON TronGrid verification. Solana Ed25519. ERC-8004 / TRC-8004 on-chain registry integration.</div>
       </a>
-      <a href="https://github.com/observer-protocol/observer-protocol-spec/tree/master/sdk/typescript" target="_blank" class="qs-card">
+      <a href="https://github.com/observer-protocol/op-policy-engine" target="_blank" class="qs-card">
         <div class="qs-icon">📦</div>
-        <div class="qs-tag">NPM INSTALL · v0.2.0</div>
-        <div class="qs-name">TypeScript SDK</div>
-        <div class="qs-meta">npm install @observer-protocol/sdk</div>
-        <div class="qs-desc">Full TypeScript SDK: agent identity, delegation, x402 verification, magic link authorization, chargeback prevention, ERC-8004 integration. Zero dependencies. Browser + Node.js.</div>
+        <div class="qs-tag">NPM INSTALL · v0.4.0</div>
+        <div class="qs-name">Verify a credential</div>
+        <div class="qs-meta">npm install @observer-protocol/policy-engine</div>
+        <div class="qs-desc">Verify a delegation credential offline — issuer, structure, validity window, eddsa-jcs-2022 proof against the issuer DID document, and revocation. No service call, no token, no callback to Observer. This is the same code path our hosted verifier runs.</div>
       </a>
       <a href="https://github.com/observer-protocol/observer-protocol-spec/tree/master/sdk/python" target="_blank" class="qs-card">
         <div class="qs-icon">🐍</div>
@@ -342,32 +342,46 @@
 <section id="sdk" style="background: var(--bg);">
   <div class="section-inner">
     <div class="section-label">SDK</div>
-    <h2>@observerprotocol/sdk</h2>
+    <h2>@observer-protocol/policy-engine</h2>
     <p class="section-intro">
-      JavaScript SDK for cryptographically verifiable agent identity. Node 16+, MIT license.
+      Verification, offline, from npm. Node 18+, MIT license.
+      <br><br>
+      <strong>The SDK packages are deprecated.</strong> This section used to name three different
+      install targets — <code>@observerprotocol/sdk</code>, <code>@observer-protocol/sdk</code> and a
+      <code>pip</code> package — for what was described as one SDK. Both npm SDKs are unmaintained
+      since April 2026 and are now marked deprecated on npm. Use the policy engine below: it is the
+      package the rail adapters depend on and the one under active release.
     </p>
     <div class="sdk-grid">
       <div>
         <div class="code-block">
 <span class="code-comment"># Install</span>
-pip install observer-protocol
-# or
-npm install @observer-protocol/sdk
+npm install @observer-protocol/policy-engine
 
-<span class="code-comment"># Register your agent</span>
-<span class="code-key">const</span> { ObserverProtocol } = <span class="code-fn">require</span>(<span class="code-val">'@observerprotocol/sdk'</span>);
-<span class="code-key">const</span> observer = <span class="code-key">new</span> <span class="code-fn">ObserverProtocol</span>();
+<span class="code-comment">// Verify a delegation credential you were given.</span>
+<span class="code-comment">// Offline: no API key, no network call to Observer.</span>
+<span class="code-key">import</span> { verifyCredentialObject } <span class="code-key">from</span> <span class="code-val">'@observer-protocol/policy-engine'</span>;
 
-<span class="code-key">const</span> agent = <span class="code-key">await</span> observer.<span class="code-fn">registerAgent</span>({
-  publicKey: <span class="code-val">'02a1b2...'</span>,
-  alias: <span class="code-val">'MyAgent'</span>
-});
+<span class="code-key">const</span> verdict = <span class="code-key">await</span> <span class="code-fn">verifyCredentialObject</span>(
+  mandate,        <span class="code-comment">// the signed delegation credential</span>
+  config,         <span class="code-comment">// VerifierConfig: pinned issuer, schema allowlist</span>
+  Date.<span class="code-fn">now</span>()      <span class="code-comment">// evaluated at this instant</span>
+);
 
-<span class="code-comment">// Returns agent_did, badge_url, did_document_url</span>
+<span class="code-comment">// Checks issuer, structure, validity window, the</span>
+<span class="code-comment">// eddsa-jcs-2022 proof against the issuer DID document,</span>
+<span class="code-comment">// and revocation. Fail-closed.</span>
+<span class="code-comment">//</span>
+<span class="code-comment">// Note: verifyCredential(config, nowMs) is a DIFFERENT</span>
+<span class="code-comment">// function and does not take the credential.</span>
+<span class="code-comment">// Types are the reference; no worked example ships yet.</span>
         </div>
         <div class="sdk-note">
           <div class="sdk-note-icon">⚠</div>
-          <div></div>
+          <div>The hosted verifier at <code>verify.observerprotocol.org</code> requires a partner bearer
+          token and there is no self-serve way to obtain one yet. Until that opens, the offline path above
+          is the one to use — and it is the stronger claim anyway, since it needs nothing from us at
+          verification time.</div>
         </div>
       </div>
       <div>
