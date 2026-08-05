@@ -9,8 +9,11 @@ name: aip sync
 on:
   push:
     paths: ['schemas/**', '.well-known/**', 'scripts/check-aip-sync.sh', '.github/workflows/aip-sync.yml']
+  # NO PATH FILTER ON pull_request, DELIBERATELY. This is a REQUIRED status check on master, and a
+  # required check that is path-filtered never reports on a PR touching other files -- so that PR
+  # waits forever on a check that will not run. The check takes seconds; running it on every PR is
+  # cheaper than the deadlock.
   pull_request:
-    paths: ['schemas/**', '.well-known/**', 'scripts/check-aip-sync.sh', '.github/workflows/aip-sync.yml']
   schedule:
     - cron: '17 6 * * 1'
   workflow_dispatch:
