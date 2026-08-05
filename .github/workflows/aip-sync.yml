@@ -1,0 +1,24 @@
+# Refuses when an artifact authored in `aip` and served here have diverged.
+#
+# Runs on every push and pull request that touches the served artifacts or the check itself, and
+# once a week -- because drift here is not caused by a commit to THIS repository. The key-scoping
+# divergence found on 2026-08-05 happened by `aip` moving forward while this copy stood still, and
+# a push-triggered check alone would never have fired.
+name: aip sync
+
+on:
+  push:
+    paths: ['schemas/**', '.well-known/**', 'scripts/check-aip-sync.sh', '.github/workflows/aip-sync.yml']
+  pull_request:
+    paths: ['schemas/**', '.well-known/**', 'scripts/check-aip-sync.sh', '.github/workflows/aip-sync.yml']
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: compare served artifacts against their aip originals
+        run: bash scripts/check-aip-sync.sh
