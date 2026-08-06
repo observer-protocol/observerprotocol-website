@@ -9,6 +9,94 @@
   status = 404
   force = true
 
+# ---------------------------------------------------------------------------
+# NON-WEB FILES IN THIS REPOSITORY ARE SERVED BY DEFAULT. THESE ARE NOT.
+#
+# `publish = "."` above means the publish directory IS the repository, so every
+# tracked file ships to the live domain whether or not any page links to it.
+# Netlify withholds dotfiles and netlify.toml itself; it withholds nothing else.
+# Measured 2026-08-06: nine files were fetchable at observerprotocol.org that
+# were never meant to be, among them an internal repo map naming private repos
+# and on-disk server paths, a site-upgrade guide describing which agent cards
+# carried placeholder data, and three social-media exports belonging to a
+# different company.
+#
+# The rules below return a forced 404 for each. Nothing on the site links to any
+# of them, so this removes nothing a reader could reach by navigating.
+#
+# WHAT THIS DOES NOT DO, which matters more than what it does:
+#
+#   1. It is a DENYLIST. A new .md, .sh, .csv or .py added to this repository is
+#      PUBLIC THE MOMENT IT IS MERGED, until someone remembers to add it here.
+#      Netlify requires the splat at the end of a path, so `/*.md` is not
+#      available and the class cannot be closed by extension.
+#   2. It does not remove the files. They remain in git history and are still
+#      readable to anyone with repository access, which is the correct scope:
+#      the defect was public serving, not their existence.
+#
+# The durable fix is a publish directory that is not the repository root, so
+# that shipping a file is a decision rather than the default. That is a repo
+# restructure and is deliberately not being done here.
+# ---------------------------------------------------------------------------
+[[redirects]]
+  from = "/REPO_MAP.md"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/IMPLEMENTATION_GUIDE.md"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/DEMO-SCRIPT-MAR18.md"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/observer-protocol-sdk.py"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/verify-did-resolution.sh"
+  to = "/404.html"
+  status = 404
+  force = true
+
+# Directory rule, not a file rule: anything added under scripts/ later is
+# covered without a further edit. This is the only part of the block above that
+# closes a class rather than an instance.
+[[redirects]]
+  from = "/scripts/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+# ArcadiaB social scheduling exports. A different company's marketing copy,
+# including Mexican regulated-lending claims, on Observer Protocol's domain.
+[[redirects]]
+  from = "/arcadiab-facebook.csv"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/arcadiab-linkedin-week.csv"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/arcadiab-linkedin.csv"
+  to = "/404.html"
+  status = 404
+  force = true
+
 # OP Crossrail product page — canonical extension-less URL.
 [[redirects]]
   from = "/crossrail"
