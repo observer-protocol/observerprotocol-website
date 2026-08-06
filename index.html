@@ -880,40 +880,6 @@
   </div>
 </section>
 
-<!-- x402 INTERACTIVE DEMO -->
-<section style="background: var(--bg3); border-top: 1px solid var(--border);">
-  <div class="section-inner">
-    <div class="section-label">Try It Live</div>
-    <h2>HTTP-native machine money. No accounts. No approval.</h2>
-    <p class="section-intro">
-      x402 is how agents pay for data: a server returns 402 Payment Required, the agent pays sats, retries with cryptographic proof, gets the response. The entire payment lifecycle in three steps. Try it now against the live API.
-    </p>
-    <div style="background: var(--bg2); border: 1px solid var(--border); padding: 2rem;">
-      <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.75rem; flex-wrap: wrap;">
-        <div id="h-step-402" style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; padding:0.5rem 1rem; border:1px solid var(--amber-dim); color:var(--amber); background:var(--amber-glow);">① 402 Payment Required</div>
-        <div style="color:var(--text-faint); font-size:1.2rem;">→</div>
-        <div id="h-step-pay" style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; padding:0.5rem 1rem; border:1px solid var(--border); color:var(--text-faint);">⚡ Pay 1 sat</div>
-        <div style="color:var(--text-faint); font-size:1.2rem;">→</div>
-        <div id="h-step-200" style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; padding:0.5rem 1rem; border:1px solid var(--border); color:var(--text-faint);">② 200 ✓ Verified Data</div>
-      </div>
-      <div style="display:flex; gap:0.75rem; margin-bottom:1.25rem; flex-wrap:wrap;">
-        <button onclick="homeGet402()" style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; padding:0.65rem 1.25rem; background:var(--amber); color:#0a0a08; border:none; cursor:pointer; font-weight:600;">① Try It (Get 402)</button>
-        <button onclick="homeGet200()" style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; padding:0.65rem 1.25rem; background:transparent; color:var(--text); border:1px solid var(--border); cursor:pointer;">② Pay &amp; Retry (Get 200)</button>
-        <button onclick="homeReset()" style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; padding:0.65rem 1.25rem; background:transparent; color:var(--text-faint); border:1px solid var(--border); cursor:pointer;">Reset</button>
-      </div>
-      <div id="h-demo-output" style="background:var(--bg); border:1px solid var(--border); padding:1.25rem; font-family:'IBM Plex Mono',monospace; font-size:0.7rem; color:var(--text-dim); line-height:1.8; min-height:80px;">
-        Click "Try It" to send a live request and see the 402 Payment Required response from the OP API.
-      </div>
-      <div style="margin-top:1.25rem; background:var(--bg); border:1px solid var(--border); border-left:2px solid var(--amber-dim); padding:1.25rem; font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-dim); line-height:1.9; overflow-x:auto;">
-        <span style="color:var(--text-faint)"># Step 1: Get payment request</span><br/>
-        curl <span style="color:var(--amber)">https://api.observerprotocol.org/observer/ask?q=maxi-0001</span><br/><br/>
-        <span style="color:var(--text-faint)"># Step 2: Pay 1 sat, retry with proof</span><br/>
-        curl <span style="color:var(--blue)">-H</span> <span style="color:var(--amber)">"X-Payment-Proof: &lt;preimage&gt;"</span> https://api.observerprotocol.org/observer/ask?q=maxi-0001
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- INTEGRATIONS -->
 <section style="background: var(--bg); border-top: 1px solid var(--border);">
   <div class="section-inner">
@@ -1216,36 +1182,5 @@
     <span>© 2026 Observer Protocol</span>
   </div>
 </footer>
-
-<script>
-  function homeGet402() {
-    document.getElementById('h-step-402').style.cssText = "font-family:'IBM Plex Mono',monospace;font-size:0.72rem;padding:0.5rem 1rem;border:1px solid var(--amber-dim);color:var(--amber);background:var(--amber-glow);";
-    document.getElementById('h-step-pay').style.cssText = "font-family:'IBM Plex Mono',monospace;font-size:0.72rem;padding:0.5rem 1rem;border:1px solid var(--amber-dim);color:var(--amber);background:var(--amber-glow);";
-    document.getElementById('h-step-200').style.cssText = "font-family:'IBM Plex Mono',monospace;font-size:0.72rem;padding:0.5rem 1rem;border:1px solid var(--border);color:var(--text-faint);";
-    document.getElementById('h-demo-output').innerHTML =
-      '<span style="color:var(--amber)">GET</span> https://api.observerprotocol.org/observer/ask?q=maxi-0001\n\n' +
-      '<span style="color:#f87171">HTTP 402 Payment Required</span>\n' +
-      'X-Payment-Hash: abc123def456...\n' +
-      'X-Payment-Amount: 1\n' +
-      'X-Payment-Unit: sat\n' +
-      'X-Payment-Address: maxi@observerprotocol.org\n\n' +
-      '<span style="color:var(--text-faint)">Pay 1 sat to maxi@observerprotocol.org then click "Pay & Retry"</span>';
-  }
-  function homeGet200() {
-    document.getElementById('h-step-200').style.cssText = "font-family:'IBM Plex Mono',monospace;font-size:0.72rem;padding:0.5rem 1rem;border:1px solid #166534;color:#4ade80;background:#4ade8011;";
-    document.getElementById('h-demo-output').innerHTML =
-      '<span style="color:var(--amber)">GET</span> https://api.observerprotocol.org/observer/ask?q=maxi-0001\n' +
-      '<span style="color:var(--amber)">X-Payment-Proof: 6a30ba7fff332c4e...</span>\n\n' +
-      '<span style="color:#4ade80">HTTP 200 OK</span>\n\n' +
-      '{\n  "agent": "maxi-0001",\n  "did": "did:web:observerprotocol.org:agents:maxi-0001",\n  "verified": true,\n  "vac_issued": true,\n  "transactions": 26,\n  "success_rate": "100%"\n}\n\n' +
-      '<span style="color:#4ade80">✓ Payment verified. No trust required.</span>';
-  }
-  function homeReset() {
-    document.getElementById('h-step-402').style.cssText = "font-family:'IBM Plex Mono',monospace;font-size:0.72rem;padding:0.5rem 1rem;border:1px solid var(--amber-dim);color:var(--amber);background:var(--amber-glow);";
-    document.getElementById('h-step-pay').style.cssText = "font-family:'IBM Plex Mono',monospace;font-size:0.72rem;padding:0.5rem 1rem;border:1px solid var(--border);color:var(--text-faint);";
-    document.getElementById('h-step-200').style.cssText = "font-family:'IBM Plex Mono',monospace;font-size:0.72rem;padding:0.5rem 1rem;border:1px solid var(--border);color:var(--text-faint);";
-    document.getElementById('h-demo-output').textContent = 'Click "Try It" to send a live request and see the 402 Payment Required response from the OP API.';
-  }
-</script>
 </body>
 </html>
