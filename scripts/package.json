@@ -1,0 +1,12 @@
+{
+  "name": "op-website-credential-check",
+  "private": true,
+  "type": "module",
+  "description": "Verifies every credential artifact this repository publishes against scripts/credential-expectations.json.",
+  "scripts": {
+    "verify:credentials": "node ./verify-published-credentials.mjs"
+  },
+  "dependencies": {
+    "@observer-protocol/policy-engine": "^1.0.0-rc.5"
+  }
+}

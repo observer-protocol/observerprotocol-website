@@ -202,6 +202,14 @@ console.log(<span class="k">await</span> verifyCredentialObject(credential, conf
       <h4>These two files are deliberately broken</h4>
       <p>They are fixtures for the verifier and are not authorisations for anything. The agent named inside them is real; the documents are not valid credentials about it. <a href="/verify-samples/README.md" style="color:var(--amber); text-decoration:none;">The directory README states this too ↗</a></p>
     </div>
+
+    <div class="callout" style="border-left-color:var(--red-dim);">
+      <h4 style="color:var(--red);">Two credentials we publish do not verify, and here is why</h4>
+      <p>If you run the check above across everything under <code>/credentials/</code> rather than just the sample, two artifacts fail: <code>maxi-0001-policy-eval-mainnet-20260623.json</code> and <code>maxi-0001-wdk-demo-pec.json</code>. We would rather you heard it here than found it.</p>
+      <p><strong>Their signatures are fine.</strong> Both verify with the canonical W3C Data Integrity reference libraries against <code>did:web:observerprotocol.org#key-3</code> — no Observer endpoint involved. The documents are intact and the key is the right one.</p>
+      <p><strong>The gap is on our side.</strong> Both are <code>PolicyEvaluationCredential</code>s, and <code>verifyCredentialObject</code> validates delegation-credential structure. There is no published <code>PolicyEvaluationCredential</code> schema for it to validate against — the URL does not exist — and no verifier path for the type. The first thing the delegation validator notices is the missing <code>credentialSchema</code>, so that is the message you get, but adding one does not fix it: pointing it at <code>delegation/v2.6.json</code> simply moves the failure to <code>credentialSubject.id must be a DID</code>, because an evaluation credential has no subject <code>id</code>. It has a decision.</p>
+      <p>So this is not two artifacts issued carelessly. It is a credential type with no verifier, and re-issuing the two documents would not change that. We have left them published rather than quietly removing them to make this page look clean, because a verification surface that hides its own failures is the thing this page exists to argue against. Every artifact under <code>/credentials/</code> and <code>/verify-samples/</code> is now checked in CI against a recorded expected verdict, in both directions, so neither this nor its opposite can recur silently.</p>
+    </div>
   </div>
 </section>
 
