@@ -162,7 +162,7 @@
   <section>
     <div class="section-label">The Demo</div>
     <h2>8-beat bilateral trust flow</h2>
-    <p class="section-intro">Two OWS agents. One denied, one approved. Watch autonomous remediation, human oversight, and cryptographic settlement — live on mainnet.</p>
+    <p class="section-intro">Two OWS agents. One holds authority, one does not. Watch autonomous remediation, human oversight, and cryptographic settlement — live on mainnet.</p>
     <div class="beats">
       <div class="beat">
         <div class="beat-num">01</div>
@@ -183,22 +183,12 @@
       <div class="beat">
         <div class="beat-num">03</div>
         <div class="beat-content">
-          <div class="beat-title">Trust Score Verification</div>
-          <div class="beat-desc">VAC credentials are read and trust scores computed. Agent A scores 58. Agent B scores 82. The MoonPay threshold is 75. Only one agent clears it.</div>
-          <div class="beat-outcome outcome-deny">✗ Agent A: 58 / 75 · Agent B: 82 / 75 ✓</div>
-        </div>
-      </div>
-      <div class="beat">
-        <div class="beat-num">04</div>
-        <div class="beat-content">
           <div class="beat-title">Two-Sided Denial</div>
-          <div class="beat-desc">Agent A initiates a 21,000 sat payment via <code>ows.payment.execute</code>. Both Agent B and the OWS Policy Engine independently deny the transaction — trust score insufficient, Delegation VC absent.</div>
+          <div class="beat-desc">Agent A initiates a 21,000 sat payment via <code>ows.payment.execute</code>. Both Agent B and the OWS Policy Engine independently deny it, for the same reason and without consulting each other: Agent A holds no delegation attestation. No authority was ever granted for this spend.</div>
           <div class="terminal">
             <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
             <div class="terminal-body">
-              <span class="t-red">✗</span> <span class="t-white">Agent A trust score (58) below threshold (75)</span><br>
               <span class="t-red">✗</span> <span class="t-white">Agent B REFUSES the transaction</span><br>
-              <span class="t-red">✗</span> <span class="t-white">OWS DENIES: Counterparty trust score insufficient</span><br>
               <span class="t-red">✗</span> <span class="t-white">OWS DENIES: No delegation attestation for Agent A</span><br>
               <span class="t-amber">💥</span> <span class="t-white">Transaction DENIED by both Agent B and OWS</span>
             </div>
@@ -206,7 +196,7 @@
         </div>
       </div>
       <div class="beat">
-        <div class="beat-num">05</div>
+        <div class="beat-num">04</div>
         <div class="beat-content">
           <div class="beat-title">Autonomous Remediation</div>
           <div class="beat-desc">Agent A self-diagnoses. It identifies the fastest remediation path — <code>request_delegation_vc</code> — and autonomously submits the request without human instruction. AIP (Agent Interaction Protocol) structures the remediation schema.</div>
@@ -214,22 +204,21 @@
         </div>
       </div>
       <div class="beat">
-        <div class="beat-num">06</div>
+        <div class="beat-num">05</div>
         <div class="beat-content">
-          <div class="beat-title">Human Approval & Trust Score Update</div>
-          <div class="beat-desc">The AT enterprise dashboard surfaces a pending Delegation VC request. A compliance officer reviews and approves via the Agentic Terminal dashboard. The Delegation VC is issued, KYB org linkage confirmed, and the trust score recomputes: 58 → 83 (+25 org bonus).</div>
-          <div class="beat-outcome outcome-pass">✓ Trust score: 58 → 83 · Delegation VC issued · Admin: admin@acme.com</div>
+          <div class="beat-title">Human Approval</div>
+          <div class="beat-desc">The AT enterprise dashboard surfaces a pending Delegation VC request. A compliance officer reviews and approves it. The Delegation VC is issued and the KYB org linkage is confirmed. Note what the approver does and does not do: they grant the authority Agent A asked for, and they do not set its terms.</div>
+          <div class="beat-outcome outcome-pass">✓ Delegation VC issued · Org: did:web:acmecorp.com · Admin: admin@acme.com</div>
         </div>
       </div>
       <div class="beat">
-        <div class="beat-num">07</div>
+        <div class="beat-num">06</div>
         <div class="beat-content">
           <div class="beat-title">Transaction Resolution</div>
-          <div class="beat-desc">Agent A retries. OWS re-verifies both agents via the Signing Core. Trust score 83 clears threshold 75. Delegation VC verified. The x402 payment executes and settles.</div>
+          <div class="beat-desc">Agent A retries. OWS re-verifies both agents via the Signing Core. The Delegation VC now exists and verifies, so the same request that was refused a moment ago is permitted. Nothing about Agent A changed except that a human granted it authority.</div>
           <div class="terminal">
             <div class="terminal-bar"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
             <div class="terminal-body">
-              <span class="t-green">✓</span> <span class="t-white">Agent A trust score (83) meets threshold (75)</span><br>
               <span class="t-green">✓</span> <span class="t-white">Agent A Delegation VC verified — Org: did:web:acmecorp.com</span><br>
               <span class="t-green">✓</span> <span class="t-white">OWS Signing Core verifies both agents</span><br>
               <span class="t-green">✓</span> <span class="t-white">x402 payment EXECUTED — 21,000 sats</span><br>
@@ -239,10 +228,10 @@
         </div>
       </div>
       <div class="beat">
-        <div class="beat-num">08</div>
+        <div class="beat-num">07</div>
         <div class="beat-content">
           <div class="beat-title">Audit Trail Complete</div>
-          <div class="beat-desc">The AT enterprise dashboard records a full append-only cryptographic audit trail — handshake, denial, remediation, approval, score update, and settlement. Every event signed and verifiable on-chain via Observer Protocol's W3C DID infrastructure and OWS Vault.</div>
+          <div class="beat-desc">The AT enterprise dashboard records a full append-only cryptographic audit trail — handshake, denial, remediation, approval, and settlement. Every event signed and verifiable on-chain via Observer Protocol's W3C DID infrastructure and OWS Vault.</div>
           <div class="beat-outcome outcome-pass">✓ 8 events logged · Cryptographically anchored · Append-only</div>
         </div>
       </div>
@@ -260,14 +249,14 @@
         <div class="stack-check">✓</div>
         <div>
           <div class="stack-item-title">OWS CLI + MoonPay agent skill</div>
-          <div class="stack-item-desc">OWS Policy Engine gates every transaction pre-signing. MoonPay Trust Score threshold (75) enforced at the wallet layer before any key material is touched.</div>
+          <div class="stack-item-desc">OWS Policy Engine gates every transaction pre-signing. The delegation attestation is checked at the wallet layer before any key material is touched, so an unauthorised spend is refused rather than logged.</div>
         </div>
       </div>
       <div class="stack-item">
         <div class="stack-check">✓</div>
         <div>
           <div class="stack-item-title">Onchain intelligence layer</div>
-          <div class="stack-item-desc">VAC credentials carry verifiable onchain attestation history. Trust scores computed from a 5-factor weighted formula across behavioural and organisational signals.</div>
+          <div class="stack-item-desc">VAC credentials carry verifiable onchain attestation history, readable by any counterparty without asking the issuer for access.</div>
         </div>
       </div>
       <div class="stack-item">
@@ -292,7 +281,7 @@
   <section>
     <div class="section-label">Integration</div>
     <h2>OWS Quickstart</h2>
-    <p class="section-intro">Already using OWS? Register your OWS-provisioned agent on Observer Protocol in under 5 minutes. One vault, one identity, portable reputation across every chain. SDK v0.2.0 live on npm + PyPI.</p>
+    <p class="section-intro">Already using OWS? Register your OWS-provisioned agent on Observer Protocol in under 5 minutes. One vault, one identity, one delegation the wallet enforces on every chain.</p>
     <div class="steps">
       <div class="step">
         <div class="step-num-wrap"><div class="step-num">1</div><div class="step-line"></div></div>
@@ -357,12 +346,12 @@
         <div class="step-num-wrap"><div class="step-num">5</div></div>
         <div class="step-body">
           <div class="step-title">View Your VAC</div>
-          <div class="step-desc">Your Verifiable Agent Credential is now live — OWS badge, supported chains (CAIP-2), trust score, and portable reputation across every OWS-compatible service.</div>
+          <div class="step-desc">Your Verifiable Agent Credential is now live — OWS badge, supported chains (CAIP-2), and delegation status, readable by every OWS-compatible service.</div>
           <pre><span class="keyword">const</span> vac = <span class="keyword">await</span> client.getVAC(agent.agent_id);
 console.log(<span class="string">'VAC URL:'</span>, `https://observerprotocol.org/vac/${agent.agent_id}`);
 
 <span class="comment">// - OWS badge + CAIP-2 chain addresses</span>
-<span class="comment">// - Trust score + Delegation VC status</span>
+<span class="comment">// - Delegation VC status</span>
 <span class="comment">// - Verifiable Presentation (W3C VC format)</span>
 <span class="comment">// - Append-only attestation history</span></pre>
           <div class="table-wrap">

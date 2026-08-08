@@ -108,8 +108,8 @@
       <span class="beat-title">Discovery and Handshake</span>
     </div>
     <div class="beat-screen">
-Fund A: did:web:observerprotocol.org:agents:372c7bd2... <span class="tier tier-2">Tier 2</span> AT-ARS: 71
-Lender B: did:web:observerprotocol.org:agents:74836704... <span class="tier tier-3">Tier 3</span> AT-ARS: 88
+Fund A: did:web:observerprotocol.org:agents:372c7bd2... <span class="tier tier-2">Tier 2</span>
+Lender B: did:web:observerprotocol.org:agents:74836704... <span class="tier tier-3">Tier 3</span>
 DIDs resolved. Org-level attestations on file. Tier mismatch visible.
     </div>
     <p class="beat-narration">Two institutional agents discover each other and exchange verifiable credentials. The protocol is symmetric - no privileged side. Same handshake whether the rail is Lightning, x402, or TRON.</p>
@@ -147,7 +147,7 @@ Violation 2: AT_ARS_BELOW_THRESHOLD
   Score 71 below counterparty minimum 80
 
 Remediation: Request Tier 3 Delegation Credential
-  Chain-anchored attestation will contribute +9 to AT-ARS
+  Chain-anchored attestation is independently verifiable against ERC-8004
     </div>
     <div class="beat-screenshot beat-screenshot-wide">
       <img src="images/beat-3-rejection.png" alt="AIP structured refusal with two violations and remediation hint">
@@ -225,7 +225,6 @@ Delegation Requested:
 
 [Mint 8004 NFT on Base] -> TX confirmed
 
-AT-ARS Recompute: 71 -> 84 (+9 chain anchor, +4 hardware key)
     </div>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0;">
       <div style="border: 1px solid var(--border2); border-radius: 4px; overflow: hidden;">
@@ -249,11 +248,15 @@ AT-ARS Recompute: 71 -> 84 (+9 chain anchor, +4 hardware key)
     <div class="beat-screen">
 [Lender B independent verification against ERC-8004]
   Chain-anchored Tier 3 attestation: <span class="pass">PASS</span>
-  AT-ARS score 84 >= 80: <span class="pass">PASS</span>
   Transaction within scope: <span class="pass">PASS</span>
   x402-usdc-base in Rails: <span class="pass">PASS</span>
 
 >> ALL CHECKS PASS
+
+<span style="color:#888880;">// This sequence carried four checks until 8 August 2026. The
+// fourth was an AT-ARS score threshold. It was removed rather than
+// replaced: substituting a different check in the same slot would
+// preserve the shape of the demo at the cost of its argument.</span>
 
 Settlement: $1,200,000 USDC on x402 / Base
 TX: 0xa7c3f9b2e1d4...
@@ -305,7 +308,7 @@ Both views independently verifiable against the on-chain registry.
         <li>Delegation request wizard (5 steps)</li>
         <li>Multi-rail delegation credentials</li>
         <li>AIP refusal and remediation grammar</li>
-        <li>AT-ARS scoring with tier factors</li>
+        <li>Delegation scope enforced before signing</li>
         <li>x402, Lightning, TRON settlement</li>
         <li>TypeScript + Python SDKs (npm + PyPI)</li>
       </ul>

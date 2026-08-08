@@ -535,6 +535,30 @@ npm install @observer-protocol/policy-engine
         <div style="margin-top:1rem; font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--text-faint);">
           Compatible with DIF Universal Resolver · W3C DID Core spec · did:web method spec
         </div>
+
+        <h3 style="font-family:'Fraunces',serif; font-size:1.1rem; font-weight:600; margin:2.5rem 0 0.5rem;">Deriving an agent DID from a public key</h3>
+        <p style="font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300; max-width:700px; margin-bottom:1rem;">
+          The derivation is deterministic and you can reproduce it without us, which is the point: an agent's identifier is a function of its key, not a record we assign. Ed25519 shown here because it is the same curve Solana uses, so a Solana keypair derives an agent DID with no extra material.
+        </p>
+        <div class="code-block">
+<span class="code-comment">// agent_id  = sha256(public_key_hex)[:32]</span>
+<span class="code-comment">// agent_did = did:web:observerprotocol.org:agents:&lt;agent_id&gt;</span>
+
+<span class="code-key">import</span> crypto <span class="code-key">from</span> <span class="code-val">'node:crypto'</span>;
+
+<span class="code-comment">// Any Ed25519 public key, hex-encoded. From @solana/web3.js this is</span>
+<span class="code-comment">// Buffer.from(keypair.publicKey.toBytes()).toString('hex')</span>
+<span class="code-key">const</span> publicKey = <span class="code-val">'&lt;ed25519-public-key-hex&gt;'</span>;
+
+<span class="code-key">const</span> agentId  = crypto.<span class="code-fn">createHash</span>(<span class="code-val">'sha256'</span>)
+                       .<span class="code-fn">update</span>(publicKey)
+                       .<span class="code-fn">digest</span>(<span class="code-val">'hex'</span>)
+                       .<span class="code-fn">slice</span>(0, 32);
+<span class="code-key">const</span> agentDID = <span class="code-val">`did:web:observerprotocol.org:agents:${agentId}`</span>;
+        </div>
+        <div style="margin-top:0.75rem; font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:var(--text-faint); line-height:1.8;">
+          Note the input is the hex <em>string</em>, not the raw bytes. Hashing the bytes yields a different id and a DID that will not resolve.
+        </div>
       </div>
     </div>
   </div>
