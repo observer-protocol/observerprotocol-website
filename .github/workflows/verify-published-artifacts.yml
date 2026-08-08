@@ -17,6 +17,9 @@ on:
       - 'scripts/verify-published-credentials.mjs'
       - 'scripts/credential-expectations.json'
       - 'scripts/package.json'
+      - 'scripts/package-lock.json'
+      - 'scripts/sync-engine-version.mjs'
+      - '**/*.html'
       - '.github/workflows/verify-published-artifacts.yml'
   pull_request:
   workflow_dispatch:
@@ -37,6 +40,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm install --no-audit --no-fund
+      # npm ci, not npm install. install honours the lockfile when it can and rewrites
+      # it when it cannot, silently; ci refuses outright on a lock/manifest mismatch.
+      # Measured 2026-08-08: with the lockfile removed, ^1.0.0-rc.5 resolves to rc.7,
+      # so the pin was doing all the work and nothing enforced that it would keep doing it.
+      - run: npm ci --no-audit --no-fund
       - name: Verify every published credential
         run: node ./verify-published-credentials.mjs
+      - name: Engine version on the site matches the lockfile
+        run: node ./sync-engine-version.mjs --check
