@@ -77,6 +77,15 @@
   status = 404
   force = true
 
+# Build and verification tooling. Not web content. Same reasoning as /scripts/*:
+# the publish directory is the repository, so anything committed here is served
+# unless a rule says otherwise.
+[[redirects]]
+  from = "/tools/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
 # ArcadiaB social scheduling exports. A different company's marketing copy,
 # including Mexican regulated-lending claims, on Observer Protocol's domain.
 [[redirects]]

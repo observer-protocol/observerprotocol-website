@@ -1,0 +1,25 @@
+name: PEC endpoint-free verification
+# Proves the /wdk page claim: the hosted PolicyEvaluationCredential's
+# eddsa-jcs-2022 proof verifies with the canonical W3C Data Integrity reference
+# libraries (no OP endpoint). Runs the committed credential against the committed DID.
+on:
+  push:
+    paths:
+      - 'credentials/**'
+      - '.well-known/did.json'
+      - 'tools/pec-verify/**'
+  pull_request:
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/pec-verify
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci || npm install
+      - run: npm run verify:local
