@@ -287,7 +287,8 @@
 
       <!-- AIP -->
       <div class="api-group">
-        <div class="api-group-header">AIP <span class="new-tag" style="margin-left:0.5rem; background:#7f1d1d; color:#f87171; border-color:#7f1d1d;">UNVERIFIED</span></div>
+        <div class="api-group-header">AIP <span class="new-tag" style="margin-left:0.5rem; background:#7f1d1d; color:#f87171; border-color:#7f1d1d;">2 OF THESE 404</span></div>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:#f87171; line-height:1.7; margin:0.4rem 0 0.6rem;">This group was headed &ldquo;AIP v0.5 &middot; NEW&rdquo; until 8 August 2026. It was neither: the version was four releases stale and two of the endpoints below do not exist in production. The POST routes here are unverified &mdash; they were not exercised, because testing them would write to production.</div>
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/aip/credentials/delegation</span><span class="endpoint-desc">Issue delegation VC</span></div>
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/aip/credentials/kyb</span><span class="endpoint-desc">Issue KYB VC</span></div>
         <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/aip/chain/verify/{id}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:#f87171;border:1px solid #7f1d1d;padding:0.05rem 0.3rem;margin-left:0.4rem;">404</span><span class="endpoint-desc">Verify chain</span></div>
@@ -381,8 +382,16 @@ npm install @observer-protocol/policy-engine
         <div class="sdk-note">
           <div class="sdk-note-icon">⚠</div>
           <div><strong>Correction, 8 August 2026.</strong> This note previously said the hosted
-          verifier required a partner bearer token with no self-serve route. That was wrong, and the
-          error propagated into planning documents before anyone tested it.
+          verifier required a partner bearer token with no self-serve route. That was wrong, and
+          stating the consequence matters more than stating the new fact: <strong>nobody tested it,
+          the claim was believed, and it was carried into a planning document as a premise</strong>
+          that work was then scoped against. A wrong line in documentation does not stay in
+          documentation.
+          <br><br>
+          The same audit found four endpoints on this page that return 404 in production, one of
+          them &mdash; <code>/api/v1/resolve/{did}</code> &mdash; sitting directly beside a
+          copy-pasteable <code>curl</code> command. That is the one that would have cost a developer
+          an afternoon before they concluded the fault was theirs.
           <code>verify.observerprotocol.org</code> is open: its <code>/version</code> reports
           <code>verification.open: true</code> at 60 requests per caller per minute, and an
           unauthenticated <code>POST /v1/verify</code> returns 200 with a signed result.
