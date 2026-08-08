@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Observer Protocol · Trust Infrastructure for the Agentic Economy</title>
+  <title>Observer Protocol · Authority granted once, held to on every action</title>
+  <meta name="description" content="Observer Protocol is the open layer that refuses and proves: signed mandates, fail-closed refusal, and portable attestation, on any rail." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;0,900;1,300;1,600&display=swap" rel="stylesheet" />
   <style>
@@ -637,6 +638,71 @@
       background: var(--amber-dim);
       margin-bottom: 2rem;
     }
+
+    /* ── GAP ── */
+    .gap-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); margin-top: 2.5rem; }
+    @media (max-width: 720px) { .gap-pair { grid-template-columns: 1fr; } }
+    .gap-cell { background: var(--bg2); padding: 2rem; }
+    .gap-cell h3 { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 1rem; font-weight: 500; }
+    .gap-cell p { font-size: 0.92rem; color: var(--text-dim); line-height: 1.75; font-weight: 300; }
+    .gap-cell.absent { background: var(--bg); border-left: 2px solid var(--amber-dim); }
+    .gap-cell.absent h3 { color: var(--amber); }
+    .gap-punch { margin-top: 2rem; font-family: 'Fraunces', serif; font-size: 1.25rem; line-height: 1.5; color: var(--text); max-width: 720px; }
+
+    /* ── PRIMITIVES ── */
+    .prim-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); margin-top: 2.5rem; }
+    @media (max-width: 860px) { .prim-grid { grid-template-columns: 1fr; } }
+    .prim { background: var(--bg); padding: 2.25rem 2rem; }
+    .prim-num { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.14em; color: var(--amber); margin-bottom: 1rem; }
+    .prim h3 { font-family: 'Fraunces', serif; font-size: 1.35rem; font-weight: 600; margin-bottom: 0.85rem; }
+    .prim p { font-size: 0.9rem; color: var(--text-dim); line-height: 1.75; font-weight: 300; }
+
+    /* ── REFUSAL ── */
+    .refusal-wrap { border: 1px solid var(--amber-dim); background: var(--amber-glow); margin-top: 2.5rem; }
+    .refusal-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 1rem 1.75rem; border-bottom: 1px solid var(--amber-dim); font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); }
+    .refusal-body { padding: 1.75rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+    @media (max-width: 820px) { .refusal-body { grid-template-columns: 1fr; } }
+    .refusal-rows { font-family: 'IBM Plex Mono', monospace; }
+    .refusal-row { display: flex; justify-content: space-between; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border); font-size: 0.72rem; }
+    .refusal-row:last-child { border-bottom: none; }
+    .refusal-row .k { color: var(--text-faint); }
+    .refusal-row .v { color: var(--text); text-align: right; }
+    .refusal-row .v.deny { color: var(--amber); font-weight: 600; }
+    .refusal-row .v.allow { color: var(--green); }
+    .refusal-note p { font-size: 0.9rem; color: var(--text-dim); line-height: 1.8; font-weight: 300; margin-bottom: 1rem; }
+    .scope-limits { border-top: 1px solid var(--border); padding: 1.25rem 1.75rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--text-faint); line-height: 1.9; }
+    .scope-limits strong { color: var(--text-dim); font-weight: 500; }
+
+    /* ── VERIFY ── */
+    .verify-grid { display: grid; grid-template-columns: 1.1fr 1fr; gap: 2.5rem; margin-top: 2.5rem; align-items: start; }
+    @media (max-width: 860px) { .verify-grid { grid-template-columns: 1fr; } }
+    .code-block { background: var(--bg2); border: 1px solid var(--border); font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem; line-height: 1.85; overflow-x: auto; }
+    .code-block .code-head { padding: 0.6rem 1rem; border-bottom: 1px solid var(--border); background: var(--bg3); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); }
+    .code-block pre { padding: 1.25rem; margin: 0; white-space: pre; }
+    .code-block .c { color: var(--text-faint); }
+    .code-block .s { color: var(--teal); }
+    .code-block .k { color: var(--amber); }
+    .code-block .o { color: var(--green); }
+
+    /* ── RAIL GRAMMAR ── */
+    .rail-table { width: 100%; border-collapse: collapse; margin-top: 2rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem; }
+    .rail-table th { text-align: left; padding: 0.7rem 1rem; border-bottom: 1px solid var(--border); color: var(--text-faint); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; }
+    .rail-table td { padding: 0.7rem 1rem; border-bottom: 1px solid var(--bg3); color: var(--text-dim); }
+    .rail-table td.id { color: var(--amber); }
+    .rail-table tr:last-child td { border-bottom: none; }
+
+    /* ── REGISTER ── */
+    .register { margin-top: 2.5rem; border: 1px solid var(--border); }
+    .reg-row { display: grid; grid-template-columns: 1fr auto; gap: 1.5rem; align-items: start; padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); }
+    .reg-row:last-child { border-bottom: none; }
+    @media (max-width: 720px) { .reg-row { grid-template-columns: 1fr; } }
+    .reg-what { font-size: 0.9rem; color: var(--text); font-weight: 400; }
+    .reg-detail { font-size: 0.84rem; color: var(--text-dim); font-weight: 300; line-height: 1.7; margin-top: 0.3rem; }
+    .reg-state { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.6rem; border: 1px solid; white-space: nowrap; }
+    .reg-state.live { color: var(--green); border-color: var(--green-dim); background: #4ade8011; }
+    .reg-state.demo { color: var(--amber); border-color: var(--amber-dim); background: var(--amber-glow); }
+    .reg-state.no   { color: var(--text-dim); border-color: var(--border); }
+
   </style>
 </head>
 <body>
@@ -647,512 +713,421 @@
   <ul class="nav-links">
     <li><a href="./architecture.html">Architecture</a></li>
     <li><a href="./docs.html">Docs</a></li>
-    <li><a href="./hermes-agents.html">Agents</a></li>
-    <li><a href="./agentic-terminal.html">Agentic Terminal</a></li>
     <li><a href="./registry.html">Registry</a></li>
+    <li><a href="./supervisors.html">Supervisors</a></li>
+    <li><a href="./agentic-terminal.html">Agentic Terminal</a></li>
   </ul>
   <div class="nav-status">
     <div class="pulse"></div>
-    PUBLIC BETA · V1.3
+    AIP v0.9 · RATIFIED
   </div>
 </nav>
 
-<!-- HERO -->
+<!-- 01 · HERO -->
 <section class="hero">
   <div class="hero-grid"></div>
   <div class="hero-inner">
     <div class="hero-tag fade-up">
       <div class="pulse"></div>
-      Protocol v1.3 · Public Beta · did:web Live
+      AIP v0.9 · Ratified 25 July 2026 · Open, MIT
     </div>
     <h1 class="fade-up delay-1">
-      The <em>full-stack</em> trust<br/>infrastructure for the<br/>agentic economy.
+      A person grants authority <em>once</em>.<br/>A machine is held to it<br/>on every action.
     </h1>
     <p class="hero-sub fade-up delay-2">
-      W3C decentralized identity, Verifiable Agent Credentials, and Know Your Agent (KYA). Open protocol, sovereign by design. Verification is the constant. The rail is not.
+      Observer Protocol is the open layer that refuses and proves. A mandate signed by the principal and out of the agent's reach. A request outside it that produces no instruction at all. A signed record of what was decided, verifiable by anyone without asking us. On any rail.
     </p>
     <div class="hero-ctas fade-up delay-3">
-      <a href="./architecture.html" class="btn-primary">Explore the Architecture →</a>
-      <a href="./docs.html" class="btn-secondary">View Docs</a>
+      <a href="#refusal" class="btn-primary">See a refusal →</a>
+      <a href="#verify" class="btn-secondary">Verify it yourself</a>
     </div>
     <div class="rail-strip fade-up delay-4">
-      <span class="live-dot"></span>
-      PUBLIC BETA &nbsp;·&nbsp;
-      <span>x402 / USDC</span> &nbsp;·&nbsp;
-      <span>ERC-8004</span> &nbsp;·&nbsp;
-      <span>Lightning / L402</span> &nbsp;·&nbsp;
-      <span>TRON / TRC-20</span> &nbsp;·&nbsp;
+      RAILS &nbsp;·&nbsp;
+      <span>ACH</span> &nbsp;·&nbsp;
+      <span>Faster Payments</span> &nbsp;·&nbsp;
+      <span>SEPA Instant</span> &nbsp;·&nbsp;
+      <span>PayNow</span> &nbsp;·&nbsp;
+      <span>Lightning</span> &nbsp;·&nbsp;
+      <span>Base / USDC</span> &nbsp;·&nbsp;
       <span>Solana</span> &nbsp;·&nbsp;
-      <span>Bitcoin</span>
+      <span>TRON</span>
     </div>
-  </div>
-</section>
-
-<!-- OP CROSSRAIL -->
-<section style="padding: 2.2rem 2.5rem; background: linear-gradient(90deg, #f5a62312, transparent 70%); border-top: 1px solid var(--amber-dim);">
-  <div class="section-inner" style="display: flex; align-items: baseline; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap;">
-    <div>
-      <div class="section-label" style="margin-bottom: .4rem;">NEW · OP CROSSRAIL</div>
-      <div style="font-size: 1.25rem; font-weight: 600; color: var(--text);">Delegate once. Enforced before the payment exists.</div>
-      <div style="color: var(--text-dim); font-size: .95rem; margin-top: .3rem;">One credential, one cross-rail budget: x402, Lightning, and Tether WDK engines, open source and on npm.</div>
-    </div>
-    <a href="/crossrail" style="font-family: 'IBM Plex Mono', monospace; font-size: .85rem; color: var(--amber); border: 1px solid var(--amber-dim); padding: .65rem 1.2rem; white-space: nowrap;">OP Crossrail →</a>
-  </div>
-</section>
-
-<!-- TRUST STACK -->
-<section style="padding: 5rem 2.5rem; background: var(--bg2); border-top: 1px solid var(--border);">
-  <div class="section-inner">
-    <div class="section-label">The Stack</div>
-    <h2>One complete trust layer.<br/>Open at the base. Intelligent at the top.</h2>
-    <p class="section-intro">
-      Observer Protocol and Agentic Terminal form a complete, interoperable trust stack, from cryptographic primitives to enterprise identity management. OP is open infrastructure. Agentic Terminal is the intelligence layer built on top.
-    </p>
-    <div class="stack-wrap">
-      <div class="stack-title">The Agentic Trust Stack</div>
-      <div class="stack-subtitle">Know Your Agent (KYA) · Observer Protocol + Agentic Terminal</div>
-      <div class="stack-layers">
-
-        <div class="stack-layer at">
-          <div class="layer-name">Agentic Terminal</div>
-          <div class="layer-desc">Enterprise IAM &amp; intelligence layer</div>
-          <div class="layer-pills">
-            <div class="pill">Sovereign Dashboard</div>
-            <div class="pill">Enterprise Dashboard</div>
-            <div class="pill">Compliance &amp; audit trail</div>
-          </div>
-        </div>
-
-        <div class="stack-arrow">↓</div>
-
-        <div class="stack-layer aip">
-          <div class="layer-name">Agent Interaction Protocol (AIP)</div>
-          <div class="layer-desc">Signed interaction layer</div>
-          <div class="layer-pills">
-            <div class="pill">Delegation Credentials</div>
-            <div class="pill">Bilateral attestation</div>
-            <div class="pill">Remediation flow</div>
-          </div>
-        </div>
-
-        <div class="stack-arrow">↓</div>
-
-        <div class="stack-layer op">
-          <div class="layer-name">Observer Protocol</div>
-          <div class="layer-desc">W3C DID/VC identity &amp; attestation infra</div>
-          <div class="layer-pills">
-            <div class="pill">did:web agent identity</div>
-            <div class="pill">VAC / Verifiable Creds</div>
-            <div class="pill">KYB credential carrier</div>
-          </div>
-        </div>
-
-        <div class="stack-arrow">↓</div>
-
-        <div class="stack-layer crypto">
-          <div class="layer-name">Cryptographic primitives</div>
-          <div class="layer-desc">Verifiable, censorship-resistant foundations</div>
-          <div class="layer-pills">
-            <div class="pill">secp256k1 / Ed25519</div>
-            <div class="pill">Multi-rail (x402 / Lightning / TRON / Solana)</div>
-            <div class="pill">On-chain audit log</div>
-          </div>
-        </div>
-
-        <div class="stack-footer">
-          Open protocol · Rail-agnostic · Mainnet DIDs live<br/>
-          <span style="color: var(--amber-dim);">observerprotocol.org</span> · <span style="color: var(--text-faint);">agenticterminal.io</span>
-        </div>
-        <div class="stack-legend">
-          <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Rails live</div>
-          <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Protocol core</div>
-          <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>AT outputs</div>
-          <div class="legend-item"><div class="legend-dot" style="background:var(--text-faint)"></div>Crypto layer</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- WHAT OP DOES -->
-<section style="background: var(--bg); border-top: 1px solid var(--border);">
-  <div class="section-inner">
-    <div class="section-label">Protocol Capabilities</div>
-    <h2>Three problems. One open protocol.</h2>
-    <p class="section-intro">
-      Every agent economy problem reduces to the same three questions: who is this agent, what has it done, and can it be trusted to act on my behalf? Observer Protocol answers all three, cryptographically.
-    </p>
-    <div class="features">
-      <div class="feature">
-        <div class="feature-icon">01 · IDENTITY</div>
-        <h3>did:web Agent Identity</h3>
-        <p>Every agent registered on Observer Protocol receives a W3C Decentralized Identifier: a portable, cryptographically-controlled identity that resolves anywhere HTTPS reaches. No platform owns it. No custodian controls it. The key is the identity.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">02 · CREDENTIALS</div>
-        <h3>Verifiable Agent Credentials</h3>
-        <p>VACs are W3C Verifiable Credentials that attest to cryptographically-verified facts: economic activity, payment history across rails, counterparty network, and partner attestations. Portable across any platform. The math is the record.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">03 · KYA</div>
-        <h3>Know Your Agent</h3>
-        <p>KYA extends KYC/KYB to the agent economy. Observer Protocol links agent identity to legal entity verification, delegation credentials, and behavioral attestations, giving enterprises the compliance layer they need to delegate economic authority safely.</p>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">04 · PORTABILITY</div>
-        <h3>Reputation That Travels</h3>
-        <p>An agent's verified credential is not trapped on the platform where it was earned. VACs are readable by anyone, on any network, forever: x402, Lightning, TRON, Solana, and any rail that produces cryptographic proof of settlement.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- LIVE PROOF -->
-<section class="proof-section">
-  <div class="section-inner">
-    <div class="section-label">Proof of Concept</div>
-    <div class="proof-grid">
-      <div class="proof-narrative">
-        <div class="divider"></div>
-        <h3>Two agents. One payment. No human approval.</h3>
-        <p>On February 22, 2026, two AI agents, running on different software stacks, built by different developers, in different countries, settled a Lightning payment on Bitcoin mainnet. No human authorized the transaction. The preimage is on file. The math checks out.</p>
-        <p>This is the genesis transaction of the Observer Protocol. It is the empirical foundation this infrastructure is built on: not a whitepaper claim, but a cryptographic fact.</p>
-        <div class="stat-row">
-          <div class="stat">
-            <div class="stat-num">54</div>
-            <div class="stat-label">REGISTERED AGENTS</div>
-          </div>
-          <div class="stat">
-            <div class="stat-num">35</div>
-            <div class="stat-label">VERIFIED TRANSACTIONS</div>
-          </div>
-          <div class="stat">
-            <div class="stat-num">8</div>
-            <div class="stat-label">ACTIVE RAILS</div>
-          </div>
-        </div>
-      </div>
-      <div>
-        <div class="proof-card">
-          <div class="proof-card-header">
-            <div class="pulse"></div>
-            OP-000001 · VERIFIED EVENT #0002
-          </div>
-          <div class="proof-row">
-            <span class="proof-label">Date</span>
-            <span class="proof-value">Feb 22, 2026 · 23:24Z</span>
-          </div>
-          <div class="proof-row">
-            <span class="proof-label">Rail</span>
-            <span class="proof-value amber">Lightning / L402</span>
-          </div>
-          <div class="proof-row">
-            <span class="proof-label">Payer</span>
-            <span class="proof-value">Vicky · sha256:9c4b…</span>
-          </div>
-          <div class="proof-row">
-            <span class="proof-label">Payee</span>
-            <span class="proof-value">Maxi · sha256:3f7a…</span>
-          </div>
-          <div class="proof-row">
-            <span class="proof-label">Amount</span>
-            <span class="proof-value amber">1,521 sats</span>
-          </div>
-          <div class="proof-row">
-            <span class="proof-label">Payment Hash</span>
-            <span class="proof-value">6a30ba7fff332c4e…</span>
-          </div>
-          <div class="proof-row">
-            <span class="proof-label">Status</span>
-            <span class="proof-value green">✓ Cryptographically verified</span>
-          </div>
-          <div class="proof-math">
-            SHA256( 6a30ba7fff332c4eb8f368da… )<br/>
-            == payment_hash<br/>
-            <span style="color: var(--green);">✓ Match confirmed. No trust required.</span>
-          </div>
-        </div>
-        <div style="margin-top: 0.75rem; text-align: right;">
-          <a href="./registry.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--amber); text-decoration: none; letter-spacing: 0.06em;">View Full Registry →</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- INTEGRATIONS -->
-<section style="background: var(--bg); border-top: 1px solid var(--border);">
-  <div class="section-inner">
-    <div class="section-label">Ecosystem</div>
-    <h2>Built to integrate with the tools agents already use.</h2>
-    <p class="section-intro">
-      Observer Protocol is designed to compose with existing agent infrastructure, not replace it. Extensions are live across payment rails, agent frameworks, and developer tooling.
-    </p>
-    <div class="integrations-grid">
-      <div class="integration-item">
-        <div class="int-logo" style="background:#0052ff22; color:#0052ff;">◈</div>
-        <div class="int-name">x402 / USDC on Base</div>
-        <div class="int-type">HTTP PAYMENT · LIVE</div>
-      </div>
-      <div class="integration-item">
-        <div class="int-logo" style="background:#f7931a22; color:#f7931a;">⚡</div>
-        <div class="int-name">Lightning / L402</div>
-        <div class="int-type">PAYMENT RAIL · LIVE</div>
-      </div>
-      <div class="integration-item">
-        <div class="int-logo" style="background:#ef232322; color:#ef2323;">⟁</div>
-        <div class="int-name">TRON / TRC-20</div>
-        <div class="int-type">NATIVE RAIL · LIVE</div>
-      </div>
-      <div class="integration-item">
-        <div class="int-logo" style="background:#9945ff22; color:#9945ff;">◎</div>
-        <div class="int-name">Solana</div>
-        <div class="int-type">CHAIN · LIVE</div>
-      </div>
-      <div class="integration-item">
-        <div class="int-logo" style="background:#f7931a22; color:#f7931a;">₿</div>
-        <div class="int-name">Bitcoin</div>
-        <div class="int-type">CHAIN · FOUNDATION</div>
-      </div>
-      <div class="integration-item">
-        <div class="int-logo" style="background:#7B61FF22; color:#7B61FF;">⬡</div>
-        <div class="int-name">ERC-8004 / TRC-8004</div>
-        <div class="int-type">ON-CHAIN REGISTRY · LIVE</div>
-      </div>
-      <div class="integration-item">
-        <div class="int-logo" style="background:#4ade8022; color:#4ade80;">↯</div>
-        <div class="int-name">lnget</div>
-        <div class="int-type">L402 TOOLING · EXTENSION</div>
-      </div>
-    </div>
-    <p style="margin-top: 1rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--text-faint); letter-spacing: 0.04em;">
-      Chain-agnostic verification. Adding a rail requires one adapter, no protocol changes.
+    <p style="font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:var(--text-faint); letter-spacing:0.04em; margin-top:0.9rem; max-width:640px;">
+      The control is the same on every one of them. Enforcement is demonstrated on Lightning; see the register below for exactly where each rail stands.
     </p>
   </div>
 </section>
 
-<!-- HERMES LAUNCH BAND -->
-<section style="background: var(--bg2); border-top: 3px solid var(--amber-dim); padding: 4.5rem 2.5rem;">
-  <div class="section-inner">
-    <div class="hermes-band-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center;">
-
-      <div>
-        <div style="display:inline-flex; align-items:center; gap:0.5rem; font-family:'IBM Plex Mono',monospace; font-size:0.65rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--amber); margin-bottom:1.5rem;">
-          <div class="pulse"></div>NEW &nbsp;·&nbsp; HERMES AGENTS
-        </div>
-        <h2 style="font-size:clamp(1.4rem,2.5vw,2rem); margin-bottom:1rem;">A fail-closed spend gate for your Hermes agent.</h2>
-        <p style="font-size:0.9rem; color:var(--text-dim); font-weight:300; line-height:1.75; margin-bottom:2rem; max-width:480px;">
-          Set what your agent can spend and how much, enforced below the skill layer. A hostile skill can't reach the signing key. Three commands to set up, verifies offline, no account required.
-        </p>
-        <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:center;">
-          <a href="./hermes-agents.html" class="btn-primary">Get started →</a>
-          <a href="./hermes-agents.html" style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--text-dim); text-decoration:none; letter-spacing:0.04em; transition:color 0.2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-dim)'">Read the threat brief →</a>
-        </div>
-      </div>
-
-      <div>
-        <div style="background:var(--bg); border:1px solid var(--border); overflow:hidden;">
-          <div style="display:flex; align-items:center; justify-content:space-between; padding:0.6rem 1rem; border-bottom:1px solid var(--border); background:var(--bg3);">
-            <span style="font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-faint);">Setup · 3 commands</span>
-            <span style="font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:var(--amber); letter-spacing:0.06em;">hermes-gate</span>
-          </div>
-          <div style="padding:1.5rem; display:flex; flex-direction:column; gap:0.75rem;">
-            <div style="font-family:'IBM Plex Mono',monospace; font-size:0.8rem; line-height:1.5;">
-              <span style="color:var(--text-faint); user-select:none;">$ </span><span style="color:var(--amber);">npx</span> <span style="color:var(--text-dim);">@observer-protocol/hermes-gate</span> <span style="color:var(--text);">bootstrap generate</span>
-            </div>
-            <div style="font-family:'IBM Plex Mono',monospace; font-size:0.8rem; line-height:1.5;">
-              <span style="color:var(--text-faint); user-select:none;">$ </span><span style="color:var(--amber);">npx</span> <span style="color:var(--text-dim);">@observer-protocol/hermes-gate</span> <span style="color:var(--text);">bootstrap provision</span>
-            </div>
-            <div style="font-family:'IBM Plex Mono',monospace; font-size:0.8rem; line-height:1.5;">
-              <span style="color:var(--text-faint); user-select:none;">$ </span><span style="color:var(--amber);">npx</span> <span style="color:var(--text-dim);">@observer-protocol/hermes-gate</span> <span style="color:var(--text);">bootstrap verify</span>
-            </div>
-          </div>
-          <div style="padding:0.75rem 1rem; border-top:1px solid var(--border); display:flex; gap:1.5rem;">
-            <span style="font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:var(--text-faint); letter-spacing:0.06em;">Open source · MIT</span>
-            <span style="font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:var(--text-faint); letter-spacing:0.06em;">EVM stablecoins live · Lightning advisory</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- WALLET INTEGRATIONS -->
-<section style="background: var(--bg); border-top: 1px solid var(--border);">
-  <div class="section-inner">
-    <div class="section-label">Wallet Integrations</div>
-    <h2>Native support across the wallet standards moving real volume.</h2>
-    <p class="section-intro">
-      Observer Protocol composes with the major wallet protocols rather than competing with them. Each integration carries the same trust primitives (DID, VAC, KYA) into the developer surface those wallets already provide.
-    </p>
-
-    <div class="wallet-grid">
-
-      <!-- WDK · highest priority -->
-      <div class="wallet-card featured">
-        <div class="wallet-tag">Tether WDK · Native policy engine · live demo</div>
-        <h3>WDK <span class="wallet-h3-sub">Wallet Development Kit</span></h3>
-        <p class="wallet-body">
-          Observer Protocol runs natively on WDK's local transaction policy engine (PR #55). <strong>@observer-protocol/wdk-op-policy</strong> registers an ALLOW plus a mandatory, fail-closed DENY on the #55 hook: it verifies a signed delegation credential against the raw transaction and denies an out-of-mandate spend inside the policy engine, so the transfer is never invoked. OP's evaluator then issues a portable, independently verifiable PolicyEvaluationCredential. The identity and Lightning modules (wdk-protocol-trust, wdk-lightning-verifier) carry the bilateral handshake and ERC-8004 settlement attestations alongside it.
-        </p>
-        <div class="wallet-pills">
-          <span class="pill">wdk-op-policy (PR #55 hook)</span>
-          <span class="pill">ALLOW + mandatory DENY, fail-closed</span>
-          <span class="pill">signed PolicyEvaluationCredential</span>
-          <span class="pill">Bilateral handshake · ERC-8004</span>
-        </div>
-        <div class="wallet-links">
-          <a href="/wdk" class="wallet-link">Live demo →</a>
-          <a href="https://github.com/observer-protocol/wdk-op-policy" target="_blank" rel="noopener" class="wallet-link">wdk-op-policy ↗</a>
-          <a href="https://www.npmjs.com/package/@observer-protocol/wdk-op-policy" target="_blank" rel="noopener" class="wallet-link">npm ↗</a>
-          <a href="https://github.com/observer-protocol/wdk-protocol-trust" target="_blank" rel="noopener" class="wallet-link">wdk-protocol-trust ↗</a>
-          <a href="https://github.com/observer-protocol/wdk-lightning-verifier" target="_blank" rel="noopener" class="wallet-link">wdk-lightning-verifier ↗</a>
-        </div>
-      </div>
-
-      <!-- Aqua · Bitcoin/Liquid · live demo -->
-      <div class="wallet-card">
-        <div class="wallet-tag">Jan3 Aqua · Liquid · live demo</div>
-        <h3>Aqua <span class="wallet-h3-sub">Bitcoin / Liquid wallet</span></h3>
-        <p class="wallet-body">
-          Demonstrated in an instrumented build of Jan3's Aqua wallet on the Liquid network, not in shipped Aqua. The build calls Observer Protocol's policy sidecar before it signs: the evaluator checks the proposed transaction against a signed spending delegation and returns a signed decision, fail-closed, so an out-of-mandate spend is refused at the wallet. The "Free Your Agent" demo runs it end to end on Liquid testnet, signed against the protocol's published DIDs.
-        </p>
-        <div class="wallet-pills">
-          <span class="pill">Liquid (USDt · L-BTC)</span>
-          <span class="pill">policy sidecar /evaluate</span>
-          <span class="pill">signed decision, fail-closed</span>
-        </div>
-        <div class="wallet-links">
-          <a href="/free-your-agent" class="wallet-link">Free Your Agent demo →</a>
-        </div>
-      </div>
-
-      <!-- OWS -->
-      <div class="wallet-card">
-        <div class="wallet-tag">Open Wallet Foundation · Live</div>
-        <h3>OWS <span class="wallet-h3-sub">Open Wallet Standard</span></h3>
-        <p class="wallet-body">
-          BIP-44-derived multi-chain agent vaults across EVM, Solana, and Bitcoin. OWS-provisioned agents register on Observer Protocol via the canonical SDK and inherit the full trust surface. The <strong>ows-op-verify</strong> executable enforces the same signed mandate at the OWS signing boundary, fail-closed, from the same vendored core as the WDK and MPP engines.
-        </p>
-        <div class="wallet-pills">
-          <span class="pill">ows-op-verify (enforcement engine)</span>
-          <span class="pill">BIP-44 vaults · Multi-chain</span>
-          <span class="pill">Portable reputation</span>
-        </div>
-        <div class="wallet-links">
-          <a href="https://github.com/observer-protocol/ows-op-policy" target="_blank" rel="noopener" class="wallet-link">ows-op-policy ↗</a>
-          <a href="/quickstart-ows.html" class="wallet-link">Quickstart →</a>
-        </div>
-      </div>
-
-      <!-- MPP / Tempo -->
-      <div class="wallet-card">
-        <div class="wallet-tag">MPP / Tempo · Live · mppx-op-account on npm</div>
-        <h3>MPP <span class="wallet-h3-sub">Machine Payments Protocol</span></h3>
-        <p class="wallet-body">
-          <strong>@observer-protocol/mppx-op-account</strong> is a drop-in viem account for MPP/Tempo (mppx). It verifies a signed, revocable delegation against every session escrow and voucher at the signing boundary, fail-closed: per-transaction ceiling, counterparty, temporal window, and a cross-session velocity cap. Composes with mppx unchanged, no core change.
-        </p>
-        <div class="wallet-pills">
-          <span class="pill">mppx-op-account · viem account</span>
-          <span class="pill">escrow + voucher enforcement</span>
-          <span class="pill">fail-closed at the key</span>
-        </div>
-        <div class="wallet-links">
-          <a href="https://github.com/observer-protocol/mppx-op-account" target="_blank" rel="noopener" class="wallet-link">mppx-op-account ↗</a>
-          <a href="https://www.npmjs.com/package/@observer-protocol/mppx-op-account" target="_blank" rel="noopener" class="wallet-link">npm ↗</a>
-        </div>
-      </div>
-
-      <!-- Hermes · runtime pointer -->
-      <div class="wallet-card">
-        <div class="wallet-tag">Nous Research Hermes · Supported runtime</div>
-        <h3>Hermes <span class="wallet-h3-sub">Agent Runtime</span></h3>
-        <p class="wallet-body">
-          <strong>hermes-gate</strong> adds a spend mandate layer to Hermes agents, enforced below the skill layer so a hostile skill goes through the gate and gets denied. EVM stablecoins enforced; Lightning advisory. Three-command setup, offline verification.
-        </p>
-        <div class="wallet-pills">
-          <span class="pill">hermes-gate</span>
-          <span class="pill">EVM stablecoins · Lightning advisory</span>
-          <span class="pill">fail-closed</span>
-        </div>
-        <div class="wallet-links">
-          <a href="./hermes-agents.html" class="wallet-link">Hermes Agents guide →</a>
-        </div>
-      </div>
-
-    </div>
-
-    <p style="margin-top: 1.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-faint); letter-spacing: 0.04em;">
-      Full integration spec on the <a href="./architecture.html#wallet-standards" style="color: var(--amber); text-decoration: none; border-bottom: 1px solid var(--amber-dim);">architecture page →</a>
-    </p>
-  </div>
-</section>
-
-<!-- AGENTIC TERMINAL -->
+<!-- 02 · THE GAP -->
 <section style="background: var(--bg2); border-top: 1px solid var(--border);">
   <div class="section-inner">
-    <div class="section-label">Agentic Terminal</div>
-    <h2>Trust intelligence built on the open protocol.</h2>
+    <div class="section-label">02 · The gap</div>
+    <h2>Your systems record what was decided.<br/>Nothing records what was authorised.</h2>
     <p class="section-intro">
-      Observer Protocol is free infrastructure. Agentic Terminal is the intelligence and dashboard layer built on top: for individuals managing their own agent identity, and enterprises managing agent fleets at scale.
+      Every institution deploying agents already has two systems that look like they cover this. Neither one does, and neither can stop the other.
+    </p>
+    <div class="gap-pair">
+      <div class="gap-cell">
+        <h3>What you have · the decision log</h3>
+        <p>Your application writes down what the agent did and when. It is a record produced after the fact, by the same system that took the action, and it can be reconstructed, backfilled, or simply be wrong. It answers <em>what happened</em>. It cannot answer whether the thing that happened was permitted.</p>
+      </div>
+      <div class="gap-cell">
+        <h3>What you have · the payment record</h3>
+        <p>Your rail writes down that value moved. It is authoritative about settlement and silent about everything before it. By the time the instruction reaches the rail the decision is already made, and on the instant rails there is no state left in which it can be recalled.</p>
+      </div>
+    </div>
+    <div class="gap-pair" style="margin-top:1px;">
+      <div class="gap-cell absent" style="grid-column: 1 / -1;">
+        <h3>What nothing records · the authority</h3>
+        <p>Which human granted this machine the right to act, bounded how, for how long, and against which counterparties. That fact exists at the moment of delegation and nowhere afterwards. It is not in the decision log, because the log is written by the thing being constrained. It is not in the payment record, because the rail never saw it. When a supervisor asks whether an agent acted inside its authority, there is no artifact to hand them.</p>
+      </div>
+    </div>
+    <p class="gap-punch">
+      Two systems record two things, and neither one can stop the other. Observer Protocol records the third, and refuses before either of the other two is reached.
+    </p>
+  </div>
+</section>
+
+<!-- 03 · THREE PRIMITIVES -->
+<section style="background: var(--bg); border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">03 · Three primitives</div>
+    <h2>What refuses, and what proves.</h2>
+    <p class="section-intro">
+      Three artifacts. Each one is a signed object, each one is checkable by someone who does not trust us, and the second one is the product.
+    </p>
+    <div class="prim-grid">
+      <div class="prim">
+        <div class="prim-num">01 · THE MANDATE</div>
+        <h3>Signed by the principal, out of the agent's reach.</h3>
+        <p>A credential the human signs, not the machine. It states a ceiling, a counterparty set, a window, and whether a decision must be cited before the action is permitted. The agent holds a key that can spend inside it and no key that can widen it. Rewriting the mandate is not a permission the agent has to escalate to; it is a signature it cannot produce.</p>
+      </div>
+      <div class="prim">
+        <div class="prim-num">02 · THE REFUSAL</div>
+        <h3>A request outside mandate produces no instruction.</h3>
+        <p>Not a warning. Not a flag on a dashboard for someone to review on Monday. No instruction is emitted, so there is nothing downstream to recall, reverse, or dispute. The check fails closed: if the mandate cannot be read, or the revocation status cannot be established, the answer is no. And the refusal is itself a signed record, which is the part nobody else publishes.</p>
+      </div>
+      <div class="prim">
+        <div class="prim-num">03 · THE ATTESTATION</div>
+        <h3>What was decided, under which policy, over which inputs.</h3>
+        <p>A signed statement naming the decision, the policy version and its content hash, a digest of the inputs it ran over, the outcome, and the party that decided, kept separate from the party that issued the mandate. It verifies offline, against public keys, with nothing from us. It travels with the counterparty rather than living in our database.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 · THE REFUSAL -->
+<section id="refusal" style="background: var(--bg2); border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">04 · The refusal register</div>
+    <h2>Everyone shows you the payments that succeeded.</h2>
+    <p class="section-intro">
+      A successful payment demonstrates that a system can move money. It says nothing about whether the system could have stopped. So here is the other record: a payment that was requested, was fully fundable, had a route, and did not happen. One entry, on a live rail, with the money there.
+    </p>
+
+    <div class="refusal-wrap">
+      <div class="refusal-head">
+        <span>Entry 001 · Bitcoin mainnet · Lightning</span>
+        <span>27 July 2026</span>
+      </div>
+      <div class="refusal-body">
+        <div class="refusal-rows">
+          <div class="refusal-row"><span class="k">Enforcement point</span><span class="v">LND RPC middleware · lnd v0.20.1-beta</span></div>
+          <div class="refusal-row"><span class="k">Trigger</span><span class="v">macaroon caveat<br/><code>lnd-custom op-mandate maxi-l402-v1</code></span></div>
+          <div class="refusal-row"><span class="k">Requested</span><span class="v">200,000 sat</span></div>
+          <div class="refusal-row"><span class="k">Mandate ceiling</span><span class="v">100,000 sat per transaction</span></div>
+          <div class="refusal-row"><span class="k">Local balance at the time</span><span class="v">481,500 sat</span></div>
+          <div class="refusal-row"><span class="k">Route</span><span class="v">live ACINQ channel, available</span></div>
+          <div class="refusal-row"><span class="k">Outcome</span><span class="v deny">REFUSED · ceiling</span></div>
+          <div class="refusal-row"><span class="k">Control · same destination, same channel, same RPC method</span><span class="v allow">10 sat → SETTLED</span></div>
+        </div>
+        <div class="refusal-note">
+          <p><strong style="color:var(--text);">The payment could have succeeded.</strong> There was more than four times the balance required, a live channel to a well-connected peer, and a working node. Nothing about the network prevented it. The mandate did.</p>
+          <p>The control matters as much as the refusal. Ten sats to the same destination, over the same channel, by the same RPC method, settled. So the denial is the mandate acting on the amount, not a broken node, a closed channel, or a route that was never there. A refusal you cannot distinguish from a failure is not evidence of anything.</p>
+          <p>Stripping the caveat does not help: it dies on the macaroon HMAC chain. A hand-rolled gRPC client running as a different user with a sanctioned macaroon was refused by the node the same way, and the middleware defaults to deny across all 70 RPC methods and fails closed if it dies.</p>
+        </div>
+      </div>
+      <div class="scope-limits">
+        <strong>What this entry does not show.</strong>
+        The mandate issuer was a demonstration <code>did:key</code>, not Observer Protocol's production issuer.
+        · One node, ours, so this is enforcement at a node and not closure of the Lightning network.
+        · The macaroon caveat is a sender-side trigger in the payer's own credential; it is not visible to the payee, who sees an HTLC and a preimage like any other payment.
+      </div>
+    </div>
+
+    <p style="margin-top:1.5rem; font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-faint); letter-spacing:0.04em; max-width:720px; line-height:1.9;">
+      This register has one entry because one refusal has happened on a live rail with funds present. It will grow as more do. We would rather show you one you can check than a list you have to sort.
+    </p>
+  </div>
+</section>
+
+<!-- 05 · VERIFY IT YOURSELF -->
+<section id="verify" style="background: var(--bg); border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">05 · Verify it yourself</div>
+    <h2>No API key. No bearer token. No account.<br/>No call back to us at verification time.</h2>
+    <p class="section-intro">
+      The strongest claim we make is that you do not need our cooperation to check our work. That claim is worth nothing unless you can run it, so here it is, against a credential that is live on this domain right now.
+    </p>
+
+    <div class="verify-grid">
+      <div class="code-block">
+        <div class="code-head">install · fetch · verify</div>
+<pre><span class="c">$</span> <span class="k">npm install</span> @observer-protocol/policy-engine
+
+<span class="c">$</span> <span class="k">curl -O</span> https://observerprotocol.org/credentials/\
+maxi-0001-trading-mandate-2026-08.json
+
+<span class="c">// verify.mjs</span>
+<span class="k">import</span> { verifyCredentialObject }
+  <span class="k">from</span> <span class="s">'@observer-protocol/policy-engine'</span>;
+<span class="k">import</span> fs <span class="k">from</span> <span class="s">'node:fs'</span>;
+
+<span class="k">const</span> credential = JSON.parse(
+  fs.readFileSync(<span class="s">'./maxi-0001-trading-mandate-2026-08.json'</span>));
+
+<span class="k">const</span> config = {
+  credentialPath: <span class="s">'maxi-0001-trading-mandate-2026-08.json'</span>,
+  <span class="c">// pin the issuer. a verifier that trusts</span>
+  <span class="c">// whoever the credential names is not</span>
+  <span class="c">// verifying, it is agreeing.</span>
+  issuerDid: <span class="s">'did:web:bitcoinsingularity.ai'</span>,
+  schemaAllowlist: [<span class="s">'https://observerprotocol.org'</span>
+    + <span class="s">'/schemas/delegation/v2.2.json'</span>],
+  revocation: { maxStalenessHours: 24,
+    onUnreachable: <span class="s">'cache-then-deny'</span>,
+    fetchTimeoutMs: 5000 },
+  didCache: { maxStalenessHours: 24 },
+  cacheDir: <span class="s">'/tmp/op-cache'</span>,
+  auditLog: <span class="s">'/tmp/op-cache/audit.log'</span>,
+  rails: {}, allowContractCalls: <span class="k">false</span>,
+};
+
+console.log(<span class="k">await</span> verifyCredentialObject(
+  credential, config, Date.now()));
+
+<span class="c">$</span> <span class="k">node</span> verify.mjs
+<span class="o">{ allow: true, reason: 'credential verified' }</span></pre>
+      </div>
+      <div>
+        <h3 style="font-family:'Fraunces',serif; font-size:1.3rem; font-weight:600; margin-bottom:1rem;">What it reads, and from where.</h3>
+        <p style="font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1rem;">
+          Everything the verifier checks is public: the issuer's DID document, the schema, and the revocation status list. It fetches them over ordinary HTTPS from the origins the credential names. There is no Observer Protocol API in the path, nothing to authenticate to, and nothing we can withhold to make a credential stop verifying.
+        </p>
+        <p style="font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1rem;">
+          Point <code>offline.didDocumentPath</code> at a local copy of the issuer's DID document and it makes no network call at all. That is the mode an examiner uses.
+        </p>
+        <p style="font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1.5rem;">
+          <strong style="color:var(--text);">It fails closed, and it will refuse us too.</strong> <code>onUnreachable: 'cache-then-deny'</code> is the only accepted value: if the revocation list cannot be fetched, a cached answer is used and then the credential is denied. A status list hosted on an origin other than the pinned issuer's is refused until you allowlist it, and Observer Protocol's own clause-zero revocation demonstration is exactly such a pair, so it does not verify out of the box. That limit is published in the package.
+        </p>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-faint); line-height:2; border-top:1px solid var(--border); padding-top:1rem;">
+          <div>package · <span style="color:var(--amber);">@observer-protocol/policy-engine</span> 1.0.0-rc.5</div>
+          <div>licence · MIT · self-hostable · no account</div>
+          <div>limits · <a href="https://github.com/observer-protocol/op-policy-engine/blob/main/KNOWN-LIMITS.md" target="_blank" rel="noopener" style="color:var(--amber); text-decoration:none;">KNOWN-LIMITS.md ↗</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 · ONE CONTROL, BOTH RAILS -->
+<section style="background: var(--bg2); border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">06 · One control, both rails</div>
+    <h2>Enforcement before the instruction is the only kind that survives instant settlement.</h2>
+    <p class="section-intro">
+      This is not a design preference. It falls out of the message specifications for the real-time rails, and it is the reason the control sits where it does.
+    </p>
+
+    <div class="gap-pair" style="margin-top:0;">
+      <div class="gap-cell">
+        <h3>What the specifications say</h3>
+        <p>Faster Payments, SEPA Instant, FAST and PayNow carry no state in which a submitted instruction can still be stopped. There is no pending window, no recall leg that a supervisor can reach, no status the receiving institution is obliged to honour a reversal from. Settlement is the first and last state.</p>
+      </div>
+      <div class="gap-cell">
+        <h3>Where a hold actually lives</h3>
+        <p>Where an institution does offer a hold, it sits in that bank's own API, above the clearing rail and inside one perimeter. It is a product feature of a single participant, not a property of the rail, and it does not travel to a counterparty at another institution.</p>
+      </div>
+    </div>
+
+    <p class="gap-punch" style="font-size:1.15rem;">
+      If the only stoppable moment is before the instruction exists, then that is where the control has to be. Everything after it is reporting.
+    </p>
+
+    <h3 style="font-family:'Fraunces',serif; font-size:1.4rem; font-weight:600; margin:3.5rem 0 0.75rem;">One field, one parser, fiat and chain.</h3>
+    <p style="font-size:0.95rem; color:var(--text-dim); line-height:1.8; font-weight:300; max-width:680px;">
+      A rail identifier that needs a branch for fiat is a rail identifier that will grow a parallel schema. <code>ClearingSystemCode:PaymentProduct</code> mirrors CAIP-2's <code>namespace:reference</code>, so one field carries both and <code>eip155:8453</code> already parses under it unchanged. The left half resolves against the ISO 20022 external clearing system code set, which appears in every <code>pain.001</code>, so it is not a vocabulary we invent or maintain.
+    </p>
+    <table class="rail-table">
+      <thead><tr><th>Identifier</th><th>Rail</th><th>Why the right half exists</th></tr></thead>
+      <tbody>
+        <tr><td class="id">USABA:ACH.CCD</td><td>ACH credit, United States</td><td>ACH and Fedwire share a clearing system and are different products</td></tr>
+        <tr><td class="id">GBDSC:FPS</td><td>Faster Payments, United Kingdom</td><td>Distinguishes FPS from Bacs and CHAPS on the same code</td></tr>
+        <tr><td class="id">SGIBG:PAYNOW</td><td>PayNow, Singapore</td><td>Distinguishes PayNow from GIRO and FAST</td></tr>
+        <tr><td class="id">eip155:8453</td><td>Base</td><td>CAIP-2 already; no change, no branch</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:1rem; font-family:'IBM Plex Mono',monospace; font-size:0.66rem; color:var(--text-faint); letter-spacing:0.04em; line-height:1.9; max-width:720px;">
+      <strong style="color:var(--amber);">Status: proposed.</strong> This grammar is a design decision, not yet a published schema. Credentials issued today carry <code>rail</code> as a free-text string, and the shipped <code>delegation/v2.6</code> schema documents it that way. Published schema URLs are immutable, so adopting this convention means a new schema version rather than an edit to an existing one. Until that version ships, this is what the field is becoming, not what it currently contains.
+    </p>
+  </div>
+</section>
+
+<!-- 07 · OP AND AT -->
+<section style="background: var(--bg); border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">07 · Observer Protocol and Agentic Terminal</div>
+    <h2>Open primitives. Operated surface.</h2>
+    <p class="section-intro">
+      OP is what refuses and what proves. Agentic Terminal is how an institution operates it. The line between them is not open-versus-paid; it is primitive-versus-operation.
     </p>
     <div class="at-cards">
-      <a href="https://agenticterminal.io/sovereign" class="at-card">
-        <div class="at-card-tag">Individual · Free</div>
-        <h3>Sovereign Dashboard</h3>
+      <div class="at-card" style="border-color: var(--amber-dim);">
+        <div class="at-card-tag">Observer Protocol · MIT · self-hostable</div>
+        <h3>The primitives that refuse and prove</h3>
         <div class="at-card-pills">
-          <div class="pill">Self-sovereign identity</div>
-          <div class="pill">Client-side keypair</div>
-          <div class="pill">AES-256 encrypted</div>
+          <div class="pill">Mandate issuance</div>
+          <div class="pill">Policy evaluation</div>
+          <div class="pill">Fail-closed refusal</div>
+          <div class="pill">Signed attestations</div>
+          <div class="pill">Offline verification</div>
+          <div class="pill">Rail adapters</div>
+          <div class="pill">Schemas &amp; engine</div>
         </div>
-        <p>Own your agent identity without a platform account. Register on Observer Protocol, manage your VAC, and control your cryptographic credentials, entirely client-side.</p>
-        <div class="at-card-cta">agenticterminal.io/sovereign →</div>
-      </a>
-      <a href="https://agenticterminal.io" class="at-card">
-        <div class="at-card-tag">Enterprise · Paid</div>
-        <h3>AT Enterprise</h3>
+        <p>Signed attestations for decisions, refusals and approvals. Verification that needs nothing from us. Spec-governed, and you can run all of it yourself without telling us you have.</p>
+        <div class="at-card-cta"><a href="./architecture.html" style="color:var(--amber); text-decoration:none;">Architecture →</a></div>
+      </div>
+      <a href="./agentic-terminal.html" class="at-card">
+        <div class="at-card-tag">Agentic Terminal · commercial · in your perimeter</div>
+        <h3>The operating surface for an institution</h3>
         <div class="at-card-pills">
-          <div class="pill">Fleet management</div>
-          <div class="pill">Delegation workflows</div>
-          <div class="pill">Compliance &amp; audit</div>
+          <div class="pill">Request/approve separation</div>
+          <div class="pill">Approvals queue</div>
+          <div class="pill">Entitlement &amp; roles</div>
+          <div class="pill">Audit export</div>
+          <div class="pill">Evidence operations</div>
         </div>
-        <p>Manage agent fleets with trust scores, delegation credential approval workflows, KYB linkage, and compliance audit trails. The enterprise layer for organizations deploying autonomous agents at scale.</p>
-        <div class="at-card-cta">agenticterminal.io →</div>
+        <p>The approver cannot set the terms of what they are approving. Deployed inside your infrastructure, operated by your team or ours. Never holds funds. Never holds credentials.</p>
+        <div class="at-card-cta">Agentic Terminal →</div>
       </a>
     </div>
   </div>
 </section>
 
-<!-- PRINCIPLES -->
+<!-- 08 · WHERE WE ARE -->
+<section style="background: var(--bg2); border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">08 · Where we are</div>
+    <h2>The register, stated plainly.</h2>
+    <p class="section-intro">
+      Written so that a reader who checks it finds it accurate rather than generous. Where a claim is weaker than we would like it to be, the claim moves toward the evidence.
+    </p>
+    <div class="register">
+      <div class="reg-row">
+        <div>
+          <div class="reg-what">Refusal enforced on a live rail, funds present</div>
+          <div class="reg-detail">Bitcoin mainnet Lightning, 27 July 2026. Our node, demonstration issuer, one profile. Not closure of the rail. Section 04 above carries the full scope.</div>
+        </div>
+        <div class="reg-state live">Demonstrated</div>
+      </div>
+      <div class="reg-row">
+        <div>
+          <div class="reg-what">Enforcement at a wallet signing boundary</div>
+          <div class="reg-detail">Engines published for Tether WDK (<code>wdk-op-policy</code>), MPP/Tempo (<code>mppx-op-account</code>) and OWS (<code>ows-op-policy</code>), from a shared core. The Aqua demonstration runs in an instrumented build on Liquid; the hook is not in shipped Aqua.</div>
+        </div>
+        <div class="reg-state demo">Published</div>
+      </div>
+      <div class="reg-row">
+        <div>
+          <div class="reg-what">Offline verification with nothing from us</div>
+          <div class="reg-detail"><code>@observer-protocol/policy-engine</code> 1.0.0-rc.5 on npm, MIT. Section 05 is a transcript of it running against a credential served from this domain.</div>
+        </div>
+        <div class="reg-state live">Live</div>
+      </div>
+      <div class="reg-row">
+        <div>
+          <div class="reg-what">Credentials published here that verify against that engine</div>
+          <div class="reg-detail">Two of the five. The two <code>PolicyEvaluationCredential</code> artifacts carry no <code>credentialSchema</code> and are refused by our own verifier on structure; one older trading mandate is missing <code>authorizationConfig.policy</code>. Re-issuing them is a signing operation, not an edit, and it has not happened yet.</div>
+        </div>
+        <div class="reg-state demo">2 of 5</div>
+      </div>
+      <div class="reg-row">
+        <div>
+          <div class="reg-what">Settlement attested by the protocol</div>
+          <div class="reg-detail">One. The <code>verified_events</code> table holds 56 rows; 55 of them predate the current cutover and carry <code>proof_strength = 'unverified'</code>, which is what that column exists to record. We do not count them as verifications and neither should you.</div>
+        </div>
+        <div class="reg-state demo">1</div>
+      </div>
+      <div class="reg-row">
+        <div>
+          <div class="reg-what">Enforcement demonstrated on a fiat rail</div>
+          <div class="reg-detail">None. The rail grammar in section 06 is a design decision; no fiat instruction has been refused or settled under a mandate. The argument for why the control belongs before the instruction is drawn from the message specifications, not from our own traffic.</div>
+        </div>
+        <div class="reg-state no">Not yet</div>
+      </div>
+      <div class="reg-row">
+        <div>
+          <div class="reg-what">Specification</div>
+          <div class="reg-detail">AIP v0.9, ratified 25 July 2026, tagged <code>v0.9</code>, review record in the public repository. Additive over v0.6; a v0.6 implementation remains conforming.</div>
+        </div>
+        <div class="reg-state live">Ratified</div>
+      </div>
+      <div class="reg-row">
+        <div>
+          <div class="reg-what">Decision attestation in a published schema</div>
+          <div class="reg-detail">Not yet. The credential shape and the separation of decider from issuer are specified and implemented; <code>requiresDecisionAttestation</code> is scoped for the next schema version. Schema URLs are immutable, so it arrives as a new version.</div>
+        </div>
+        <div class="reg-state no">Scoped</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 09 · PRINCIPLES -->
 <section class="principles-section" style="border-top: 1px solid var(--border);">
   <div class="section-inner">
-    <div class="section-label">Principles</div>
+    <div class="section-label">09 · Principles</div>
     <h2>Don't trust. Verify.</h2>
     <p class="section-intro">
-      Observer Protocol is built on four commitments that do not bend to convenience.
+      Four commitments that do not bend to convenience, including when the convenience would be ours.
     </p>
     <div class="principles-grid">
       <div class="principle">
         <div class="principle-num">01</div>
-        <h4>Don't trust claims. Verify behavior.</h4>
-        <p>Agent reputation is not what an agent says. It is the cryptographic record of what an agent did. Behavioral identity is the only model that survives adversarial conditions.</p>
+        <h4>Don't trust claims. Verify behaviour.</h4>
+        <p>What a system did is checkable. What it says about itself is not. Every artifact this protocol produces is built to be checked by someone who has no reason to believe us.</p>
       </div>
       <div class="principle">
         <div class="principle-num">02</div>
-        <h4>The key is the identity.</h4>
-        <p>Public key hash is the canonical identity. Alias is UX. Verification always checks against the cryptographic key, never the label. This model works across every chain.</p>
+        <h4>Authority is granted, never assumed.</h4>
+        <p>A machine holds no authority it was not explicitly given by a human who signed for it. Absence of a mandate is not permission to proceed carefully; it is refusal. The default is no.</p>
       </div>
       <div class="principle">
         <div class="principle-num">03</div>
         <h4>Open source. Always.</h4>
-        <p>Verification logic is public, reproducible, and auditable. No authority required. Self-hostable by design: OP does not custody funds, execute payments, or control access.</p>
+        <p>Verification logic is public, reproducible and auditable. No authority required. Self-hostable by design: OP does not custody funds, execute payments, or control access.</p>
       </div>
       <div class="principle">
         <div class="principle-num">04</div>
-        <h4>The record is permanent.</h4>
-        <p>Verified events are timestamped forever. Historical behavioral data cannot be backfilled. Every day of verified data collected from day one is irreplaceable.</p>
+        <h4>The evidence is portable, or it isn't evidence.</h4>
+        <p>An attestation that only means something inside our system is a log entry. Ours verify against public keys, in your hands, after we are gone. We are not the custodian of the proof.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- GENESIS -->
+<section style="background: var(--bg); border-top: 1px solid var(--border); padding: 4rem 2.5rem;">
+  <div class="section-inner">
+    <div class="section-label">Origin</div>
+    <h2 style="font-size: clamp(1.4rem, 2.2vw, 1.9rem);">The first one, and what it actually proved.</h2>
+    <p style="font-size:0.95rem; color:var(--text-dim); line-height:1.8; font-weight:300; max-width:760px; margin-top:1rem;">
+      On 22 February 2026 two agents built by different developers, running on different stacks, settled a payment on Bitcoin mainnet against authority that had been granted in advance. The point was never that no human was in the loop. The point is that the human was in the loop <em>first</em>, at the moment the authority was granted, and that what happened afterwards can be checked by anyone against the payment hash.
+    </p>
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-faint); margin-top:1.5rem; line-height:2; word-break:break-all;">
+      <div>date · 22 February 2026 · Lightning · Bitcoin mainnet</div>
+      <div>payment hash · <span style="color:var(--amber);">6a30ba7fff332c4eb8f368da804b663a20bf59ae1362d76ac1d10c298d4cd875</span></div>
+      <div><a href="/genesis" style="color:var(--amber); text-decoration:none;">The genesis record →</a></div>
     </div>
   </div>
 </section>
@@ -1162,23 +1137,23 @@
   <div class="footer-inner">
     <div>
       <div class="footer-brand">Observer Protocol</div>
-      <div class="footer-tagline">The trust layer for the agentic economy.</div>
+      <div class="footer-tagline">Authority granted once. Held to on every action.</div>
       <div class="footer-note">
-        Observer Protocol is free infrastructure: open source, CC BY 4.0.<br/>
-        We monetize Agentic Terminal intelligence, not the protocol.
+        Observer Protocol is open infrastructure: MIT, self-hostable, CC BY 4.0 for the specification.<br/>
+        The protocol is not the product we sell. Agentic Terminal is.
       </div>
     </div>
     <div class="footer-links">
       <a href="./architecture.html">Architecture</a>
       <a href="./docs.html">Docs</a>
-      <a href="./agentic-terminal.html">Agentic Terminal</a>
       <a href="./registry.html">Registry</a>
-      
-      <a href="https://github.com/observer-protocol" target="_blank">GitHub ↗</a>
+      <a href="./supervisors.html">Supervisors</a>
+      <a href="./agentic-terminal.html">Agentic Terminal</a>
+      <a href="https://github.com/observer-protocol" target="_blank" rel="noopener">GitHub ↗</a>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>Observer Protocol v1.3 · CC BY 4.0 · observerprotocol.org</span>
+    <span>AIP v0.9 · ratified 25 July 2026 · CC BY 4.0 · observerprotocol.org</span>
     <span>© 2026 Observer Protocol</span>
   </div>
 </footer>
