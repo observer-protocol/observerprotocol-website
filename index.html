@@ -811,7 +811,7 @@
       <div class="prim">
         <div class="prim-num">03 · THE ATTESTATION</div>
         <h3>What was decided, under which policy, over which inputs.</h3>
-        <p>A signed statement naming the decision, the policy version and its content hash, a digest of the inputs it ran over, the outcome, and the party that decided, kept separate from the party that issued the mandate. It verifies offline, against public keys, with nothing from us. It travels with the counterparty rather than living in our database.</p>
+        <p>A signed statement naming the decision, the policy version and its content hash, a digest of the inputs it ran over, the outcome, and the party that decided, kept separate from the party that issued the mandate. It verifies offline, against public keys, with nothing from us &mdash; for the credentials the published engine knows how to read. <strong>That set is delegation credentials today, and it does not yet include the refusal record below.</strong> The signature on a refusal is sound and checks out under standard Data Integrity tooling, but reconstructing the payload that signature covers needs code we have not published, so verifying one end to end is currently something only we can do. Publishing that is the work; claiming it before then would make this whole page worth less. It travels with the counterparty rather than living in our database.</p>
       </div>
     </div>
   </div>
@@ -1008,7 +1008,7 @@ console.log(<span class="k">await</span> verifyCredentialObject(
           <div class="pill">Audit export</div>
           <div class="pill">Evidence operations</div>
         </div>
-        <p>The approver cannot set the terms of what they are approving. Deployed inside your infrastructure, operated by your team or ours. Never holds funds. Never holds credentials.</p>
+        <p>The approver cannot set the terms of what they are approving. Deployed inside your infrastructure, operated by your team or ours. Never holds funds. Never takes custody of credentials &mdash; the enforcement point reads the mandate it enforces, and holds no key that could issue, alter or re-sign one.</p>
         <div class="at-card-cta">Agentic Terminal →</div>
       </a>
     </div>
@@ -1065,6 +1065,20 @@ console.log(<span class="k">await</span> verifyCredentialObject(
           <div class="reg-detail">None. The rail grammar in section 06 is a design decision; no fiat instruction has been refused or settled under a mandate. The argument for why the control belongs before the instruction is drawn from the message specifications, not from our own traffic.</div>
         </div>
         <div class="reg-state no">Not yet</div>
+      </div>
+      <div class="reg-row">
+        <div>
+          <div class="reg-what">A reader can tell they have been shown every artifact</div>
+          <div class="reg-detail">Every artifact here verifies individually. <strong>Nothing proves you have been shown all of them</strong>, and that gap is not closed by anything on this site. The cryptography for transparency logs is a solved problem; the questions that make one meaningful are not. Who operates the log, who is obliged to publish to it, and what a gap in it entitles you to conclude are governance questions with no answer we can supply on our own. We would rather record this as unsolved than let the verifiable parts imply it.</div>
+        </div>
+        <div class="reg-state no">Not established</div>
+      </div>
+      <div class="reg-row">
+        <div>
+          <div class="reg-what">The decider is independent of the enforcement point</div>
+          <div class="reg-detail">Section 03 says the decider is kept separate from the issuer, and that is true: the decider in our demonstrations is a <strong>separately-keyed <code>did:key</code></strong>, <strong>cryptographically distinct from the enforcement point</strong>, and you can <strong>verify that separation offline from its own DID</strong>. <strong>What it is not is a second party.</strong> It is a fixture we generated and control &mdash; <strong>not a published organisation</strong> and <strong>not an independent third party</strong> with its own interests. The separation is real as cryptography and currently means nothing as governance. <strong>Proving a decider is genuinely independent needs a real second party</strong>, and until one exists this row says fixture rather than independent.</div>
+        </div>
+        <div class="reg-state demo">Fixture</div>
       </div>
       <div class="reg-row">
         <div>
