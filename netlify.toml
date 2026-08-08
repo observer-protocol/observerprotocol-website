@@ -151,6 +151,33 @@
   to = "/credentials/:id.json"
   status = 200
 
+# Retired 2026-08-08. These three quickstarts documented agent reputation scoring,
+# a surface the protocol no longer offers. quickstart-stripe additionally documented
+# observer.reputationMiddleware, which exists at no published version of the package
+# it named.
+#
+# 410 rather than 404, deliberately: 404 says "nothing is here", which invites a
+# crawler to retry and a reader to assume a broken link. 410 says "this existed and
+# was withdrawn", which is the true statement. No redirect, because no remaining page
+# covers the same rail and implying one would be a different inaccuracy.
+[[redirects]]
+  from = "/quickstart-stripe.html"
+  to = "/gone.html"
+  status = 410
+  force = true
+
+[[redirects]]
+  from = "/quickstart-l402.html"
+  to = "/gone.html"
+  status = 410
+  force = true
+
+[[redirects]]
+  from = "/quickstart-solana.html"
+  to = "/gone.html"
+  status = 410
+  force = true
+
 # Serve status list and credential JSON with correct content-type + CORS.
 [[headers]]
   for = "/status-lists/*"

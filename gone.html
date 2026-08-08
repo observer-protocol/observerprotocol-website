@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Removed on purpose · Observer Protocol</title>
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,600;0,900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#0a0a08; --bg2:#111110; --border:#2a2a26; --amber:#f5a623; --amber-dim:#b8791a;
+      --text:#e8e8e0; --text-dim:#888880; --text-faint:#444440; --teal:#5eead4;
+    }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      background:var(--bg); color:var(--text); font-family:'IBM Plex Sans',sans-serif;
+      font-size:16px; line-height:1.6; min-height:100vh;
+      display:flex; align-items:center; justify-content:center; padding:2.5rem;
+    }
+    .wrap { max-width:640px; }
+    code { font-family:'IBM Plex Mono',monospace; font-size:0.9em; color:var(--teal); }
+    .status {
+      font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--amber); border:1px solid var(--amber-dim);
+      background:#f5a62322; padding:0.3rem 0.8rem; display:inline-block; margin-bottom:1.75rem;
+    }
+    h1 {
+      font-family:'Fraunces',serif; font-size:clamp(1.8rem,4vw,2.6rem); font-weight:900;
+      line-height:1.12; letter-spacing:-0.02em; margin-bottom:1.25rem;
+    }
+    p { color:var(--text-dim); line-height:1.85; font-weight:300; margin-bottom:1.1rem; }
+    p strong { color:var(--text); font-weight:500; }
+    .links {
+      margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border);
+      display:flex; gap:1.75rem; flex-wrap:wrap;
+      font-family:'IBM Plex Mono',monospace; font-size:0.72rem;
+    }
+    .links a { color:var(--amber); text-decoration:none; }
+    .links a:hover { color:var(--text); }
+    .foot {
+      margin-top:1.5rem; font-family:'IBM Plex Mono',monospace; font-size:0.62rem;
+      color:var(--text-faint); line-height:1.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="status">410 · Gone</div>
+    <h1>This page was removed on purpose.</h1>
+    <p>
+      Not a broken link and not a server fault. The page that lived at this address documented a
+      capability Observer Protocol has retired, and it was taken down rather than left to mislead
+      someone who followed it.
+    </p>
+    <p>
+      <strong>There is no direct replacement, and pointing you at one would be its own inaccuracy.</strong>
+      The pages removed here described agent reputation scoring. That is no longer part of what the
+      protocol offers, so the honest answer is that the thing you were looking for is not somewhere
+      else on this site under a new name.
+    </p>
+    <p>
+      What Observer Protocol does now is narrower and easier to check: a mandate a person signs, a
+      refusal when a request falls outside it, and a signed record you can verify without asking us
+      for anything.
+    </p>
+    <div class="links">
+      <a href="/docs.html">Docs</a>
+      <a href="/verify.html">Verify a record</a>
+      <a href="/quickstart.html">Rail quickstarts</a>
+      <a href="/">Home</a>
+    </div>
+    <div class="foot">
+      <code>410 Gone</code> rather than <code>404 Not Found</code>, deliberately: 404 invites a crawler
+      to retry and a reader to assume a mistake. This resource existed and was withdrawn.
+    </div>
+  </div>
+</body>
+</html>
