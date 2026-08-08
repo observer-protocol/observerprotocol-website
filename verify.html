@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify a record · Observer Protocol</title>
+  <meta name="description" content="You have an Observer Protocol artifact and want to know what it establishes. Here is how to check it yourself, what each field proves, and what it does not." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;0,900;1,300;1,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#0a0a08; --bg2:#111110; --bg3:#1a1a18; --border:#2a2a26;
+      --amber:#f5a623; --amber-dim:#b8791a; --amber-glow:#f5a62322;
+      --green:#4ade80; --green-dim:#166534; --red:#f87171; --red-dim:#7f1d1d;
+      --text:#e8e8e0; --text-dim:#888880; --text-faint:#444440; --teal:#5eead4;
+    }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--bg); color:var(--text); font-family:'IBM Plex Sans',sans-serif; font-size:16px; line-height:1.6; overflow-x:hidden; }
+    code { font-family:'IBM Plex Mono',monospace; font-size:0.92em; color:var(--teal); word-break:break-word; }
+
+    nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:0 2.5rem; height:56px; background:rgba(10,10,8,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); }
+    .nav-logo { font-family:'IBM Plex Mono',monospace; font-size:0.8rem; font-weight:500; color:var(--amber); letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; }
+    .nav-links { display:flex; gap:2rem; list-style:none; }
+    .nav-links a { font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--text-dim); text-decoration:none; letter-spacing:0.06em; }
+    .nav-links a:hover { color:var(--text); }
+    .nav-links a.active { color:var(--amber); }
+    .nav-status { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-dim); }
+    @media (max-width:900px) { .nav-links { display:none; } }
+
+    .page-header { padding:9rem 2.5rem 3.5rem; border-bottom:1px solid var(--border); }
+    .page-header-inner { max-width:900px; margin:0 auto; }
+    .breadcrumb { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-faint); letter-spacing:0.1em; margin-bottom:1.5rem; }
+    .breadcrumb span { color:var(--amber); }
+    h1 { font-family:'Fraunces',serif; font-size:clamp(2.2rem,4vw,3.4rem); font-weight:900; line-height:1.08; letter-spacing:-0.02em; margin-bottom:1.25rem; }
+    .page-sub { font-size:1.02rem; color:var(--text-dim); max-width:680px; line-height:1.8; font-weight:300; }
+
+    section { padding:4rem 2.5rem; }
+    .section-inner { max-width:1000px; margin:0 auto; }
+    .section-label { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--amber); margin-bottom:1rem; }
+    h2 { font-family:'Fraunces',serif; font-size:clamp(1.6rem,2.5vw,2.3rem); font-weight:600; line-height:1.18; margin-bottom:1rem; }
+    h3 { font-family:'Fraunces',serif; font-size:1.25rem; font-weight:600; margin-bottom:0.75rem; }
+    .lede { font-size:0.98rem; color:var(--text-dim); max-width:720px; line-height:1.85; margin-bottom:2rem; font-weight:300; }
+    p.body { font-size:0.94rem; color:var(--text-dim); line-height:1.85; font-weight:300; margin-bottom:1rem; max-width:760px; }
+    p.body strong { color:var(--text); font-weight:500; }
+
+    .code { background:var(--bg2); border:1px solid var(--border); font-family:'IBM Plex Mono',monospace; font-size:0.75rem; line-height:1.85; overflow-x:auto; margin:1.5rem 0; }
+    .code .head { padding:0.6rem 1rem; border-bottom:1px solid var(--border); background:var(--bg3); font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-faint); display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+    .code pre { padding:1.25rem; margin:0; white-space:pre; }
+    .c { color:var(--text-faint); } .k { color:var(--amber); } .s { color:var(--teal); } .o { color:var(--green); } .bad { color:var(--red); }
+
+    .files { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--border); margin:2rem 0; }
+    @media (max-width:820px) { .files { grid-template-columns:1fr; } }
+    .file { background:var(--bg2); padding:1.5rem; display:flex; flex-direction:column; gap:0.6rem; }
+    .file .verdict { font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; padding:0.2rem 0.5rem; border:1px solid; align-self:flex-start; }
+    .file .verdict.pass { color:var(--green); border-color:var(--green-dim); background:#4ade8011; }
+    .file .verdict.fail { color:var(--red); border-color:var(--red-dim); background:#f8717111; }
+    .file .fname { font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--text); word-break:break-all; }
+    .file .why { font-size:0.84rem; color:var(--text-dim); line-height:1.7; font-weight:300; }
+    .file .reason { font-family:'IBM Plex Mono',monospace; font-size:0.66rem; color:var(--text-faint); line-height:1.6; border-top:1px solid var(--border); padding-top:0.6rem; margin-top:auto; }
+    .file a { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--amber); text-decoration:none; }
+
+    .fields { border:1px solid var(--border); margin-top:2rem; }
+    .field { border-bottom:1px solid var(--border); padding:1.5rem 1.75rem; }
+    .field:last-child { border-bottom:none; }
+    .field-name { font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--amber); margin-bottom:0.9rem; word-break:break-all; }
+    .field-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:1rem 2rem; }
+    @media (max-width:720px) { .field-grid { grid-template-columns:1fr; } }
+    .fg { font-size:0.87rem; line-height:1.75; font-weight:300; color:var(--text-dim); }
+    .fg b { display:block; font-family:'IBM Plex Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-faint); margin-bottom:0.3rem; font-weight:500; }
+    .fg.limit { color:var(--text-dim); }
+    .fg.limit b { color:var(--amber-dim); }
+
+    .callout { border-left:2px solid var(--amber-dim); background:var(--bg2); padding:1.5rem 1.75rem; margin:2rem 0; }
+    .callout h4 { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber); margin-bottom:0.75rem; }
+    .callout p { font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:0.75rem; }
+    .callout p:last-child { margin-bottom:0; }
+
+    footer { border-top:1px solid var(--border); padding:3rem 2.5rem 2rem; }
+    .footer-inner { max-width:1000px; margin:0 auto; display:flex; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-links { display:flex; gap:1.75rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-faint); text-decoration:none; }
+    .footer-links a:hover { color:var(--text-dim); }
+    .footer-note { max-width:1000px; margin:2rem auto 0; padding-top:1.5rem; border-top:1px solid var(--border); font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:var(--text-faint); line-height:1.9; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="/verify.html" class="active">Verify</a></li>
+    <li><a href="/supervisors.html">Supervisors</a></li>
+    <li><a href="/architecture.html">Architecture</a></li>
+    <li><a href="/docs.html">Docs</a></li>
+    <li><a href="/registry.html">Registry</a></li>
+    <li><a href="/agentic-terminal.html">Agentic Terminal</a></li>
+  </ul>
+  <div class="nav-status">AIP v0.9</div>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb">OBSERVER PROTOCOL · <span>VERIFY A RECORD</span></div>
+    <h1>You have a record.<br/>Here is how to check it.</h1>
+    <p class="page-sub">
+      This page is for the party doing the checking: a supervisor, an external auditor, a counterparty's risk function, someone contesting a determination made about them. You are not our customer and you should not have to become one. Everything below runs on your machine, against artifacts we had no part in putting in your hands.
+    </p>
+  </div>
+</div>
+
+<!-- THE OFFLINE PATH -->
+<section style="background:var(--bg2); border-bottom:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">01 · The offline path</div>
+    <h2>Install, one call, done.</h2>
+    <p class="lede">
+      No API key. No bearer token. No account. Point the verifier at a local copy of the issuer's DID document and it makes no network call at all — not to us, not to anyone. That is the mode to use when the artifact you are holding should not leave your machine.
+    </p>
+
+    <div class="code">
+      <div class="head"><span>verify.mjs</span><span>@observer-protocol/policy-engine 1.0.0-rc.6 · MIT</span></div>
+<pre><span class="c">$</span> <span class="k">npm install</span> @observer-protocol/policy-engine
+<span class="c">$</span> <span class="k">curl -O</span> https://observerprotocol.org/verify-samples/verifies-delegation-mandate.json
+
+<span class="k">import</span> { verifyCredentialObject } <span class="k">from</span> <span class="s">'@observer-protocol/policy-engine'</span>;
+<span class="k">import</span> fs <span class="k">from</span> <span class="s">'node:fs'</span>;
+
+<span class="k">const</span> credential = JSON.parse(fs.readFileSync(<span class="s">'./verifies-delegation-mandate.json'</span>));
+
+<span class="k">const</span> config = {
+  credentialPath: <span class="s">'verifies-delegation-mandate.json'</span>,
+  <span class="c">// Pin the issuer you expect. A verifier that trusts whoever the</span>
+  <span class="c">// credential names as its issuer is not verifying anything,</span>
+  <span class="c">// it is agreeing. A mismatch here is a denial.</span>
+  issuerDid: <span class="s">'did:web:bitcoinsingularity.ai'</span>,
+  schemaAllowlist: [<span class="s">'https://observerprotocol.org/schemas/delegation/v2.2.json'</span>],
+  revocation: { maxStalenessHours: 24, onUnreachable: <span class="s">'cache-then-deny'</span>, fetchTimeoutMs: 5000 },
+  didCache: { maxStalenessHours: 24 },
+  cacheDir: <span class="s">'/tmp/op-cache'</span>, auditLog: <span class="s">'/tmp/op-cache/audit.log'</span>,
+  rails: {}, allowContractCalls: <span class="k">false</span>,
+  <span class="c">// offline: { didDocumentPath: './did.json' }  // no network at all</span>
+};
+
+console.log(<span class="k">await</span> verifyCredentialObject(credential, config, Date.now()));</pre>
+    </div>
+
+    <div class="code">
+      <div class="head"><span>what that prints</span><span>measured 8 August 2026</span></div>
+<pre><span class="o">{
+  allow: true,
+  reason: 'credential verified',
+  notes: [ 'credential carries no credentialStatus entry —
+            revocation not checkable for this credential' ],
+  checks: {
+    validityWindow:   'passed',
+    issuerResolution: 'network',
+    issuerProof:      'eddsa-jcs-2022-verified',
+    signerBoundary:   'not-configured',
+    revocation:       'status-absent'
+  }
+}</span></pre>
+    </div>
+
+    <p class="body">
+      <strong>Read the checks, not the verdict.</strong> <code>allow: true</code> on its own tells you almost nothing. This run says the signature verified against a key published at the issuer's own domain, and it also says that no signer boundary was configured and that this credential carries no revocation entry, so neither of those was established. A verifier that returned only the green result would have hidden both. Both are recorded in the section below as limits of this artifact.
+    </p>
+  </div>
+</section>
+
+<!-- THE FAILING CASES -->
+<section style="background:var(--bg); border-bottom:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">02 · The cases that must fail</div>
+    <h2>A verifier that says yes to everything teaches you nothing.</h2>
+    <p class="lede">
+      The fastest way to establish that a tool is real is to hand you the inputs it must reject. All three files below are served from this domain. The verdicts and reason strings are the engine's own output from a run on 8 August 2026, copied rather than described.
+    </p>
+
+    <div class="files">
+      <div class="file">
+        <div class="verdict pass">allow: true</div>
+        <div class="fname">verifies-delegation-mandate.json</div>
+        <div class="why">A real <code>ObserverDelegationCredential</code>, issued 4 August 2026, byte-identical to the copy under <code>/credentials/</code>.</div>
+        <div class="reason">credential verified</div>
+        <a href="/verify-samples/verifies-delegation-mandate.json">Download →</a>
+      </div>
+      <div class="file">
+        <div class="verdict fail">allow: false</div>
+        <div class="fname">must-not-verify-tampered-signature.json</div>
+        <div class="why">The same credential with <strong>one character changed</strong> inside <code>proof.proofValue</code>. Every other byte is identical. If this verified, nothing else on this site would be worth reading.</div>
+        <div class="reason">[proof] eddsa-jcs-2022 signature does not verify against the issuer key</div>
+        <a href="/verify-samples/must-not-verify-tampered-signature.json">Download →</a>
+      </div>
+      <div class="file">
+        <div class="verdict fail">allow: false</div>
+        <div class="fname">must-not-verify-expired-mandate.json</div>
+        <div class="why">The same credential with its validity window moved into the past. Two defects are present, since the signature no longer covers the altered document either; the window is checked first, so that is what is named.</div>
+        <div class="reason">validity: credential expired (validUntil 2026-02-01T00:00:00Z)</div>
+        <a href="/verify-samples/must-not-verify-expired-mandate.json">Download →</a>
+      </div>
+    </div>
+
+    <div class="callout">
+      <h4>These two files are deliberately broken</h4>
+      <p>They are fixtures for the verifier and are not authorisations for anything. The agent named inside them is real; the documents are not valid credentials about it. <a href="/verify-samples/README.md" style="color:var(--amber); text-decoration:none;">The directory README states this too ↗</a></p>
+    </div>
+
+    <div class="callout" style="border-left-color:var(--red-dim);">
+      <h4 style="color:var(--red);">There is no verifier for a PolicyEvaluationCredential. Not here, not hosted, not anywhere.</h4>
+      <p>The refusal record described elsewhere on this site — the signed artifact saying <em>this action was checked and the decision was X</em> — is a <code>PolicyEvaluationCredential</code>. <strong>You cannot currently verify one with anything we publish, and every one ever issued fails the same way.</strong> Two of them are served under <code>/credentials/</code> and you will hit this immediately if you run the check above across that directory.</p>
+      <p><strong>The signatures are sound.</strong> They verify under canonical W3C Data Integrity tooling — <code>@digitalbazaar/data-integrity</code> with the <code>eddsa-jcs-2022</code> cryptosuite — against <code>did:web:observerprotocol.org#key-3</code>, with no Observer endpoint in the path. The documents are intact and the key is the right one. If you want to check an evaluation credential today, that is the route, and it is not ours.</p>
+      <p><strong>The gap is ours, and it is wider than a missing field.</strong> The published engine has no dispatch on credential type at all: the string <code>PolicyEvaluationCredential</code> does not appear in it. Its one structural validator assumes a delegation credential and checks delegation fields in sequence, so an evaluation credential fails at whichever delegation assumption it reaches first. That is reported as a missing <code>credentialSchema</code>, which is misleading — supplying one moves the failure to <code>credentialSubject.id must be a DID</code>, because an evaluation credential's subject has no identifier. It has a decision. The hosted service is built the same way: its endpoint accepts <code>{agentDid, mandate}</code> and has no other shape.</p>
+      <p><strong>And there is no schema to point at.</strong> No <code>PolicyEvaluationCredential</code> schema is published at any URL. AIP v0.8 defines the credential type and requires schema validation when verifying it, without ever assigning it a schema. That is a contradiction in the specification rather than a bug in a deployment, and closing it means publishing a schema at a permanent URL and adding type dispatch to the engine. Both are protocol decisions and neither is a copy change, so neither was done in the pass that wrote this page.</p>
+      <p>The two artifacts stay published. Removing them would have made this page look clean while leaving the reader to discover the same thing on their own, which is precisely what this page exists to argue against. Everything under <code>/credentials/</code> and <code>/verify-samples/</code> is now checked in CI against a recorded expected verdict, in both directions, so the day this is fixed the build will say so.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FIELD GUIDE -->
+<section style="background:var(--bg2); border-bottom:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">03 · Field by field</div>
+    <h2>What each element lets you establish, and what it does not.</h2>
+    <p class="lede">
+      Every field has a limit. Where a field establishes less than its name suggests, that is said here rather than left for you to discover. Field names and derivations are taken from the published schema at <code>/schemas/delegation/v2.2.json</code> and from the engine source, not from our marketing copy.
+    </p>
+
+    <div class="fields">
+
+      <div class="field">
+        <div class="field-name">issuer · "did:web:bitcoinsingularity.ai"</div>
+        <div class="field-grid">
+          <div class="fg"><b>What it is</b> The identifier of the party that signed this credential. A <code>did:web</code> resolves to a document at that domain's <code>/.well-known/did.json</code> carrying the public keys.</div>
+          <div class="fg"><b>What it proves</b> That whoever controls the signing key for that domain asserted this. Combined with the proof check, the document has not changed since.</div>
+          <div class="fg"><b>How to check</b> Resolve the DID document yourself over HTTPS and confirm the key in <code>proof.verificationMethod</code> appears in its <code>assertionMethod</code>. The engine does this and reports <code>issuerResolution</code>.</div>
+          <div class="fg limit"><b>Its limit</b> <code>did:web</code> binds to <em>domain control</em>, not to a legal entity. It tells you the same party that controls that hostname signed this. It does not tell you who that party is, and if the domain changes hands the historical signature does not change with it.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-name">credentialSubject.id · "did:web:observerprotocol.org:agents:maxi-0001"</div>
+        <div class="field-grid">
+          <div class="fg"><b>What it is</b> The agent this mandate was granted to.</div>
+          <div class="fg"><b>What it proves</b> That the issuer intended this authority for this subject and no other. A credential presented on behalf of a different DID is a different credential.</div>
+          <div class="fg"><b>How to check</b> Compare it against the DID whose action you are examining. The hosted check reports this as <code>identity.valid</code> with the note that the mandate subject binds to the DID.</div>
+          <div class="fg limit"><b>Its limit</b> The binding is between a mandate and an identifier, not between an identifier and a running process. It does not establish that the software which took an action is the holder of that DID's key. That requires the enforcement point, not the credential.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-name">validFrom / validUntil</div>
+        <div class="field-grid">
+          <div class="fg"><b>What it is</b> The window inside which the issuer intends this authority to exist.</div>
+          <div class="fg"><b>What it proves</b> That authority was time-bounded at the moment of granting, rather than open-ended.</div>
+          <div class="fg"><b>How to check</b> First check the engine runs. Compare against the time of the action being examined, not against now.</div>
+          <div class="fg limit"><b>Its limit</b> An unexpired credential is not a live one. Expiry and revocation are different mechanisms and this field only covers the first. See <code>credentialStatus</code> below.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-name">credentialSubject.tradingMandate.maxNotionalPerOrder · 10 · unit "USD"</div>
+        <div class="field-grid">
+          <div class="fg"><b>What it is</b> The per-order ceiling, carried alongside the unit it is denominated in.</div>
+          <div class="fg"><b>What it proves</b> The bound the principal signed for. A constraint without its unit is not a constraint, so the unit travels in the credential rather than being assumed by the reader.</div>
+          <div class="fg"><b>How to check</b> Read it directly. Compare against the notional of the order you are examining, converting at a rate you choose rather than one we supply.</div>
+          <div class="fg limit"><b>Its limit</b> This is a per-order ceiling and nothing else. It does not bound the number of orders, the aggregate across a day, or the total exposure. Those are separate sub-objects and this credential does not carry them.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-name">credentialSubject.tradingMandate.temporal.allowedTimeWindows</div>
+        <div class="field-grid">
+          <div class="fg"><b>What it is</b> Permitted hours and days, each with an explicit IANA timezone: 09:00–17:00 <code>America/New_York</code>, Monday to Friday.</div>
+          <div class="fg"><b>What it proves</b> That the window was specified against a named zone rather than a bare wall-clock string, so it resolves identically for a reader in another jurisdiction.</div>
+          <div class="fg"><b>How to check</b> Convert the timestamp of the action into the named zone before comparing. Comparing timestamp strings across zones is a defect, not a shortcut.</div>
+          <div class="fg limit"><b>Its limit</b> It states when action was permitted, not when action occurred. Establishing the latter requires the rail's own record or an attestation, both outside this document.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-name">credentialSubject.enforcementMode · "pre_transaction_check"</div>
+        <div class="field-grid">
+          <div class="fg"><b>What it is</b> A declaration of where in the flow this mandate is meant to be applied.</div>
+          <div class="fg"><b>What it proves</b> The issuer's intent that the check happens before the instruction exists, rather than as a review afterwards.</div>
+          <div class="fg"><b>How to check</b> Against the enforcement point's own evidence. The credential states the intent; only the deployment shows the behaviour.</div>
+          <div class="fg limit"><b>Its limit</b> <strong>This is the most important limit on the page.</strong> A field in a document cannot enforce anything. It records what the issuer asked for. Whether an enforcement point was actually in the path, and failed closed, is a property of a deployment and must be measured separately from reading this credential.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-name">credentialSubject.delegationScope.may_delegate_further · false</div>
+        <div class="field-grid">
+          <div class="fg"><b>What it is</b> Whether the holder may issue onward authority derived from this one.</div>
+          <div class="fg"><b>What it proves</b> That the authority chain is intended to stop here, so a credential citing this one as its parent contradicts it on its face.</div>
+          <div class="fg"><b>How to check</b> If you are handed a derived credential, check whether its chain passes through a mandate carrying <code>false</code> here.</div>
+          <div class="fg limit"><b>Its limit</b> It bounds delegation, not sharing. Nothing in the document prevents the subject's key material from being used by another party; that is a custody question, answered by where the key lives.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-name">credentialStatus · ABSENT</div>
+        <div class="field-grid">
+          <div class="fg"><b>What it is</b> A pointer to a revocation status list. This credential does not carry one.</div>
+          <div class="fg"><b>What it proves</b> Nothing, by absence. Both verifiers say so explicitly rather than passing quietly: the engine reports <code>revocation: 'status-absent'</code>, and the hosted service returns the note "credential carries no credentialStatus entry — revocation not checkable for this credential".</div>
+          <div class="fg"><b>How to check</b> Where a credential does carry one, the engine fetches it under <code>onUnreachable: 'cache-then-deny'</code>: if the list cannot be reached, a cached answer is used and then the credential is denied. Nothing is let through on a fetch failure.</div>
+          <div class="fg limit"><b>Its limit</b> For this artifact, you cannot tell whether the issuer has since revoked it. Treat <code>allow: true</code> here as "validly issued and unexpired", not as "currently in force". A status list hosted on an origin other than the pinned issuer's is also refused until you allowlist it — and Observer Protocol's own clause-zero revocation demonstration is exactly such a pair, so it does not verify out of the box.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field-name">proof · DataIntegrityProof · eddsa-jcs-2022</div>
+        <div class="field-grid">
+          <div class="fg"><b>What it is</b> An Ed25519 signature over the JCS-canonicalised document, naming the key that produced it in <code>verificationMethod</code>.</div>
+          <div class="fg"><b>What it proves</b> That not one byte of the document has changed since signing. The tampered sample above differs by a single character and fails here.</div>
+          <div class="fg"><b>How to check</b> The engine reports <code>issuerProof: 'eddsa-jcs-2022-verified'</code>. Canonicalisation matters: two documents that differ only in key order produce the same signature input, and two that differ in any value do not.</div>
+          <div class="fg limit"><b>Its limit</b> A signature gives continuity, not identity. It establishes that the same key signed this that signed the other things you have from this issuer. Who holds that key, and whether they still should, are questions this field cannot answer.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- HOSTED -->
+<section style="background:var(--bg); border-bottom:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">04 · The hosted check</div>
+    <h2>Convenient, ours, and a different build.</h2>
+    <p class="lede">
+      There is also a hosted verifier. It is open — no token, no account, rate-limited at 60 requests per caller per minute — and it returns a signed result. Use it if you want a second opinion or a quick look. Do not use it for an artifact that should not leave your machine, and do not mistake it for the claim this site makes.
+    </p>
+
+    <div class="code">
+      <div class="head"><span>POST /v1/verify · no authentication</span><span>verify.observerprotocol.org</span></div>
+<pre><span class="c">$</span> <span class="k">curl -X POST</span> https://verify.observerprotocol.org/v1/verify \
+    -H <span class="s">'Content-Type: application/json'</span> \
+    -d <span class="s">'{"agentDid": "&lt;subject DID&gt;", "mandate": &lt;the credential&gt;}'</span>
+
+<span class="o">{ "identity": { "valid": true, ... },
+  "mandate":  { "valid": true,
+                "notes": ["credential carries no credentialStatus entry —
+                           revocation not checkable for this credential"] },
+  "proof":    { "cryptosuite": "eddsa-jcs-2022",
+                "verificationMethod": "did:web:observerprotocol.org#key-7" } }</span></pre>
+    </div>
+
+    <div class="callout">
+      <h4>The two verifiers are not the same build</h4>
+      <p>The hosted service reports <code>engine.running: "0.3.3"</code>. The published package is <code>1.0.0-rc.6</code>. On the artifacts we have put through both they agree, including on the exact reason string for a structural failure — but that is agreement observed on samples, not a shared code path, and you should not treat one as a substitute for the other. Bringing the hosted service onto the published engine is tracked; until it lands, this notice stays.</p>
+      <p>The service is also candid about a second limit, in its own <code>/version</code> response: the schema and issuer allowlists it enforces come from environment variables on the host, <code>inRepo: false</code>, so a change to what it accepts "leaves no reviewable record". The offline path has no such property, because the allowlist is the one you wrote.</p>
+      <p><strong>The offline path is the claim. The hosted path is a convenience.</strong> If they ever disagree, the offline result is the one to act on, and we would like to hear about it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- NOT ENDORSEMENT -->
+<section style="background:var(--bg2);">
+  <div class="section-inner">
+    <div class="section-label">05 · What this page is not</div>
+    <h2>Checking a record is not approving a vendor.</h2>
+    <p class="body">
+      Using this tooling implies nothing about Observer Protocol, Agentic Terminal, or any firm whose records you are examining. There is no account to create, no form on this page, and nothing here that asks you for a way to contact you. If you are checking a record because someone is asking you to accept it, the correct outcome of this page is that you can answer that question yourself and then leave.
+    </p>
+    <p class="body">
+      The verifier is MIT-licensed and self-hostable. <strong>A verifier you run from your own infrastructure is worth considerably more than one you load from us</strong>, and we would rather you did that. The source, the known limits, and the schemas are all public.
+    </p>
+    <p class="body">
+      A browser-based verifier that runs entirely client-side is not available yet, and we are not going to ship one that sends your artifact to a server while calling it client-side. The published package depends on Node built-ins — <code>node:crypto</code>, <code>node:fs</code>, <code>node:dns</code> among them — and the DNS use is a live guard against a hostile URL rather than incidental. Porting it means replacing that guard honestly, not stubbing it. Until then, the two paths above are what exist.
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--amber); letter-spacing:0.12em; text-transform:uppercase;">Observer Protocol</div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="./verify.html">Verify</a>
+      <a href="./supervisors.html">Supervisors</a>
+      <a href="./architecture.html">Architecture</a>
+      <a href="./docs.html">Docs</a>
+      <a href="./registry.html">Registry</a>
+      <a href="https://github.com/observer-protocol" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+  <div class="footer-note">
+    Engine <code>@observer-protocol/policy-engine</code> 1.0.0-rc.6 · hosted service engine 0.3.3 · verdicts on this page re-measured against rc.6 on 8 August 2026 · AIP v0.9, ratified 25 July 2026 · MIT
+  </div>
+</footer>
+
+</body>
+</html>

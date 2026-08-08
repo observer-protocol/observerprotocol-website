@@ -77,6 +77,15 @@
   status = 404
   force = true
 
+# Build and verification tooling. Not web content. Same reasoning as /scripts/*:
+# the publish directory is the repository, so anything committed here is served
+# unless a rule says otherwise.
+[[redirects]]
+  from = "/tools/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
 # ArcadiaB social scheduling exports. A different company's marketing copy,
 # including Mexican regulated-lending claims, on Observer Protocol's domain.
 [[redirects]]
@@ -141,6 +150,33 @@
   from = "/credentials/:id"
   to = "/credentials/:id.json"
   status = 200
+
+# Retired 2026-08-08. These three quickstarts documented agent reputation scoring,
+# a surface the protocol no longer offers. quickstart-stripe additionally documented
+# observer.reputationMiddleware, which exists at no published version of the package
+# it named.
+#
+# 410 rather than 404, deliberately: 404 says "nothing is here", which invites a
+# crawler to retry and a reader to assume a broken link. 410 says "this existed and
+# was withdrawn", which is the true statement. No redirect, because no remaining page
+# covers the same rail and implying one would be a different inaccuracy.
+[[redirects]]
+  from = "/quickstart-stripe.html"
+  to = "/gone.html"
+  status = 410
+  force = true
+
+[[redirects]]
+  from = "/quickstart-l402.html"
+  to = "/gone.html"
+  status = 410
+  force = true
+
+[[redirects]]
+  from = "/quickstart-solana.html"
+  to = "/gone.html"
+  status = 410
+  force = true
 
 # Serve status list and credential JSON with correct content-type + CORS.
 [[headers]]

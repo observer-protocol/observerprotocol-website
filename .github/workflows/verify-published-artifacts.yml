@@ -1,0 +1,42 @@
+name: Published credentials verify
+
+# observerprotocol.org tells readers to install @observer-protocol/policy-engine
+# and check our records themselves. This job runs that same check against every
+# artifact the repository publishes, so a credential that our own verifier
+# refuses cannot reach the live domain unnoticed.
+#
+# The check is symmetric: it fails when a passing artifact regresses AND when a
+# failing artifact starts passing (a stale expectation), AND when an artifact is
+# published with no expectation recorded at all.
+
+on:
+  push:
+    paths:
+      - 'credentials/**'
+      - 'verify-samples/**'
+      - 'scripts/verify-published-credentials.mjs'
+      - 'scripts/credential-expectations.json'
+      - 'scripts/package.json'
+      - '.github/workflows/verify-published-artifacts.yml'
+  pull_request:
+  workflow_dispatch:
+  # The engine resolves DID documents and revocation lists over the network, so a
+  # credential can begin failing without this repository changing at all: a key
+  # rotation, an expiry, or a revocation. Catch that on a schedule too.
+  schedule:
+    - cron: '17 6 * * *'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: scripts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --no-audit --no-fund
+      - name: Verify every published credential
+        run: node ./verify-published-credentials.mjs

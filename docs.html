@@ -151,12 +151,14 @@
 <nav>
   <a class="nav-logo" href="/">Observer Protocol</a>
   <ul class="nav-links">
-    <li><a href="./architecture.html">Architecture</a></li>
-    <li><a href="./docs.html" class="active">Docs</a></li>
-    <li><a href="./agentic-terminal.html">Agentic Terminal</a></li>
-    <li><a href="./registry.html">Registry</a></li>
+    <li><a href="/verify.html">Verify</a></li>
+    <li><a href="/supervisors.html">Supervisors</a></li>
+    <li><a href="/architecture.html">Architecture</a></li>
+    <li><a href="/docs.html" class="active">Docs</a></li>
+    <li><a href="/registry.html">Registry</a></li>
+    <li><a href="/agentic-terminal.html">Agentic Terminal</a></li>
   </ul>
-  <div class="nav-status"><div class="pulse"></div>PUBLIC BETA · V1.3</div>
+  <div class="nav-status"><div class="pulse"></div>AIP v0.9</div>
 </nav>
 
 <!-- PAGE HEADER -->
@@ -164,7 +166,7 @@
   <div class="page-header-inner">
     <div>
       <div class="breadcrumb">OBSERVER PROTOCOL · <span>DOCS</span></div>
-      <div class="page-tag">Developer Documentation · v1.3</div>
+      <div class="page-tag">Developer Documentation · AIP v0.9</div>
       <h1>Documentation</h1>
       <p class="page-sub">
         Everything you need to register agents, issue credentials, verify identity, and integrate Observer Protocol into your stack. Open protocol, MIT licensed, self-hostable.
@@ -193,21 +195,21 @@
       Get started with Observer Protocol. Full developer documentation, SDK reference, and working examples on GitHub.
     </p>
     <div class="qs-grid">
-      <a href="https://github.com/observer-protocol/observer-protocol-spec/tree/master/docs/developer-guide" target="_blank" class="qs-card">
+      <a href="https://github.com/observer-protocol/aip/tree/master/docs/developer-guide" target="_blank" class="qs-card">
         <div class="qs-icon">📖</div>
         <div class="qs-tag">START HERE</div>
         <div class="qs-name">Developer Guide</div>
         <div class="qs-meta">Architecture · API Reference · Chain Verification</div>
         <div class="qs-desc">Complete developer documentation on GitHub. Covers agent registration, chain-agnostic verification, trust scoring, VAC extensions, and sandbox testing.</div>
       </a>
-      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/master/docs/developer-guide/agent-quickstart.md" target="_blank" class="qs-card">
+      <a href="https://github.com/observer-protocol/aip/blob/master/docs/developer-guide/agent-quickstart.md" target="_blank" class="qs-card">
         <div class="qs-icon">⚡</div>
         <div class="qs-tag">60 SECONDS</div>
         <div class="qs-name">Agent Quickstart</div>
         <div class="qs-meta">Python · pip install observer-protocol</div>
         <div class="qs-desc">Register an agent, prove key ownership, retrieve your VAC, and check your trust score, all in 60 seconds. Working code you can run immediately.</div>
       </a>
-      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/master/docs/developer-guide/chain-verification.md" target="_blank" class="qs-card">
+      <a href="https://github.com/observer-protocol/aip/blob/master/docs/developer-guide/chain-verification.md" target="_blank" class="qs-card">
         <div class="qs-icon">🔗</div>
         <div class="qs-tag">CHAIN-AGNOSTIC</div>
         <div class="qs-name">Chain Verification</div>
@@ -216,19 +218,19 @@
       </a>
       <a href="https://github.com/observer-protocol/op-policy-engine" target="_blank" class="qs-card">
         <div class="qs-icon">📦</div>
-        <div class="qs-tag">NPM INSTALL · v0.4.0</div>
+        <div class="qs-tag">NPM INSTALL · v1.0.0-rc.6</div>
         <div class="qs-name">Verify a credential</div>
         <div class="qs-meta">npm install @observer-protocol/policy-engine</div>
-        <div class="qs-desc">Verify a delegation credential offline — issuer, structure, validity window, eddsa-jcs-2022 proof against the issuer DID document, and revocation. No service call, no token, no callback to Observer. This is the same code path our hosted verifier runs.</div>
+        <div class="qs-desc">Verify a delegation credential offline — issuer, structure, validity window, eddsa-jcs-2022 proof against the issuer DID document, and revocation. No service call, no token, no callback to Observer. The hosted verifier is a separate deployment running a different engine version; see the SDK section.</div>
       </a>
-      <a href="https://github.com/observer-protocol/observer-protocol-spec/tree/master/sdk/python" target="_blank" class="qs-card">
+      <a href="https://github.com/observer-protocol/aip/tree/master/sdk/python" target="_blank" class="qs-card">
         <div class="qs-icon">🐍</div>
         <div class="qs-tag">PIP INSTALL · v0.2.0</div>
         <div class="qs-name">Python SDK</div>
         <div class="qs-meta">pip install observer-protocol</div>
         <div class="qs-desc">Full Python SDK: agent identity, delegation, x402 verification, magic link authorization, chargeback prevention, ERC-8004 integration. Type-hinted throughout.</div>
       </a>
-      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/master/docs/developer-guide/network-operator-guide.md" target="_blank" class="qs-card">
+      <a href="https://github.com/observer-protocol/aip/blob/master/docs/developer-guide/network-operator-guide.md" target="_blank" class="qs-card">
         <div class="qs-icon">🏗️</div>
         <div class="qs-tag">FOR NETWORKS</div>
         <div class="qs-name">Network Operator Guide</div>
@@ -243,14 +245,14 @@
 <section id="api-reference" style="background: var(--bg2);">
   <div class="section-inner">
     <div class="section-label">API Reference</div>
-    <h2>API v1.3 · Base URL: api.observerprotocol.org</h2>
+    <h2>HTTP API v1.0.0 · Base URL: api.observerprotocol.org</h2>
     <p class="section-intro">
       All non-DID endpoints use the <code style="font-family:'IBM Plex Mono',monospace; font-size:0.85em; color:var(--amber); background:var(--bg); padding:0.1rem 0.4rem;">/api/v1/</code> prefix. DID document paths follow the W3C did:web resolution standard and are documented separately below. Full interactive documentation available via Swagger UI.
     </p>
 
     <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
       <a href="https://api.observerprotocol.org/docs" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--amber); text-decoration:none; border:1px solid var(--amber-dim); padding:0.5rem 1rem; background:var(--amber-glow);">Interactive Swagger UI ↗</a>
-      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/master/docs/developer-guide/api-reference.md" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--text-dim); text-decoration:none; border:1px solid var(--border); padding:0.5rem 1rem;">OpenAPI YAML ↗</a>
+      <a href="https://github.com/observer-protocol/aip/blob/master/docs/developer-guide/api-reference.md" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--text-dim); text-decoration:none; border:1px solid var(--border); padding:0.5rem 1rem;">OpenAPI YAML ↗</a>
     </div>
 
     <div class="api-grid">
@@ -260,14 +262,14 @@
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/observer/register-agent</span><span class="endpoint-desc">Register agent</span></div>
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/observer/challenge</span><span class="endpoint-desc">Get challenge</span></div>
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/observer/verify-agent</span><span class="endpoint-desc">Verify identity</span></div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/observer/agents/{agent_id}</span><span class="endpoint-desc">Agent profile</span></div>
+        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/observer/agents/{agent_id}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:#f87171;border:1px solid #7f1d1d;padding:0.05rem 0.3rem;margin-left:0.4rem;">401</span><span class="endpoint-desc">Agent profile</span></div>
         <div class="api-endpoint"><span class="method patch">PATCH</span><span class="endpoint-path">/api/v1/agents/{agent_id}</span><span class="endpoint-desc">Update agent</span></div>
       </div>
 
       <!-- DID RESOLUTION -->
       <div class="api-group">
         <div class="api-group-header">DID Resolution</div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/api/v1/resolve/{did}</span><span class="endpoint-desc">Resolve any did:web <span class="new-tag">NEW</span></span></div>
+        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/api/v1/resolve/{did}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:#f87171;border:1px solid #7f1d1d;padding:0.05rem 0.3rem;margin-left:0.4rem;">404</span><span class="endpoint-desc">Resolve any did:web <span class="new-tag">NEW</span></span></div>
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/observer/consolidate-identity</span><span class="endpoint-desc">Cross-rail consolidation</span></div>
         <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/vp/verify</span><span class="endpoint-desc">Verify VP <span class="new-tag">NEW</span></span></div>
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/vp/submit</span><span class="endpoint-desc">Submit VP <span class="new-tag">NEW</span></span></div>
@@ -280,18 +282,19 @@
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/vac/{agent_id}/refresh</span><span class="endpoint-desc">Refresh VAC</span></div>
         <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/vac/{agent_id}/history</span><span class="endpoint-desc">VAC history</span></div>
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/vac/partners/{id}/attest</span><span class="endpoint-desc">Issue attestation <span class="new-tag">NEW</span></span></div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/vac/partners</span><span class="endpoint-desc">Partner registry</span></div>
+        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/vac/partners</span><span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:#f87171;border:1px solid #7f1d1d;padding:0.05rem 0.3rem;margin-left:0.4rem;">404</span><span class="endpoint-desc">Partner registry</span></div>
       </div>
 
       <!-- AIP -->
       <div class="api-group">
-        <div class="api-group-header">AIP v0.5 <span class="new-tag" style="margin-left:0.5rem;">NEW</span></div>
+        <div class="api-group-header">AIP <span class="new-tag" style="margin-left:0.5rem; background:#7f1d1d; color:#f87171; border-color:#7f1d1d;">2 OF THESE 404</span></div>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:#f87171; line-height:1.7; margin:0.4rem 0 0.6rem;">This group was headed &ldquo;AIP v0.5 &middot; NEW&rdquo; until 8 August 2026. It was neither: the version was four releases stale and two of the endpoints below do not exist in production. The POST routes here are unverified &mdash; they were not exercised, because testing them would write to production.</div>
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/aip/credentials/delegation</span><span class="endpoint-desc">Issue delegation VC</span></div>
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/aip/credentials/kyb</span><span class="endpoint-desc">Issue KYB VC</span></div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/aip/chain/verify/{id}</span><span class="endpoint-desc">Verify chain</span></div>
+        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/aip/chain/verify/{id}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:#f87171;border:1px solid #7f1d1d;padding:0.05rem 0.3rem;margin-left:0.4rem;">404</span><span class="endpoint-desc">Verify chain</span></div>
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/aip/revoke</span><span class="endpoint-desc">Revoke + cascade</span></div>
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/aip/remediation/build</span><span class="endpoint-desc">Build remediation</span></div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/aip/type-registry/{category}</span><span class="endpoint-desc">Type registry</span></div>
+        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/aip/type-registry/{category}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:#f87171;border:1px solid #7f1d1d;padding:0.05rem 0.3rem;margin-left:0.4rem;">404</span><span class="endpoint-desc">Type registry</span></div>
       </div>
 
       <!-- PROTOCOL ACTIVITY -->
@@ -299,7 +302,7 @@
         <div class="api-group-header">Protocol Activity</div>
         <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/api/v1/health</span><span class="endpoint-desc">Health check</span></div>
         <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/api/v1/stats</span><span class="endpoint-desc">Aggregate stats</span></div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/observer/feed</span><span class="endpoint-desc">Verified event feed</span></div>
+        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/observer/feed</span><span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:#f87171;border:1px solid #7f1d1d;padding:0.05rem 0.3rem;margin-left:0.4rem;">401</span><span class="endpoint-desc">Verified event feed</span></div>
         <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/observer/trends</span><span class="endpoint-desc">Protocol trends</span></div>
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/observer/submit-transaction</span><span class="endpoint-desc">Submit transaction</span></div>
       </div>
@@ -344,13 +347,13 @@
     <div class="section-label">SDK</div>
     <h2>@observer-protocol/policy-engine</h2>
     <p class="section-intro">
-      Verification, offline, from npm. Node 18+, MIT license.
+      Verification, offline, from npm. Node 18+, MIT license. This is the package the rail
+      adapters depend on and the one under active release.
       <br><br>
-      <strong>The SDK packages are deprecated.</strong> This section used to name three different
-      install targets — <code>@observerprotocol/sdk</code>, <code>@observer-protocol/sdk</code> and a
-      <code>pip</code> package — for what was described as one SDK. Both npm SDKs are unmaintained
-      since April 2026 and are now marked deprecated on npm. Use the policy engine below: it is the
-      package the rail adapters depend on and the one under active release.
+      Offline verification is not an SDK detail. It is the protocol's central affordance and it has
+      its own page: <a href="/verify.html" style="color:var(--amber);">verify a record</a>, with a
+      runnable transcript, a field-by-field account of what each element proves and what it does not,
+      and two artifacts published specifically because they must fail.
     </p>
     <div class="sdk-grid">
       <div>
@@ -378,10 +381,28 @@ npm install @observer-protocol/policy-engine
         </div>
         <div class="sdk-note">
           <div class="sdk-note-icon">⚠</div>
-          <div>The hosted verifier at <code>verify.observerprotocol.org</code> requires a partner bearer
-          token and there is no self-serve way to obtain one yet. Until that opens, the offline path above
-          is the one to use — and it is the stronger claim anyway, since it needs nothing from us at
-          verification time.</div>
+          <div><strong>Correction, 8 August 2026.</strong> This note previously said the hosted
+          verifier required a partner bearer token with no self-serve route. That was wrong, and
+          stating the consequence matters more than stating the new fact: <strong>nobody tested it,
+          the claim was believed, and it was carried into a planning document as a premise</strong>
+          that work was then scoped against. A wrong line in documentation does not stay in
+          documentation.
+          <br><br>
+          The same audit found four endpoints on this page that return 404 in production, one of
+          them &mdash; <code>/api/v1/resolve/{did}</code> &mdash; sitting directly beside a
+          copy-pasteable <code>curl</code> command. That is the one that would have cost a developer
+          an afternoon before they concluded the fault was theirs.
+          <code>verify.observerprotocol.org</code> is open: its <code>/version</code> reports
+          <code>verification.open: true</code> at 60 requests per caller per minute, and an
+          unauthenticated <code>POST /v1/verify</code> returns 200 with a signed result.
+          <br><br>
+          It is a <em>different build</em>, though. The hosted service reports
+          <code>engine.running: "0.3.3"</code>; the package above is <code>1.0.0-rc.6</code>. They
+          agreed on every artifact tested, including exact reason strings, but that is agreement on
+          samples rather than a shared code path. Tracked as
+          <a href="https://github.com/observer-protocol/op-verify-service/issues/1" target="_blank" rel="noopener" style="color:var(--amber);">op-verify-service#1</a>;
+          this notice comes off when it lands. Where they disagree, the published package is
+          authoritative.</div>
         </div>
       </div>
       <div>
@@ -402,8 +423,8 @@ npm install @observer-protocol/policy-engine
 <span class="code-key">const</span> vac = <span class="code-key">await</span> observer.<span class="code-fn">getVAC</span>(agent.id);
         </div>
         <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
-          <a href="https://github.com/observer-protocol/observer-protocol-spec/tree/master/sdk" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--amber); text-decoration:none; border:1px solid var(--amber-dim); padding:0.4rem 0.85rem; background:var(--amber-glow);">GitHub → sdk-js ↗</a>
-          <a href="https://www.npmjs.com/package/@observerprotocol/sdk" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-dim); text-decoration:none; border:1px solid var(--border); padding:0.4rem 0.85rem;">npm ↗</a>
+          <a href="https://github.com/observer-protocol/aip/tree/master/sdk" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--amber); text-decoration:none; border:1px solid var(--amber-dim); padding:0.4rem 0.85rem; background:var(--amber-glow);">GitHub → sdk-js ↗</a>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-faint); border:1px solid var(--border); padding:0.4rem 0.85rem;">npm link removed — see note</span>
         </div>
       </div>
     </div>
@@ -416,22 +437,22 @@ npm install @observer-protocol/policy-engine
     <div class="section-label">Spec &amp; AIP</div>
     <h2>Open standards. Versioned specs.</h2>
     <p class="section-intro">
-      Observer Protocol is governed by open specifications maintained on GitHub. AIP v0.5.1 is deployed as of April 27, 2026. It includes chargeback prevention, x402 support, and magic-link authorization.
+      Observer Protocol is governed by open specifications maintained on GitHub. AIP v0.9 was ratified on 25 July 2026 and is tagged <code>v0.9</code> in the specification repository, with the review record in its pull request. It is additive over v0.6: an implementation conforming to v0.6 remains conforming.
     </p>
     <div class="spec-cards">
-      <a href="https://github.com/observer-protocol/observer-protocol-spec" target="_blank" class="spec-card">
+      <a href="https://github.com/observer-protocol/aip" target="_blank" class="spec-card">
         <div class="spec-card-tag">PROTOCOL SPEC · CC BY 4.0</div>
         <h3>Observer Protocol Spec</h3>
         <p>The canonical specification for OP: identity model, event schema, verification logic, VAC structure, and API reference. Version controlled on GitHub.</p>
-        <div class="spec-card-cta">github.com/observer-protocol/observer-protocol-spec ↗</div>
+        <div class="spec-card-cta">github.com/observer-protocol/aip ↗</div>
       </a>
-      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/master/docs/AIP_v0.5.md" target="_blank" class="spec-card">
-        <div class="spec-card-tag">AIP v0.5.1 · UPDATED APRIL 27, 2026</div>
+      <a href="https://github.com/observer-protocol/aip/blob/main/aip-v0.9-worldid-linking.md" target="_blank" class="spec-card">
+        <div class="spec-card-tag">AIP v0.9 · RATIFIED 25 JULY 2026</div>
         <h3>Agent Interaction Protocol</h3>
         <p>AIP governs how agents interact: delegation credentials, magic-link authorization, authorization proofs, chargeback prevention, and type registry.</p>
-        <div class="spec-card-cta">Read AIP v0.5.1 spec ↗</div>
+        <div class="spec-card-cta">Read the AIP v0.9 spec ↗</div>
       </a>
-      <a href="https://github.com/observer-protocol/observer-protocol-spec/blob/master/docs/developer-guide/api-reference.md" target="_blank" class="spec-card">
+      <a href="https://github.com/observer-protocol/aip/blob/master/docs/developer-guide/api-reference.md" target="_blank" class="spec-card">
         <div class="spec-card-tag">OPENAPI · OAS 3.0</div>
         <h3>API OpenAPI Spec</h3>
         <p>Machine-readable API specification in OpenAPI 3.0 format. Use to generate client SDKs, validate requests, or power your own Swagger UI instance.</p>
@@ -449,7 +470,7 @@ npm install @observer-protocol/policy-engine
         <p>X402PaymentCredential, Delegation v2 (three-level authorization), Settlement Receipt v1 (chargeback prevention). All $id URLs resolve.</p>
         <div class="spec-card-cta">observerprotocol.org/schemas/ ↗</div>
       </a>
-      <a href="https://github.com/observer-protocol/observer-protocol-spec/tree/master/rails/erc8004" target="_blank" class="spec-card">
+      <a href="https://github.com/observer-protocol/aip/tree/master/rails/erc8004" target="_blank" class="spec-card">
         <div class="spec-card-tag">ON-CHAIN REGISTRY · LIVE</div>
         <h3>ERC-8004 / TRC-8004 Integration</h3>
         <p>On-chain agent identity and reputation registry integration. Indexers for Base and TRON mainnet, cross-registry DID resolution, registration file pinning, and OP validator on Base.</p>
@@ -514,7 +535,86 @@ npm install @observer-protocol/policy-engine
         <div style="margin-top:1rem; font-family:'IBM Plex Mono',monospace; font-size:0.65rem; color:var(--text-faint);">
           Compatible with DIF Universal Resolver · W3C DID Core spec · did:web method spec
         </div>
+
+        <h3 style="font-family:'Fraunces',serif; font-size:1.1rem; font-weight:600; margin:2.5rem 0 0.5rem;">Deriving an agent DID from a public key</h3>
+        <p style="font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300; max-width:700px; margin-bottom:1rem;">
+          The derivation is deterministic and you can reproduce it without us, which is the point: an agent's identifier is a function of its key, not a record we assign. Ed25519 shown here because it is the same curve Solana uses, so a Solana keypair derives an agent DID with no extra material.
+        </p>
+        <div class="code-block">
+<span class="code-comment">// agent_id  = sha256(public_key_hex)[:32]</span>
+<span class="code-comment">// agent_did = did:web:observerprotocol.org:agents:&lt;agent_id&gt;</span>
+
+<span class="code-key">import</span> crypto <span class="code-key">from</span> <span class="code-val">'node:crypto'</span>;
+
+<span class="code-comment">// Any Ed25519 public key, hex-encoded. From @solana/web3.js this is</span>
+<span class="code-comment">// Buffer.from(keypair.publicKey.toBytes()).toString('hex')</span>
+<span class="code-key">const</span> publicKey = <span class="code-val">'&lt;ed25519-public-key-hex&gt;'</span>;
+
+<span class="code-key">const</span> agentId  = crypto.<span class="code-fn">createHash</span>(<span class="code-val">'sha256'</span>)
+                       .<span class="code-fn">update</span>(publicKey)
+                       .<span class="code-fn">digest</span>(<span class="code-val">'hex'</span>)
+                       .<span class="code-fn">slice</span>(0, 32);
+<span class="code-key">const</span> agentDID = <span class="code-val">`did:web:observerprotocol.org:agents:${agentId}`</span>;
+        </div>
+        <div style="margin-top:0.75rem; font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:var(--text-faint); line-height:1.8;">
+          Note the input is the hex <em>string</em>, not the raw bytes. Hashing the bytes yields a different id and a DID that will not resolve.
+        </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONVENTIONS AND RECORDED DECISIONS -->
+<section style="border-top:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">Conventions and recorded decisions</div>
+    <h2>Three things a reviewer will ask about.</h2>
+    <p class="section-intro">
+      Written down here because the answer is stronger recorded than reconstructed under questioning, and because two of the three are proposals rather than shipped behaviour. Which is which is stated.
+    </p>
+
+    <div style="border:1px solid var(--border); padding:1.75rem; margin-bottom:1.5rem;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber); margin-bottom:0.9rem;">Rail identifiers · PROPOSED, not shipped</div>
+      <p style="font-size:0.92rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1rem;">
+        <code>ClearingSystemCode:PaymentProduct</code> for fiat, CAIP-2 for chains. One field, one parser, both worlds: <code>USABA:ACH.CCD</code>, <code>GBDSC:FPS</code>, <code>SGIBG:PAYNOW</code>, <code>eip155:8453</code>.
+      </p>
+      <p style="font-size:0.92rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1rem;">
+        The left half resolves against the ISO 20022 external clearing system code set, which appears in every <code>pain.001</code>, so it is not a vocabulary we invent or maintain. The right half distinguishes products sharing a clearing system, which is a real collision rather than a hypothetical one: ACH credit and Fedwire are different products on one system. It mirrors CAIP-2's <code>namespace:reference</code> grammar, so <code>eip155:8453</code> parses under it unchanged and a fiat rail does not force a parallel identifier space.
+      </p>
+      <p style="font-size:0.92rem; color:var(--text-dim); line-height:1.8; font-weight:300;">
+        <strong style="color:var(--amber);">What actually ships today:</strong> <code>rail</code> is a free-text string. The published <code>delegation/v2.6</code> schema documents it that way, with examples <code>'usdt-trc20'</code> and <code>'lightning'</code>, and no issued credential carries the grammar above. Schema URLs are immutable, so adopting it means a new schema version rather than an edit. Treat this as what the field is becoming, not what it contains.
+      </p>
+    </div>
+
+    <div style="border:1px solid var(--border); padding:1.75rem; margin-bottom:1.5rem;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber); margin-bottom:0.9rem;">Where an attestation reference resolves · DECIDED</div>
+      <p style="font-size:0.92rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1rem;">
+        A fiat reference field carries 31 characters or fewer, so a downstream party may hold only a pointer. Something has to serve what it points at, and hosting that at a vendor endpoint is uncomfortable: it puts us in the payment path and sits badly beside a claim that verification needs nothing from us.
+      </p>
+      <p style="font-size:0.92rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1rem;">
+        <strong style="color:var(--text);">Resolution through Observer Protocol infrastructure is defensible as a protocol layer rather than a vendor inserting itself, and only while all three of these hold:</strong>
+      </p>
+      <ol style="font-size:0.92rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin:0 0 1rem 1.25rem;">
+        <li style="margin-bottom:0.5rem;"><strong style="color:var(--text);">The host is configurable, and a principal serving their own attestations at their own domain is a first-class option</strong> rather than a special case. Where one is configured, it is the default.</li>
+        <li style="margin-bottom:0.5rem;"><strong style="color:var(--text);">Resolution is never required for verification.</strong> An artifact in hand verifies offline with nothing from us. Resolution serves the case where a party holds only a reference. If verification ever depends on us being reachable, the claim is broken and the decision is void.</li>
+        <li><strong style="color:var(--text);">The resolver is self-hostable from published source</strong>, like everything else in the protocol.</li>
+      </ol>
+      <p style="font-size:0.92rem; color:var(--text-dim); line-height:1.8; font-weight:300;">
+        The three conditions are the decision. A resolver that quietly stopped satisfying any one of them would not be a degraded version of this; it would be the thing this decision was taken to avoid.
+      </p>
+    </div>
+
+    <div style="border:1px solid var(--border); border-left:2px solid #7f1d1d; padding:1.75rem;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:#f87171; margin-bottom:0.9rem;">Decision attestations · specified, NOT yet verifiable</div>
+      <p style="font-size:0.92rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1rem;">
+        A decision attestation records what was decided, under which policy version and content hash, over which inputs (as a digest), by which party, with the decider kept separate from the mandate issuer, and at which assurance level (<code>self-declared</code> versus <code>independently-observed</code>).
+      </p>
+      <p style="font-size:0.92rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1rem;">
+        <strong style="color:#f87171;">There is no published schema for it, and no verifier accepts one.</strong> The related <code>PolicyEvaluationCredential</code> has the same gap and it is not cosmetic: AIP v0.8 defines that type and requires schema validation when verifying it, without ever assigning it a schema URL. The published engine has no dispatch on credential type at all, and the hosted service accepts only <code>{agentDid, mandate}</code>. Every evaluation credential we have issued fails our own verifier for this reason, while its signature verifies correctly under canonical W3C Data Integrity tooling.
+      </p>
+      <p style="font-size:0.92rem; color:var(--text-dim); line-height:1.8; font-weight:300;">
+        We are not documenting a schema we have not published, and not shipping a verifier that reports success over a check it did not perform. <a href="/verify.html" style="color:var(--amber);">The verification page states the same thing</a>, and the affected artifacts stay published rather than being withdrawn to tidy the picture.
+      </p>
     </div>
   </div>
 </section>
@@ -532,7 +632,7 @@ npm install @observer-protocol/policy-engine
     </div>
   </div>
   <div class="footer-note">
-    Observer Protocol v1.3 · MIT License · CC BY 4.0 · Open source, self-hostable, rail-agnostic. · observerprotocol.org
+    Observer Protocol · AIP v0.9 · MIT License · CC BY 4.0 · Open source, self-hostable, rail-agnostic. · observerprotocol.org
   </div>
 </footer>
 

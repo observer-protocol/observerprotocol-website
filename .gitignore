@@ -23,3 +23,9 @@ secure-keys/
 *wallet*.json
 *seed*.txt
 *mnemonic*.txt
+
+# Dependency trees. This repository is its own Netlify publish directory
+# (publish = "." in netlify.toml), so anything committed here is served on the
+# live domain. A node_modules tree would be published in full.
+node_modules/
+**/node_modules/

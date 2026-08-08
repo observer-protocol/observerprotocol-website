@@ -159,13 +159,12 @@
 <nav class="nav">
   <a href="index.html" class="nav-logo">Observer Protocol</a>
   <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="architecture.html">Architecture</a></li>
-    <li><a href="spec.html">Spec</a></li>
-    <li><a href="registry.html">Registry</a></li>
-    <li><a href="sdk.html">SDK</a></li>
-    <li><a href="api.html">API</a></li>
-    <li><a href="quickstart.html" class="active">Quickstart</a></li>
+    <li><a href="/verify.html">Verify</a></li>
+    <li><a href="/supervisors.html">Supervisors</a></li>
+    <li><a href="/architecture.html">Architecture</a></li>
+    <li><a href="/docs.html">Docs</a></li>
+    <li><a href="/registry.html">Registry</a></li>
+    <li><a href="/agentic-terminal.html">Agentic Terminal</a></li>
   </ul>
 </nav>
 
@@ -229,7 +228,15 @@ npm install @observer-protocol/wdk-op-policy</code></pre>
           <div class="step-number">2</div>
           <h3>Generate or Import Seed Phrase</h3>
           <p>The WDK uses BIP-39 seed phrases for deterministic key generation. You can generate a new one or import an existing mnemonic:</p>
-          <pre><code>import { AgentWallet } from '@observerprotocol/sdk';
+          <div class="info-box" style="border-left:2px solid #f87171;">
+            <p><strong>Unverified, 8 August 2026.</strong> This example imported <code class="inline-code">AgentWallet</code> from
+            <code class="inline-code">@observerprotocol/sdk</code> &mdash; the scope Step 1's own correction above removes. So the page
+            installed one set of packages and imported from another, in a scope it flags as wrong fifteen lines earlier.
+            The import has been removed rather than repointed: no Observer Protocol package we publish exports
+            <code class="inline-code">AgentWallet</code>, and guessing a replacement would repeat the mistake.
+            <strong>Treat the block below as illustrative until the correct import is established.</strong></p>
+          </div>
+          <pre><code>// import { AgentWallet } from '&lt;unresolved — see note above&gt;';
 
 // Generate new seed phrase (save this securely!)
 const seedPhrase = AgentWallet.generateSeedPhrase();
@@ -341,7 +348,14 @@ console.log('Payment result:', payment);
           <div class="step-number">6</div>
           <h3>Verify a delegation, gate the spend, and attest the settlement (AIP v0.8)</h3>
           <p>For agents acting under a signed delegation credential — the typical pattern for autonomous machine commerce — use <code>@observer-protocol/wdk-protocol-trust</code> v0.2.0-beta.1 to verify the delegation, gate the proposed spend against its <code>actionScope</code>, and emit a portable settlement attestation. Four method calls. OP never touches funds.</p>
-          <pre><code>npm install @observer-protocol/wdk-protocol-trust</code></pre>
+          <pre><code>npm install @observer-protocol/wdk-protocol-trust@0.2.0-beta.2</code></pre>
+          <div class="info-box" style="border-left:2px solid #f87171;">
+            <p><strong>Pinned deliberately, 8 August 2026.</strong> The unpinned command installs
+            <code class="inline-code">0.2.0-beta.3</code>, which <strong>fails</strong>: its manifest declares the peer range
+            <code class="inline-code">"@observer-protocol/wdk-op-policy": "&gt;=0.1.0,&lt;0.3"</code>, and a comma is not valid npm
+            semver, so npm aborts with <code class="inline-code">EINVALIDTAGNAME</code> before anything is fetched.
+            <code class="inline-code">0.2.0-beta.2</code> installs cleanly. The pin comes off when the manifest is fixed.</p>
+          </div>
           <pre><code>import ObserverTrustProtocol from '@observer-protocol/wdk-protocol-trust';
 
 const op = new ObserverTrustProtocol(wallet, {
