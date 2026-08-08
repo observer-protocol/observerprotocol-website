@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For supervisors and auditors · Observer Protocol</title>
+  <meta name="description" content="Oversight of agent activity currently requires the supervised firm's cooperation. Portable attestations invert that. What an examiner can check without the firm, and what remains unsolved." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;0,900;1,300;1,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#0a0a08; --bg2:#111110; --bg3:#1a1a18; --border:#2a2a26;
+      --amber:#f5a623; --amber-dim:#b8791a; --amber-glow:#f5a62322;
+      --green:#4ade80; --green-dim:#166534;
+      --text:#e8e8e0; --text-dim:#888880; --text-faint:#444440; --teal:#5eead4;
+    }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--bg); color:var(--text); font-family:'IBM Plex Sans',sans-serif; font-size:16px; line-height:1.6; overflow-x:hidden; }
+    code { font-family:'IBM Plex Mono',monospace; font-size:0.92em; color:var(--teal); word-break:break-word; }
+
+    nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:0 2.5rem; height:56px; background:rgba(10,10,8,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); }
+    .nav-logo { font-family:'IBM Plex Mono',monospace; font-size:0.8rem; font-weight:500; color:var(--amber); letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; }
+    .nav-links { display:flex; gap:2rem; list-style:none; }
+    .nav-links a { font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--text-dim); text-decoration:none; letter-spacing:0.06em; }
+    .nav-links a:hover { color:var(--text); }
+    .nav-links a.active { color:var(--amber); }
+    .nav-status { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-dim); }
+    @media (max-width:900px) { .nav-links { display:none; } }
+
+    .page-header { padding:9rem 2.5rem 3.5rem; border-bottom:1px solid var(--border); }
+    .page-header-inner { max-width:900px; margin:0 auto; }
+    .breadcrumb { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-faint); letter-spacing:0.1em; margin-bottom:1.5rem; }
+    .breadcrumb span { color:var(--amber); }
+    h1 { font-family:'Fraunces',serif; font-size:clamp(2.1rem,4vw,3.3rem); font-weight:900; line-height:1.1; letter-spacing:-0.02em; margin-bottom:1.25rem; }
+    .page-sub { font-size:1.02rem; color:var(--text-dim); max-width:700px; line-height:1.8; font-weight:300; }
+
+    section { padding:4rem 2.5rem; }
+    .section-inner { max-width:1000px; margin:0 auto; }
+    .section-label { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--amber); margin-bottom:1rem; }
+    h2 { font-family:'Fraunces',serif; font-size:clamp(1.6rem,2.5vw,2.3rem); font-weight:600; line-height:1.18; margin-bottom:1rem; }
+    .lede { font-size:0.98rem; color:var(--text-dim); max-width:730px; line-height:1.85; margin-bottom:2rem; font-weight:300; }
+    p.body { font-size:0.94rem; color:var(--text-dim); line-height:1.85; font-weight:300; margin-bottom:1.1rem; max-width:770px; }
+    p.body strong { color:var(--text); font-weight:500; }
+
+    .fwd { display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber); border:1px solid var(--amber-dim); background:var(--amber-glow); padding:0.2rem 0.55rem; margin-bottom:1rem; }
+    .now { display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--green); border:1px solid var(--green-dim); background:#4ade8011; padding:0.2rem 0.55rem; margin-bottom:1rem; }
+
+    .pair { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); margin:2rem 0; }
+    @media (max-width:760px) { .pair { grid-template-columns:1fr; } }
+    .cell { background:var(--bg2); padding:2rem; }
+    .cell h3 { font-family:'IBM Plex Mono',monospace; font-size:0.7rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim); margin-bottom:1rem; font-weight:500; }
+    .cell.hi { background:var(--bg); border-left:2px solid var(--amber-dim); }
+    .cell.hi h3 { color:var(--amber); }
+    .cell p { font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300; }
+
+    .checks { border:1px solid var(--border); margin-top:2rem; }
+    .check { display:grid; grid-template-columns:auto 1fr; gap:1.25rem; padding:1.4rem 1.6rem; border-bottom:1px solid var(--border); align-items:start; }
+    .check:last-child { border-bottom:none; }
+    .check .mark { font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.08em; padding:0.2rem 0.5rem; border:1px solid; white-space:nowrap; }
+    .check .mark.yes { color:var(--green); border-color:var(--green-dim); background:#4ade8011; }
+    .check .mark.no { color:var(--text-dim); border-color:var(--border); }
+    .check .what { font-size:0.92rem; color:var(--text); }
+    .check .how { font-size:0.86rem; color:var(--text-dim); line-height:1.75; font-weight:300; margin-top:0.35rem; }
+
+    .callout { border-left:2px solid var(--amber-dim); background:var(--bg2); padding:1.5rem 1.75rem; margin:2rem 0; }
+    .callout h4 { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber); margin-bottom:0.75rem; }
+    .callout p { font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:0.75rem; }
+    .callout p:last-child { margin-bottom:0; }
+
+    .cta-verify { display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:0.78rem; letter-spacing:0.08em; padding:0.75rem 1.5rem; background:var(--amber); color:#0a0a08; text-decoration:none; font-weight:600; margin-top:1rem; }
+
+    footer { border-top:1px solid var(--border); padding:3rem 2.5rem 2rem; }
+    .footer-inner { max-width:1000px; margin:0 auto; display:flex; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-links { display:flex; gap:1.75rem; flex-wrap:wrap; }
+    .footer-links a { font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-faint); text-decoration:none; }
+    .footer-links a:hover { color:var(--text-dim); }
+    .footer-note { max-width:1000px; margin:2rem auto 0; padding-top:1.5rem; border-top:1px solid var(--border); font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:var(--text-faint); line-height:1.9; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="./verify.html">Verify</a></li>
+    <li><a href="./supervisors.html" class="active">Supervisors</a></li>
+    <li><a href="./architecture.html">Architecture</a></li>
+    <li><a href="./docs.html">Docs</a></li>
+    <li><a href="./registry.html">Registry</a></li>
+  </ul>
+  <div class="nav-status">AIP v0.9</div>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb">OBSERVER PROTOCOL · <span>SUPERVISORS AND AUDITORS</span></div>
+    <h1>Oversight currently requires the cooperation of the party being overseen.</h1>
+    <p class="page-sub">
+      This page is written for the party that creates the requirement rather than the party that has to meet it. You are not our customer, there is nothing here to sign up for, and using any of it implies no endorsement of us in either direction.
+    </p>
+  </div>
+</div>
+
+<!-- THE INVERSION -->
+<section style="background:var(--bg2); border-bottom:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">01 · The problem</div>
+    <h2>Ask whether an agent acted inside its authority, and you receive the firm's own records.</h2>
+    <p class="lede">
+      Not because anyone is hiding anything. Because that is the only artifact that exists. Every record of what an automated system was permitted to do is produced by, stored in, and formatted for the system being examined.
+    </p>
+
+    <div class="pair">
+      <div class="cell">
+        <h3>How it works today</h3>
+        <p>You request records. The firm assembles them, from logs its own applications wrote, into a format it chooses, covering a period it selects. The firm is cooperative and the records are probably accurate. But cooperation is a <em>precondition</em> of the exercise, and every step of the chain runs through the entity whose conduct is in question. A firm that could not produce the records and a firm that would not are indistinguishable from outside.</p>
+      </div>
+      <div class="cell hi">
+        <h3>What a portable attestation changes</h3>
+        <p>A signed attestation verifies against a public key. It does not need our servers, the firm's servers, or anyone's permission. Whoever holds a copy can check it — the counterparty who received it, the beneficiary who was affected by it, you. The firm is no longer the sole custodian of the evidence about its own conduct, and it cannot make an artifact stop verifying by declining to help.</p>
+      </div>
+    </div>
+
+    <p class="body">
+      <strong>That inversion is the whole argument.</strong> It does not make a firm more honest and it is not a substitute for examination. It moves one specific thing — the question of whether an action fell inside granted authority — out of the category of things you must be given and into the category of things you can check.
+    </p>
+  </div>
+</section>
+
+<!-- WHAT YOU CAN CHECK -->
+<section style="background:var(--bg); border-bottom:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">02 · What an examiner can check without the firm</div>
+    <span class="now">Available now · measured 8 August 2026</span>
+    <h2>Holding one artifact, with no account and no cooperation.</h2>
+    <p class="lede">
+      Stated as a list of what does and does not follow, because the difference matters more than the total. Every "yes" below was run against a live artifact before this page was written.
+    </p>
+
+    <div class="checks">
+      <div class="check">
+        <div class="mark yes">YES</div>
+        <div>
+          <div class="what">That the document has not been altered since it was signed</div>
+          <div class="how">An Ed25519 signature over the canonicalised document. A sample differing by one character is published alongside a sample that verifies, so you can confirm the check is real rather than take our word for it.</div>
+        </div>
+      </div>
+      <div class="check">
+        <div class="mark yes">YES</div>
+        <div>
+          <div class="what">That the party controlling a named domain signed it</div>
+          <div class="how">The issuer's key is published at that domain. You resolve it yourself over ordinary HTTPS. Note the limit: this binds to domain control, not to a legal entity.</div>
+        </div>
+      </div>
+      <div class="check">
+        <div class="mark yes">YES</div>
+        <div>
+          <div class="what">The bound that was granted, in the unit it was denominated in</div>
+          <div class="how">A ceiling, a counterparty set, a permitted window with an explicit timezone, and whether onward delegation was allowed. Readable directly from the document, and signed as part of it.</div>
+        </div>
+      </div>
+      <div class="check">
+        <div class="mark yes">YES</div>
+        <div>
+          <div class="what">That the authority was granted before the action, not reconstructed after it</div>
+          <div class="how">The validity window is inside the signed document. A mandate backdated to cover an action taken outside it would have to be re-signed, which changes the signature.</div>
+        </div>
+      </div>
+      <div class="check">
+        <div class="mark no">NO</div>
+        <div>
+          <div class="what">That an enforcement point was actually in the path</div>
+          <div class="how">A credential can state <code>enforcementMode: "pre_transaction_check"</code>. That is the issuer's intent, recorded in a document. Whether a check ran, and failed closed, is a property of a deployment and has to be measured there. A field cannot enforce anything.</div>
+        </div>
+      </div>
+      <div class="check">
+        <div class="mark no">NO</div>
+        <div>
+          <div class="what">That the credential is still in force</div>
+          <div class="how">Where a credential carries a revocation pointer, it is checkable and fails closed when the list cannot be reached. Where it does not, the verifier says so explicitly rather than passing quietly. Unexpired is not the same as unrevoked.</div>
+        </div>
+      </div>
+      <div class="check">
+        <div class="mark no">NO</div>
+        <div>
+          <div class="what">That you have been shown everything</div>
+          <div class="how">The hard one. Section 04.</div>
+        </div>
+      </div>
+    </div>
+
+    <a href="./verify.html" class="cta-verify">Check a record yourself →</a>
+    <p class="body" style="margin-top:1rem; font-size:0.86rem;">
+      Including the two artifacts that must fail. A tool that returns success for everything establishes nothing, so the failing cases are published beside the passing one.
+    </p>
+  </div>
+</section>
+
+<!-- COVERAGE -->
+<section style="background:var(--bg2); border-bottom:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">03 · Coverage as a supervisory metric</div>
+    <span class="fwd">Forward-looking · not implemented</span>
+    <h2>The useful question is not whether a record verifies.</h2>
+    <p class="body">
+      Any single artifact either verifies or it does not, and that is a five-second answer. The supervisory question underneath it is different: <strong>what proportion of a firm's automated activity is conducted under mandates that produce checkable artifacts at all?</strong>
+    </p>
+    <p class="body">
+      A firm with complete enforcement and a firm with enforcement on one desk both hand you artifacts that verify. The artifacts look identical. What separates them is coverage, and coverage is a property of a population rather than of a document — which means it is not something any individual attestation can tell you, no matter how well it is signed.
+    </p>
+    <p class="body">
+      We think coverage is the right shape for a supervisory metric here, and we want to be precise that <strong>this is an argument we are making, not a capability we have built.</strong> There is no coverage measurement in the protocol today, no agreed denominator, and no way for an examiner to establish one from artifacts alone. Defining the denominator honestly is most of the problem, and it is not a problem a vendor should define by itself.
+    </p>
+  </div>
+</section>
+
+<!-- COMPLETENESS -->
+<section style="background:var(--bg); border-bottom:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">04 · What is unsolved</div>
+    <h2>Completeness. Stated plainly, because it is the first thing you would find.</h2>
+    <p class="body">
+      Portable attestations solve authenticity. <strong>They do not solve completeness, and nothing on this site should be read as claiming otherwise.</strong>
+    </p>
+    <p class="body">
+      If you hold ten attestations and all ten verify, you know ten actions fell inside granted authority. You do not know whether there were eleven. The absence of an attestation is not evidence of the absence of an action — it is equally consistent with an action taken outside the system entirely, by a process that never consulted a mandate and therefore never produced a record to withhold.
+    </p>
+    <p class="body">
+      This is the point at which the guarantee stops and ordinary examination resumes. A cryptographic record can establish that what you were shown is genuine. Establishing that you were shown everything is a different kind of problem, and it is not one signatures can reach. Anyone claiming a signed-evidence scheme delivers completeness is selling you the wrong property.
+    </p>
+    <div class="callout">
+      <h4>What would move it, and what would not</h4>
+      <p>Enforcement at the signing boundary narrows the gap, because an action that cannot be signed without passing a check cannot occur silently — the population of possible actions and the population of recorded ones converge. That is why the enforcement point matters more than the record format.</p>
+      <p>It narrows the gap; it does not close it. It holds only for actions routed through that boundary, and establishing that all of them are is, again, a coverage question rather than a cryptographic one.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT THIS IS NOT -->
+<section style="background:var(--bg2);">
+  <div class="section-inner">
+    <div class="section-label">05 · Scope of this page</div>
+    <h2>Not a console, and not an endorsement.</h2>
+    <p class="body">
+      <strong>There is no supervisory dashboard here and we are not going to publish one yet.</strong> A console designed without supervisory requirements is a vendor guessing in public about what oversight needs, and shipping it would make the guess look like a standard. Verification is different: the artifact already exists and the checks are already defined, so it can be built before anyone specifies requirements. That is why this page offers a verifier and not an interface.
+    </p>
+    <p class="body">
+      Nothing here asks for your details. There is no form, no account, and no commercial call to action on this page or on the verification page, deliberately. Examining a record produced by a firm we sell software to does not put you in a relationship with us, and a verification surface with a lead-capture form on it is not a verification surface.
+    </p>
+    <p class="body">
+      The tooling is MIT-licensed and self-hostable, and a verifier you run from your own infrastructure is worth more than one you load from us. If any of the above is wrong, or the limits are stated in a way that would mislead an examiner, we would rather be told than not.
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--amber); letter-spacing:0.12em; text-transform:uppercase;">Observer Protocol</div>
+    <div class="footer-links">
+      <a href="/">Home</a>
+      <a href="./verify.html">Verify</a>
+      <a href="./supervisors.html">Supervisors</a>
+      <a href="./architecture.html">Architecture</a>
+      <a href="./docs.html">Docs</a>
+      <a href="./registry.html">Registry</a>
+      <a href="https://github.com/observer-protocol" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+  <div class="footer-note">
+    Sections 03 and 04 are argument, marked as such. Section 02 is measured. AIP v0.9, ratified 25 July 2026 · MIT · CC BY 4.0
+  </div>
+</footer>
+
+</body>
+</html>
