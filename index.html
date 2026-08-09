@@ -866,7 +866,7 @@
 <section id="verify" style="background: var(--bg); border-top: 1px solid var(--border);">
   <div class="section-inner">
     <div class="section-label">05 · Verify it yourself</div>
-    <h2>No API key. No bearer token. No account.<br/>No call back to us at verification time.</h2>
+    <h2 data-shared-copy="offline-scope">No API key. No bearer token. No account.<br/>No call back to us at verification time.</h2>
     <p class="section-intro" data-shared-copy="offline-scope">
       The strongest claim we make is that you do not need our cooperation to check our work. That claim is worth nothing unless you can run it, so here it is, against a credential that is live on this domain right now. <strong>What you can check this way is a delegation credential. It does not yet include the refusal record above:</strong> that signature is sound and verifies under standard Data Integrity tooling, but reconstructing the payload it covers needs code we have not published, so verifying a refusal end to end is currently something only we can do. Publishing it is the work.
     </p>
@@ -912,11 +912,11 @@ console.log(<span class="k">await</span> verifyCredentialObject(
       </div>
       <div>
         <h3 style="font-family:'Fraunces',serif; font-size:1.3rem; font-weight:600; margin-bottom:1rem;">What it reads, and from where.</h3>
-        <p style="font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1rem;">
-          Everything the verifier checks is public: the issuer's DID document, the schema, and the revocation status list. It fetches them over ordinary HTTPS from the origins the credential names. There is no Observer Protocol API in the path, nothing to authenticate to, and nothing we can withhold to make a credential stop verifying.
+        <p style="font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1rem;" data-shared-copy="offline-scope">
+          Everything the verifier checks is public: the issuer's DID document and the revocation status list, which it fetches over ordinary HTTPS from the origins the credential names, and the schema, which it checks by <code>$id</code> against your allowlist without fetching anything. There is no Observer Protocol API in the path, nothing to authenticate to, and nothing we can withhold to make a credential stop verifying.
         </p>
         <p style="font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1rem;">
-          Point <code>offline.didDocumentPath</code> at a local copy of the issuer's DID document and it makes no network call at all. That is the mode an examiner uses.
+          <span data-shared-copy="offline-scope">Point <code>offline.didDocumentPath</code> at a local copy of the issuer's DID document and it makes no network call at all.</span> That is the mode an examiner uses.
         </p>
         <p style="font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1.5rem;">
           <strong style="color:var(--text);">It fails closed, and it will refuse us too.</strong> <code>onUnreachable: 'cache-then-deny'</code> is the only accepted value: if the revocation list cannot be fetched, a cached answer is used and then the credential is denied. A status list hosted on an origin other than the pinned issuer's is refused until you allowlist it, and Observer Protocol's own clause-zero revocation demonstration is exactly such a pair, so it does not verify out of the box. That limit is published in the package.

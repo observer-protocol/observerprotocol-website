@@ -221,7 +221,7 @@
         <div class="qs-tag">NPM INSTALL · v<span data-engine-version="current">1.0.0-rc.6</span></div>
         <div class="qs-name">Verify a credential</div>
         <div class="qs-meta">npm install @observer-protocol/policy-engine</div>
-        <div class="qs-desc">Verify a delegation credential offline — issuer, structure, validity window, eddsa-jcs-2022 proof against the issuer DID document, and revocation. No service call, no token, no callback to Observer. The hosted verifier is a separate deployment running a different engine version; see the SDK section.</div>
+        <div class="qs-desc" data-shared-copy="offline-scope">Verify a delegation credential yourself — issuer, structure, validity window, eddsa-jcs-2022 proof against the issuer DID document, and revocation. No API key, no token, no Observer Protocol API in the path. It fetches the issuer's DID document and the revocation status list over ordinary HTTPS from the origins the credential names; point <code>offline.didDocumentPath</code> at a local copy and it makes no network call at all. The hosted verifier is a separate deployment running a different engine version; see the SDK section.</div>
       </a>
       <a href="https://github.com/observer-protocol/aip/tree/master/sdk/python" target="_blank" class="qs-card">
         <div class="qs-icon">🐍</div>
@@ -362,7 +362,9 @@
 npm install @observer-protocol/policy-engine
 
 <span class="code-comment">// Verify a delegation credential you were given.</span>
-<span class="code-comment">// Offline: no API key, no network call to Observer.</span>
+<span class="code-comment" data-shared-copy="offline-scope">// No API key, no Observer Protocol API in the path.</span>
+<span class="code-comment">// Fetches the issuer DID document and status list</span>
+<span class="code-comment">// over HTTPS; offline.didDocumentPath removes that.</span>
 <span class="code-key">import</span> { verifyCredentialObject } <span class="code-key">from</span> <span class="code-val">'@observer-protocol/policy-engine'</span>;
 
 <span class="code-key">const</span> verdict = <span class="code-key">await</span> <span class="code-fn">verifyCredentialObject</span>(

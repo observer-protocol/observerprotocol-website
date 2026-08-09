@@ -50,7 +50,7 @@ for (const [key, entry] of Object.entries(spec)) {
     // truncates the block, which makes the check fail on correct input. That happened
     // on the first run of this file.
     const blocks = [];
-    const openRe = new RegExp(`<([a-z]+)[^>]*data-shared-copy="${key}"[^>]*>`, 'g');
+    const openRe = new RegExp(`<([a-z][a-z0-9]*)[^>]*data-shared-copy="${key}"[^>]*>`, 'g');
     let om;
     while ((om = openRe.exec(src)) !== null) {
       const tag = om[1];
@@ -102,16 +102,24 @@ for (const [key, entry] of Object.entries(spec)) {
     const rel = file.slice(root.length + 1);
     const tagged = taggedRanges(src, key);
 
+    // Patterns are case-insensitive REGEXES, not literal substrings. Both halves of
+    // that sentence were bought with a miss. `indexOf` is case-sensitive, so the
+    // heading "No call back to us" on index.html sat outside any tag and the check
+    // stayed green because the pattern was written lower-case. And a literal cannot
+    // spell one claim two ways: the site says "call back to us" in one place and
+    // "callback to Observer" in another, so a literal list polices the phrasing it
+    // was written from rather than the claim. Same lesson as the reputation stem.
     for (const pattern of patterns) {
-      let from = 0;
+      const re = new RegExp(pattern, 'gi');
       for (;;) {
-        const at = src.indexOf(pattern, from);
-        if (at === -1) break;
-        from = at + pattern.length;
+        const m = re.exec(src);
+        if (m === null) break;
+        const at = m.index;
+        if (re.lastIndex === at) re.lastIndex++; // zero-width guard
         if (tagged.some(([a, b]) => at >= a && at < b)) continue;
         const line = src.slice(0, at).split('\n').length;
         failures.push(
-          `${rel}:${line}: "${pattern}" appears outside any data-shared-copy="${key}" element.\n` +
+          `${rel}:${line}: "${m[0]}" (matched /${pattern}/i) appears outside any data-shared-copy="${key}" element.\n` +
           `      This is the claim that verification needs nothing from us. Every instance is\n` +
           `      enumerated so one edit can scope all of them. Tag it, or add the file to\n` +
           `      mustAppearIn in scripts/shared-copy.json if this is a new home for the claim.`
@@ -181,7 +189,7 @@ function allHtml(dir = root, acc = []) {
 // reason the extractor above is.
 function taggedRanges(src, key) {
   const out = [];
-  const openRe = new RegExp(`<([a-z]+)[^>]*data-shared-copy="${key}"[^>]*>`, 'g');
+  const openRe = new RegExp(`<([a-z][a-z0-9]*)[^>]*data-shared-copy="${key}"[^>]*>`, 'g');
   let om;
   while ((om = openRe.exec(src)) !== null) {
     const tag = om[1];
