@@ -55,9 +55,27 @@
     </p>
     <p>
       <strong>There is no direct replacement, and pointing you at one would be its own inaccuracy.</strong>
-      The pages removed here described agent reputation scoring. That is no longer part of what the
-      protocol offers, so the honest answer is that the thing you were looking for is not somewhere
-      else on this site under a new name.
+      Two different things were withdrawn to this address, and which one you were looking for changes
+      what you should know.
+    </p>
+    <p>
+      <strong>Most of them described agent reputation scoring.</strong> That is no longer part of what
+      the protocol offers, so the honest answer is that the thing you were looking for is not
+      somewhere else on this site under a new name.
+    </p>
+    <p>
+      <strong>One of them, <code>/verify-receipt.html</code>, was a credential verifier that could
+      never have said yes.</strong> If you pasted a receipt into it and it did not confirm, that was
+      not your receipt. Two independent faults, either one sufficient: it required the
+      <code>Ed25519Signature2020</code> proof suite, and <em>every</em> credential Observer Protocol
+      publishes is signed with <code>eddsa-jcs-2022</code> &mdash; so it rejected all of them on type
+      before reaching the cryptography. And its canonicalisation was wrong: it passed a key list as
+      <code>JSON.stringify</code>'s <em>replacer</em> argument, which drops every nested field, so
+      <code>credentialSubject</code> was serialised as <code>{}</code> and the payload was absent from
+      the bytes it checked the signature over. It failed closed, so it never called a bad credential
+      good. It also could not call a good one good. <strong>To actually verify a credential, use
+      <a href="/verify.html">the verification page</a></strong>, which walks a runnable transcript
+      against the published engine.
     </p>
     <p>
       What Observer Protocol does now is narrower and easier to check: a mandate a person signs, a
