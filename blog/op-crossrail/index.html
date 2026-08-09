@@ -61,6 +61,16 @@
   <h1>Your agent can now pay for anything. Nothing checks whether it was allowed to.</h1>
   <p class="standfirst">OP Crossrail. Delegate once. Enforced before the payment exists.</p>
 
+  <div style="border-left:2px solid #b8791a; background:#111110; padding:1.25rem 1.5rem; margin:1.5rem 0; font-size:0.9rem; line-height:1.8; color:#888880;">
+    <strong style="color:#f5a623;">Note added 8 August 2026.</strong> This post describes the cross-rail budget without
+    distinguishing it from the per-transaction ceiling. They are not equivalent. The ceiling is enforced against
+    <strong>signed mandate content</strong>; the cross-rail budget is enforced against a <strong>local file the agent owns
+    and can reset</strong>, shared only by adapters co-located in one process. The budget has never run in production.
+    The three-rail run described below was demonstrated on one workstation, and its x402 leg settled on
+    <strong>Base Sepolia, a testnet</strong>, while the Lightning and TRON legs were mainnet. See
+    <a href="/crossrail" style="color:#f5a623;">/crossrail</a> for what it is and is not. The post is otherwise unedited.
+  </div>
+
   <p>On July 1, <a href="https://blog.cloudflare.com/monetization-gateway/" target="_blank" rel="noopener">Cloudflare announced the Monetization Gateway</a>: any API, dataset, or MCP tool behind Cloudflare can now charge agents per call, settled in stablecoins over x402. It is a serious piece of infrastructure, and it completes one half of agentic commerce. The seller side is gated at the edge. The buyer side, the agent holding the keys, is governed by nothing.</p>
 
   <p>x402's design principle is that the payment itself is the credential. That is elegant, and it is also the gap: a payment proves the agent had funds. It proves nothing about whether the agent's principal authorized the spend, at what limit, on which rails. As agents gain the ability to pay for anything, nobody in the flow is checking what they are allowed to pay for.</p>
