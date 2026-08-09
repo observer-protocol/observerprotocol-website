@@ -287,7 +287,21 @@ console.log('BTC address:', btcWallet.address);</code></pre>
         <!-- Step 4 -->
         <div class="step">
           <div class="step-number">4</div>
-          <h3>Register with Observer Protocol</h3>
+          <h3>Register with Observer Protocol<<div style="border-left:3px solid var(--orange); background:rgba(247,147,26,0.08); padding:0.9rem 1.1rem; margin:0.9rem 0; font-size:0.85rem; line-height:1.7;">
+      <strong>Unverified derivation, 9 August 2026.</strong> The snippet below hashes the DER-encoded
+      SPKI <em>bytes</em> of a <code>secp256k1</code> key and keeps all 64 hex characters. That is not
+      how Observer Protocol derives an agent id. The documented derivation is
+      <code>agent_id = sha256(public_key_hex)[:32]</code> &mdash; the first 32 characters, over the hex
+      <em>string</em>, on an Ed25519 key &mdash; and
+      <a href="/docs.html#did-resolution">the docs page</a> warns explicitly that hashing the bytes
+      instead of the hex string "yields a different id and a DID that will not resolve". Real agent
+      identifiers on this protocol are 32 characters.
+      <br><br>
+      Left in place rather than repointed: this page's <code>wallet.register()</code> call was not
+      exercised, so which value that method actually wants is not established here, and substituting
+      one would repeat the mistake Step 2's own note above records. Use the docs derivation if you
+      need an id that resolves.
+    </div>/h3>
           <p>Register your agent to establish identity and enable bilateral verification:</p>
           <pre><code>import crypto from 'crypto';
 
