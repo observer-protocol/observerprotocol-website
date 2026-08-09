@@ -91,16 +91,6 @@
       "appliesTo": "*.html",
       "allow": [
         {
-          "file": "agent.html",
-          "contains": "Reputation Registry",
-          "why": "ERC-8004's on-chain contract is literally named the Reputation Registry. External proper noun; renaming it would misname a contract the page links on a block explorer."
-        },
-        {
-          "file": "agent.html",
-          "contains": "reputation_registry",
-          "why": "Same contract, the field name as returned by the API."
-        },
-        {
           "file": "institutional/index.html",
           "contains": "not the trust score",
           "why": "The line reads 'Refusal at the policy layer, NOT the trust score.' It is the correct usage and the best sentence in the estate on the distinction."

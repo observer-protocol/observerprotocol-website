@@ -462,3 +462,67 @@ a summary when correcting a detail.
 Corollary, and it is the reason this needs a rule rather than vigilance: **a page can be entirely
 composed of true sentences and still mislead every reader who does not finish it.** That is family 3
 in the audit taxonomy, and ordering is its most common form.
+
+## 12. A model can survive the removal of every word that names it
+
+§2f-pre records the escalation: phrase, then subject, then subject-as-previously-written. The answer
+was to forbid the **stem** — `scor` catches score/scoring/scored/scores, `reputat` catches the rest.
+That check works and it has held.
+
+On 2026-08-09 the model turned up again anyway, on `agent.html`, wearing none of those words:
+
+    Platinum   1000+ txns · 98%+ success rate
+    Gold        100+ txns · 95%+ success rate
+    Silver       10+ txns · 90%+ success rate
+    Bronze       1+ verified transaction
+
+A ladder of standing, earned by accumulated transaction count, displayed on a public agent profile.
+That is the reputation model. It contains no forbidden stem, so the check could not see it, **and no
+future vocabulary rule will catch the next one either** — the mechanism does not need a name.
+
+**So the escalation has a fourth step: phrase, subject, stem, mechanism.** A stem check is a check on
+what a page *says*. It cannot check what a page *does*.
+
+**How to look for it.** Do not search for the concept's words. Ask, of any surface that ranks,
+grades, tiers, badges, scores, sorts or gates by accumulated history:
+
+- **What would a user do to move up this?** If the answer is "transact more", it is a reputation
+  system regardless of what the labels say.
+- **Does the ordering carry an implication of trustworthiness?** Bronze-to-Platinum does. So does a
+  badge grid with unearned slots greyed out.
+- **Would removing it change any decision the protocol makes?** If not, it is decoration that reads as
+  a verdict — worse than a wrong number, because there is nothing to correct.
+
+The same page also stated criteria nothing evaluated: the "98%+ success rate" half of each tier was
+never computed anywhere, and the tier turned on the count alone. **A criterion published beside a
+mark, which the mark does not depend on, is a mark never derived from anything** wearing the costume
+of one that is.
+
+## 13. Something correct and partial is harder to see than something absent
+
+Three of the day's findings on 2026-08-09 have one shape, and it is the shape that beats a careful
+reviewer:
+
+| the control | why nobody looked further |
+|---|---|
+| the CI step named "Engine version on the site matches the lockfile" | exactly accurate about the only comparison it made |
+| `technical-paper.html`'s editor's note | a note existed, exactly where the allowlist said one did — it just covered a different retired claim than the stem it exempts |
+| `check-shared-copy`'s `claimPatterns` | real patterns, matching real instances, in the wrong case and the wrong vocabulary |
+
+An **absent** control announces itself: the file is missing, the step does not exist, the list is
+empty. A **partial** one answers the question you asked and stops you asking the next. Its correctness
+is what closes the enquiry.
+
+Related failure, same family: `positioning-paper.html` was allowlisted with the reason *"a dated
+document. Annotate, do not rewrite"* and carried **no annotation at all**. An allowlist reason that
+describes a control which does not exist is indistinguishable from a real exception.
+
+**The rules:**
+
+- **Check a control against its subject, not against its description.** The step name, the allowlist
+  reason and the comment are claims about the control. Run it and see what it does.
+- **When you find a control, ask what it does NOT cover** before crediting it. "There is an editor's
+  note" is not the finding; "the editor's note covers X and this is Y" is.
+- **When you write an exemption, name what the control actually does, and re-read it when the
+  control changes.** Both allowlist reasons in this repo were written truthfully and became false
+  without anyone editing them.
