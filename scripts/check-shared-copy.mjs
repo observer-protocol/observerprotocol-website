@@ -129,6 +129,33 @@ for (const [key, entry] of Object.entries(spec)) {
   }
 }
 
+// REQUIRES DISCLOSURE. Not a forbidden stem: naming the package is allowed, naming it
+// silently is not. A page may legitimately instruct a deprecated package when nothing
+// replaces the flow — what it may not do is let a reader adopt it without knowing.
+const requires = spec['$requiresDisclosure'] ?? {};
+for (const [concept, rule] of Object.entries(requires)) {
+  const stems = rule.stems ?? [];
+  const musts = (rule.mustAlsoContain ?? []).map((x) => x.toLowerCase());
+  if (stems.length === 0 || musts.length === 0) continue;
+
+  for (const file of allHtml()) {
+    const src = readFileSync(file, 'utf8');
+    const rel = file.slice(root.length + 1);
+    const low = src.toLowerCase();
+    const hit = stems.find((stem) => low.includes(stem.toLowerCase()));
+    if (!hit) continue;
+    const missing = musts.filter((m) => !low.includes(m));
+    if (missing.length === 0) continue;
+    const line = src.slice(0, low.indexOf(hit.toLowerCase())).split('\n').length;
+    failures.push(
+      `${rel}:${line}: names "${hit}" but the page never says ${missing.map((m) => `"${m}"`).join(' or ')}.\n` +
+      `      Concept: ${concept}. Instructing a deprecated package is allowed where nothing\n` +
+      `      replaces the flow. Instructing it silently is not — a reader adopts it without\n` +
+      `      knowing. Add the disclosure to this page, or stop naming the package.`
+    );
+  }
+}
+
 // FORBIDDEN STEMS. A concept ruled off the site cannot be policed by searching for
 // the phrasing it had when it was ruled off — that is how reputation survived three
 // clearances. Forbid the stem; allowlist each surviving occurrence with a reason.

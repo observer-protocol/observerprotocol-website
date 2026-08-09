@@ -206,14 +206,24 @@ assert result.valid  # cryptographic proof verified</pre>
   <div class="proof">
     <div class="proof-label">Verified x402 Payment - Base Mainnet</div>
     <div class="proof-value">
-      TX: <a href="https://basescan.org/tx/0xd94a6d8bfa9c1634e19b59cac9503e732cb538772b96e02300702bc38fb39b94" target="_blank">0xd94a6d8bfa9c1634...b39b94</a><br>
+      TX: <a href="https://basescan.org/tx/0xd94a6d8bfa9c1634e19b59cac9503e732cb538772b96e02300702bc38fb39b94" target="_blank">0xd94a6d8bfa9c1634...b39b94</a> &middot; Base mainnet block 45319014<br>
       Agent: did:web:observerprotocol.org:agents:d13cdfceaa8f895afe56dc902179d279<br>
-      Counterparty: did:web:hyperbolic.xyz<br>
+      Counterparty: did:web:hyperbolic.xyz &mdash; <strong>this DID no longer resolves</strong><br>
       Amount: 0.10 USDC<br>
       Rail: x402 (USDC on Base)<br>
       On-chain verified: true
     </div>
   </div>
+
+  <p style="border-left:3px solid var(--border); padding-left:1rem;">
+    The counterparty DID is recorded as it stood at the time of the payment, and it no longer
+    resolves: <code>hyperbolic.xyz</code> redirects to <code>hyperbolic.ai</code>, and
+    <code>/.well-known/did.json</code> returns 404 there. Checked 9 August 2026. <strong>The
+    settlement is unaffected and still checkable by anyone</strong> &mdash; it is on Base mainnet at
+    block 45319014, and the amount, asset and recipient are in the transaction, not in the DID. But a
+    <code>did:web</code> is only as durable as the domain serving it, and a page about independent
+    verification is the wrong place to leave that unsaid.
+  </p>
 
   <div class="proof">
     <div class="proof-label">X402PaymentCredential issued</div>

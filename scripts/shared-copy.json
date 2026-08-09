@@ -58,6 +58,20 @@
     "claimPatternsAreRegex": "Case-insensitive regexes, matched by check-shared-copy.mjs. Written from the site's own examples rather than from one remembered sentence: the claim is spelled 'call back to us' on index.html and 'callback to Observer' on docs.html, and a literal lower-case list saw neither the capitalised heading nor the Observer variant. Four assertions were invisible to this block on 2026-08-09 for exactly that reason. When you add a home for the claim, add its WORDING here, not just its file.",
     "claimPatternNote": "Any occurrence of these in an HTML file MUST sit inside an element tagged data-shared-copy=\"offline-scope\". That is what makes a tenth instance a build failure rather than a discovery. Add the tag, or add the file to mustAppearIn if it is a new home for the claim. Some tagged instances REFER to the claim rather than asserting it (docs.html's resolution-hosting rationale is one). They are tagged anyway: the enumeration's job is to know everywhere the phrase appears, and a human scoping the claim decides per instance."
   },
+  "$requiresDisclosure": {
+    "deprecated-sdk": {
+      "why": "A page may name a deprecated package — there is no replacement for the register/attest flows, so instructing it is sometimes correct. What is never correct is instructing it SILENTLY. On 2026-08-09 four pages disclosed the deprecation and four did not, and the four that did not included the integration guide end to end, under the heading 'Ship chargeback prevention today'. This is not a $forbidden stem: the package name is allowed, the omission is not. Verified at the registry, not from our own copy: npm carries the deprecation notice on the package, and PyPI's newest observer-protocol is 0.2.0 from 2026-04-30.",
+      "stems": [
+        "@observer-protocol/sdk",
+        "@observerprotocol/sdk",
+        "pip install observer-protocol"
+      ],
+      "mustAlsoContain": [
+        "deprecat"
+      ],
+      "note": "mustAlsoContain is matched case-insensitively anywhere in the same FILE, not the same element: a page-level notice covers every mention on that page, which is how the four disclosing pages already do it. Stem, not phrase — 'deprecat' catches deprecated/deprecation/deprecates, because the last three vocabulary misses on this site were all a matcher that knew one spelling of its subject."
+      }
+  },
   "$forbidden": {
     "reputation-model": {
       "why": "Reputation was ruled off this site entirely. It was cleared three times and was wrong three times, because each search was shaped like the previous fix: the phrase, then the subject, then the subject as previously written. 'trust scoring' does not contain 'trust score' \u2014 the stem diverges at scor|e versus scor|ing. This forbids the STEM, so a gerund, a bare noun, or a number with a label cannot reappear unnoticed.",

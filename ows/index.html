@@ -299,7 +299,13 @@
         <div class="step-num-wrap"><div class="step-num">2</div><div class="step-line"></div></div>
         <div class="step-body">
           <div class="step-title">Install OP SDK</div>
-          <div class="step-desc">Add the Observer Protocol SDK to your project.</div>
+          <div class="step-desc">Add the Observer Protocol SDK to your project. <strong>Note that this
+          package is deprecated.</strong> <code>@observer-protocol/sdk</code> was last released in
+          April 2026, is unmaintained, and carries a deprecation notice on the registry itself. It
+          still installs and the steps below still run. For <em>verifying</em> a credential use
+          <code>@observer-protocol/policy-engine</code>; the register-and-attest flow in steps 3 to 5
+          has no replacement package yet, which is why this page still names the old one. See
+          <a href="/sdk.html">the SDK page</a> for what replaces which part.</div>
           <pre><span class="cmd">npm install @observer-protocol/sdk</span></pre>
         </div>
       </div>
