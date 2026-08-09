@@ -281,7 +281,7 @@
 
     <p>NeuralBridge signs the authorization proof with <em>their own key</em>, under their own DID. We provide the SDK; they do the signing. The authorization proof carries transaction details, a reference to the delegation credential, the authorization level, my principal DID, and NeuralBridge's signature.</p>
 
-    <p>Crucially: <strong>independently verifiable</strong>. Any third party with the authorization-proof JSON and NeuralBridge's published public key (via standard <code>did:web</code> resolution) can verify without runtime dependency on AT's or NeuralBridge's backend. The authorization proof survives every party going offline.</p>
+    <p>Crucially: <strong>independently verifiable</strong>. Any third party with the authorization-proof JSON and NeuralBridge's published public key (via standard <code>did:web</code> resolution) <span data-shared-copy="offline-scope">can verify without runtime dependency on AT's or NeuralBridge's backend at the moment of settlement. Resolving NeuralBridge's key by <code>did:web</code> does need their domain to answer; hold a copy of that DID document and the proof verifies with every party offline.</span></p>
   </div>
 
   <!-- BEATS 7-8 -->
@@ -296,7 +296,7 @@
 
     <p>Imagine a dispute. Weeks later, the principal claims they didn't authorize the transaction. NeuralBridge presents the authorization proof. It cryptographically establishes: an approval was issued against this exact transaction, signed by the key the delegation names; the authorization was one-time; the delegation credential is valid; the scope matches; the timestamp is consistent. The dispute is resolved before it becomes a chargeback.</p>
 
-    <p>The operations view shows what NeuralBridge sees: the recorded transaction, four-line integration snippet (no API key, no runtime dependency -any third party can verify), stored authorization proof, and dispute prevention indicator. AI infra companies don't displace anything to adopt this -they add the trust layer.</p>
+    <p>The operations view shows what NeuralBridge sees: the recorded transaction, four-line integration snippet (<span data-shared-copy="offline-scope">no API key, no runtime dependency on us -any third party holding the issuer's key can verify</span>), stored authorization proof, and dispute prevention indicator. AI infra companies don't displace anything to adopt this -they add the trust layer.</p>
   </div>
 
   <!-- CLOSING BEAT -->
