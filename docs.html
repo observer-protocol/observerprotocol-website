@@ -586,7 +586,7 @@ npm install @observer-protocol/policy-engine
         The left half resolves against the ISO 20022 external clearing system code set, which appears in every <code>pain.001</code>, so it is not a vocabulary we invent or maintain. The right half distinguishes products sharing a clearing system, which is a real collision rather than a hypothetical one: ACH credit and Fedwire are different products on one system. It mirrors CAIP-2's <code>namespace:reference</code> grammar, so <code>eip155:8453</code> parses under it unchanged and a fiat rail does not force a parallel identifier space.
       </p>
       <p style="font-size:0.92rem; color:var(--text-dim); line-height:1.8; font-weight:300;">
-        <strong style="color:var(--amber);">What actually ships today:</strong> <code>rail</code> is a free-text string. The published <code>delegation/v2.6</code> schema documents it that way, with examples <code>'usdt-trc20'</code> and <code>'lightning'</code>, and no issued credential carries the grammar above. Schema URLs are immutable, so adopting it means a new schema version rather than an edit. Treat this as what the field is becoming, not what it contains.
+        <strong style="color:var(--amber);">What actually ships today:</strong> <code>rail</code> is a free-text string. The published <code>delegation/v2.7</code> schema documents it that way, with examples <code>'usdt-trc20'</code> and <code>'lightning'</code>, and no issued credential carries the grammar above. Schema URLs are immutable, so adopting it means a new schema version rather than an edit. Treat this as what the field is becoming, not what it contains.
       </p>
     </div>
 
