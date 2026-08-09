@@ -220,6 +220,36 @@ Three examples, all from one evening, all introduced by the person applying the 
 the third one had been written an hour earlier for exactly this and still had to be run to catch it.
 A rule applied by hand does not check its own edits.
 
+## 2f. Phrase a constraint around its subject
+
+**A constraint's grammar chooses the search shape of whoever checks it.** Write constraints so the
+natural search is the right one.
+
+The API's field notes carried: *"no surface may claim revocation works end to end."* That is a
+**prohibition**, phrased as a predicate, so it was checked by grepping `revocation works`,
+`revocation is live`, `revocation end to end`. All clean. The site claimed it in **seven** places and
+six were **nouns in feature lists** — *"issuance, caps, revocation, audit"*, *"approval and
+revocation"*, *"Revocation + cascade"*, *"one-click revocation"*. A capability is almost never
+asserted with a verb. It is listed.
+
+Three sibling constraints in the same field notes were checked the same evening and were genuinely
+clean — but only because they were phrased as **field descriptions**: *"`total_transactions` is an
+UNFILTERED count … NOT a count of verified or attested transactions."* A keyword search on that lands
+on the subject by accident.
+
+So:
+
+| phrasing | how it gets checked | catches a noun in a list? |
+|---|---|---|
+| *"no surface may claim revocation works"* | grep the predicate | **no** |
+| *"revocation is not a capability of this deployment"* | grep `revocation` | **yes** |
+
+**Write the subject first and make the constraint a statement about it**, not a rule about sentences
+someone might write. The second phrasing survives being checked carelessly; the first does not.
+
+And when reading a constraint someone else wrote, notice which shape it is. If it is a prohibition,
+convert it before searching: what is the subject, and where would that subject appear?
+
 ## 3. Adding a non-web file makes it public
 
 `publish = "."`. A new `.md`, `.sh`, `.csv` or `.py` at the root is served the moment it merges, and
