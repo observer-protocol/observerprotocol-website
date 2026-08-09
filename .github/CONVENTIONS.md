@@ -220,6 +220,40 @@ Three examples, all from one evening, all introduced by the person applying the 
 the third one had been written an hour earlier for exactly this and still had to be run to catch it.
 A rule applied by hand does not check its own edits.
 
+## 2f-pre. Search the stem, not the word — and the escalation that produced this rule
+
+**Three variants of one lesson in one evening, each fix making the search more precise and the miss
+more specific:**
+
+| pass | searched | missed |
+|---|---|---|
+| 1 | the **phrase** — *"revocation works end to end"* | nouns in feature lists |
+| 2 | the **subject** — `revocation` | nothing; that one worked |
+| 3 | the subject **as previously written** — `trust score`, `reputation score` | `trust scoring`, `reputation data`, `Score 71` |
+
+`trust scoring` does not contain `trust score`: the stem diverges at `scor|e` versus `scor|ing`. **A
+capability asserted as a gerund, a bare noun, or a number with a label is invisible to a search for
+the noun phrase.**
+
+Reputation was ruled off this site and reported clear **three times**, wrong each time, because each
+search was shaped like the previous fix. The fourth check counted 22 references across 10 live pages,
+including two pages rebuilt that same evening expressly to remove it.
+
+**Search the stem, anchored at a word boundary.** `scor` catches `score`, `scoring`, `scored`,
+`scores`; anchoring stops `discord` matching — a false positive worth fixing in the matcher rather
+than hiding in an allowlist, because an allowlisted false positive is indistinguishable from a real
+exception.
+
+**And do not police a retired concept by searching. Forbid it.** `scripts/shared-copy.json` carries a
+`$forbidden` block: stems, plus an allowlist naming each surviving occurrence **and its reason**. The
+build fails on anything else. That is the only thing that makes a fourth clearance mean more than the
+first three did.
+
+Real exceptions exist and belong in the allowlist with their reason rather than in someone's memory:
+ERC-8004's contract is literally named the *Reputation Registry*; `institutional/` says *"not the
+trust score"*, which is the correct usage; alt text describing a screenshot showing a score must keep
+describing it.
+
 ## 2f. Phrase a constraint around its subject
 
 **A constraint's grammar chooses the search shape of whoever checks it.** Write constraints so the
