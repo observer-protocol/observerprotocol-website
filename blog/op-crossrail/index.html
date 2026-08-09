@@ -61,7 +61,7 @@
   <h1>Your agent can now pay for anything. Nothing checks whether it was allowed to.</h1>
   <p class="standfirst">OP Crossrail. Delegate once. Enforced before the payment exists.</p>
 
-  <div style="border-left:2px solid #b8791a; background:#111110; padding:1.25rem 1.5rem; margin:1.5rem 0; font-size:0.9rem; line-height:1.8; color:#888880;">
+  <div data-shared-copy="crossrail-budget-scope" style="border-left:2px solid #b8791a; background:#111110; padding:1.25rem 1.5rem; margin:1.5rem 0; font-size:0.9rem; line-height:1.8; color:#888880;">
     <strong style="color:#f5a623;">Note added 8 August 2026.</strong> This post describes the cross-rail budget without
     distinguishing it from the per-transaction ceiling. They are not equivalent. The ceiling is enforced against
     <strong>signed mandate content</strong>; the cross-rail budget is enforced against a <strong>local file the agent owns
@@ -87,7 +87,7 @@
 
   <p>Then it tries once more, and this is the part that matters. The payment is not declined. It is not reversed. It never comes into existence. The mandate check runs inside the standard x402 client, before the signer, and a denial means the EIP-3009 signature is never created. There is nothing to settle, nothing to dispute, nothing to claw back. The seller's resource stays behind its 402.</p>
 
-  <p>The next Lightning attempt is refused at the pre-payment hook. The next TRON transfer is refused inside the WDK policy engine, the transfer is never invoked. Three rails, three enforcement points: the key, the hook, the engine. One shared budget, one append-only decision log.</p>
+  <p>The next Lightning attempt is refused at the pre-payment hook. The next TRON transfer is refused inside the WDK policy engine, the transfer is never invoked. Three rails, three enforcement points: the key, the hook, the engine. <span data-shared-copy="crossrail-budget-scope">One shared budget, one append-only decision log.</span></p>
 
   <p>Nothing in the demo is staged. Every take settled against the production x402.org facilitator, on-chain on Base Sepolia: the first take at blocks 43667763&ndash;64, the committed take at blocks 43793016&ndash;43793058, and every transaction hash is committed in the repo's <a href="https://github.com/observer-protocol/x402-op-authorize/blob/main/demo/FIDELITY-NOTES.md" target="_blank" rel="noopener">fidelity notes</a>, independently checkable on any Base Sepolia explorer. The buyer wallet holds zero ETH; the facilitator broadcasts and pays gas. When we re-probed the facilitator with an already-settled payload, it returned <code>invalid_exact_evm_nonce_already_used</code>: Coinbase's own infrastructure attesting that our authorization was consumed on-chain. The repo also ships a local facilitator that simulates only the settlement hop, for self-contained CI runs; the fidelity notes label which configuration produced what, per take, stated plainly.</p>
 

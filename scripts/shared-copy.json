@@ -40,7 +40,8 @@
       "blog/op-crossrail/index.html",
       "chargeback-prevention/index.html",
       "hermes-agents.html",
-      "free-your-agent.html"
+      "free-your-agent.html",
+      "agents.html"
     ],
     "phrases": [],
     "claimPatterns": [
@@ -61,10 +62,32 @@
       "Nothing leaves your machine",
       "No Observer Protocol infrastructure in the verification path",
       "trust path requires belief",
-      "verifies? without us"
+      "verifies? without us",
+      "offline verification",
+      "verif\\w*[\\s,]+(?:\\w+[\\s,]+){0,3}offline",
+      "(?:check|validat|confirm|prov)\\w*[\\s,]+(?:\\w+[\\s,]+){0,3}offline",
+      "the offline path",
+      "offline[,.]? (?:from|against|by|with) "
     ],
     "claimPatternsAreRegex": "Case-insensitive regexes, matched by check-shared-copy.mjs. Written from the site's own examples rather than from one remembered sentence: the claim is spelled 'call back to us' on index.html and 'callback to Observer' on docs.html, and a literal lower-case list saw neither the capitalised heading nor the Observer variant. Four assertions were invisible to this block on 2026-08-09 for exactly that reason. When you add a home for the claim, add its WORDING here, not just its file.",
+    "theWordOfflineWasMissingEntirely": "2026-08-09, second pass. ZERO of the eighteen patterns above contained the word 'offline' — the plainest way the site says this, and the way the org's own GitHub description says it ('verifiable offline by anyone'). Nine untagged instances were live, including a capability pill on index.html, the thesis sentence on docs.html ('Offline verification is not an SDK detail. It is the protocol's central affordance'), and 'The offline path is the claim' on verify.html. The eighteen patterns were each written from a sentence somebody had READ; the vocabulary nobody happened to read in the hour the list was written was simply absent, and the enumeration reported complete throughout. A pattern list records where its author has been. The five patterns added here are claim-shaped on purpose: `offline.didDocumentPath` is a config key appearing nine times and matching it would force allowlist rows for non-claims, which is the failure the allowlist exists to avoid.",
     "claimPatternNote": "Any occurrence of these in an HTML file MUST sit inside an element tagged data-shared-copy=\"offline-scope\". That is what makes a tenth instance a build failure rather than a discovery. Add the tag, or add the file to mustAppearIn if it is a new home for the claim. Some tagged instances REFER to the claim rather than asserting it (docs.html's resolution-hosting rationale is one). They are tagged anyway: the enumeration's job is to know everywhere the phrase appears, and a human scoping the claim decides per instance."
+  },
+  "crossrail-budget-scope": {
+    "why": "ENUMERATION ENTRY, not a phrase check. Same shape as offline-scope and created for the same reason one surface out. The cross-rail budget claim was corrected so thoroughly that crossrail.html was rewritten around 'The budget is a design. The ceiling is a control.', and the correction was placed above the transcript per CONVENTIONS 2d. It was never applied to crossrail.html's own <meta name=\"description\"> or og:description, which asserted 'one cross-rail budget' unqualified until 2026-08-09. A META DESCRIPTION IS THE ONE SURFACE WHERE POSITION CANNOT HELP: it travels alone into a search result and a social card, with no page under it for a correction to sit on, so every positional rule in CONVENTIONS 2c/2d/11 is structurally unavailable there. The claim is enumerated rather than banned because the budget is real, it is simply not adversarially binding: it is an agent-owned local append-only file the agent can truncate, shared only by adapters co-located in one process, and it has never run in production.",
+    "mustAppearIn": [
+      "crossrail.html",
+      "blog/op-crossrail/index.html"
+    ],
+    "phrases": [],
+    "claimPatterns": [
+      "cross-rail budget",
+      "shared cross-rail",
+      "one shared budget",
+      "one rolling budget",
+      "same shared budget"
+    ],
+    "claimPatternNote": "Any occurrence in an HTML file MUST sit inside an element tagged data-shared-copy=\"crossrail-budget-scope\". Instances that STATE the limit are tagged too, not just instances that assert the capability: the enumeration's job is to know everywhere the subject appears so one edit can scope all of them, and a correction is exactly the text that must be revisited when the mechanism changes. If the budget ever becomes signed, or cross-process, or non-resettable, this list is where to find every sentence that has to move."
   },
   "$requiresDisclosure": {
     "deprecated-sdk": {

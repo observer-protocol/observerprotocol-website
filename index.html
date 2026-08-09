@@ -991,7 +991,7 @@ console.log(<span class="k">await</span> verifyCredentialObject(
           <div class="pill">Policy evaluation</div>
           <div class="pill">Fail-closed refusal</div>
           <div class="pill">Signed attestations</div>
-          <div class="pill">Offline verification</div>
+          <div class="pill" data-shared-copy="offline-scope">Offline verification</div>
           <div class="pill">Rail adapters</div>
           <div class="pill">Schemas &amp; engine</div>
         </div>
@@ -1076,7 +1076,7 @@ console.log(<span class="k">await</span> verifyCredentialObject(
       <div class="reg-row">
         <div>
           <div class="reg-what">The decider is independent of the enforcement point</div>
-          <div class="reg-detail">Section 03 says the decider is kept separate from the issuer, and that is true: the decider in our demonstrations is a <strong>separately-keyed <code>did:key</code></strong>, <strong>cryptographically distinct from the enforcement point</strong>, and you can <strong>verify that separation offline from its own DID</strong>. <strong>What it is not is a second party.</strong> It is a fixture we generated and control &mdash; <strong>not a published organisation</strong> and <strong>not an independent third party</strong> with its own interests. The separation is real as cryptography and currently means nothing as governance. <strong>Proving a decider is genuinely independent needs a real second party</strong>, and until one exists this row says fixture rather than independent.</div>
+          <div class="reg-detail">Section 03 says the decider is kept separate from the issuer, and that is true: the decider in our demonstrations is a <strong>separately-keyed <code>did:key</code></strong>, <strong>cryptographically distinct from the enforcement point</strong>, and you can <strong data-shared-copy="offline-scope">verify that separation offline from its own DID</strong>. <strong>What it is not is a second party.</strong> It is a fixture we generated and control &mdash; <strong>not a published organisation</strong> and <strong>not an independent third party</strong> with its own interests. The separation is real as cryptography and currently means nothing as governance. <strong>Proving a decider is genuinely independent needs a real second party</strong>, and until one exists this row says fixture rather than independent.</div>
         </div>
         <div class="reg-state demo">Fixture</div>
       </div>

@@ -30,6 +30,25 @@ const spec = JSON.parse(readFileSync(join(root, 'scripts/shared-copy.json'), 'ut
 const asProse = (html) =>
   html.replace(/<[^>]+>/g, '').replace(/&mdash;/g, '—').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
 
+// Void elements have no closing tag. The depth scanner below counts `</tag>` to find
+// where a block ends, so on a <meta> it scans to EOF, never reaches depth 0, and
+// silently contributes no range — the element reads as untagged however it is
+// tagged. That made <meta name="description"> uncoverable by the enumeration, which
+// is exactly where a claim gets restated for search engines and social cards and
+// where nobody re-reads it. A void element IS its own block; its prose is the
+// `content` (or `alt`) attribute.
+const VOID = new Set(['meta', 'link', 'img', 'input', 'br', 'hr', 'source', 'area']);
+const voidProse = (openTag) => {
+  const m = openTag.match(/\s(?:content|alt)="([^"]*)"/i);
+  return m ? asProse(m[1]) : '';
+};
+
+// Comments are not claims a reader meets. `<!-- THE OFFLINE PATH -->` is a section
+// marker, and allowlisting it would put a non-claim in a list whose entire value is
+// that every row is a real decision. Blanked rather than deleted so byte offsets —
+// and therefore reported line numbers — stay true.
+const stripComments = (src) => src.replace(/<!--[\s\S]*?-->/g, (m) => ' '.repeat(m.length));
+
 const failures = [];
 let checked = 0;
 
@@ -54,6 +73,7 @@ for (const [key, entry] of Object.entries(spec)) {
     let om;
     while ((om = openRe.exec(src)) !== null) {
       const tag = om[1];
+      if (VOID.has(tag)) { blocks.push(voidProse(om[0])); continue; }
       let i = om.index + om[0].length;
       let depth = 1;
       const scan = new RegExp(`</?${tag}\\b[^>]*>`, 'g');
@@ -98,7 +118,7 @@ for (const [key, entry] of Object.entries(spec)) {
   if (patterns.length === 0) continue;
 
   for (const file of allHtml()) {
-    const src = readFileSync(file, 'utf8');
+    const src = stripComments(readFileSync(file, 'utf8'));
     const rel = file.slice(root.length + 1);
     const tagged = taggedRanges(src, key);
 
@@ -220,6 +240,7 @@ function taggedRanges(src, key) {
   let om;
   while ((om = openRe.exec(src)) !== null) {
     const tag = om[1];
+    if (VOID.has(tag)) { out.push([om.index, om.index + om[0].length]); continue; }
     let depth = 1;
     const scan = new RegExp(`</?${tag}\\b[^>]*>`, 'g');
     scan.lastIndex = om.index + om[0].length;
