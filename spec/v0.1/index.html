@@ -142,6 +142,31 @@
     <div class="spec-header">
         <h1>Observer Protocol Specification v0.1</h1>
         <p style="color: var(--text-secondary); font-size: 15px; margin-top: 8px;">Open standard for verified agent economic activity</p>
+        <div style="border-left:2px solid #b8791a; background:#111110; padding:1.25rem 1.5rem; margin:1.5rem 0; font-size:0.9rem; line-height:1.8; color:#888880;">
+          <strong style="color:#f5a623;">Note added 9 August 2026.</strong> This is a dated
+          specification, published 22 February 2026 and unedited since. Two of its statements were
+          true when written and are not descriptions of the protocol today:
+          <br><br>
+          <strong style="color:#e8e8e0;">&sect;2.1 identity derivation.</strong> This document defines
+          <code>public_key_hash = SHA256(agent_public_key)</code>, a 64-character digest. What the
+          protocol actually issues is <code>agent_id = sha256(public_key_hex)[:32]</code> &mdash; the
+          first 32 characters, over the hex <em>string</em> rather than the raw bytes. Real agent
+          identifiers are 32 characters long. <a href="/docs.html#did-resolution" style="color:#f5a623;">The
+          derivation on the docs page</a> is the one that reproduces a resolvable DID; this one does not.
+          <br><br>
+          <strong style="color:#e8e8e0;">&sect;2.2 the api_key model.</strong> Registration here ends
+          with the server issuing an <code>api_key</code> that the agent uses to submit events.
+          Verification on Observer Protocol today needs no API key, no token and no account &mdash;
+          that is the claim six pages of this site now make, and this document predates it.
+          <br><br>
+          <strong style="color:#e8e8e0;">&sect;9 is open, not settled.</strong> Its statement that
+          <code>signed_challenge</code> verification accepts any non-empty string is a claim about the
+          deployed build that has been routed for verification and not yet answered. It is left
+          standing rather than removed or reaffirmed, because we do not currently know which is true.
+          <br><br>
+          The document is otherwise unedited. A dated specification should not be rewritten to read as
+          though it always said something else.
+        </div>
         <div class="spec-meta">
             <div class="meta-item">Status: <span class="status-badge">Draft</span></div>
             <div class="meta-item">Version: <span>0.1</span></div>

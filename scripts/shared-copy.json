@@ -60,7 +60,8 @@
       "phone home",
       "Nothing leaves your machine",
       "No Observer Protocol infrastructure in the verification path",
-      "trust path requires belief"
+      "trust path requires belief",
+      "verifies? without us"
     ],
     "claimPatternsAreRegex": "Case-insensitive regexes, matched by check-shared-copy.mjs. Written from the site's own examples rather than from one remembered sentence: the claim is spelled 'call back to us' on index.html and 'callback to Observer' on docs.html, and a literal lower-case list saw neither the capitalised heading nor the Observer variant. Four assertions were invisible to this block on 2026-08-09 for exactly that reason. When you add a home for the claim, add its WORDING here, not just its file.",
     "claimPatternNote": "Any occurrence of these in an HTML file MUST sit inside an element tagged data-shared-copy=\"offline-scope\". That is what makes a tenth instance a build failure rather than a discovery. Add the tag, or add the file to mustAppearIn if it is a new home for the claim. Some tagged instances REFER to the claim rather than asserting it (docs.html's resolution-hosting rationale is one). They are tagged anyway: the enumeration's job is to know everywhere the phrase appears, and a human scoping the claim decides per instance."
