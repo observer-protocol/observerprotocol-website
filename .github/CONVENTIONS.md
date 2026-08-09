@@ -337,3 +337,53 @@ counting nothing meaningful. The endpoint had been rewritten between two reading
 
 The same applies to base branches: check whether the PR you are stacking on has merged before
 branching from `master`, or you will silently revert it.
+
+---
+
+## 8. Reading and the check each catch what the other cannot. Neither is sufficient
+
+Bought twice in one session, 2026-08-09, on the same claim.
+
+**Reading found what the check could not see.** `check-shared-copy.mjs` matched its `claimPatterns`
+with `indexOf` — case-sensitive literals. The heading "No call back to us" on `index.html` sat
+outside any tag and the check stayed green, because the pattern was written lower-case. A literal
+list also cannot spell one claim two ways, and this site spells it at least five: *call back to us*,
+*callback to Observer*, *network call to Observer*, *neither our permission nor our uptime*, *no
+runtime dependency on OP*. Each variant shares no wording with the others. Four assertions were
+invisible to the enumeration whose entire job is to know where the claim lives — on three pages it
+already listed. Only reading the pages found them.
+
+**The check found what reading missed.** After widening the matcher for the fourth variant, it
+immediately reported two more instances — one of them on a line of `integrate/index.html` that had
+been read end to end minutes earlier. The other was on a page nobody had opened.
+
+**So:** do not treat a passing check as coverage, and do not treat having read the page as
+enumeration. A page is covered when a human has read it in a reader's order *and* every claim it
+makes is inside a mechanism that will notice the next one. Convert what you find by reading into a
+pattern **before** you finish the page, not after — the widened matcher is what caught the instance
+the reading had just walked past.
+
+Two corollaries, both bought the same way:
+
+- **Put your own new prose inside the matcher.** A first fix in this session passed its base case for
+  the wrong reason: the replacement wording tripped no pattern at all, so the control could not see
+  the sentence just written to fix the claim. The wording you write to correct a claim is a new
+  instance of that claim.
+- **A sweep that found three variants is not evidence there was no fourth.** Keep widening from the
+  site's own examples. Treat the pattern list as permanently incomplete.
+
+## 9. Confirm a state by fetching the thing, never by reading a write's response
+
+`app.agenticterminal.io` is behind a site-level Netlify password. The Netlify API **echoes
+`password: false` back even on a successful write**, so a caller who confirms the lock by reading the
+response it got is reading its own request back, not the state.
+
+The general form: **a write's response is a claim about the request, not a measurement of the
+result.** Where the state is externally observable, observe it — fetch the site, resolve the DID,
+query the row. This is the same shape as [§7](#7-re-measure-immediately-before-writing-a-correction),
+one layer down: re-measuring is useless if the instrument is the thing that just wrote.
+
+Also true of a covered/uncovered list. On 2026-08-09 the audit handover's two lists held 33 pages and
+`find . -name '*.html'` returned 38 — five pages on neither list, one of them edited by the branch
+under review. **Derive the population with a command and diff it against the list.** A partition that
+does not cover its domain fails by omission, so nothing ever looks wrong.
