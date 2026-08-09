@@ -173,6 +173,20 @@
   force = true
 
 [[redirects]]
+  # agent.html, 410'd 2026-08-09. It had NEVER rendered: renderAgentProfile's first
+  # line read agent.badges, which the API does not return, so every visitor got a
+  # TypeError. It also awarded Platinum/Gold/Silver/Bronze tiers on transaction count
+  # — the reputation model with none of its vocabulary, invisible to the $forbidden
+  # stem check by construction. Nothing to preserve: repairing it meant building a
+  # page nobody had seen work, to show fields the API does not return, for a model we
+  # removed. The API's profile_url points at /agents/{id}, not here, so nothing that
+  # advertises an agent profile is broken by this.
+  from = "/agent.html"
+  to = "/gone.html"
+  status = 410
+  force = true
+
+[[redirects]]
   from = "/quickstart-lnget.html"
   to = "/gone.html"
   status = 410
