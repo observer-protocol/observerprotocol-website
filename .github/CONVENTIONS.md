@@ -387,3 +387,46 @@ Also true of a covered/uncovered list. On 2026-08-09 the audit handover's two li
 `find . -name '*.html'` returned 38 — five pages on neither list, one of them edited by the branch
 under review. **Derive the population with a command and diff it against the list.** A partition that
 does not cover its domain fails by omission, so nothing ever looks wrong.
+
+## 10. A marker that rewrites itself forward-dates every claim built around it
+
+`data-engine-version="current"` markers are rewritten from the lockfile by
+`scripts/sync-engine-version.mjs`. That is the point of them: eight hand-typed copies of a version
+string disagreed within one day, and deriving the string is what stopped it.
+
+**But a marker that updates itself carries every sentence around it forward with it, whether or not
+those sentences are still true.** On 2026-08-09 two of them sat inside claims about a *measurement*:
+
+> The hosted service reports `engine.running: "0.3.3"`; the package above is
+> `<span data-engine-version="current">1.0.0-rc.6</span>`. **They agreed on every artifact tested.**
+
+Bumping the lockfile to rc.10 would have rewritten the marker and left the verb alone, turning a true
+statement about a comparison that was run into a false statement about a comparison that was not. The
+sentence would still read as measured. Nothing would look wrong — that is the whole difficulty.
+
+**So, when bumping anything a marker derives from:**
+
+1. **Re-verify against the new value BEFORE the bump lands, not after.** If a verdict moves, that is a
+   finding about the dependency, not about the site, and it stops the bump.
+2. **Grep the marker and read the sentence it sits in.** Ask of each: is this a claim about the
+   *current* thing, or a claim about something someone *did* to a specific version? The second kind is
+   `historical`, or it needs re-running before the marker moves under it.
+3. **A past-tense verb next to a self-updating marker is the tell.** "agreed", "was measured",
+   "re-confirmed", "we tested". `sync-engine-version.mjs` already distinguishes `current` from
+   `historical`; the trap is a sentence that is grammatically about the present and evidentially about
+   the past.
+
+Same family as [§7](#7-re-measure-immediately-before-writing-a-correction) and
+[§9](#9-confirm-a-state-by-fetching-the-thing-never-by-reading-a-writes-response). The general form:
+**automation that keeps one field true will happily make the sentence containing it false**, and the
+better the automation, the less anyone re-reads the sentence.
+
+### A precise name for an incomplete check is what makes the incompleteness invisible
+
+The CI step that ran this check was called **"Engine version on the site matches the lockfile"**. That
+was an exactly accurate description of the only comparison it made — and that accuracy is why nobody
+went looking for a second one. A vague name invites a reader to check what it means; a precise name
+that describes a subset closes the question.
+
+**Name a check by what it establishes, and if it establishes less than its subject needs, say so in
+the name.** The step is now "Engine version matches the lockfile AND what npm serves a reader".
