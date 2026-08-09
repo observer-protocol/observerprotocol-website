@@ -173,6 +173,21 @@
   force = true
 
 [[redirects]]
+  # verify-receipt.html, 410'd 2026-08-09. A public "Independent Credential
+  # Verification" tool that could never return valid for anything this site
+  # publishes. It required proof.type Ed25519Signature2020; all 8 published
+  # credentials use DataIntegrityProof / eddsa-jcs-2022. Independently, its
+  # canonicalisation passed a key array as JSON.stringify's REPLACER argument,
+  # which is an allowlist applied at every level rather than a sort order, so
+  # credentialSubject serialised as {} and the payload was absent from the
+  # signed bytes. Failed closed, so never falsely valid — and never correctly
+  # valid either. See /verify.html for the real path.
+  from = "/verify-receipt.html"
+  to = "/gone.html"
+  status = 410
+  force = true
+
+[[redirects]]
   # agent.html, 410'd 2026-08-09. It had NEVER rendered: renderAgentProfile's first
   # line read agent.badges, which the API does not return, so every visitor got a
   # TypeError. It also awarded Platinum/Gold/Silver/Bronze tiers on transaction count
