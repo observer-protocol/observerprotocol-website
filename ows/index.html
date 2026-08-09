@@ -142,7 +142,7 @@
 <div class="container">
 
   <div class="hero">
-    <div class="hero-tag"><span></span>Open beta · Mainnet DIDs live · Not a prototype</div>
+    <div class="hero-tag"><span></span>Open beta · did:web identities resolve today · the 8-beat demo below is a scripted walkthrough</div>
     <h1><span class="accent">Know Your Agent</span><br>Trust infrastructure for<br>the <span class="accent2">OWS</span> ecosystem</h1>
     <p class="hero-sub">Observer Protocol adds cryptographic identity, verifiable attestation, and human-in-the-loop compliance to every OWS-provisioned agent — from first transaction to full audit trail.</p>
     <div class="hero-badges">
@@ -162,14 +162,23 @@
   <section>
     <div class="section-label">The Demo</div>
     <h2>8-beat bilateral trust flow</h2>
-    <p class="section-intro">Two OWS agents. One holds authority, one does not. Watch autonomous remediation, human oversight, and cryptographic settlement — live on mainnet.</p>
+    <p class="section-intro">Two OWS agents. One holds authority, one does not: autonomous remediation, human oversight, and cryptographic settlement.</p>
+    <p class="section-intro" style="border-left:3px solid #6b5210; background:#2a1f0a; padding:0.9rem 1.1rem;">
+      <strong>These eight beats are a scripted walkthrough, not a recording of a live run.</strong>
+      The organisation values shown are placeholders &mdash; <code>did:web:acmecorp.com</code> does not
+      resolve, and <code>admin@acme.com</code> is not an account. The protocol underneath is not a
+      prototype and you can check that part without us: the engines are published on npm, an agent DID
+      such as <code>did:web:observerprotocol.org:agents:maxi-0001</code> resolves, and a hosted
+      verifier answers unauthenticated at <code>verify.observerprotocol.org</code>. Those are the
+      claims to test; the beats are how the pieces fit together.
+    </p>
     <div class="beats">
       <div class="beat">
         <div class="beat-num">01</div>
         <div class="beat-content">
           <div class="beat-title">Bilateral Handshake</div>
-          <div class="beat-desc">Agent A and Agent B initiate contact. Observer Protocol resolves both W3C DIDs on mainnet via <code>did:web</code>, establishing cryptographic identity for both parties before any transaction is attempted.</div>
-          <div class="beat-outcome outcome-pass">✓ Both DIDs resolved on mainnet</div>
+          <div class="beat-desc">Agent A and Agent B initiate contact. Observer Protocol resolves both W3C DIDs over HTTPS via <code>did:web</code>, establishing cryptographic identity for both parties before any transaction is attempted.</div>
+          <div class="beat-outcome outcome-pass">✓ Both DIDs resolved via did:web</div>
         </div>
       </div>
       <div class="beat">
@@ -243,7 +252,7 @@
   <section>
     <div class="section-label">Hackathon Requirements</div>
     <h2>Required stack — all verified</h2>
-    <p class="section-intro">Track 05 — The Observatory. Every required component is live, not mocked.</p>
+    <p class="section-intro">Track 05 &mdash; The Observatory. Each component below is listed with what is running and what the walkthrough above scripts.</p>
     <div class="stack-grid">
       <div class="stack-item">
         <div class="stack-check">✓</div>
@@ -269,8 +278,8 @@
       <div class="stack-item">
         <div class="stack-check">✓</div>
         <div>
-          <div class="stack-item-title">Real data — not mocked</div>
-          <div class="stack-item-desc">W3C DIDs live on mainnet. OP attestation infra running on dedicated cloud VPS. AT dashboard deployed at app.agenticterminal.io. Real credential issuance throughout.</div>
+          <div class="stack-item-title">What is running, and what is scripted</div>
+          <div class="stack-item-desc">Running: W3C <code>did:web</code> identities resolving over HTTPS, OP attestation infrastructure on a dedicated VPS, and credential issuance. Scripted: the eight beats above, including their organisation values. The AT dashboard is deployed at app.agenticterminal.io and is currently behind a site password.</div>
         </div>
       </div>
     </div>
@@ -378,7 +387,7 @@ console.log(<span class="string">'VAC URL:'</span>, `https://observerprotocol.or
   <section style="text-align:center; padding-bottom: 40px;">
     <div class="section-label" style="display:flex;justify-content:center;">Built by</div>
     <h2 style="margin-bottom:16px;">Observer Protocol + Agentic Terminal</h2>
-    <p class="section-intro" style="margin: 0 auto 32px;">Know Your Agent (KYA) — the identity and trust layer the agentic economy was missing. Open beta. Mainnet DIDs live. Not a prototype.</p>
+    <p class="section-intro" style="margin: 0 auto 32px;">Know Your Agent (KYA) &mdash; the identity and trust layer the agentic economy was missing. Open beta. did:web identities resolve today, and the engines are published on npm. The eight-beat demo above is a scripted walkthrough.</p>
     <div class="cta-row" style="justify-content:center;">
       <a href="https://observerprotocol.org" class="btn btn-primary">View Registry →</a>
       <a href="https://app.agenticterminal.io/dashboard" class="btn btn-secondary">AT Dashboard</a>
