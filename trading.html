@@ -1382,6 +1382,12 @@ summary:hover { color: var(--text-muted); }
       Both DID documents are static files at their respective domains.
       Neither step touches api.observerprotocol.org.
       Verification requires only curl and python3.
+      <br/><br/>
+      <strong>What this establishes, precisely:</strong> that the signature on each credential is sound against the key its
+      issuer publishes. <span data-shared-copy="offline-scope">That is a real check and it needs nothing from us.</span> It is <strong>not</strong> verification of the
+      credential as a whole &mdash; one of the two is a <code>PolicyEvaluationCredential</code>, and no verifier exists for
+      that type in the published engine, the hosted service, or the schema set. Checking a signature and verifying a
+      credential are different operations, and only the first is available here.
     </p>
     <div class="verify-steps">
 

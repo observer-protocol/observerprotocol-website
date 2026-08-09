@@ -137,24 +137,24 @@ ERC-8004 on-chain anchor: NOT FOUND
       <span class="beat-num">Beat 3</span>
       <span class="beat-title">Policy-Layer Rejection</span>
     </div>
-    <div class="beat-screen">
+    <p class="beat-narration" style="margin-bottom:1rem;">Refusal at the policy layer, not the trust score. The smart contract is Immunefi-audited and would execute cleanly - but Lender B's agent never lets the request reach it. The gap: Immunefi protects the contract. OP/AT protects the agent principal.</p>
+  <div class="beat-screen">
 Verdict: REJECTED (AIP v0.5.1)
 
 Violation 1: ATTESTATION_TIER_INSUFFICIENT
   Tier 2 received; Tier 3 required for >= $1,000,000
 
-Violation 2: AT_ARS_BELOW_THRESHOLD
-  Score 71 below counterparty minimum 80
+Violation 2: DELEGATION_CREDENTIAL_ABSENT
+  No Tier 3 delegation credential presented for this scope
 
 Remediation: Request Tier 3 Delegation Credential
   Chain-anchored attestation is independently verifiable against ERC-8004
     </div>
     <div class="beat-screenshot beat-screenshot-wide">
-      <img src="images/beat-3-rejection.png" alt="AIP structured refusal with two violations and remediation hint">
-      <div class="beat-screenshot-caption">AIP v0.5.1 structured refusal - terminal output</div>
+      <img src="images/beat-3-rejection.png" alt="Terminal output of an AIP structured refusal showing two violations and a remediation hint, from the original v0.5.1 run">
+      <div class="beat-screenshot-caption">Terminal output from the original run, recorded under AIP v0.5.1. <strong>It shows the superseded refusal reason</strong>, a numeric threshold this page no longer uses. The transcript above reflects the current model: a refusal on absent authority.</div>
     </div>
-    <p class="beat-narration">Refusal at the policy layer, not the trust score. The smart contract is Immunefi-audited and would execute cleanly - but Lender B's agent never lets the request reach it. The gap: Immunefi protects the contract. OP/AT protects the agent principal.</p>
-  </div>
+    </div>
 
   <!-- Beat 4 -->
   <div class="beat" style="border-color: var(--amber);">
@@ -165,8 +165,8 @@ Remediation: Request Tier 3 Delegation Credential
     <div class="beat-screen">
 [Fund A's agent parses AIP refusal payload]
   Missing: chain-anchored attestation
-  Score gap: 71 -> need 80
-  Path: upgrade_attestation_tier
+  Missing: Tier 3 delegation credential for margin-topup
+  Path: request_delegation_credential
 
 [Auto-submits Delegation Credential request]
   Tier: Tier 3 (Enterprise + Chain-Anchored)

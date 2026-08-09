@@ -176,10 +176,6 @@
       color: #2a2a26; margin-bottom: 0.35rem;
       display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
     }
-    .live-badge {
-      font-size: 0.5rem; background: #4ade80; color: #14532d;
-      padding: 0.1rem 0.35rem; border-radius: 2px; font-weight: 600;
-    }
     .new-badge-card {
       font-size: 0.5rem; background: #7eb8f7; color: #1e3a5f;
       padding: 0.1rem 0.35rem; border-radius: 2px; font-weight: 600;
@@ -389,7 +385,7 @@
             <div class="arch-card-body">Whatever identity system the<br/>institution already runs.<br/>We consume an identifier;<br/>we do not issue one.</div>
           </div>
           <div class="arch-card identity">
-            <div class="arch-card-title">did:web supported <span class="live-badge">live</span></div>
+            <div class="arch-card-title">did:web supported</div>
             <div class="arch-card-body">Resolver and DID documents<br/>are supported inputs, not<br/>the foundation of the stack.</div>
           </div>
         </div>
@@ -398,7 +394,7 @@
         <div>
           <div class="arch-col-header">01 · Mandate</div>
           <div class="arch-card op">
-            <div class="arch-card-title">Signed by the principal <span class="live-badge">live</span></div>
+            <div class="arch-card-title">Signed by the principal</div>
             <div class="arch-card-body">A ceiling, a counterparty set,<br/>a window, and whether a<br/>decision must be cited.<br/>Out of the agent's reach.</div>
           </div>
         </div>
@@ -407,7 +403,7 @@
         <div>
           <div class="arch-col-header">02 · Evaluation</div>
           <div class="arch-card op">
-            <div class="arch-card-title">Against the mandate <span class="live-badge">live</span></div>
+            <div class="arch-card-title">Against the mandate</div>
             <div class="arch-card-body">Before the instruction exists.<br/>Fails closed: if the mandate<br/>cannot be read, the answer<br/>is no.</div>
           </div>
         </div>
@@ -430,7 +426,7 @@
           <div class="arch-col-header" style="opacity:0.65;">Terminal · not ours</div>
           <div class="arch-card identity" style="border-color:#166534; background:#4ade8011;">
             <div class="arch-card-title" style="color:var(--green);">04 · Attestation → 05 · Verification</div>
-            <div class="arch-card-body">Verified offline, against<br/>public keys, <strong>with nothing<br/>from us in the path</strong>.<br/>Reached by the counterparty,<br/>the examiner, the auditor.</div>
+            <div class="arch-card-body" data-shared-copy="offline-scope">Verified offline, against public keys, <strong>with nothing from us in the path</strong>. Reached by the counterparty, the examiner, the auditor.</div>
           </div>
         </div>
 
@@ -598,7 +594,7 @@
         <div class="layer-items">
           <div class="layer-item new">Delegation credentials · new</div>
           <div class="layer-item new">Remediation envelope · new</div>
-          <div class="layer-item new">Revocation + cascade · new</div>
+          <div class="layer-item">Revocation + cascade · specified, not working in this deployment</div>
           <div class="layer-item new">Type registry · new</div>
           <div class="layer-item new">Eager chain verification · new</div>
         </div>
@@ -638,10 +634,10 @@
           </div>
         </div>
         <div class="aip-primitive">
-          <div class="aip-primitive-icon">NEW</div>
-          <div>
-            <h4>Revocation + Cascade</h4>
-            <p>Revoking a delegation credential cascades automatically to all sub-delegations. No manual cleanup required. Revocation reasons are enumerated in the Type Registry.</p>
+          <div class="aip-primitive-icon" style="background:#7f1d1d; color:#f87171;">SPEC</div>
+        <div>
+          <h4>Revocation + Cascade</h4>
+          <p><strong>Specified, and not working in this deployment.</strong> AIP defines revocation with cascade to sub-delegations, and revocation reasons are enumerated in the Type Registry. In production, <code>VACGenerator.revoke_vac</code> raises: it writes to a table that was repurposed into the status-list registry. <strong>A credential can only be marked revoked by hand, and absence of a revocation mark is not evidence that a credential is unrevoked.</strong> This page previously said the cascade was automatic with no manual cleanup required, which was the opposite of what runs.</p>
           </div>
         </div>
         <div class="aip-primitive">
@@ -666,7 +662,7 @@
       <div class="principle">
         <div class="principle-num">01</div>
         <h4>Don't trust claims. Verify behavior.</h4>
-        <p>Reputation is the cryptographic record of what an agent did, not what it says. Behavioral identity is the only model that survives adversarial conditions.</p>
+        <p>What a system did is checkable. What it says about itself is not. Every artifact this protocol produces is built to be checked by someone who has no reason to believe us.</p>
       </div>
       <div class="principle">
         <div class="principle-num">02</div>

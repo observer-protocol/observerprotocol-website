@@ -754,7 +754,7 @@
       <span>TRON</span>
     </div>
     <p style="font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:var(--text-faint); letter-spacing:0.04em; margin-top:0.9rem; max-width:640px;">
-      The control is the same on every one of them. Enforcement is demonstrated on Lightning; see the register below for exactly where each rail stands.
+      The control is designed to be the same on every one of them, and it has been demonstrated on Lightning. It has never run on a fiat rail. The register below says exactly where each one stands.
     </p>
   </div>
 </section>
@@ -811,7 +811,7 @@
       <div class="prim">
         <div class="prim-num">03 · THE ATTESTATION</div>
         <h3>What was decided, under which policy, over which inputs.</h3>
-        <p>A signed statement naming the decision, the policy version and its content hash, a digest of the inputs it ran over, the outcome, and the party that decided, kept separate from the party that issued the mandate. It verifies offline, against public keys, with nothing from us &mdash; for the credentials the published engine knows how to read. <strong>That set is delegation credentials today, and it does not yet include the refusal record below.</strong> The signature on a refusal is sound and checks out under standard Data Integrity tooling, but reconstructing the payload that signature covers needs code we have not published, so verifying one end to end is currently something only we can do. Publishing that is the work; claiming it before then would make this whole page worth less. It travels with the counterparty rather than living in our database.</p>
+        <p data-shared-copy="offline-scope">A signed statement naming the decision, the policy version and its content hash, a digest of the inputs it ran over, the outcome, and the party that decided, kept separate from the party that issued the mandate. It verifies offline, against public keys, with nothing from us &mdash; for the credentials the published engine knows how to read. <strong>That set is delegation credentials today, and it does not yet include the refusal record below.</strong> The signature on a refusal is sound and checks out under standard Data Integrity tooling, but reconstructing the payload that signature covers needs code we have not published, so verifying one end to end is currently something only we can do. Publishing that is the work; claiming it before then would make this whole page worth less. It travels with the counterparty rather than living in our database.</p>
       </div>
     </div>
   </div>
@@ -867,8 +867,8 @@
   <div class="section-inner">
     <div class="section-label">05 · Verify it yourself</div>
     <h2>No API key. No bearer token. No account.<br/>No call back to us at verification time.</h2>
-    <p class="section-intro">
-      The strongest claim we make is that you do not need our cooperation to check our work. That claim is worth nothing unless you can run it, so here it is, against a credential that is live on this domain right now.
+    <p class="section-intro" data-shared-copy="offline-scope">
+      The strongest claim we make is that you do not need our cooperation to check our work. That claim is worth nothing unless you can run it, so here it is, against a credential that is live on this domain right now. <strong>What you can check this way is a delegation credential. It does not yet include the refusal record above:</strong> that signature is sound and verifies under standard Data Integrity tooling, but reconstructing the payload it covers needs code we have not published, so verifying a refusal end to end is currently something only we can do. Publishing it is the work.
     </p>
 
     <div class="verify-grid">
@@ -995,7 +995,7 @@ console.log(<span class="k">await</span> verifyCredentialObject(
           <div class="pill">Rail adapters</div>
           <div class="pill">Schemas &amp; engine</div>
         </div>
-        <p>Signed attestations for decisions, refusals and approvals. Verification that needs nothing from us. Spec-governed, and you can run all of it yourself without telling us you have.</p>
+        <p data-shared-copy="offline-scope">Signed attestations for decisions, refusals and approvals. Verification that needs nothing from us. Spec-governed, and you can run all of it yourself without telling us you have.</p>
         <div class="at-card-cta"><a href="./architecture.html" style="color:var(--amber); text-decoration:none;">Architecture →</a></div>
       </div>
       <a href="./agentic-terminal.html" class="at-card">
@@ -1040,8 +1040,8 @@ console.log(<span class="k">await</span> verifyCredentialObject(
       </div>
       <div class="reg-row">
         <div>
-          <div class="reg-what">Offline verification with nothing from us</div>
-          <div class="reg-detail"><code>@observer-protocol/policy-engine</code> <span data-engine-version="current">1.0.0-rc.6</span> on npm, MIT. Section 05 is a transcript of it running against a credential served from this domain.</div>
+          <div class="reg-what" data-shared-copy="offline-scope">Offline verification with nothing from us</div>
+          <div class="reg-detail" data-shared-copy="offline-scope"><code>@observer-protocol/policy-engine</code> <span data-engine-version="current">1.0.0-rc.6</span> on npm, MIT. Section 05 is a transcript of it running against a credential served from this domain.</div>
         </div>
         <div class="reg-state live">Live</div>
       </div>
