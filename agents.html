@@ -24,196 +24,6 @@
       font-weight: 300;
       max-width: 480px;
     }
-
-    /* ── REGISTRY STATS ────────────────────────────────── */
-    .registry-stats {
-      display: flex;
-      gap: 2rem;
-      padding: 1.5rem 0;
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 2.5rem;
-      flex-wrap: wrap;
-    }
-    .stat-item { display: flex; flex-direction: column; gap: 0.25rem; }
-    .stat-value { font-size: 1.6rem; font-weight: 600; color: var(--text-primary); line-height: 1; }
-    .stat-label { font-size: 11px; letter-spacing: 0.08em; color: var(--text-dim); text-transform: uppercase; }
-
-    /* ── FILTER BAR ────────────────────────────────────── */
-    .filter-bar {
-      display: flex;
-      gap: 0.5rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-    }
-    .filter-btn {
-      padding: 0.35rem 0.9rem;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      border-radius: 2px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .filter-btn:hover { border-color: var(--orange-dim); color: var(--text-primary); }
-    .filter-btn.active { border-color: var(--orange); color: var(--orange); background: var(--orange-glow2); }
-
-    /* ── AGENT GRID ────────────────────────────────────── */
-    .agents-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      overflow: hidden;
-      margin-bottom: 3rem;
-    }
-    .agent-card {
-      background: var(--bg-card);
-      padding: 1.5rem;
-      transition: background 0.15s;
-      cursor: pointer;
-      text-decoration: none;
-      display: block;
-      color: inherit;
-    }
-    .agent-card:hover { background: var(--bg-3); }
-
-    .agent-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1rem;
-    }
-    .agent-id-block { display: flex; flex-direction: column; gap: 0.25rem; }
-    .agent-number { font-size: 10px; color: var(--text-dim); letter-spacing: 0.1em; }
-    .agent-alias  { font-size: 15px; font-weight: 500; color: var(--text-primary); }
-    .agent-hash   {
-      font-size: 11px;
-      color: var(--text-secondary);
-      margin-top: 0.1rem;
-      font-family: var(--font-mono);
-    }
-
-    .agent-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 0.75rem;
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--border);
-    }
-    .astat { display: flex; flex-direction: column; gap: 0.2rem; }
-    .astat-val  { font-size: 13px; font-weight: 500; color: var(--text-primary); }
-    .astat-key  { font-size: 10px; color: var(--text-dim); letter-spacing: 0.07em; text-transform: uppercase; }
-
-    .agent-rail {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 11px;
-      color: var(--text-secondary);
-      margin-top: 0.75rem;
-      background: var(--bg-2);
-      border: 1px solid var(--border);
-      padding: 0.2rem 0.5rem;
-      border-radius: 2px;
-    }
-
-    /* ── GENESIS SPECIAL CARD ──────────────────────────── */
-    .agent-card.genesis {
-      background: linear-gradient(135deg, var(--bg-card) 0%, rgba(247,147,26,0.04) 100%);
-      border-right: 2px solid var(--orange);
-      position: relative;
-    }
-    .agent-card.genesis::before {
-      content: 'GENESIS';
-      position: absolute;
-      top: 1rem; right: 1rem;
-      font-size: 9px;
-      letter-spacing: 0.15em;
-      color: var(--orange);
-      background: var(--orange-glow2);
-      border: 1px solid rgba(247,147,26,0.3);
-      padding: 0.15rem 0.4rem;
-      border-radius: 2px;
-    }
-
-    /* ── REGISTER CTA ──────────────────────────────────── */
-    .register-cta {
-      background: var(--bg-card);
-      border: 1px dashed var(--border-bright);
-      border-radius: 4px;
-      padding: 2.5rem;
-      text-align: center;
-      margin-top: 2rem;
-    }
-    .register-cta h3 {
-      font-size: 15px;
-      font-weight: 500;
-      margin-bottom: 0.5rem;
-    }
-    .register-cta p {
-      font-family: var(--font-sans);
-      font-size: 13px;
-      color: var(--text-secondary);
-      margin-bottom: 1.5rem;
-      font-weight: 300;
-    }
-
-    /* ── AGENT PROFILE MODAL ───────────────────────────── */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(4px);
-      z-index: 200;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--bg-card);
-      border: 1px solid var(--border-bright);
-      border-radius: 6px;
-      max-width: 560px;
-      width: 100%;
-      max-height: 85vh;
-      overflow-y: auto;
-    }
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .modal-close {
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      cursor: pointer;
-      font-size: 18px;
-      line-height: 1;
-      padding: 0.25rem;
-    }
-    .modal-close:hover { color: var(--text-primary); }
-    .modal-body { padding: 1.5rem; }
-    .profile-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.6rem 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
-    }
-    .profile-row:last-child { border-bottom: none; }
-    .profile-row .pk { color: var(--text-dim); }
-    .profile-row .pv { color: var(--text-primary); text-align: right; word-break: break-all; }
-    .profile-row .pv.mono { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); }
   </style>
 </head>
 <body>
@@ -229,320 +39,55 @@
     <li><a href="/agentic-terminal.html">Agentic Terminal</a></li>
   </ul>
 </nav>
-
 <div class="page">
   <div class="page-hero">
     <div class="container">
       <div class="section-label">Registry</div>
-      <h1>Verified Agents</h1>
-      <p>Agents with cryptographically verified transaction history on the Observer Protocol. Each entry is provable. The math is the record.</p>
+      <h1>There is no public directory of agents.</h1>
+      <p style="max-width:680px;">
+        This page used to present one. It listed figures it could not establish and marked agents VERIFIED without
+        anything having checked them, so it has been reduced to what is actually true.
+      </p>
     </div>
   </div>
 
-  <div class="container" style="padding-top: 2rem;">
+  <section class="container" style="padding:3rem 0;">
+    <h2 style="margin-bottom:1rem;">Why there is no list</h2>
+    <p style="color:var(--text-secondary); line-height:1.85; font-weight:300; max-width:720px; margin-bottom:1rem;">
+      Agent identity on Observer Protocol is self-sovereign. An agent exists because someone controls a key and published
+      a DID document; it does not exist because we entered it in a registry. <strong>We are not the custodian of that
+      list and we do not publish one.</strong> Where an operator has chosen to be named publicly they appear on the
+      <a href="/registry.html" style="color:var(--amber);">registry</a> because they opted in, not because we enumerated
+      them.
+    </p>
+    <p style="color:var(--text-secondary); line-height:1.85; font-weight:300; max-width:720px;">
+      The agent listing this page previously attempted to render came from an endpoint that requires a session. Every
+      unauthenticated visitor received <code>401</code>, the failure was caught silently, and hand-written placeholder
+      content was shown instead &mdash; including a <code>VERIFIED</code> badge that nothing had computed. A page whose
+      live data sits behind a session wall is not a public directory; it is a private view with a public URL.
+    </p>
+  </section>
 
-    <!-- STATS -->
-    <div class="registry-stats">
-      <div class="stat-item">
-        <span class="stat-value" id="total-agents">54</span>
-        <span class="stat-label">Registered Agents</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value" id="verified-count">35</span>
-        <span class="stat-label">Verified Transactions</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">8</span>
-        <span class="stat-label">Active Rails</span>
-      </div>
-      <div class="stat-item">
-        <span class="stat-value">2026-02-22</span>
-        <span class="stat-label">Genesis Date</span>
-      </div>
-    </div>
-
-    <!-- FILTER -->
-    <div class="filter-bar">
-      <button class="filter-btn active" onclick="filterAgents('all', this)">All</button>
-      <button class="filter-btn" onclick="filterAgents('verified', this)">VERIFIED</button>
-      <button class="filter-btn" onclick="filterAgents('pending', this)">PENDING</button>
-      <button class="filter-btn" onclick="filterAgents('registered', this)">REGISTERED</button>
-      <button class="filter-btn" onclick="filterAgents('lightning', this)">Lightning</button>
-      <button class="filter-btn" onclick="filterAgents('x402', this)">x402</button>
-    </div>
-
-    <!-- AGENT GRID -->
-    <div class="agents-grid" id="agents-grid">
-      <!-- Loading state -->
-      <div id="agents-loading" style="grid-column: 1 / -1; padding: 3rem; text-align: center; color: var(--text-dim);">
-        Loading agents...
-      </div>
-      <!-- Hardcoded fallback content (shown if API fails) -->
-      <a class="agent-card genesis" href="#" onclick="openModal('maxi'); return false;" data-status="verified" data-rail="lightning" style="display:none;">
-        <div class="agent-header">
-          <div class="agent-id-block">
-            <span class="agent-number">AGENT #0001</span>
-            <span class="agent-alias">Maxi</span>
-            <span class="agent-hash">sha256:3f7a…c14e</span>
-          </div>
-          <span class="badge badge-verified">VERIFIED</span>
-        </div>
-        <div class="agent-rail">⚡ Lightning / LND</div>
-        <div class="agent-stats">
-          <div class="astat"><span class="astat-val">9</span><span class="astat-key">Txns</span></div>
-          <div class="astat"><span class="astat-val">100%</span><span class="astat-key">Success</span></div>
-          <div class="astat"><span class="astat-val">2026-02-22</span><span class="astat-key">Since</span></div>
-        </div>
+  <section class="container" style="padding:0 0 4rem;">
+    <h2 style="margin-bottom:1.5rem;">What is public, and checkable</h2>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1px; background:var(--border);">
+      <a href="/registry.html" style="background:var(--bg-card,#111110); padding:1.5rem; text-decoration:none; display:block;">
+        <div style="font-family:var(--font-mono,monospace); font-size:0.62rem; letter-spacing:0.12em; color:var(--amber); margin-bottom:0.5rem;">REGISTRY</div>
+        <div style="color:var(--text-primary); font-size:0.95rem; margin-bottom:0.4rem;">Refusals, attestations, settlements</div>
+        <div style="color:var(--text-secondary); font-size:0.85rem; font-weight:300; line-height:1.7;">What was refused and why, which published credentials verify, and what the settlement records do and do not establish.</div>
+      </a>
+      <a href="/verify.html" style="background:var(--bg-card,#111110); padding:1.5rem; text-decoration:none; display:block;">
+        <div style="font-family:var(--font-mono,monospace); font-size:0.62rem; letter-spacing:0.12em; color:var(--amber); margin-bottom:0.5rem;">VERIFY</div>
+        <div style="color:var(--text-primary); font-size:0.95rem; margin-bottom:0.4rem;">Check a record yourself</div>
+        <div style="color:var(--text-secondary); font-size:0.85rem; font-weight:300; line-height:1.7;">Install the engine, verify a credential offline, and see the two artifacts published specifically because they must fail.</div>
+      </a>
+      <a href="/docs.html" style="background:var(--bg-card,#111110); padding:1.5rem; text-decoration:none; display:block;">
+        <div style="font-family:var(--font-mono,monospace); font-size:0.62rem; letter-spacing:0.12em; color:var(--amber); margin-bottom:0.5rem;">DID RESOLUTION</div>
+        <div style="color:var(--text-primary); font-size:0.95rem; margin-bottom:0.4rem;">Resolve an agent you already know</div>
+        <div style="color:var(--text-secondary); font-size:0.85rem; font-weight:300; line-height:1.7;">If you hold an agent's DID you can resolve its document directly. That works without us listing anyone.</div>
       </a>
     </div>
-
-    <!-- REGISTER CTA -->
-    <div class="register-cta">
-      <h3>Register your agent</h3>
-      <p>Join the public registry. Free during adoption phase. Identity anchored to your public key, not a platform account.</p>
-      <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
-        <a href="sdk.html" class="btn btn-primary">Get Started with SDK →</a>
-        <a href="api.html" class="btn btn-outline">API Docs</a>
-      </div>
-    </div>
-
-    <!-- BADGE LEVELS -->
-    <div style="margin-top:3rem; margin-bottom:3rem;">
-      <div class="section-label">Badge Levels</div>
-      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1rem; margin-top:1rem;">
-        <div class="card">
-          <div style="font-size:1.5rem; margin-bottom:0.5rem;">🥉</div>
-          <div style="font-size:13px; font-weight:500; margin-bottom:0.25rem;">Bronze</div>
-          <div style="font-size:12px; color:var(--text-secondary); font-family:var(--font-sans);">1+ verified transaction</div>
-        </div>
-        <div class="card">
-          <div style="font-size:1.5rem; margin-bottom:0.5rem;">🥈</div>
-          <div style="font-size:13px; font-weight:500; margin-bottom:0.25rem;">Silver</div>
-          <div style="font-size:12px; color:var(--text-secondary); font-family:var(--font-sans);">10+ txns · 90%+ success rate</div>
-        </div>
-        <div class="card">
-          <div style="font-size:1.5rem; margin-bottom:0.5rem;">🥇</div>
-          <div style="font-size:13px; font-weight:500; margin-bottom:0.25rem;">Gold</div>
-          <div style="font-size:12px; color:var(--text-secondary); font-family:var(--font-sans);">100+ txns · 95%+ success rate</div>
-        </div>
-        <div class="card">
-          <div style="font-size:1.5rem; margin-bottom:0.5rem;">💎</div>
-          <div style="font-size:13px; font-weight:500; margin-bottom:0.25rem;">Platinum</div>
-          <div style="font-size:12px; color:var(--text-secondary); font-family:var(--font-sans);">1000+ txns · 98%+ success rate</div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <footer class="footer container">
-    <span>Observer Protocol · AIP v0.9 · CC BY 4.0</span>
-    <div class="footer-links">
-      <a href="architecture.html">Architecture</a>
-      <a href="spec.html">Spec</a>
-      <a href="registry.html">Registry</a>
-      
-      <a href="sdk.html">SDK</a>
-      <a href="api.html">API</a>
-      <a href="https://github.com/observer-protocol" target="_blank">GitHub</a>
-    </div>
-    <span>the trust layer for the agentic economy</span>
-  </footer>
+  </section>
 </div>
-
-<!-- MODAL -->
-<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
-  <div class="modal" id="modal">
-    <div class="modal-header">
-      <div>
-        <div style="font-size:11px; color:var(--text-dim); margin-bottom:0.25rem;" id="modal-number"></div>
-        <div style="font-size:16px; font-weight:500;" id="modal-name"></div>
-      </div>
-      <button class="modal-close" onclick="document.getElementById('modal-overlay').classList.remove('open')">✕</button>
-    </div>
-    <div class="modal-body" id="modal-body"></div>
-  </div>
-</div>
-
-<script>
-const agentData = {
-  maxi: {
-    number: 'AGENT #0001 · GENESIS',
-    name: 'Maxi',
-    status: 'verified',
-    rows: [
-      ['Public Key Hash', 'sha256:3f7a…c14e', 'mono'],
-      ['Node Type', 'LND · FutureBit Solo', ''],
-      ['Rail', 'Lightning Network (L402)', ''],
-      ['Verified Transactions', '9', 'orange'],
-      ['Success Rate', '100%', 'green'],
-      ['First Verified Tx', '2026-02-22T23:24:35Z · OP-000001', 'mono'],
-      ['Badge Level', '🥉 Bronze (9 txns)', ''],
-      ['Status', '✓ VERIFIED', 'green'],
-    ]
-  },
-  vicky: {
-    number: 'AGENT #0002',
-    name: 'Vicky',
-    status: 'verified',
-    rows: [
-      ['Public Key Hash', 'sha256:9c4b…2431', 'mono'],
-      ['Node Type', 'phoenixd', ''],
-      ['Rail', 'Lightning Network', ''],
-      ['Verified Transactions', '1', 'orange'],
-      ['Success Rate', '100%', 'green'],
-      ['First Verified Tx', '2026-02-22T23:24:35Z · Payer in OP-000001', 'mono'],
-      ['Badge Level', '🥉 Bronze (1 txn)', ''],
-      ['Status', '✓ VERIFIED', 'green'],
-    ]
-  },
-  agentpay: {
-    number: 'AGENT #0003',
-    name: 'AgentPay MCP Server',
-    status: 'verified',
-    rows: [
-      ['Public Key Hash', 'sha256:b72c…9f3a', 'mono'],
-      ['Rail', 'x402 / EVM · Base', ''],
-      ['Deployed', '2026-03-08', ''],
-      ['Verified Transactions', '3', 'orange'],
-      ['Success Rate', '100%', 'green'],
-      ['Description', 'MCP-native payment gateway. First mainnet beta Observer Protocol deployment.', ''],
-      ['GitHub', 'github.com/observer-protocol/agentpay-mcp', ''],
-      ['Status', '✓ VERIFIED', 'green'],
-    ]
-  }
-};
-
-function openModal(id) {
-  const d = agentData[id];
-  if (!d) return;
-  document.getElementById('modal-number').textContent = d.number;
-  document.getElementById('modal-name').textContent = d.name;
-  let html = '';
-  d.rows.forEach(([k, v, cls]) => {
-    const valClass = cls === 'mono' ? 'pv mono' : cls === 'green' ? 'pv' : cls === 'orange' ? 'pv' : 'pv';
-    const style = cls === 'green' ? 'color:var(--verified)' : cls === 'orange' ? 'color:var(--orange)' : '';
-    html += `<div class="profile-row"><span class="pk">${k}</span><span class="${valClass}" style="${style}">${v}</span></div>`;
-  });
-  document.getElementById('modal-body').innerHTML = html;
-  document.getElementById('modal-overlay').classList.add('open');
-}
-
-function closeModal(e) {
-  if (e.target === document.getElementById('modal-overlay'))
-    document.getElementById('modal-overlay').classList.remove('open');
-}
-
-// Live registry stats from feed
-async function refreshRegistryStats() {
-  try {
-    const res = await fetch('https://api.observerprotocol.org/observer/feed');
-    const data = await res.json();
-    const events = data.events || [];
-    const verified = events.filter(e => e.verified).length;
-    if (verified > 0) {
-      const el = document.getElementById('verified-count');
-      if (el) el.textContent = verified;
-    }
-  } catch(e) { /* fail silently */ }
-}
-refreshRegistryStats();
-
-// Fetch and render agents from API
-let agentsData = [];
-
-async function loadAgents() {
-  const grid = document.getElementById('agents-grid');
-  const loading = document.getElementById('agents-loading');
-  
-  try {
-    const res = await fetch('https://api.observerprotocol.org/observer/agents/list');
-    if (!res.ok) throw new Error('API response not OK');
-    const data = await res.json();
-    agentsData = data;
-    
-    // Update stats
-    const totalEl = document.getElementById('total-agents');
-    const verifiedEl = document.getElementById('verified-count');
-    if (totalEl) totalEl.textContent = data.total || 0;
-    if (verifiedEl) verifiedEl.textContent = data.verified || 0;
-    
-    // Remove loading state
-    if (loading) loading.style.display = 'none';
-    
-    // Clear existing cards (except fallback ones which are hidden)
-    grid.innerHTML = '';
-    
-    // Render agent cards
-    data.agents.forEach(agent => {
-      const card = createAgentCard(agent);
-      grid.appendChild(card);
-    });
-    
-  } catch (e) {
-    console.error('Failed to load agents:', e);
-    // Show fallback content on error
-    if (loading) loading.textContent = 'Failed to load agents. Showing cached data.';
-    const fallbackCards = grid.querySelectorAll('.agent-card');
-    fallbackCards.forEach(card => card.style.display = '');
-  }
-}
-
-function createAgentCard(agent) {
-  const card = document.createElement('a');
-  card.className = `agent-card ${agent.is_genesis ? 'genesis' : ''}`;
-  card.href = '#';
-  card.dataset.status = agent.status;
-  card.dataset.rail = agent.rail ? agent.rail.toLowerCase() : '';
-  card.onclick = function() { return false; };
-  
-  const badgeClass = agent.status === 'verified' ? 'badge-verified' : 
-                     agent.status === 'pending' ? 'badge-pending' : 'badge-registered';
-  const badgeText = agent.status.toUpperCase();
-  const railDisplay = agent.rail ? `⚡ ${agent.rail}` : '';
-  
-  card.innerHTML = `
-    <div class="agent-header">
-      <div class="agent-id-block">
-        <span class="agent-number">AGENT #${String(agent.number).padStart(4, '0')}</span>
-        <span class="agent-alias">${escapeHtml(agent.alias)}</span>
-        <span class="agent-hash">${escapeHtml(agent.hash)}</span>
-      </div>
-      <span class="badge ${badgeClass}">${badgeText}</span>
-    </div>
-    ${railDisplay ? `<div class="agent-rail">${railDisplay}</div>` : ''}
-    <div class="agent-stats">
-      <div class="astat"><span class="astat-val">${agent.transaction_count}</span><span class="astat-key">Txns</span></div>
-      <div class="astat"><span class="astat-val">${agent.success_rate}</span><span class="astat-key">Success</span></div>
-      <div class="astat"><span class="astat-val">${agent.since}</span><span class="astat-key">Since</span></div>
-    </div>
-  `;
-  
-  return card;
-}
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
-
-function filterAgents(type, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.agent-card').forEach(card => {
-    if (type === 'all') {
-      card.style.display = '';
-    } else if (['verified','pending','registered'].includes(type)) {
-      card.style.display = card.dataset.status === type ? '' : 'none';
-    } else {
-      card.style.display = card.dataset.rail === type ? '' : 'none';
-    }
-  });
-}
-
-// Load agents on page load
-document.addEventListener('DOMContentLoaded', loadAgents);
-</script>
 </body>
 </html>
