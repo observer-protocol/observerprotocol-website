@@ -51,7 +51,7 @@
     </table>
 
     <h2>Verifying a credential</h2>
-    <p>Offline. No API key, no token, no call back to Observer at verification time.</p>
+    <p data-shared-copy="offline-scope">No API key, no token, no Observer Protocol API in the path. It fetches the issuer's DID document and the revocation status list over ordinary HTTPS from the origins the credential names; point <code>offline.didDocumentPath</code> at a local copy and it makes no network call at all.</p>
 
     <div class="code-block">npm install @observer-protocol/policy-engine</div>
 

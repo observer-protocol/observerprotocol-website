@@ -25,9 +25,13 @@
 
     <div class="path">
       <h2>1. Verify a credential someone gave you</h2>
-      <p>
-        Offline, from npm. No API key, no token, and no call back to Observer at verification time.
-        This is the same code path our hosted verifier runs.
+      <p data-shared-copy="offline-scope">
+        From npm. No API key, no token, no Observer Protocol API in the path. It fetches the
+        issuer's DID document and the revocation status list over ordinary HTTPS from the origins
+        the credential names; point <code>offline.didDocumentPath</code> at a local copy and it
+        makes no network call at all. The hosted verifier below is a <em>different build</em> of
+        the engine, not this code path; where the two disagree the published package is
+        authoritative.
       </p>
       <div class="code-block">npm install @observer-protocol/policy-engine</div>
       <div class="code-block">import { verifyCredentialObject } from '@observer-protocol/policy-engine';
