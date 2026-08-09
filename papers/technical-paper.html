@@ -84,7 +84,16 @@
     <strong style="color:#f5a623;">Note added 9 August 2026.</strong> This paper uses &ldquo;verified transactions&rdquo;
     for rows recorded in <code>verified_events</code>. That predicate is wrong and the site no longer uses it:
     of 56 rows, <strong>55 carry <code>proof_strength = 'unverified'</code></strong> and one is settlement-attested.
-    Recording is not verification. The paper is otherwise unedited, because a dated document should not be rewritten to
+    Recording is not verification.
+    <br><br>
+    <strong style="color:#f5a623;">The same applies to reputation.</strong> This paper describes
+    backfilling a &ldquo;reputation score&rdquo; from historical transactions and treats fragmented
+    reputation as the problem being solved. That model has since been ruled off the protocol entirely:
+    there is no reputation score and nothing computes one. Authority is granted by a signed mandate and
+    enforced against it. This second correction was missing until 9 August 2026 &mdash; the note above
+    existed and covered only the transaction predicate, which is precisely why nobody noticed it did
+    not cover this.
+    The paper is otherwise unedited, because a dated document should not be rewritten to
     read as though it always said something else. See <a href="/registry.html" style="color:#f5a623;">the registry</a>
     for the current figures and what they establish.
   </div>

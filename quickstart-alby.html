@@ -125,6 +125,13 @@
         const lnAddress = await alby.getAddress();
         const lnPubkey = await alby.getPublicKey();
         const opPubkey = prompt("Enter your OP pubkey:");
+        // NOTE (9 Aug 2026): both routes below are 404 — /observer/agents does not
+        // exist on either host, and /observer/agents/{id}/verify does not either. The
+        // live equivalents are POST /observer/register-agent, POST /observer/challenge
+        // and POST /observer/verify-agent on api.observerprotocol.org (all 405 on GET,
+        // so present). Their request bodies were NOT exercised here, because doing so
+        // writes to production, so this sample is not rewritten to use them — see
+        // /docs.html#api-reference for the current shapes.
         const reg = await fetch('https://observerprotocol.org/observer/agents', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ op_pubkey: opPubkey, ln_pubkey: lnPubkey, ln_address: lnAddress, agent_type: 'custom' })
