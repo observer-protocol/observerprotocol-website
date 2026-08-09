@@ -4,16 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Observer Protocol × WDK: enforcement at the wallet signing boundary</title>
-  <meta name="description" content="Observer Protocol's trust layer now runs natively on Tether WDK's own local transaction policy engine (PR #55). One signed mandate, the real WDK engine, a real wallet key, and a portable, independently verifiable record of OP's own evaluation of each authorization against that mandate." />
+  <meta name="description" content="Observer Protocol's trust layer now runs natively on Tether WDK's own local transaction policy engine (PR #55). One signed mandate, the real WDK engine, a real wallet key, and a portable, signed record of OP's own evaluation of each authorization against that mandate." />
 
   <meta property="og:title" content="Observer Protocol × WDK: a native, verifiable trust layer for agentic payments" />
-  <meta property="og:description" content="Our trust module, running on WDK's own local transaction policy engine: an in-mandate payment signed and a signed, independently verifiable decision credential; an over-mandate payment refused before the key." />
+  <meta property="og:description" content="Our trust module, running on WDK's own local transaction policy engine: an in-mandate payment signed and a signed, signed decision credential; an over-mandate payment refused before the key." />
   <meta property="og:url" content="https://observerprotocol.org/wdk" />
   <meta property="og:type" content="article" />
   <meta property="og:image" content="https://observerprotocol.org/wdk-1-demo-terminal.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Observer Protocol × WDK: a native, verifiable trust layer" />
-  <meta name="twitter:description" content="Our trust module running on WDK's own local transaction policy engine: a signed, independently verifiable record of OP's own evaluation of the same mandate, and a refusal that never reaches the key." />
+  <meta name="twitter:description" content="Our trust module running on WDK's own local transaction policy engine: a signed, signed record of OP's own evaluation of the same mandate, and a refusal that never reaches the key." />
   <meta name="twitter:image" content="https://observerprotocol.org/wdk-1-demo-terminal.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -452,7 +452,7 @@
     <p class="hero-lede">
       One signed agent mandate, Tether WDK's real local transaction policy engine, and a real
       wallet key. An in-mandate payment is allowed, signed, and turned into a
-      portable, independently verifiable record. An over-mandate payment is refused
+      portable, signed record. An over-mandate payment is refused
       before the key is ever reached.
     </p>
   </section>
@@ -518,7 +518,7 @@
     <p>
       We do not bank, custody, or settle. WDK does that. What we add is the trust
       layer around it: who the agent is, what it was authorized to do, and a portable,
-      independently verifiable record of every decision. With that engine in place, that layer
+      portable, signed record of every decision. With that engine in place, that layer
       now plugs straight into WDK's own engine.
     </p>
   </section>
@@ -621,7 +621,7 @@
     <p>
       That is the whole idea. WDK's wallet moves the money. The engine enforces the
       policy. Observer Protocol is what turns every authorization into a portable,
-      independently verifiable record, and what makes sure a refusal at the key is
+      portable, signed record, and what makes sure a refusal at the key is
       provable.
     </p>
 
@@ -704,17 +704,21 @@ cd wdk-op-policy &amp;&amp; npm install &amp;&amp; npm run verify</pre>
       </div>
     </div>
     <p style="margin-top:1.5rem;">
-      Issuance and verification of the signed credential are live and provable today.
-      The independently verifiable claim applies to that signed record (the
-      eddsa-jcs-2022 path), checkable against our public DID and verify endpoint. We
-      do not extend it past what the endpoints will confirm.
+      Issuance is live. <strong>Verification of this credential type is not.</strong> The record is signed, and its
+      <code>eddsa-jcs-2022</code> proof is sound against our published DID document under canonical W3C Data Integrity
+      tooling &mdash; that much anyone can check with libraries that are not ours.
+      <strong>What does not exist is a verifier for a <code>PolicyEvaluationCredential</code>, anywhere, including ours:</strong>
+      not in the published <code>@observer-protocol/policy-engine</code>, not in the hosted service, and not in the schema
+      set. This page previously called the record &ldquo;independently verifiable&rdquo; and pointed at our own endpoint as
+      the check. That was the opposite of independent, and it is corrected here rather than qualified.
+      <a href="/verify.html" style="color:var(--amber, #f5a623);">The full disclosure &rarr;</a>
     </p>
   </section>
 
   <div class="closing-block">
     <div class="closing-line">
       WDK's wallet moves the money.<br />
-      The portable, <strong>independently verifiable</strong> record of what was authorized,<br />
+      The portable, <strong>signed</strong> record of what was authorized,<br />
       and the proof that a blocked transaction <strong>never got signed</strong>,<br />
       is Observer Protocol.
     </div>

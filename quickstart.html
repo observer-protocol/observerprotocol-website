@@ -74,7 +74,7 @@ const verdict = await verifyCredentialObject(mandate, config, Date.now());</div>
         A hosted verifier is also open at
         <a href="https://verify.observerprotocol.org/health"><code>verify.observerprotocol.org</code></a>
         (<code>POST /v1/verify</code>, no token, rate limited), returning a signed verdict. Offline
-        verification above remains the primary path: it needs nothing from us and cannot be revoked.
+        <span data-shared-copy="offline-scope">verification above remains the primary path: it needs nothing from us and cannot be revoked.</span>
       </span>
     </p>
 

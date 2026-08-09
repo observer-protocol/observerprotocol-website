@@ -19,7 +19,7 @@
  * Run: node scripts/check-shared-copy.mjs
  */
 
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -89,6 +89,38 @@ for (const [key, entry] of Object.entries(spec)) {
   }
 }
 
+// A tagged instance is enumeration. Catching an UNTAGGED one is what makes the
+// enumeration hold: the claim can be repeated on a new page by someone who has
+// never read this file, and nothing else would notice.
+for (const [key, entry] of Object.entries(spec)) {
+  if (key.startsWith('$')) continue;
+  const patterns = entry.claimPatterns ?? [];
+  if (patterns.length === 0) continue;
+
+  for (const file of allHtml()) {
+    const src = readFileSync(file, 'utf8');
+    const rel = file.slice(root.length + 1);
+    const tagged = taggedRanges(src, key);
+
+    for (const pattern of patterns) {
+      let from = 0;
+      for (;;) {
+        const at = src.indexOf(pattern, from);
+        if (at === -1) break;
+        from = at + pattern.length;
+        if (tagged.some(([a, b]) => at >= a && at < b)) continue;
+        const line = src.slice(0, at).split('\n').length;
+        failures.push(
+          `${rel}:${line}: "${pattern}" appears outside any data-shared-copy="${key}" element.\n` +
+          `      This is the claim that verification needs nothing from us. Every instance is\n` +
+          `      enumerated so one edit can scope all of them. Tag it, or add the file to\n` +
+          `      mustAppearIn in scripts/shared-copy.json if this is a new home for the claim.`
+        );
+      }
+    }
+  }
+}
+
 if (failures.length) {
   console.error(`Shared copy has diverged — ${failures.length} problem(s):\n`);
   for (const f of failures) console.error(`  ${f}\n`);
@@ -96,3 +128,34 @@ if (failures.length) {
 }
 
 console.log(`Shared copy is consistent across ${checked} block(s).`);
+
+// Every HTML file in the repo, so a new page cannot carry the claim unnoticed.
+function allHtml(dir = root, acc = []) {
+  for (const e of readdirSync(dir)) {
+    if (e === 'node_modules' || e === '.git') continue;
+    const full = join(dir, e);
+    if (statSync(full).isDirectory()) allHtml(full, acc);
+    else if (e.endsWith('.html')) acc.push(full);
+  }
+  return acc;
+}
+
+// Byte ranges covered by elements carrying the tag, depth-aware for the same
+// reason the extractor above is.
+function taggedRanges(src, key) {
+  const out = [];
+  const openRe = new RegExp(`<([a-z]+)[^>]*data-shared-copy="${key}"[^>]*>`, 'g');
+  let om;
+  while ((om = openRe.exec(src)) !== null) {
+    const tag = om[1];
+    let depth = 1;
+    const scan = new RegExp(`</?${tag}\\b[^>]*>`, 'g');
+    scan.lastIndex = om.index + om[0].length;
+    let sm;
+    while (depth > 0 && (sm = scan.exec(src)) !== null) {
+      depth += sm[0].startsWith('</') ? -1 : 1;
+      if (depth === 0) out.push([om.index, sm.index + sm[0].length]);
+    }
+  }
+  return out;
+}

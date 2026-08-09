@@ -589,14 +589,14 @@ npm install @observer-protocol/policy-engine
     <div style="border:1px solid var(--border); padding:1.75rem; margin-bottom:1.5rem;">
       <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber); margin-bottom:0.9rem;">Where an attestation reference resolves · DECIDED</div>
       <p style="font-size:0.92rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1rem;">
-        A fiat reference field carries 31 characters or fewer, so a downstream party may hold only a pointer. Something has to serve what it points at, and hosting that at a vendor endpoint is uncomfortable: it puts us in the payment path and sits badly beside a claim that verification needs nothing from us.
+        A fiat reference field carries 31 characters or fewer, so a downstream party may hold only a pointer. Something has to serve what it points at, and hosting that at a vendor endpoint is uncomfortable: it puts us in the payment path and <span data-shared-copy="offline-scope">sits badly beside a claim that verification needs nothing from us</span>.
       </p>
       <p style="font-size:0.92rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1rem;">
         <strong style="color:var(--text);">Resolution through Observer Protocol infrastructure is defensible as a protocol layer rather than a vendor inserting itself, and only while all three of these hold:</strong>
       </p>
       <ol style="font-size:0.92rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin:0 0 1rem 1.25rem;">
         <li style="margin-bottom:0.5rem;"><strong style="color:var(--text);">The host is configurable, and a principal serving their own attestations at their own domain is a first-class option</strong> rather than a special case. Where one is configured, it is the default.</li>
-        <li style="margin-bottom:0.5rem;"><strong style="color:var(--text);">Resolution is never required for verification.</strong> An artifact in hand verifies offline with nothing from us. Resolution serves the case where a party holds only a reference. If verification ever depends on us being reachable, the claim is broken and the decision is void.</li>
+        <li style="margin-bottom:0.5rem;"><strong style="color:var(--text);">Resolution is never required for verification.</strong> <span data-shared-copy="offline-scope">An artifact in hand verifies offline with nothing from us.</span> Resolution serves the case where a party holds only a reference. If verification ever depends on us being reachable, the claim is broken and the decision is void.</li>
         <li><strong style="color:var(--text);">The resolver is self-hostable from published source</strong>, like everything else in the protocol.</li>
       </ol>
       <p style="font-size:0.92rem; color:var(--text-dim); line-height:1.8; font-weight:300;">

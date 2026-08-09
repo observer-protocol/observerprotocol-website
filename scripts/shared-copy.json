@@ -2,8 +2,8 @@
   "$comment": [
     "Sentences that must read identically wherever they appear.",
     "",
-    "This is a CHECK, not a generator. There is no build step in this repository —",
-    "netlify.toml is `publish = \".\"` — so a generator would have to rewrite prose",
+    "This is a CHECK, not a generator. There is no build step in this repository \u2014",
+    "netlify.toml is `publish = \".\"` \u2014 so a generator would have to rewrite prose",
     "inside two HTML files at commit time. That is a mechanism to trust. A check is a",
     "mechanism to verify, and divergence is the failure that actually matters.",
     "",
@@ -14,11 +14,37 @@
   ],
   "completeness": {
     "why": "The supervisor page and the homepage register row must state the completeness problem in the same words. They are read by the same person in one sitting, and two phrasings of one unsolved problem reads as two different problems.",
-    "mustAppearIn": ["index.html", "supervisors.html"],
+    "mustAppearIn": [
+      "index.html",
+      "supervisors.html"
+    ],
     "phrases": [
       "A firm can hand over a hundred clean determinations and withhold the hundred-and-first, and all hundred verify.",
       "The cryptography for transparency logs is solved.",
       "who runs the log, who is obliged to publish to it, what a gap in it legally means, and how a firm demonstrates completeness without exposing commercially sensitive volume."
     ]
+  },
+  "offline-scope": {
+    "why": "ENUMERATION ENTRY, not a phrase check. Every place the site claims verification needs nothing from us is tagged data-shared-copy=\"offline-scope\", so there is one place that knows where the claim lives. The claim is currently unscoped on purpose: the gap it would be scoped for is refusalPayload not being exported, which has an owner and a date. If that slips, adding one phrase to `phrases` below scopes all of them and CI reports every instance that has not been updated.",
+    "mustAppearIn": [
+      "index.html",
+      "architecture.html",
+      "supervisors.html",
+      "agentic-terminal.html",
+      "quickstart.html",
+      "sdk.html",
+      "docs.html",
+      "trading.html"
+    ],
+    "phrases": [],
+    "claimPatterns": [
+      "needs nothing from us",
+      "need our cooperation",
+      "without our help",
+      "with nothing from us",
+      "does not need our servers",
+      "no call back to us"
+    ],
+    "claimPatternNote": "Any occurrence of these in an HTML file MUST sit inside an element tagged data-shared-copy=\"offline-scope\". That is what makes a tenth instance a build failure rather than a discovery. Add the tag, or add the file to mustAppearIn if it is a new home for the claim. Some tagged instances REFER to the claim rather than asserting it (docs.html's resolution-hosting rationale is one). They are tagged anyway: the enumeration's job is to know everywhere the phrase appears, and a human scoping the claim decides per instance."
   }
 }
