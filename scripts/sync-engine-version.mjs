@@ -132,6 +132,7 @@ if (check) {
   if (published && published !== locked) {
     drift = true;
     console.error(`DRIFT — the site documents ${locked}, npm serves ${published}.`);
+    console.error('\n  THIS IS EXPECTED AFTER A PUBLISH. It is not a defect in the build and it is\n  not something to work around: it is this check doing the one job the lockfile\n  comparison cannot do. Someone published a new version and the site has not\n  caught up yet. Follow the procedure below and it goes green.');
     console.error(
       '\n  This is the comparison the lockfile cannot make. The site and the lockfile can\n' +
       '  agree with each other while both disagree with what a reader receives from\n' +
