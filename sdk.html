@@ -76,9 +76,15 @@ const verdict = await verifyCredentialObject(
     </p>
 
     <h2>Everything it checks, you can re-check</h2>
-    <p>
-      The DID document is public, the schema URLs are frozen and immutable, and revocation status lists
-      are static public files. Verification requires neither our permission nor our uptime.
+    <p data-shared-copy="offline-scope">
+      The DID document is public and the schema URLs are frozen and immutable, so verification needs no
+      permission from us: nothing to authenticate to, and nothing we can withhold to make a credential
+      stop verifying. It is not independent of reachability, though.
+      <code>onUnreachable: 'cache-then-deny'</code> is the only implemented mode, so a revocation list
+      that cannot be fetched is served from cache inside the staleness window and <strong>denied</strong>
+      outside it &mdash; and Observer's own clause-zero status list is served by
+      <code>api.observerprotocol.org</code> rather than as a static file. It fails closed, and it will
+      refuse us too.
     </p>
     <ul style="color:var(--text-secondary);font-size:14px;line-height:1.9;">
       <li><a href="https://github.com/observer-protocol/op-policy-engine">github.com/observer-protocol/op-policy-engine</a> &mdash; source</li>
