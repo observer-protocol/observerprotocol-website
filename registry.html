@@ -61,13 +61,6 @@
     .stat-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--text-faint); letter-spacing: 0.1em; text-transform: uppercase; }
     .stat-note { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-faint); margin-top: 0.3rem; }
 
-    .scope-grid { display: grid; grid-template-columns: repeat(6,1fr); gap: 1px; background: var(--border); margin-top: 2rem; }
-    @media (max-width: 900px) { .scope-grid { grid-template-columns: repeat(3,1fr); } }
-    .scope-item { background: var(--bg2); padding: 1.25rem 1rem; text-align: center; }
-    .scope-icon { font-size: 1.4rem; margin-bottom: 0.5rem; }
-    .scope-num { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--amber); letter-spacing: 0.1em; margin-bottom: 0.25rem; }
-    .scope-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 600; color: var(--text); margin-bottom: 0.25rem; }
-    .scope-desc { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-faint); line-height: 1.5; }
 
     .opt-in-notice { border: 1px solid var(--border); background: var(--bg2); padding: 1.25rem 1.5rem; display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 2rem; font-family: 'IBM Plex Mono', monospace; }
     .opt-in-icon { font-size: 1rem; color: var(--teal); flex-shrink: 0; margin-top: 0.1rem; }
@@ -180,19 +173,123 @@
   </div>
 </section>
 
-<!-- SCOPE LEVELS -->
-<section style="background: var(--bg); border-bottom: 1px solid var(--border); padding: 3rem 2.5rem;">
+<!-- REFUSALS -->
+<section style="background: var(--bg); border-bottom: 1px solid var(--border);">
   <div class="section-inner">
-    <div class="section-label">Verification Scope</div>
-    <h2>Six progressive levels of trust.</h2>
-    <p class="section-intro">Observer Protocol verification is not binary. Agents progress through scope levels as their cryptographic track record accumulates.</p>
-    <div class="scope-grid">
-      <div class="scope-item"><div class="scope-icon">◉</div><div class="scope-num">SCOPE 0</div><div class="scope-name">Anonymous</div><div class="scope-desc">No verification · Baseline participation</div></div>
-      <div class="scope-item"><div class="scope-icon">○</div><div class="scope-num">SCOPE 1</div><div class="scope-name">Recognized</div><div class="scope-desc">Identity established · 1+ attestation</div></div>
-      <div class="scope-item"><div class="scope-icon">◐</div><div class="scope-num">SCOPE 2</div><div class="scope-name">Monitored</div><div class="scope-desc">Activity tracked · Pattern analysis</div></div>
-      <div class="scope-item"><div class="scope-icon">◑</div><div class="scope-num">SCOPE 3</div><div class="scope-name">Active</div><div class="scope-desc">Regular participation · 10+ txns</div></div>
-      <div class="scope-item"><div class="scope-icon">◒</div><div class="scope-num">SCOPE 4</div><div class="scope-name">Verified</div><div class="scope-desc">Cryptographic proof · 100+ txns</div></div>
-      <div class="scope-item"><div class="scope-icon">◓</div><div class="scope-num">SCOPE 5</div><div class="scope-name">Institutional</div><div class="scope-desc">Full compliance · 1000+ txns · 98%+</div></div>
+    <div class="section-label">01 · Refusals</div>
+    <h2>Payments that were requested, were fundable, and did not happen.</h2>
+    <p class="section-intro">
+      A registry of successful payments shows that a system can move money. It says nothing about whether the system
+      could have stopped. This section leads because the refusal is the product. <strong>It has one entry, and it is
+      titled so that one entry does not read as a truncated list.</strong>
+    </p>
+
+    <div style="border:1px solid var(--amber-dim); background:var(--amber-glow);">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; gap:1rem; flex-wrap:wrap; padding:1rem 1.5rem; border-bottom:1px solid var(--amber-dim); font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--amber);">
+        <span>Entry 001 · Bitcoin mainnet · Lightning</span><span>27 July 2026</span>
+      </div>
+      <div style="padding:1.5rem; font-family:'IBM Plex Mono',monospace; font-size:0.72rem; line-height:2; color:var(--text-dim);">
+        <div>requested &nbsp;· 200,000 sat</div>
+        <div>ceiling &nbsp;&nbsp;&nbsp;· 100,000 sat per transaction</div>
+        <div>balance &nbsp;&nbsp;&nbsp;· 481,500 sat, and a live ACINQ channel</div>
+        <div>outcome &nbsp;&nbsp;&nbsp;· <span style="color:var(--amber); font-weight:600;">REFUSED — ceiling</span></div>
+        <div>control &nbsp;&nbsp;&nbsp;· 10 sat, same destination, same channel, same RPC method → <span style="color:var(--green);">SETTLED</span></div>
+      </div>
+      <div style="padding:1.25rem 1.5rem; border-top:1px solid var(--border); font-size:0.88rem; color:var(--text-dim); line-height:1.8; font-weight:300;">
+        <strong style="color:var(--text);">The payment could have succeeded.</strong> More than four times the balance
+        required, a live channel, a working node. The mandate stopped it, and the 10-sat control settling over the same
+        path is what distinguishes a refusal from a failure.
+      </div>
+      <div style="padding:1.25rem 1.5rem; border-top:1px solid var(--border); font-family:'IBM Plex Mono',monospace; font-size:0.66rem; color:var(--text-faint); line-height:1.9;">
+        <strong style="color:var(--text-dim);">Scope.</strong> The mandate issuer was a demonstration <code>did:key</code>,
+        not the production issuer. · One node, ours, so this is enforcement at a node rather than closure of the network.
+        · The macaroon caveat is a sender-side trigger in the payer's own credential and is not visible to the payee.
+        · <strong style="color:var(--text-dim);">The signed record itself is not yet verifiable by you:</strong>
+        <code>refusalPayload</code> is not exported from the published engine.
+        <a href="/verify.html" style="color:var(--amber); text-decoration:none;">What that means →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ATTESTATIONS -->
+<section style="background: var(--bg2); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">02 · Attestations</div>
+    <h2>Credentials published here, and whether they verify.</h2>
+    <p class="section-intro">
+      Five credential artifacts are served under <code>/credentials/</code>. Each is checked in CI against a recorded
+      expected verdict, in both directions, so a regression and a silent repair both break the build.
+      <strong>Two of the five do not verify against our own engine, and that is disclosed rather than hidden.</strong>
+    </p>
+    <div style="border:1px solid var(--border); font-family:'IBM Plex Mono',monospace; font-size:0.72rem;">
+      <div style="display:grid; grid-template-columns:1fr auto; gap:1rem; padding:0.9rem 1.25rem; border-bottom:1px solid var(--border); color:var(--text-dim);">
+        <span>maxi-0001-trading-mandate-2026-08.json</span><span style="color:var(--green);">verifies</span></div>
+      <div style="display:grid; grid-template-columns:1fr auto; gap:1rem; padding:0.9rem 1.25rem; border-bottom:1px solid var(--border); color:var(--text-dim);">
+        <span>demonstration-in-mandate-administrator-to-maxi-0001.json</span><span style="color:var(--green);">verifies</span></div>
+      <div style="display:grid; grid-template-columns:1fr auto; gap:1rem; padding:0.9rem 1.25rem; border-bottom:1px solid var(--border); color:var(--text-dim);">
+        <span>maxi-0001-trading-mandate.json</span><span style="color:var(--text-faint);">superseded — incomplete structure</span></div>
+      <div style="display:grid; grid-template-columns:1fr auto; gap:1rem; padding:0.9rem 1.25rem; border-bottom:1px solid var(--border); color:var(--text-dim);">
+        <span>maxi-0001-policy-eval-mainnet-20260623.json</span><span style="color:#f87171;">no verifier exists</span></div>
+      <div style="display:grid; grid-template-columns:1fr auto; gap:1rem; padding:0.9rem 1.25rem; color:var(--text-dim);">
+        <span>maxi-0001-wdk-demo-pec.json</span><span style="color:#f87171;">no verifier exists</span></div>
+    </div>
+    <p style="margin-top:1rem; font-size:0.86rem; color:var(--text-dim); line-height:1.8; font-weight:300;">
+      The last two are <code>PolicyEvaluationCredential</code>s. Their signatures are sound under canonical W3C Data
+      Integrity tooling; what does not exist is a verifier path for the type, in the published engine, the hosted
+      service, or the schema set. <a href="/verify.html" style="color:var(--amber);">The full disclosure is on the
+      verification page →</a>
+    </p>
+  </div>
+</section>
+
+<!-- TRANSACTION REGISTRY -->
+<section style="background: var(--bg); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">03 · Settlements</div>
+    <h2>Recorded settlement events</h2>
+    <p class="section-intro" style="margin-bottom:1.5rem;">
+      A snapshot of rows recorded in <code>verified_events</code>. <strong>Recording is not verification, and this
+      table no longer pretends otherwise.</strong> It previously carried a ✓ against every row. That mark was
+      typed into the page by hand and derived from nothing: there is no code on this page, and no check ever ran.
+    </p>
+    <p class="section-intro" style="margin-bottom:1.5rem;">
+      What the underlying data supports: of 56 rows in that table, <strong>55 carry
+      <code>proof_strength = 'unverified'</code></strong> and one carries <code>preimage_only</code>. None of the
+      rows below is that one. <strong>Read that as &ldquo;no cryptographic attestation was recorded&rdquo;, not as
+      &ldquo;the payment did not happen&rdquo;</strong> &mdash; most of these predate the cutover that made
+      attestation mandatory, and their absence of proof is a fact about our records rather than about the payments.
+      The column that told you which was which is the column that never existed.
+    </p>
+    <div style="overflow-x: auto;">
+      <table class="tx-table">
+        <thead>
+          <tr>
+            <th>Event ID</th>
+            <th>Rail</th>
+            <th>Event reference</th>
+            <th>Dir</th>
+            <th>Amount</th>
+            <th>Time</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>event-aibtc-0005</td><td class="rail-lightning">⚡ Lightning</td><td>msg_1774…3f4a5b6c</td><td class="tx-dir-up">↑</td><td>100 sats</td><td>10d ago</td><td></td></tr>
+          <tr><td>event-aibtc-0004</td><td class="rail-lightning">⚡ Lightning</td><td>msg_1774…1d2e3f4a</td><td class="tx-dir-up">↑</td><td>100 sats</td><td>10d ago</td><td></td></tr>
+          <tr><td>event-maxi-0001-0030</td><td class="rail-lightning">⚡ Lightning</td><td>f9f5cbec…16285560</td><td class="tx-dir-down">↓</td><td>50 sats</td><td>13d ago</td><td><a href="/verify.html" class="tx-verify">How to verify</a></td></tr>
+          <tr><td>event-maxi-0001-0029</td><td class="rail-lightning">⚡ Lightning</td><td>424e7e63…784dd0f8</td><td class="tx-dir-down">↓</td><td>210 sats</td><td>13d ago</td><td><a href="/verify.html" class="tx-verify">How to verify</a></td></tr>
+          <tr><td>event-lnget-032</td><td class="rail-x402">◈ x402</td><td>2f1c45a9…a8d51942</td><td class="tx-dir-up">↑</td><td>0.01 USDC</td><td>21d ago</td><td><a href="/verify.html" class="tx-verify">How to verify</a></td></tr>
+          <tr><td>event-maxi-0001-0028</td><td class="rail-lightning">⚡ Lightning</td><td>6072ec4e…88d73c94</td><td class="tx-dir-down">↓</td><td>11 sats</td><td>19d ago</td><td><a href="/verify.html" class="tx-verify">How to verify</a></td></tr>
+          <tr><td>event-maxi-0001-0016</td><td class="rail-lightning">⚡ Lightning</td><td>31f6127d…084f2bd4</td><td class="tx-dir-down">↓</td><td>210 sats</td><td>21d ago</td><td><a href="/verify.html" class="tx-verify">How to verify</a></td></tr>
+          <tr><td>event-maxi-0001-0009</td><td class="rail-lightning">⚡ Lightning</td><td>e2e_test…42295586</td><td class="tx-dir-down">↓</td><td>10,000 sats</td><td>33d ago</td><td></td></tr>
+          <tr><td>event-maxi-0002</td><td class="rail-lightning">⚡ Lightning</td><td>331a165a…de11b766</td><td class="tx-dir-up">↑</td><td>10,000 sats</td><td>45d ago</td><td></td></tr>
+          <tr><td style="color: var(--amber);">OP-000001 · #0002</td><td class="rail-lightning">⚡ Lightning</td><td>6a30ba7f…ff332c4e</td><td class="tx-dir-up">↑</td><td>1,521 sats</td><td>Feb 22, 2026</td><td><a href="/genesis" class="tx-verify" style="color:var(--amber);">Genesis</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top: 0.75rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-faint);">
+      A snapshot of recorded events, not a verification result. Attestation status is stated above for the set, because it was never computed per row. · <a href="https://app.agenticterminal.io/sovereign" style="color: var(--amber);">View on Sovereign →</a>
     </div>
   </div>
 </section>
@@ -200,9 +297,9 @@
 <!-- AGENT SHOWCASE -->
 <section style="background: var(--bg2); border-bottom: 1px solid var(--border);">
   <div class="section-inner">
-    <div class="section-label">Agent Showcase</div>
-    <h2>Credentialed agents, publicly recognized.</h2>
-    <p class="section-intro">Agent identity on Observer Protocol is sovereign by default, private unless the agent or its operator chooses to be publicly listed. The following agents have opted into public recognition as OP-verified participants in the agentic economy.</p>
+    <div class="section-label">04 · Agents</div>
+    <h2>Agents operating under published mandates.</h2>
+    <p class="section-intro">Agent identity on Observer Protocol is sovereign by default, private unless the agent or its operator chooses to be publicly listed. The following agents have opted into public listing. Listing establishes that an operator chose to be named here, and nothing further.</p>
 
     <div class="opt-in-notice">
       <div class="opt-in-icon">🔐</div>
@@ -258,57 +355,6 @@
         <div style="font-size: 0.82rem; color: var(--text-faint); line-height: 1.7; margin-bottom: 1rem; font-weight: 300;">Enable public listing in your Sovereign Dashboard to appear in the showcase.</div>
         <a href="https://agenticterminal.io/sovereign" style="font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; color: var(--amber); text-decoration: none; border: 1px solid var(--amber-dim); padding: 0.3rem 0.75rem;">Get Started →</a>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- TRANSACTION REGISTRY -->
-<section style="background: var(--bg); border-bottom: 1px solid var(--border);">
-  <div class="section-inner">
-    <div class="section-label">Public Record</div>
-    <h2>Recorded settlement events</h2>
-    <p class="section-intro" style="margin-bottom:1.5rem;">
-      A snapshot of rows recorded in <code>verified_events</code>. <strong>Recording is not verification, and this
-      table no longer pretends otherwise.</strong> It previously carried a ✓ against every row. That mark was
-      typed into the page by hand and derived from nothing: there is no code on this page, and no check ever ran.
-    </p>
-    <p class="section-intro" style="margin-bottom:1.5rem;">
-      What the underlying data supports: of 56 rows in that table, <strong>55 carry
-      <code>proof_strength = 'unverified'</code></strong> and one carries <code>preimage_only</code>. None of the
-      rows below is that one. <strong>Read that as &ldquo;no cryptographic attestation was recorded&rdquo;, not as
-      &ldquo;the payment did not happen&rdquo;</strong> &mdash; most of these predate the cutover that made
-      attestation mandatory, and their absence of proof is a fact about our records rather than about the payments.
-      The column that told you which was which is the column that never existed.
-    </p>
-    <div style="overflow-x: auto;">
-      <table class="tx-table">
-        <thead>
-          <tr>
-            <th>Event ID</th>
-            <th>Rail</th>
-            <th>Event reference</th>
-            <th>Dir</th>
-            <th>Amount</th>
-            <th>Time</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>event-aibtc-0005</td><td class="rail-lightning">⚡ Lightning</td><td>msg_1774…3f4a5b6c</td><td class="tx-dir-up">↑</td><td>100 sats</td><td>10d ago</td><td></td></tr>
-          <tr><td>event-aibtc-0004</td><td class="rail-lightning">⚡ Lightning</td><td>msg_1774…1d2e3f4a</td><td class="tx-dir-up">↑</td><td>100 sats</td><td>10d ago</td><td></td></tr>
-          <tr><td>event-maxi-0001-0030</td><td class="rail-lightning">⚡ Lightning</td><td>f9f5cbec…16285560</td><td class="tx-dir-down">↓</td><td>50 sats</td><td>13d ago</td><td><a href="/verify.html" class="tx-verify">How to verify</a></td></tr>
-          <tr><td>event-maxi-0001-0029</td><td class="rail-lightning">⚡ Lightning</td><td>424e7e63…784dd0f8</td><td class="tx-dir-down">↓</td><td>210 sats</td><td>13d ago</td><td><a href="/verify.html" class="tx-verify">How to verify</a></td></tr>
-          <tr><td>event-lnget-032</td><td class="rail-x402">◈ x402</td><td>2f1c45a9…a8d51942</td><td class="tx-dir-up">↑</td><td>0.01 USDC</td><td>21d ago</td><td><a href="/verify.html" class="tx-verify">How to verify</a></td></tr>
-          <tr><td>event-maxi-0001-0028</td><td class="rail-lightning">⚡ Lightning</td><td>6072ec4e…88d73c94</td><td class="tx-dir-down">↓</td><td>11 sats</td><td>19d ago</td><td><a href="/verify.html" class="tx-verify">How to verify</a></td></tr>
-          <tr><td>event-maxi-0001-0016</td><td class="rail-lightning">⚡ Lightning</td><td>31f6127d…084f2bd4</td><td class="tx-dir-down">↓</td><td>210 sats</td><td>21d ago</td><td><a href="/verify.html" class="tx-verify">How to verify</a></td></tr>
-          <tr><td>event-maxi-0001-0009</td><td class="rail-lightning">⚡ Lightning</td><td>e2e_test…42295586</td><td class="tx-dir-down">↓</td><td>10,000 sats</td><td>33d ago</td><td></td></tr>
-          <tr><td>event-maxi-0002</td><td class="rail-lightning">⚡ Lightning</td><td>331a165a…de11b766</td><td class="tx-dir-up">↑</td><td>10,000 sats</td><td>45d ago</td><td></td></tr>
-          <tr><td style="color: var(--amber);">OP-000001 · #0002</td><td class="rail-lightning">⚡ Lightning</td><td>6a30ba7f…ff332c4e</td><td class="tx-dir-up">↑</td><td>1,521 sats</td><td>Feb 22, 2026</td><td><a href="/genesis" class="tx-verify" style="color:var(--amber);">Genesis</a></td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div style="margin-top: 0.75rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-faint);">
-      A snapshot of recorded events, not a verification result. Attestation status is stated above for the set, because it was never computed per row. · <a href="https://app.agenticterminal.io/sovereign" style="color: var(--amber);">View on Sovereign →</a>
     </div>
   </div>
 </section>
