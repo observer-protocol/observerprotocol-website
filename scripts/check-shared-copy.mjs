@@ -121,6 +121,43 @@ for (const [key, entry] of Object.entries(spec)) {
   }
 }
 
+// FORBIDDEN STEMS. A concept ruled off the site cannot be policed by searching for
+// the phrasing it had when it was ruled off — that is how reputation survived three
+// clearances. Forbid the stem; allowlist each surviving occurrence with a reason.
+const forbidden = spec['$forbidden'] ?? {};
+for (const [concept, rule] of Object.entries(forbidden)) {
+  const stems = (rule.stems ?? []).map((x) => x.toLowerCase());
+  if (stems.length === 0) continue;
+  const allow = rule.allow ?? [];
+
+  for (const file of allHtml()) {
+    const rel = file.slice(root.length + 1);
+    const src = readFileSync(file, 'utf8');
+    const lines = src.split('\n');
+
+    // A whole file may be allowlisted with an empty `contains`.
+    if (allow.some((a) => a.file === rel && !a.contains)) continue;
+
+    lines.forEach((line, i) => {
+      const low = line.toLowerCase();
+      for (const stem of stems) {
+        // Word-boundary anchored: "discord" contains "scor" and is not a reputation
+        // claim. A stem is a word beginning, not a substring.
+        if (!new RegExp(`\\b${stem}`, 'i').test(low)) continue;
+        if (allow.some((a) => a.file === rel && a.contains && line.includes(a.contains))) return;
+        const text = line.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+        failures.push(
+          `${rel}:${i + 1}: forbidden stem "${stem}" (${concept})\n` +
+          `      ${text.slice(0, 120)}\n` +
+          `      This concept was ruled off the site. Remove it, or add an allow entry in\n` +
+          `      scripts/shared-copy.json naming the file, the text, and why it is an exception.`
+        );
+        return;
+      }
+    });
+  }
+}
+
 if (failures.length) {
   console.error(`Shared copy has diverged — ${failures.length} problem(s):\n`);
   for (const f of failures) console.error(`  ${f}\n`);

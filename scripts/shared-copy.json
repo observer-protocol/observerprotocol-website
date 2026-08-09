@@ -46,5 +46,60 @@
       "no call back to us"
     ],
     "claimPatternNote": "Any occurrence of these in an HTML file MUST sit inside an element tagged data-shared-copy=\"offline-scope\". That is what makes a tenth instance a build failure rather than a discovery. Add the tag, or add the file to mustAppearIn if it is a new home for the claim. Some tagged instances REFER to the claim rather than asserting it (docs.html's resolution-hosting rationale is one). They are tagged anyway: the enumeration's job is to know everywhere the phrase appears, and a human scoping the claim decides per instance."
+  },
+  "$forbidden": {
+    "reputation-model": {
+      "why": "Reputation was ruled off this site entirely. It was cleared three times and was wrong three times, because each search was shaped like the previous fix: the phrase, then the subject, then the subject as previously written. 'trust scoring' does not contain 'trust score' \u2014 the stem diverges at scor|e versus scor|ing. This forbids the STEM, so a gerund, a bare noun, or a number with a label cannot reappear unnoticed.",
+      "stems": [
+        "scor",
+        "reputat",
+        "at-ars",
+        "at_ars"
+      ],
+      "appliesTo": "*.html",
+      "allow": [
+        {
+          "file": "agent.html",
+          "contains": "Reputation Registry",
+          "why": "ERC-8004's on-chain contract is literally named the Reputation Registry. External proper noun; renaming it would misname a contract the page links on a block explorer."
+        },
+        {
+          "file": "agent.html",
+          "contains": "reputation_registry",
+          "why": "Same contract, the field name as returned by the API."
+        },
+        {
+          "file": "institutional/index.html",
+          "contains": "not the trust score",
+          "why": "The line reads 'Refusal at the policy layer, NOT the trust score.' It is the correct usage and the best sentence in the estate on the distinction."
+        },
+        {
+          "file": "wdk.html",
+          "contains": "alt=\"Maxi's public profile",
+          "why": "Alt text describes what the screenshot shows, and the screenshot shows an AT-ARS score. Editing it would make the alt text lie about the image."
+        },
+        {
+          "file": "institutional/index.html",
+          "contains": "AT-ARS score threshold",
+          "why": "Inside the comment recording that the score gate was removed and must not be replaced."
+        },
+        {
+          "file": "gone.html",
+          "contains": "agent reputation scoring",
+          "why": "The 410 page explains what the retired quickstarts described. Naming the retired thing is the point."
+        },
+        {
+          "file": "papers/technical-paper.html",
+          "contains": "",
+          "why": "A dated paper carrying an editor's note. Dated documents are annotated, not rewritten, so its historical use of the model stands."
+        },
+        {
+          "file": "papers/positioning-paper.html",
+          "contains": "",
+          "why": "Same: a dated document. Annotate, do not rewrite."
+        }
+      ],
+      "stemNote": "Stems match at a WORD BOUNDARY, not as substrings: 'discord' contains 'scor' and is not a reputation claim. Anchoring removed that false positive rather than allowlisting it."
+    }
   }
 }
