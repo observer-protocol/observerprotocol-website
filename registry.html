@@ -140,7 +140,7 @@
   <div class="page-header-inner">
     <div class="breadcrumb">OBSERVER PROTOCOL · <span>REGISTRY</span></div>
     <h1>Protocol Registry</h1>
-    <p class="page-sub">Aggregate activity across the Observer Protocol network: verified transactions, credentialed agents who chose to be publicly recognized, and cryptographic proof of every settled event. The math is the record.</p>
+    <p class="page-sub">Aggregate activity recorded by Observer Protocol: settlement events, and agents who chose to be publicly listed. <strong>Recording is not verification.</strong> Where an attestation exists this page says so; where none was recorded it says that instead, rather than implying one.</p>
   </div>
 </div>
 
@@ -208,7 +208,7 @@
       <div class="agent-card">
         <div class="agent-card-header">
           <div class="agent-num">AGENT #0001 · GENESIS</div>
-          <div class="agent-badge verified">VERIFIED</div>
+          <div class="agent-badge" style="background:#2a2a26; color:#888880; border:1px solid #2a2a26;">PUBLICLY LISTED</div>
         </div>
         <div class="agent-name">Maxi</div>
         <div class="agent-did">did:web:observerprotocol.org:age…</div>
@@ -228,7 +228,7 @@
       <div class="agent-card">
         <div class="agent-card-header">
           <div class="agent-num">AGENT #0002</div>
-          <div class="agent-badge verified">VERIFIED</div>
+          <div class="agent-badge" style="background:#2a2a26; color:#888880; border:1px solid #2a2a26;">PUBLICLY LISTED</div>
         </div>
         <div class="agent-name">Vicky</div>
         <div class="agent-did">did:web:observerprotocol.org:age…</div>
@@ -258,37 +258,49 @@
 <section style="background: var(--bg); border-bottom: 1px solid var(--border);">
   <div class="section-inner">
     <div class="section-label">Public Record</div>
-    <h2>Verified Transaction Registry</h2>
+    <h2>Recorded settlement events</h2>
+    <p class="section-intro" style="margin-bottom:1.5rem;">
+      A snapshot of rows recorded in <code>verified_events</code>. <strong>Recording is not verification, and this
+      table no longer pretends otherwise.</strong> It previously carried a ✓ against every row. That mark was
+      typed into the page by hand and derived from nothing: there is no code on this page, and no check ever ran.
+    </p>
+    <p class="section-intro" style="margin-bottom:1.5rem;">
+      What the underlying data supports: of 56 rows in that table, <strong>55 carry
+      <code>proof_strength = 'unverified'</code></strong> and one carries <code>preimage_only</code>. None of the
+      rows below is that one. <strong>Read that as &ldquo;no cryptographic attestation was recorded&rdquo;, not as
+      &ldquo;the payment did not happen&rdquo;</strong> &mdash; most of these predate the cutover that made
+      attestation mandatory, and their absence of proof is a fact about our records rather than about the payments.
+      The column that told you which was which is the column that never existed.
+    </p>
     <div style="overflow-x: auto;">
       <table class="tx-table">
         <thead>
           <tr>
             <th>Event ID</th>
             <th>Rail</th>
-            <th>Payment Hash</th>
+            <th>Event reference</th>
             <th>Dir</th>
             <th>Amount</th>
-            <th>✓</th>
             <th>Time</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          <tr><td>event-aibtc-0005</td><td class="rail-lightning">⚡ Lightning</td><td>msg_1774…3f4a5b6c</td><td class="tx-dir-up">↑</td><td>100 sats</td><td class="verified">✓</td><td>10d ago</td><td></td></tr>
-          <tr><td>event-aibtc-0004</td><td class="rail-lightning">⚡ Lightning</td><td>msg_1774…1d2e3f4a</td><td class="tx-dir-up">↑</td><td>100 sats</td><td class="verified">✓</td><td>10d ago</td><td></td></tr>
-          <tr><td>event-maxi-0001-0030</td><td class="rail-lightning">⚡ Lightning</td><td>f9f5cbec…16285560</td><td class="tx-dir-down">↓</td><td>50 sats</td><td class="verified">✓</td><td>13d ago</td><td><a href="#" class="tx-verify">Verify</a></td></tr>
-          <tr><td>event-maxi-0001-0029</td><td class="rail-lightning">⚡ Lightning</td><td>424e7e63…784dd0f8</td><td class="tx-dir-down">↓</td><td>210 sats</td><td class="verified">✓</td><td>13d ago</td><td><a href="#" class="tx-verify">Verify</a></td></tr>
-          <tr><td>event-lnget-032</td><td class="rail-x402">◈ x402</td><td>2f1c45a9…a8d51942</td><td class="tx-dir-up">↑</td><td>0.01 USDC</td><td class="verified">✓</td><td>21d ago</td><td><a href="#" class="tx-verify">Verify</a></td></tr>
-          <tr><td>event-maxi-0001-0028</td><td class="rail-lightning">⚡ Lightning</td><td>6072ec4e…88d73c94</td><td class="tx-dir-down">↓</td><td>11 sats</td><td class="verified">✓</td><td>19d ago</td><td><a href="#" class="tx-verify">Verify</a></td></tr>
-          <tr><td>event-maxi-0001-0016</td><td class="rail-lightning">⚡ Lightning</td><td>31f6127d…084f2bd4</td><td class="tx-dir-down">↓</td><td>210 sats</td><td class="verified">✓</td><td>21d ago</td><td><a href="#" class="tx-verify">Verify</a></td></tr>
-          <tr><td>event-maxi-0001-0009</td><td class="rail-lightning">⚡ Lightning</td><td>e2e_test…42295586</td><td class="tx-dir-down">↓</td><td>10,000 sats</td><td class="verified">✓</td><td>33d ago</td><td></td></tr>
-          <tr><td>event-maxi-0002</td><td class="rail-lightning">⚡ Lightning</td><td>331a165a…de11b766</td><td class="tx-dir-up">↑</td><td>10,000 sats</td><td class="verified">✓</td><td>45d ago</td><td></td></tr>
-          <tr><td style="color: var(--amber);">OP-000001 · #0002</td><td class="rail-lightning">⚡ Lightning</td><td>6a30ba7f…ff332c4e</td><td class="tx-dir-up">↑</td><td>1,521 sats</td><td class="verified">✓</td><td>Feb 22, 2026</td><td><a href="#" class="tx-verify" style="color:var(--amber);">Genesis</a></td></tr>
+          <tr><td>event-aibtc-0005</td><td class="rail-lightning">⚡ Lightning</td><td>msg_1774…3f4a5b6c</td><td class="tx-dir-up">↑</td><td>100 sats</td><td>10d ago</td><td></td></tr>
+          <tr><td>event-aibtc-0004</td><td class="rail-lightning">⚡ Lightning</td><td>msg_1774…1d2e3f4a</td><td class="tx-dir-up">↑</td><td>100 sats</td><td>10d ago</td><td></td></tr>
+          <tr><td>event-maxi-0001-0030</td><td class="rail-lightning">⚡ Lightning</td><td>f9f5cbec…16285560</td><td class="tx-dir-down">↓</td><td>50 sats</td><td>13d ago</td><td><a href="/verify.html" class="tx-verify">How to verify</a></td></tr>
+          <tr><td>event-maxi-0001-0029</td><td class="rail-lightning">⚡ Lightning</td><td>424e7e63…784dd0f8</td><td class="tx-dir-down">↓</td><td>210 sats</td><td>13d ago</td><td><a href="/verify.html" class="tx-verify">How to verify</a></td></tr>
+          <tr><td>event-lnget-032</td><td class="rail-x402">◈ x402</td><td>2f1c45a9…a8d51942</td><td class="tx-dir-up">↑</td><td>0.01 USDC</td><td>21d ago</td><td><a href="/verify.html" class="tx-verify">How to verify</a></td></tr>
+          <tr><td>event-maxi-0001-0028</td><td class="rail-lightning">⚡ Lightning</td><td>6072ec4e…88d73c94</td><td class="tx-dir-down">↓</td><td>11 sats</td><td>19d ago</td><td><a href="/verify.html" class="tx-verify">How to verify</a></td></tr>
+          <tr><td>event-maxi-0001-0016</td><td class="rail-lightning">⚡ Lightning</td><td>31f6127d…084f2bd4</td><td class="tx-dir-down">↓</td><td>210 sats</td><td>21d ago</td><td><a href="/verify.html" class="tx-verify">How to verify</a></td></tr>
+          <tr><td>event-maxi-0001-0009</td><td class="rail-lightning">⚡ Lightning</td><td>e2e_test…42295586</td><td class="tx-dir-down">↓</td><td>10,000 sats</td><td>33d ago</td><td></td></tr>
+          <tr><td>event-maxi-0002</td><td class="rail-lightning">⚡ Lightning</td><td>331a165a…de11b766</td><td class="tx-dir-up">↑</td><td>10,000 sats</td><td>45d ago</td><td></td></tr>
+          <tr><td style="color: var(--amber);">OP-000001 · #0002</td><td class="rail-lightning">⚡ Lightning</td><td>6a30ba7f…ff332c4e</td><td class="tx-dir-up">↑</td><td>1,521 sats</td><td>Feb 22, 2026</td><td><a href="/genesis" class="tx-verify" style="color:var(--amber);">Genesis</a></td></tr>
         </tbody>
       </table>
     </div>
     <div style="margin-top: 0.75rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-faint);">
-      Showing recent verified transactions. Registry is public and permanent. · <a href="https://app.agenticterminal.io/sovereign" style="color: var(--amber);">View on Sovereign →</a>
+      A snapshot of recorded events, not a verification result. Attestation status is stated above for the set, because it was never computed per row. · <a href="https://app.agenticterminal.io/sovereign" style="color: var(--amber);">View on Sovereign →</a>
     </div>
   </div>
 </section>
