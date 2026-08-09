@@ -350,7 +350,7 @@
     <div class="breadcrumb">OBSERVER PROTOCOL · <span>ARCHITECTURE</span></div>
     <div class="page-tag">
       <div class="pulse"></div>
-      Canonical Reference · AIP v0.8 draft-1 · June 2026
+      Canonical Reference · AIP v0.9 · ratified 25 July 2026
     </div>
     <h1>Architecture &amp; Technical Reference</h1>
     <p class="page-sub">
@@ -374,212 +374,172 @@
     <div class="section-label">Full Stack Diagram</div>
     <h2>Observer Protocol + Agentic Terminal</h2>
     <p class="section-intro">
-      Five layers. One coherent trust stack. Read left to right: agent identity → payment rails → protocol verification → behavioral governance → enterprise intelligence.
+      Read left to right: <strong>mandate → evaluation → refusal or instruction → attestation → verification.</strong> Identity enters from the left as an input we consume rather than issue. Verification sits on the right as a terminal reached without us, and nothing in our column is in its path. intelligence.
     </p>
     <div class="arch-wrap">
-      <div class="arch-title">Observer Protocol + Agentic Terminal · Architecture</div>
-      <div class="arch-subtitle">Know Your Agent (KYA) · W3C DID/VC · AIP v0.8 draft-1 · June 2026</div>
+      <div class="arch-title">Observer Protocol · the spine</div>
+      <div class="arch-subtitle">mandate → evaluation → refusal or instruction → attestation → verification · AIP v0.9, ratified 25 July 2026</div>
       <div class="arch-cols">
-        <!-- AGENT IDENTITY -->
+
+        <!-- INPUT, NOT OURS -->
         <div>
-          <div class="arch-col-header">Agent Identity</div>
+          <div class="arch-col-header" style="opacity:0.65;">Input · not ours</div>
           <div class="arch-card identity">
-            <div class="arch-card-title">did:web · Agent DID <span class="live-badge">live</span></div>
-            <div class="arch-card-body">did:web:observerprotocol.org<br/>:agents:{id}/did.json<br/>W3C-resolvable · public</div>
-          </div>
-          <div class="arch-card identity">
-            <div class="arch-card-title">did:web · Org DID</div>
-            <div class="arch-card-body">did:web:acme-corp.com<br/>:op-identity<br/>Domain = trust anchor</div>
+            <div class="arch-card-title">Subject identity</div>
+            <div class="arch-card-body">Whatever identity system the<br/>institution already runs.<br/>We consume an identifier;<br/>we do not issue one.</div>
           </div>
           <div class="arch-card identity">
-            <div class="arch-card-title">Ed25519 keypair</div>
-            <div class="arch-card-body">Signing + assertion<br/>Agent ↔ Org DID domain<br/>mismatch = fraud signal</div>
-          </div>
-          <div class="arch-card identity">
-            <div class="arch-card-title">Domain mismatch rule</div>
-            <div class="arch-card-body">Agent ↔ Org DID domain<br/>mismatch = fraud signal</div>
-          </div>
-          <div class="arch-card identity">
-            <div class="arch-card-title">Universal DID resolver</div>
-            <div class="arch-card-body">GET /api/v1/resolve/{did}<br/>Resolves any did:web<br/>DIF Universal Resolver compat.</div>
+            <div class="arch-card-title">did:web supported <span class="live-badge">live</span></div>
+            <div class="arch-card-body">Resolver and DID documents<br/>are supported inputs, not<br/>the foundation of the stack.</div>
           </div>
         </div>
-        <!-- PAYMENT RAILS -->
+
+        <!-- OP: MANDATE -->
         <div>
-          <div class="arch-col-header">Payment Rails</div>
-          <div class="arch-card rails">
-            <div class="arch-card-title">L402 · Lightning <span class="live-badge">live</span></div>
-            <div class="arch-card-body">Invoice → payment → preimage<br/>Macaroon auth</div>
-          </div>
-          <div class="arch-card rails">
-            <div class="arch-card-title">x402 · Solana <span class="live-badge">live</span></div>
-            <div class="arch-card-body">Ed25519 sig · native rail<br/>USDC settlement</div>
-          </div>
-          <div class="arch-card rails">
-            <div class="arch-card-title">x402 · EVM / Base <span class="live-badge">live</span></div>
-            <div class="arch-card-body">ECDSA sig over tx hash<br/>ERC-20 settlement</div>
-          </div>
-          <div class="arch-card rails">
-            <div class="arch-card-title">MPP · Stripe / Tempo <span class="live-badge">live</span></div>
-            <div class="arch-card-body">Sessions · stablecoin<br/>Fiat bridge</div>
-          </div>
-          <div class="arch-card rails">
-            <div class="arch-card-title">USDT-on-TRON <span class="live-badge">live</span></div>
-            <div class="arch-card-body">TRC-20 settlements · TronGrid<br/>verified · ERC-8004 anchor</div>
+          <div class="arch-col-header">01 · Mandate</div>
+          <div class="arch-card op">
+            <div class="arch-card-title">Signed by the principal <span class="live-badge">live</span></div>
+            <div class="arch-card-body">A ceiling, a counterparty set,<br/>a window, and whether a<br/>decision must be cited.<br/>Out of the agent's reach.</div>
           </div>
         </div>
-        <!-- OBSERVER PROTOCOL -->
+
+        <!-- OP: EVALUATION -->
         <div>
-          <div class="arch-col-header">Observer Protocol</div>
+          <div class="arch-col-header">02 · Evaluation</div>
           <div class="arch-card op">
-            <div class="arch-card-title">W3C DID resolver <span class="live-badge">live</span></div>
-            <div class="arch-card-body">did:web resolution<br/>DIF Universal Resolver compat.</div>
-          </div>
-          <div class="arch-card op">
-            <div class="arch-card-title">VAC · Verifiable Agent Credential <span class="live-badge">live</span></div>
-            <div class="arch-card-body">Portable · cumulative<br/>One agent_did · many rails<br/>W3C VC · Ed25519 proof</div>
-          </div>
-          <div class="arch-card op">
-            <div class="arch-card-title">KYB VC <span class="new-badge-card">new</span></div>
-            <div class="arch-card-body">W3C VC · Ed25519 proof<br/>AT-anchored or provider-issued<br/>Org registry · KYB provider</div>
-          </div>
-          <div class="arch-card op">
-            <div class="arch-card-title">Challenge-response</div>
-            <div class="arch-card-body">Programmatic signing<br/>Cryptographic · not policy</div>
-          </div>
-          <div class="arch-card op">
-            <div class="arch-card-title">Observer registry</div>
-            <div class="arch-card-body">registry · immutable log</div>
-          </div>
-          <div class="arch-card op">
-            <div class="arch-card-title">Identity consolidation</div>
-            <div class="arch-card-body">POST /observer/consolidate<br/>Cross-rail portability</div>
-          </div>
-          <div class="arch-card op">
-            <div class="arch-card-title">ERC-8004 / TRC-8004 <span class="new-badge-card">new</span></div>
-            <div class="arch-card-body">On-chain agent registry<br/>Base + TRON indexers<br/>Cross-registry DID resolution</div>
+            <div class="arch-card-title">Against the mandate <span class="live-badge">live</span></div>
+            <div class="arch-card-body">Before the instruction exists.<br/>Fails closed: if the mandate<br/>cannot be read, the answer<br/>is no.</div>
           </div>
         </div>
-        <!-- AIP -->
+
+        <!-- OP: THE BRANCH -->
         <div>
-          <div class="arch-col-header aip-header">AIP <span class="new-badge">v0.5</span></div>
-          <div class="arch-card aip">
-            <div class="arch-card-title">Delegation Credential <span class="new-badge-card">new</span></div>
-            <div class="arch-card-body">Org → agent signed scope<br/>Embedded in VAC extension<br/>Full chain verified at query</div>
+          <div class="arch-col-header">03 · Refusal <span style="opacity:0.6;">or</span> instruction</div>
+          <div class="arch-card op" style="border-color:var(--amber-dim); background:var(--amber-glow);">
+            <div class="arch-card-title" style="color:var(--amber);">REFUSAL</div>
+            <div class="arch-card-body">No instruction is emitted.<br/>Nothing downstream to recall<br/>or reverse. The refusal is<br/>itself a signed record.</div>
           </div>
-          <div class="arch-card aip">
-            <div class="arch-card-title">Eager chain verification <span class="new-badge-card">new</span></div>
-            <div class="arch-card-body">GET /aip/chain/verify/{id}<br/>Full chain verified at query</div>
-          </div>
-          <div class="arch-card aip">
-            <div class="arch-card-title">Revocation + cascade <span class="new-badge-card">new</span></div>
-            <div class="arch-card-body">POST /aip/revoke<br/>Cascades to sub-delegations</div>
-          </div>
-          <div class="arch-card aip">
-            <div class="arch-card-title">Type Registry <span class="new-badge-card">new</span></div>
-            <div class="arch-card-body">Enumerated counterparty types<br/>Denial + revocation reasons</div>
-          </div>
-          <div class="arch-card aip">
-            <div class="arch-card-title">Remediation envelope <span class="new-badge-card">new</span></div>
-            <div class="arch-card-body">Minimal protocol envelope<br/>AT owns option content</div>
+          <div class="arch-card op">
+            <div class="arch-card-title">INSTRUCTION → the rail</div>
+            <div class="arch-card-body">Only if it fell inside the<br/>mandate. The rail never sees<br/>the mandate; it never had to.</div>
           </div>
         </div>
-        <!-- AGENTIC TERMINAL -->
+
+        <!-- TERMINAL, NOT OURS -->
         <div>
-          <div class="arch-col-header">Agentic Terminal</div>
-          <div class="arch-card at">
-            <div class="arch-card-title">Enterprise dashboard <span class="live-badge">live</span></div>
-            <div class="arch-card-body">Agent fleet · alerts<br/>Audit trail · KYB badge</div>
-          </div>
-          <div class="arch-card at">
-            <div class="arch-card-title">Credential Viewer <span class="new-badge-card">new</span></div>
-            <div class="arch-card-body">GET /api/v1/credentials/{did}<br/>Authenticated · org-scoped</div>
-          </div>
-          <div class="arch-card at">
-            <div class="arch-card-title">Sovereign Dashboard <span class="live-badge">live</span></div>
-            <div class="arch-card-body">Self-sovereign individual tier<br/>Client-side keypair · free</div>
-          </div>
-          <div class="arch-card at">
-            <div class="arch-card-title">AT-ARS score <span class="live-badge">live</span></div>
-            <div class="arch-card-body">5-band trust score (0–100)<br/>Authorization proof + counterparty + org<br/>+ recency + volume signals</div>
-          </div>
-          <div class="arch-card at">
-            <div class="arch-card-title">Magic-link authorization <span class="live-badge">live</span></div>
-            <div class="arch-card-body">Soft-reject remediation<br/>One-tap human approval<br/>JWT · 15-min single-use</div>
-          </div>
-          <div class="arch-card at">
-            <div class="arch-card-title">Delegation policy engine <span class="live-badge">live</span></div>
-            <div class="arch-card-body">Multi-rail prioritization<br/>Per-tx + per-month caps<br/>Escalation thresholds</div>
-          </div>
-          <div class="arch-card at">
-            <div class="arch-card-title">Bilateral handshake <span class="new-badge-card">new</span></div>
-            <div class="arch-card-body">Sender + recipient prove DIDs<br/>before settlement<br/>Chargeback-resistant authorization proof</div>
-          </div>
-          <div class="arch-card at">
-            <div class="arch-card-title">Sandbox tier <span class="live-badge">live</span></div>
-            <div class="arch-card-body">sandbox.observerprotocol.org<br/>Fixtures · deterministic<br/>SDK + integration testing</div>
-          </div>
-          <div class="arch-card at">
-            <div class="arch-card-title">Remediation config</div>
-            <div class="arch-card-body">Partner-configurable options<br/>Endpoints · ordering · criteria</div>
-          </div>
-          <div class="arch-card at">
-            <div class="arch-card-title">PostgreSQL store</div>
-            <div class="arch-card-body">agentic_terminal_db<br/>verified_agents · events</div>
+          <div class="arch-col-header" style="opacity:0.65;">Terminal · not ours</div>
+          <div class="arch-card identity" style="border-color:#166534; background:#4ade8011;">
+            <div class="arch-card-title" style="color:var(--green);">04 · Attestation → 05 · Verification</div>
+            <div class="arch-card-body">Verified offline, against<br/>public keys, <strong>with nothing<br/>from us in the path</strong>.<br/>Reached by the counterparty,<br/>the examiner, the auditor.</div>
           </div>
         </div>
+
       </div>
 
-      <!-- WALLET STANDARDS -->
-      <div id="wallet-standards" class="arch-section-label">Wallet Abstractions · Multi-Rail Provisioning</div>
-      <div class="arch-foundations">
-        <div class="foundation-block">
-          <div class="foundation-title">Tether WDK · Wallet Development Kit <span class="live-badge">wdk-op-policy · PR #55 · live</span></div>
-          <div class="foundation-body">Native enforcement on WDK's local transaction policy engine (PR #55, now merged). <strong>@observer-protocol/wdk-op-policy</strong> registers an ALLOW plus a mandatory, fail-closed DENY on the #55 hook: it verifies a signed delegation against the raw transaction and denies an out-of-mandate spend inside the policy engine, so the transfer is never invoked. It then issues a portable, independently verifiable PolicyEvaluationCredential. The identity and Lightning modules (<strong>@observer-protocol/wdk-protocol-trust</strong>, <strong>@observer-protocol/wdk-lightning-verifier</strong>) add the bilateral trust handshake, ERC-8004 anchoring, and chargeback-resistant authorization proofs alongside it. Live demo at observerprotocol.org/wdk.</div>
-        </div>
-        <div class="foundation-block">
-          <div class="foundation-title">OWS · Open Wallet Standard <span class="live-badge">live</span></div>
-          <div class="foundation-body">BIP-44-derived multi-chain agent vaults (EVM · Solana · Bitcoin). One vault, one identity, portable reputation. OWS-provisioned agents register on OP via the canonical SDK and inherit the full Observer Protocol trust surface.</div>
-        </div>
-        <div class="foundation-block">
-          <div class="foundation-title">MPP / Tempo · Machine Payments Protocol <span class="live-badge">mppx-op-account live</span></div>
-          <div class="foundation-body"><strong>@observer-protocol/mppx-op-account</strong> is a drop-in viem account for MPP/Tempo (mppx) that verifies a signed, revocable delegation against every session escrow and voucher at the signing boundary, fail-closed: per-transaction ceiling, counterparty, temporal window, cross-session velocity. Composes with mppx unchanged, no core change. Same vendored core as the WDK and OWS engines.</div>
-        </div>
-        <div class="foundation-block">
-          <div class="foundation-title">Jan3 Aqua · Bitcoin / Liquid <span class="live-badge">live demo</span></div>
-          <div class="foundation-body">Demonstrated in an instrumented build of Jan3's Aqua wallet on Liquid, not in shipped Aqua. The build calls Observer Protocol's policy sidecar before signing: the evaluator checks the proposed transaction against a signed spending delegation and returns a signed decision, fail-closed. The "Free Your Agent" demo runs it end to end on Liquid testnet, signed against the protocol's published DIDs (observerprotocol.org/free-your-agent).</div>
-        </div>
-      </div>
+      <!-- ==========================================================================
+           REVIEWER: THE DECISION ATTESTATION IS DRAWN BELOW THE SPINE ON PURPOSE.
 
-      <!-- FOUNDATIONS -->
-      <div class="arch-section-label">Cross-Cutting Foundations</div>
-      <div class="arch-foundations">
-        <div class="foundation-block">
-          <div class="foundation-title">secp256k1 / Ed25519 · Cryptographic primitives</div>
-          <div class="foundation-body">All signing, verification, and proof generation. Rail-agnostic. Censorship-resistant.</div>
-        </div>
-        <div class="foundation-block">
-          <div class="foundation-title">Bilateral trust handshake · A2A verification</div>
-          <div class="foundation-body">Both parties verify before any transaction settles. First verified A2A tx: Lightning mainnet · Feb 22, 2026.</div>
-        </div>
-        <div class="foundation-block">
-          <div class="foundation-title">Open protocol · Rail-agnostic · Mainnet DIDs live</div>
-          <div class="foundation-body">OP = open identity foundation. AT = enterprise complement. AIP = behavioral spec above VAC layer.</div>
+           Do not "fix" it by moving it onto the spine between evaluation and
+           verification. A determination is an INPUT the mandate may require, not
+           a step Observer Protocol performs. Putting it on the spine would place
+           us in the decision path in the picture while the prose says we are not
+           — the same failure as routing verification's inbound arrow through our
+           column.
+
+           The caption below exists to answer a reader who reads subordination out
+           of the position. Keep it with the box.
+           ========================================================================== -->
+      <div style="max-width:520px; margin:1.5rem auto 0; border:1px dashed var(--border); padding:1.25rem 1.5rem;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-faint); margin-bottom:0.5rem;">Cited by the mandate · separate party</div>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:var(--text); margin-bottom:0.4rem;">Decision attestation</div>
+        <div style="font-size:0.82rem; color:var(--text-dim); line-height:1.75; font-weight:300;">
+          Drawn below the spine rather than on it, deliberately. <strong>A determination is an input the mandate may require, not a step Observer Protocol performs.</strong> Placing it on the spine would put us in the decision path in the picture while this page says we are not.
         </div>
       </div>
 
       <div class="arch-footer">
-        Observer Protocol is open infrastructure · Agentic Terminal is the enterprise service layer<br/>
-        observerprotocol.org · agenticterminal.io · AIP v0.8 draft-1
         <div class="arch-legend">
-          <div class="legend-item"><div class="legend-dot" style="background:#4ade80"></div>Rails + DID live</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#7eb8f7"></div>OP protocol core</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#5eead4"></div>AIP v0.8 draft-1</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#a78bfa"></div>AT enterprise layer</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#888"></div>Crypto foundations</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#888"></div>Inputs and terminals · outside Observer Protocol</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#7eb8f7"></div>Observer Protocol</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f5a623"></div>The refusal branch</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#4ade80"></div>Reached without us</div>
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- THE DECISION LAYER -->
+<section style="background: var(--bg2); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">The decision layer</div>
+    <h2>What was decided, by whom, and against what.</h2>
+
+    <!-- ==========================================================================
+         REVIEWER: THE SENTENCE BEGINNING "A system that both made the
+         determination" IS THE LOAD-BEARING ONE IN THIS SECTION. IT MUST SURVIVE
+         ANY SHORTENING.
+
+         It is the reason the decider is a separate party rather than a component
+         we run. Without it, "the decider is separate" reads as an implementation
+         detail a customer might ask us to waive. With it, the separation is a
+         property of what an attestation is worth. Cut anything else in this
+         section first.
+         ========================================================================== -->
+
+    <p class="section-intro" style="max-width:760px;">
+      Some actions are permitted only if a determination was made first — a claim was assessed, a threshold was met, a case
+      was decided. Observer Protocol records <strong>that</strong> such a determination was made, by whom, and against what.
+      <strong>It never interprets the policy that produced it.</strong>
+    </p>
+    <p class="section-intro" style="max-width:760px;">
+      <strong>The decider is a separate party, not a component we run on your behalf.</strong> It is separately constituted
+      and separately keyed; it attests its own determinations; and Observer Protocol's role is to carry that attestation and
+      to refuse an action that cites one it cannot check. We do not make determinations, do not review them, and hold no key
+      that could produce one. <strong>A system that both made the determination and sold assurance over it would be
+      attesting to its own work.</strong>
+    </p>
+
+    <div style="border:1px solid var(--border); background:var(--bg); padding:1.75rem; margin-top:1rem; max-width:760px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:0.62rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--amber); margin-bottom:1rem;">A decision attestation carries</div>
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--text-dim); line-height:2.1;">
+        <div>policy reference, and its content hash</div>
+        <div>a digest of the inputs it ran over</div>
+        <div>the outcome</div>
+        <div>the decider, kept separate from the issuer of the mandate</div>
+        <div>assurance level &mdash; <code>self-declared</code> or <code>independently-observed</code></div>
+        <div>the signed approval, where escalation occurred</div>
+      </div>
+    </div>
+
+    <div style="border-left:2px solid #7f1d1d; background:var(--bg); padding:1.5rem 1.75rem; margin-top:1.5rem; max-width:760px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:#f87171; margin-bottom:0.75rem;">What is not there yet</div>
+      <p style="font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300;">
+        There is <strong>no published schema for a <code>PolicyEvaluationCredential</code> and no verifier path for the
+        type</strong> — not in the published engine, not in the hosted service, not in the schema set. The shape is
+        specified and implemented; verifying one is not something a reader can do today.
+        <code>delegation/v2.7.json</code>, published 8 August 2026, carries <code>requiresDecisionAttestation</code>.
+        <strong>A published schema is not a verifier.</strong>
+        <a href="/verify.html" style="color:var(--amber);">The full disclosure &rarr;</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ENFORCEMENT ACROSS FOREIGN RUNTIMES -->
+<section style="background: var(--bg); border-bottom: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">Wallet integrations</div>
+    <h2>Not the product. The evidence.</h2>
+    <p class="section-intro" style="max-width:760px;">
+      WDK, Aqua, OWS and MPP are not what Observer Protocol sells. They are the evidence that
+      <strong>enforcement at a signing boundary works across independent stacks we do not control</strong>: four wallet
+      architectures, four teams, one mandate format, the same fail-closed refusal. <strong>A control that only works in
+      its author's runtime is a demonstration; one that survives four foreign runtimes is a property of the design.</strong>
+    </p>
+    <p style="font-size:0.86rem; color:var(--text-faint); line-height:1.8; font-weight:300; max-width:760px; font-family:'IBM Plex Mono',monospace;">
+      Limits travel with them: the Aqua hook runs in an instrumented build and is not in shipped Aqua.
+    </p>
   </div>
 </section>
 
@@ -632,9 +592,9 @@
       </div>
       <div class="layer-card">
         <div class="layer-num">LAYER 04</div>
-        <h3>Agent Interaction Protocol (AIP)</h3>
+        <h3>Agentic Identity Protocol (AIP)</h3>
         <div class="layer-tag">Behavioral governance · Delegation · Remediation</div>
-        <p>AIP governs how agents interact, not just who they are. It defines delegation credentials (org → agent signed scopes), bilateral attestation, remediation flows when trust thresholds aren't met, a type registry for counterparty classification, and, added in v0.7 / v0.8, trading-mandate and spending-mandate surfaces with a cryptographically-bound <code>PolicyEvaluationCredential</code> verdict envelope. AIP v0.8 draft-1 is the current canonical draft; v0.5 / v0.6 / v0.7 remain published as immutable historical drafts. It sits above the VAC layer, adding behavioral governance to cryptographic identity.</p>
+        <p>AIP governs how agents interact, not just who they are. It defines delegation credentials (org → agent signed scopes), bilateral attestation, remediation flows when a request falls outside its mandate, a type registry for counterparty classification, and, added in v0.7 and v0.8, trading-mandate and spending-mandate surfaces with a cryptographically-bound <code>PolicyEvaluationCredential</code> verdict envelope. AIP v0.9 is the current canonical draft; v0.5 / v0.6 / v0.7 remain published as immutable historical drafts. It sits above the VAC layer, adding behavioral governance to cryptographic identity.</p>
         <div class="layer-items">
           <div class="layer-item new">Delegation credentials · new</div>
           <div class="layer-item new">Remediation envelope · new</div>
@@ -650,7 +610,7 @@
 <!-- AIP DEEP DIVE -->
 <section class="aip-section">
   <div class="section-inner">
-    <div class="section-label">Agent Interaction Protocol · AIP v0.8 draft-1</div>
+    <div class="section-label">Agentic Identity Protocol · AIP v0.9</div>
     <h2>Behavioral governance for the agent economy.</h2>
     <div class="aip-grid">
       <div>
@@ -658,9 +618,9 @@
           Identity tells you who an agent is. AIP governs what an agent is permitted to do, how it must behave when interacting with other agents, and what happens when trust breaks down.
         </p>
         <p style="font-size: 0.9rem; color: var(--text-dim); line-height: 1.8; font-weight: 300; margin-bottom: 1.5rem;">
-          AIP v0.8 draft-1 is the current canonical spec, published in observer-protocol/aip alongside its v0.5 / v0.6 / v0.7 predecessors (each frozen as an immutable historical draft per the schema immutability policy). The current draft adds the spending-mandate vocabulary, the <code>PolicyEvaluationCredential</code> verdict envelope, and the reserved-advisory fields used by the v0.2.0 WDK adapter. AIP sits above the VAC layer: credentials establish identity, AIP governs interaction.
+          AIP v0.9 is the current canonical spec — ratified 25 July 2026 and tagged v0.9 — published in observer-protocol/aip alongside its v0.6 / v0.7 / v0.8 predecessors (each frozen as an immutable historical draft per the schema immutability policy). The current draft adds the spending-mandate vocabulary, the <code>PolicyEvaluationCredential</code> verdict envelope, and the reserved-advisory fields used by the v0.2.0 WDK adapter. AIP sits above the VAC layer: credentials establish identity, AIP governs interaction.
         </p>
-        <a href="https://github.com/observer-protocol/aip/blob/main/aip-v0.8-draft-1.md" style="font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--amber); text-decoration: none; letter-spacing: 0.06em;">Read AIP v0.8 draft-1 on GitHub →</a>
+        <a href="https://github.com/observer-protocol/aip/blob/main/aip-v0.9-worldid-linking.md" style="font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--amber); text-decoration: none; letter-spacing: 0.06em;">Read AIP v0.9 on GitHub →</a>
       </div>
       <div class="aip-primitives">
         <div class="aip-primitive">
@@ -674,7 +634,7 @@
           <div class="aip-primitive-icon">NEW</div>
           <div>
             <h4>Remediation Flow</h4>
-            <p>When an agent fails a trust threshold check, AIP defines the remediation envelope: a minimal protocol that triggers the appropriate response. AT owns the option content; OP owns the envelope structure.</p>
+            <p>When a request falls outside its mandate, AIP defines the remediation envelope: a minimal protocol that triggers the appropriate response. AT owns the option content; OP owns the envelope structure.</p>
           </div>
         </div>
         <div class="aip-primitive">
