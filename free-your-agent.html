@@ -557,9 +557,27 @@
     </figure>
 
     <p>
-      Here is the signed credential: the structured proof of Boyd's
-      authorization, ready to be inspected, verified against the published DID,
-      or fed into any system that respects the protocol:
+      Here is the credential exactly as it was issued on 27 May 2026 &mdash; the structured record of
+      Boyd's authorization, reproduced unaltered because that is what makes it a record:
+    </p>
+
+    <p style="border-left:3px solid #6b5210; background:#2a1f0a; padding:0.9rem 1.1rem;">
+      <strong>It will not verify today, and this page used to invite you to try.</strong> Measured
+      against the published engine on 9 August 2026, it is refused three times over, each gate hiding
+      the next:
+      <br><br>
+      <code>@observer-protocol/policy-engine</code> returns
+      <code>allow: false &mdash; [schema] structure: issuer must be a DID string</code>. This
+      credential carries <code>issuer</code> as an object, which the pre-v2 shape allowed and the
+      current schemas do not. Behind that, it carries no <code>credentialSchema</code>, so no v2.x
+      schema applies. Behind <em>that</em>, <code>validUntil</code> was 26 June 2026, so the validity
+      window has been closed for six weeks. Its <code>@context</code> of
+      <code>contexts/delegation/v1</code> does not resolve either.
+      <br><br>
+      Not corrected, because correcting it would make it a different document. An expired credential
+      in a superseded shape is the honest artifact of a demo run in May, and
+      <a href="/verify.html">the verification page</a> publishes two credentials specifically because
+      they must fail. What was wrong here was the invitation, not the credential.
     </p>
 
     <div class="codeblock collapsed" id="cred">
@@ -684,7 +702,7 @@
       <a href="https://blockstream.info/liquidtestnet/tx/65bd2a9b55f42fa26997a332aa4616df80a636d43c1edeae3ff370eca1323ace"
          target="_blank" rel="noopener">65bd2a9b55f42fa26997a332aa4616df80a636d43c1edeae3ff370eca1323ace ↗</a>
       <div class="txid-callout-after">
-        No Observer Protocol infrastructure in the verification path. Just a public block explorer
+        <span data-shared-copy="offline-scope">No Observer Protocol infrastructure in the verification path.</span> Just a public block explorer
         confirming a real transaction with real (testnet) value moved between two real addresses.
       </div>
     </div>
@@ -740,8 +758,11 @@
     <p>
       Three bindings verified, twice. The signing key, the proposalHash, the
       delegationCredentialHash: all match against credentials returned from a
-      live public endpoint. Anyone can run this. Anyone can verify this. Nothing
-      in the trust path requires belief in Observer Protocol's infrastructure.
+      live public endpoint. Anyone can run this. Anyone can verify this.
+      <span data-shared-copy="offline-scope">Nothing in the trust path requires belief in Observer
+      Protocol's infrastructure</span> &mdash; the verifier reads the DID document from
+      observerprotocol.org over ordinary HTTPS, and hand it a local copy instead and it needs nothing
+      of ours at all.
     </p>
     <p>
       The deny credential, displayed at the bottom, is the artifact that makes
@@ -757,11 +778,19 @@
     <h2>What this proves</h2>
     <p>
       This demo isn't a mock. It isn't a video edit. It is signed artifacts
-      running through a live policy engine, gating a live Bitcoin-aligned
+      running through a live policy engine, gating a Bitcoin-aligned
       wallet on Liquid testnet, with every signature reproducible from public
-      DIDs and every transaction visible on public explorers.
+      DIDs and every transaction visible on public explorers &mdash; the settlement above is
+      confirmed on Liquid testnet at block 2,459,161.
     </p>
-    <p>The trust layer the agentic economy needs is not a roadmap. It is shipped, running, and open.</p>
+    <p>
+      <strong>Carry the caveat from Beat 2 up here, because it belongs in the summary and not only in
+      a caption:</strong> the policy hook is not in shipped Aqua. What was gated was an instrumented
+      build. The engine, the credentials and the signatures are real and reproducible; the wallet
+      integration is a demonstration, and a reader who installs Aqua today does not get this.
+    </p>
+    <p>The engine, the credentials and the published DIDs are shipped, running and open. The wallet
+      integration is not, and the roadmap below is where it lives.</p>
     <div class="proves-grid">
       <div class="proves-row">
         <div class="proves-row-name">Observer Protocol</div>
