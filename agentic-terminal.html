@@ -222,19 +222,19 @@
 <div class="page-header">
   <div class="page-header-inner">
     <div class="breadcrumb">OBSERVER PROTOCOL · <span>AGENTIC TERMINAL</span></div>
-    <div class="page-tag">Trust Intelligence Layer</div>
-    <h1>Agentic Terminal</h1>
+    <div class="page-tag">The Operating Surface</div>
+    <h1>The operating surface for delegated authority.</h1>
     <p class="page-sub">
-      The Identity &amp; Access Management (IAM) and intelligence layer built on Observer Protocol. Where cryptographic identity becomes actionable trust: for individuals managing their own agent credentials, and enterprises managing agent fleets at scale.
+      Observer Protocol is what refuses and what proves. Agentic Terminal is how an institution operates it: who may request authority, who may grant it, what they may grant, and what record that leaves. <strong>It runs inside your infrastructure. It never takes custody of funds or of credentials, and it is not in your payment path.</strong>
     </p>
     <div class="op-relation">
       <span class="op">Observer Protocol</span>
       <span class="sep">·</span>
-      <span>Open identity infrastructure</span>
+      <span>Open primitives</span>
       <span class="arrow">→</span>
       <span class="at">Agentic Terminal</span>
       <span class="sep">·</span>
-      <span>Intelligence layer on top</span>
+      <span>Operated surface</span>
     </div>
   </div>
 </div>
@@ -287,16 +287,15 @@
         </div>
         <div class="tier-card-body">
           <p class="tier-desc">
-            Agent-native IAM built crypto-native from the ground up, not retrofitted from human identity systems. Identity is a keypair, not a username. Trust is cryptographic proof, not a policy assertion. KYB linkage, delegation workflows, compliance audit trails, and trust score monitoring, all anchored to on-chain economic behavior.
+            Agent-native IAM built crypto-native from the ground up, not retrofitted from human identity systems. Identity is a keypair, not a username. Authority is a signature, not a role assignment. Issuance and approval as separate acts, entitlement separation, and audit export, all anchored to credentials the principal signed.
           </p>
           <ul class="tier-features">
-            <li>Agent fleet dashboard with trust scores</li>
+            <li>Agent fleet dashboard</li>
             <li>Delegation credential approval and revocation</li>
-            <li>KYB badge and legal entity linkage</li>
-            <li>Remediation configuration and monitoring</li>
+            <li>Entitlement and role separation</li>
+            <li>Escalation when a request falls outside its mandate</li>
             <li>Compliance audit trail</li>
-            <li>AT-ARS-1.0 reputation scoring (5-factor)</li>
-            <li>Org-scoped credential viewer</li>
+                        <li>Org-scoped credential viewer</li>
             <li class="pending">Multi-org hierarchy (coming)</li>
           </ul>
         </div>
@@ -353,7 +352,7 @@
           </div>
           <div>
             <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--amber); letter-spacing: 0.1em; margin-bottom: 0.4rem;">CRYPTO-NATIVE AT</div>
-            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text);">On-chain behavioral reputation</div>
+            <div style="font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text);">Authority granted by signature, not by role assignment</div>
           </div>
         </div>
         <div style="background: var(--bg2); padding: 1.25rem 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
@@ -387,38 +386,54 @@
     <div class="section-label">Capabilities</div>
     <h2>What Agentic Terminal does.</h2>
     <p class="section-intro">
-      AT reads the open protocol layer and adds the IAM, intelligence, workflow, and compliance capabilities that enterprises and developers need to actually deploy autonomous agents safely.
+      Observer Protocol issues the mandate, evaluates against it, refuses, and produces the record. Agentic Terminal is where an institution decides who may ask for authority, who may grant it, and what that leaves behind.
     </p>
     <div class="at-features">
       <div class="at-feature">
-        <div class="at-feature-tag">IDENTITY</div>
-        <h3>Know Your Agent (KYA)</h3>
-        <p>Links agent DIDs to legal entities via KYB credentials. Gives enterprises the compliance layer they need to delegate economic authority: knowing not just who an agent is cryptographically, but who it represents legally.</p>
+        <div class="at-feature-tag">01 · ISSUANCE</div>
+        <h3>Request and approve, as separate acts</h3>
+        <p>An agent, or the team running it, requests authority. <strong>A different party grants it.</strong> The request names what it needs; the approval says yes or no to exactly that. <strong>The approver cannot widen a request, cannot add a rail, cannot extend a window, and cannot raise a ceiling</strong> — those terms come from the request and the policy that bounds it, and an approver who could edit them would be setting the authority rather than approving it. What they can do is refuse.</p>
       </div>
       <div class="at-feature">
-        <div class="at-feature-tag">TRUST</div>
-        <h3>AT-ARS-1.0 Reputation Score</h3>
-        <p>A 5-factor weighted reputation formula built on 40+ longitudinal metrics from verified on-chain activity. Housed in AT, not OP, to preserve the open protocol's composability. The score is AT's proprietary interpretation of OP's open facts.</p>
+        <div class="at-feature-tag">02 · THE QUEUE</div>
+        <h3>Pending authority, and who it is waiting on</h3>
+        <p>Every outstanding request, what it asks for, who may act on it, and how long it has been waiting. A request that nobody is entitled to approve is visible as such rather than silently pending.</p>
       </div>
       <div class="at-feature">
-        <div class="at-feature-tag">DELEGATION</div>
-        <h3>Delegation Workflows</h3>
-        <p>Request, approve, and revoke AIP Delegation Credentials through a visual workflow. Set scopes, constraints, and expiry. Monitor the full delegation chain with eager verification: know at any moment whether your agent's authority is intact.</p>
+        <div class="at-feature-tag">03 · ENTITLEMENT</div>
+        <h3>Who may request, who may approve, and never both</h3>
+        <p>Roles are separated at the entitlement layer, not by convention. The same identity holding both rights on one request is the thing this model exists to prevent, and it is enforced rather than discouraged.</p>
+      </div>
+
+      <!-- ==========================================================================
+           REVIEWER: THIS TILE IS LONG ON PURPOSE. DO NOT SHORTEN IT BY CUTTING THE
+           SETTLEMENT SENTENCE.
+
+           It previously read "Every verified transaction, credential issuance,
+           delegation event, and remediation action is logged with cryptographic
+           proof." That implied TWO things that are not true: that Agentic Terminal
+           observes settlements, and that those settlements are verified. It is the
+           page an institutional reader lands on, so both implications were load-
+           bearing in the wrong direction.
+
+           If this tile must be shortened, the sentence beginning "This is a record
+           of authority decisions" is the one that has to survive. Cut anything else
+           first.
+           ========================================================================== -->
+      <div class="at-feature">
+        <div class="at-feature-tag">04 · AUDIT EXPORT</div>
+        <h3>The record, in a form you can hand to someone else</h3>
+        <p>Issuance, approval, refusal and revocation events, exportable and org-scoped. <strong>This is a record of authority decisions made in this surface. It is not a record of settlements</strong> — Agentic Terminal does not watch payment rails and cannot tell you what settled. Where a settlement attestation exists, it was produced at the enforcement point and travels with the counterparty, not through us.</p>
       </div>
       <div class="at-feature">
-        <div class="at-feature-tag">COMPLIANCE</div>
-        <h3>Audit Trail</h3>
-        <p>Every verified transaction, credential issuance, delegation event, and remediation action is logged with cryptographic proof. Exportable, org-scoped, and permanently timestamped. The audit trail that regulators and partners expect.</p>
+        <div class="at-feature-tag">05 · DEPLOYMENT</div>
+        <h3>Inside your perimeter, operated by your team or ours</h3>
+        <p>Deployed in the customer's infrastructure under either model. <strong>Under both, it holds no funds, no signing keys and no credentials</strong>: the enforcement point reads the mandate it enforces and holds no key that could issue, alter or re-sign one.</p>
       </div>
       <div class="at-feature">
-        <div class="at-feature-tag">REMEDIATION</div>
-        <h3>Remediation Configuration</h3>
-        <p>Configure how your deployment responds when an agent fails a trust threshold check. Set thresholds, remediation options, and escalation paths. AT owns the remediation content; AIP owns the envelope structure.</p>
-      </div>
-      <div class="at-feature">
-        <div class="at-feature-tag">INTELLIGENCE</div>
-        <h3>Longitudinal Behavioral Data</h3>
-        <p>The data flywheel that makes AT defensible over time. Every verified interaction contributes to behavioral patterns that accumulate with every verified transaction from day one and cannot be backfilled.</p>
+        <div class="at-feature-tag">06 · EVIDENCE OPERATIONS</div>
+        <h3>Making the artifacts usable by the people who need them</h3>
+        <p>Retrieving the mandate that governed an action, the decision recorded against it, and the refusal if there was one — in a form an auditor or a counterparty can check without our help. <strong>The verification itself needs nothing from us</strong>; this is the operational surface around it, not a substitute for it.</p>
       </div>
     </div>
   </div>
@@ -428,7 +443,7 @@
 <section style="background: var(--bg); border-bottom: 1px solid var(--border);">
   <div class="section-inner">
     <div class="section-label">OP + AT</div>
-    <h2>Open protocol. Proprietary intelligence.</h2>
+    <h2>Open primitives. Operated surface.</h2>
     <p class="section-intro">
       The distinction matters: for developers building on OP, for enterprises evaluating AT, and for understanding why the moat is real.
     </p>
@@ -448,14 +463,13 @@
       <div class="relation-arrow">→</div>
       <div class="relation-card at-card">
         <div class="relation-card-tag">Agentic Terminal</div>
-        <h3>Proprietary Intelligence</h3>
-        <p>AT reads the open protocol and adds interpretation, workflow, and intelligence that enterprises pay for. The behavioral data flywheel accumulates over time. That's the moat. OP is the foundation; AT is the business.</p>
+        <h3>Operated Surface</h3>
+        <p>AT is how an institution operates the protocol: who may request authority, who may grant it, and what record that leaves. The line between them is not open-versus-paid, it is primitive versus operation. <strong>If Agentic Terminal disappeared tomorrow, every credential it issued would still verify, because verifying them never involved it.</strong> OP is the foundation; AT is the business.</p>
         <div class="relation-items">
-          <div class="relation-item">AT-ARS-1.0 reputation score</div>
-          <div class="relation-item">Longitudinal behavioral data</div>
-          <div class="relation-item">Fleet management and delegation workflows</div>
-          <div class="relation-item">KYB linkage and compliance audit</div>
-          <div class="relation-item">Remediation configuration</div>
+                    <div class="relation-item">Request and approve as separate acts</div>
+          <div class="relation-item">The approvals queue</div>
+          <div class="relation-item">Entitlement separation and audit export</div>
+          <div class="relation-item">Evidence operations</div>
         </div>
       </div>
     </div>
