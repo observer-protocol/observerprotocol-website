@@ -1,0 +1,24 @@
+{
+  "$comment": [
+    "Sentences that must read identically wherever they appear.",
+    "",
+    "This is a CHECK, not a generator. There is no build step in this repository —",
+    "netlify.toml is `publish = \".\"` — so a generator would have to rewrite prose",
+    "inside two HTML files at commit time. That is a mechanism to trust. A check is a",
+    "mechanism to verify, and divergence is the failure that actually matters.",
+    "",
+    "Each entry is keyed by the value of a data-shared-copy attribute. Every element",
+    "carrying that attribute, in any HTML file, must contain every phrase listed.",
+    "A page that carries the attribute and drops a phrase fails the build; so does a",
+    "key that no page claims at all."
+  ],
+  "completeness": {
+    "why": "The supervisor page and the homepage register row must state the completeness problem in the same words. They are read by the same person in one sitting, and two phrasings of one unsolved problem reads as two different problems.",
+    "mustAppearIn": ["index.html", "supervisors.html"],
+    "phrases": [
+      "A firm can hand over a hundred clean determinations and withhold the hundred-and-first, and all hundred verify.",
+      "The cryptography for transparency logs is solved.",
+      "who runs the log, who is obliged to publish to it, what a gap in it legally means, and how a firm demonstrates completeness without exposing commercially sensitive volume."
+    ]
+  }
+}

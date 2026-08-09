@@ -19,6 +19,8 @@ on:
       - 'scripts/package.json'
       - 'scripts/package-lock.json'
       - 'scripts/sync-engine-version.mjs'
+      - 'scripts/check-shared-copy.mjs'
+      - 'scripts/shared-copy.json'
       - '**/*.html'
       - '.github/workflows/verify-published-artifacts.yml'
   pull_request:
@@ -49,3 +51,5 @@ jobs:
         run: node ./verify-published-credentials.mjs
       - name: Engine version on the site matches the lockfile
         run: node ./sync-engine-version.mjs --check
+      - name: Shared copy has not diverged between pages
+        run: node ./check-shared-copy.mjs
