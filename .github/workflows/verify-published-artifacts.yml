@@ -49,7 +49,7 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - name: Verify every published credential
         run: node ./verify-published-credentials.mjs
-      - name: Engine version on the site matches the lockfile
+      - name: Engine version matches the lockfile AND what npm serves a reader
         run: node ./sync-engine-version.mjs --check
       - name: Shared copy has not diverged between pages
         run: node ./check-shared-copy.mjs

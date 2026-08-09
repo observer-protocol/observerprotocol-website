@@ -25,6 +25,22 @@
  *
  *   node scripts/sync-engine-version.mjs           rewrite the current markers
  *   node scripts/sync-engine-version.mjs --check   fail if anything is out of sync
+ *
+ * TWO comparisons, and they establish DIFFERENT things. Until 2026-08-09 this file made
+ * only the first and reported it as though it were the second:
+ *
+ *   site  <-> scripts/package-lock.json   "our documents agree with each other"
+ *   site  <-> npm's `latest` dist-tag     "our documents agree with what a reader gets"
+ *
+ * The first is satisfiable by a consistently wrong pair. On 2026-08-09 the site said
+ * rc.6, the lockfile said rc.6, this check passed, and npm had been serving rc.10 for
+ * some time — so every reader running the install line on our own homepage received a
+ * package four releases from the one the site documents, and nothing here could notice,
+ * because the lockfile is not the reader.
+ *
+ * The registry comparison is skipped, not failed, when the network is unavailable, and
+ * says so. A check that cannot reach its subject must report that it did not look,
+ * rather than passing.
  */
 
 import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
@@ -81,7 +97,20 @@ for (const file of htmlFiles) {
   if (!check && out !== src) writeFileSync(file, out);
 }
 
-console.log(`locked version (scripts/package-lock.json): ${locked}\n`);
+// THE THIRD TERM. The lockfile says what we install; this says what a reader installs.
+let published = null;
+let publishedErr = null;
+try {
+  const { execFileSync } = await import('node:child_process');
+  published = execFileSync('npm', ['view', PKG, 'dist-tags.latest'], {
+    encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 20000,
+  }).trim();
+} catch (e) {
+  publishedErr = e.message;
+}
+
+console.log(`locked version   (scripts/package-lock.json): ${locked}`);
+console.log(`published latest (npm dist-tag)             : ${published ?? 'NOT CHECKED'}\n`);
 
 if (unmarked.length) {
   console.error('UNMARKED engine version string(s):');
@@ -99,8 +128,31 @@ if (check) {
     for (const s of stale) console.error(`  ${s}`);
     console.error('\n  Run: node scripts/sync-engine-version.mjs');
   }
-  if (stale.length || unmarked.length) process.exit(1);
-  console.log('Every current marker matches the lockfile, and no version string is unmarked.');
+  let drift = false;
+  if (published && published !== locked) {
+    drift = true;
+    console.error(`DRIFT — the site documents ${locked}, npm serves ${published}.`);
+    console.error(
+      '\n  This is the comparison the lockfile cannot make. The site and the lockfile can\n' +
+      '  agree with each other while both disagree with what a reader receives from\n' +
+      `  \`npm install ${PKG}\`.\n` +
+      '\n  Re-verify the published credential expectations against the new version FIRST,\n' +
+      '  then bump: cd scripts && npm install ' + PKG + '@^' + published + '\n' +
+      '  and re-run node scripts/verify-published-credentials.mjs before the bump lands.\n' +
+      '  If any verdict moves, that is a finding about the engine, not about the site.'
+    );
+  }
+  if (stale.length || unmarked.length || drift) process.exit(1);
+  if (published) {
+    console.log(`Site, lockfile and npm's published latest all agree on ${locked}, and no`);
+    console.log('version string is unmarked. Both comparisons made: our documents agree with');
+    console.log("each other, AND they agree with what a reader installing today receives.");
+  } else {
+    console.log('Every current marker matches the lockfile, and no version string is unmarked.');
+    console.log(`NOT CHECKED: npm's published latest (${publishedErr ? publishedErr.split('\n')[0] : 'no network'}).`);
+    console.log('That second comparison is the one that establishes currency, so this run');
+    console.log('proves internal consistency ONLY.');
+  }
 } else {
   if (unmarked.length) process.exit(1);
   console.log(changed.length ? `Updated ${changed.length} marker(s):` : 'Nothing to update.');
