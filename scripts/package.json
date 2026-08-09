@@ -7,6 +7,6 @@
     "verify:credentials": "node ./verify-published-credentials.mjs"
   },
   "dependencies": {
-    "@observer-protocol/policy-engine": "^1.0.0-rc.5"
+    "@observer-protocol/policy-engine": "^1.0.0-rc.10"
   }
 }

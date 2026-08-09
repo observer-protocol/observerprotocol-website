@@ -218,7 +218,7 @@
       </a>
       <a href="https://github.com/observer-protocol/op-policy-engine" target="_blank" class="qs-card">
         <div class="qs-icon">📦</div>
-        <div class="qs-tag">NPM INSTALL · v<span data-engine-version="current">1.0.0-rc.6</span></div>
+        <div class="qs-tag">NPM INSTALL · v<span data-engine-version="current">1.0.0-rc.10</span></div>
         <div class="qs-name">Verify a credential</div>
         <div class="qs-meta">npm install @observer-protocol/policy-engine</div>
         <div class="qs-desc" data-shared-copy="offline-scope">Verify a delegation credential yourself — issuer, structure, validity window, eddsa-jcs-2022 proof against the issuer DID document, and revocation. No API key, no token, no Observer Protocol API in the path. It fetches the issuer's DID document and the revocation status list over ordinary HTTPS from the origins the credential names; point <code>offline.didDocumentPath</code> at a local copy and it makes no network call at all. The hosted verifier is a separate deployment running a different engine version; see the SDK section.</div>
@@ -399,9 +399,11 @@ npm install @observer-protocol/policy-engine
           unauthenticated <code>POST /v1/verify</code> returns 200 with a signed result.
           <br><br>
           It is a <em>different build</em>, though. The hosted service reports
-          <code>engine.running: "0.3.3"</code>; the package above is <code><span data-engine-version="current">1.0.0-rc.6</span></code>. They
-          agreed on every artifact tested, including exact reason strings, but that is agreement on
-          samples rather than a shared code path. Tracked as
+          <code>engine.running: "0.3.3"</code>; the package above is <code><span data-engine-version="current">1.0.0-rc.10</span></code>. Re-measured against
+          rc.10 on 9 August 2026: they agree on 7 of the 8 artifacts this site publishes. The eighth is
+          never evaluated by the hosted engine at all &mdash; it is refused at that deployment's issuer
+          allowlist, which does not carry the testbed issuer. So the agreement is on samples rather
+          than a shared code path, and it is one sample narrower than the sample set. Tracked as
           <a href="https://github.com/observer-protocol/op-verify-service/issues/1" target="_blank" rel="noopener" style="color:var(--amber);">op-verify-service#1</a>;
           this notice comes off when it lands. Where they disagree, the published package is
           authoritative.</div>
