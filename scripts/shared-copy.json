@@ -67,7 +67,7 @@
   },
   "$requiresDisclosure": {
     "deprecated-sdk": {
-      "why": "A page may name a deprecated package — there is no replacement for the register/attest flows, so instructing it is sometimes correct. What is never correct is instructing it SILENTLY. On 2026-08-09 four pages disclosed the deprecation and four did not, and the four that did not included the integration guide end to end, under the heading 'Ship chargeback prevention today'. This is not a $forbidden stem: the package name is allowed, the omission is not. Verified at the registry, not from our own copy: npm carries the deprecation notice on the package, and PyPI's newest observer-protocol is 0.2.0 from 2026-04-30.",
+      "why": "A page may name a deprecated package \u2014 there is no replacement for the register/attest flows, so instructing it is sometimes correct. What is never correct is instructing it SILENTLY. On 2026-08-09 four pages disclosed the deprecation and four did not, and the four that did not included the integration guide end to end, under the heading 'Ship chargeback prevention today'. This is not a $forbidden stem: the package name is allowed, the omission is not. Verified at the registry, not from our own copy: npm carries the deprecation notice on the package, and PyPI's newest observer-protocol is 0.2.0 from 2026-04-30.",
       "stems": [
         "@observer-protocol/sdk",
         "@observerprotocol/sdk",
@@ -76,8 +76,8 @@
       "mustAlsoContain": [
         "deprecat"
       ],
-      "note": "mustAlsoContain is matched case-insensitively anywhere in the same FILE, not the same element: a page-level notice covers every mention on that page, which is how the four disclosing pages already do it. Stem, not phrase — 'deprecat' catches deprecated/deprecation/deprecates, because the last three vocabulary misses on this site were all a matcher that knew one spelling of its subject."
-      }
+      "note": "mustAlsoContain is matched case-insensitively anywhere in the same FILE, not the same element: a page-level notice covers every mention on that page, which is how the four disclosing pages already do it. Stem, not phrase \u2014 'deprecat' catches deprecated/deprecation/deprecates, because the last three vocabulary misses on this site were all a matcher that knew one spelling of its subject."
+    }
   },
   "$forbidden": {
     "reputation-model": {
@@ -123,12 +123,12 @@
         {
           "file": "papers/technical-paper.html",
           "contains": "",
-          "why": "A dated paper carrying an editor's note. Dated documents are annotated, not rewritten, so its historical use of the model stands."
+          "why": "Dated paper, 17 March 2026. Annotated rather than rewritten. The editor's note now covers BOTH retired claims: the 'verified transactions' predicate AND the reputation model. It covered only the first until 2026-08-09, so this exemption was granted for an annotation that did not mention the stem it exempts. A note that exists makes a note that is incomplete harder to see."
         },
         {
           "file": "papers/positioning-paper.html",
           "contains": "",
-          "why": "Same: a dated document. Annotate, do not rewrite."
+          "why": "Dated paper, 17 March 2026. Annotated rather than rewritten. NOTE: this file carried NO editor's note at all until 2026-08-09, while this entry already claimed one as its reason. An allowlist reason that describes a control which does not exist is indistinguishable from a real exception. The note now exists and names the reputation model specifically."
         }
       ],
       "stemNote": "Stems match at a WORD BOUNDARY, not as substrings: 'discord' contains 'scor' and is not a reputation claim. Anchoring removed that false positive rather than allowlisting it."
