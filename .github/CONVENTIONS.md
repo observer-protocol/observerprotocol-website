@@ -131,6 +131,59 @@ at the words. After sweeping the term, ask what else has the same shape.
 
 Re-run the sweep at the end and paste the empty result. Do not conclude from the last page you touched.
 
+## 2b. The measured test: name the check, or it is not measured
+
+**Any claim whose justification cannot be reduced to *"this check runs, and here is what it reads"* is
+not measured, whatever the column says.**
+
+Found by demoting a row on `supervisors.html`. Four claims were marked YES under a heading reading
+*measured*. Three named a check that runs:
+
+- a signature verifies against a resolved key
+- a DID document resolves over HTTPS
+- a field is read directly from the signed document
+
+The fourth — *"the authority was granted before the action, not reconstructed after it"* — justified
+itself with an **argument**: *"a mandate backdated to cover an action would have to be re-signed,
+which changes the signature."* True, and it establishes nothing. Re-signing a backdated document
+produces a valid signature over a backdated document. **Nothing in these artifacts binds a signature
+to a wall-clock moment.** An issuer holding the key mints a mandate today with `validFrom` last March
+and every check on the page goes green.
+
+It is now a NO that names the missing mechanism: an external timestamping authority, or an anchor
+binding the signature to a time nobody in the transaction controls.
+
+### Applying it
+
+For every ✓, YES, badge, pill or *measured* label on the site, ask: **which check runs, and what does
+it read?** If the answer is a chain of reasoning rather than an operation, the mark is wrong.
+
+**Do not convert a failing claim into YES-with-a-limit.** A qualification that empties the claim is
+the same defect wearing a caveat — a reader scanning the column sees the mark, not the paragraph. If
+the honest content is that nothing is established, the mark is NO.
+
+**Name what would close it.** A NO that only says no reads as evasion; a NO that names the missing
+mechanism reads as an engineering gap someone could close, and is checkable against the day it
+arrives.
+
+## 2c. Narrowing a sentence is not narrowing a claim
+
+When a claim needs a limit, the limit belongs in **the section a reader acts on**, stated in full, not
+referenced from elsewhere.
+
+Homepage §03 was narrowed to say the offline set is delegation credentials and excludes the refusal
+record. §05 — *Verify it yourself*, where a reader actually runs something — still said *"you do not
+need our cooperation to check our work"* with no limit at all. The conjunction survived the fix,
+because the fix was applied to the sentence that was wrong rather than to the claim the page makes.
+
+The same shape appears as **the promise preceding the exception**: `verify.html`'s H1 read *"You have
+a record. Here is how to check it"* while the page can only check delegation credentials, with the
+exception disclosed further down. Narrowed to *"You have a delegation credential"*, and the caveat
+moved above the instructions.
+
+**A cross-reference is not a limit.** A reader in the section that promises does not scroll to the
+section that qualifies.
+
 ## 3. Adding a non-web file makes it public
 
 `publish = "."`. A new `.md`, `.sh`, `.csv` or `.py` at the root is served the moment it merges, and
