@@ -74,7 +74,7 @@
 
   <h2>What you get</h2>
 
-  <p>Observer Protocol adds one artifact to every agent transaction on your infrastructure: a cryptographically signed authorization proof that shows the purchase was within a valid delegation's scope. The authorization proof is independently verifiable by any third party. No runtime dependency on OP or your backend.</p>
+  <p>Observer Protocol adds one artifact to every agent transaction on your infrastructure: a cryptographically signed authorization proof that shows the purchase was within a valid delegation's scope. <span data-shared-copy="offline-scope">The authorization proof is independently verifiable by any third party: no API key, and no Observer Protocol API in the path. Verifying it fetches the issuer's DID document over ordinary HTTPS, or nothing at all if you supply that document yourself.</span></p>
 
   <ul>
     <li>Cryptographic delegation credentials (W3C Verifiable Credentials)</li>
@@ -93,6 +93,15 @@
   <!-- STEP 1 -->
   <div class="step">
     <div class="step-num">Step 1 - Install the SDK</div>
+    <p style="border-left:3px solid #6b5210; background:#2a1f0a; padding:0.9rem 1.1rem; margin:0 0 1rem;">
+      <strong>Deprecated, and this guide has not been rewritten off it.</strong>
+      <code>@observer-protocol/sdk</code> and the PyPI package <code>observer-protocol</code> were
+      last released in April 2026, are unmaintained, and carry a deprecation notice on the registry
+      itself. Everything below still installs and still runs. For <em>verifying</em> a credential use
+      <code>@observer-protocol/policy-engine</code> instead; for the register/attest flows in Steps 2
+      and 3 there is no replacement package yet, which is why this page still names the old one. See
+      <a href="/sdk.html">the SDK page</a> for what replaces which part.
+    </p>
     <h3>TypeScript</h3>
     <pre>npm install @observer-protocol/sdk</pre>
 
@@ -178,7 +187,7 @@ assert result.verification.onchain_verified  # True</pre>
   <div class="step">
     <div class="step-num">Step 4 - Verify authorization proofs (any third party can do this)</div>
 
-    <p>Verification requires only the authorization-proof JSON and the issuer's published public key. No API key. No runtime dependency on OP.</p>
+    <p data-shared-copy="offline-scope">Verification requires only the authorization-proof JSON and the issuer's published public key. No API key, no token, no Observer Protocol API in the path. Note that <code>resolve_did</code> below fetches the issuer's DID document over ordinary HTTPS from the origin the credential names &mdash; supply the document yourself and it makes no network call at all.</p>
 
     <pre>from observer_protocol import verify_receipt, resolve_did
 
@@ -186,7 +195,7 @@ issuer_key = resolve_did(receipt_json['issuer']['id'])
 result = verify_receipt(receipt_json, issuer_key)
 assert result.valid  # cryptographic proof verified</pre>
 
-    <p>Four lines. No API key. No runtime dependency on OP or the counterparty. Any third party can verify.</p>
+    <p>Four lines, no API key, and nothing either OP or the counterparty can withhold to stop it verifying. Any third party can verify.</p>
   </div>
 
   <!-- PROOF -->

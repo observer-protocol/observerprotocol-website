@@ -81,7 +81,7 @@
 
   <p>OP Crossrail is a buyer-side enforcement layer for agent payments: one signed, portable mandate, enforced natively at each rail's own boundary, before the payment exists.</p>
 
-  <p>Here is the launch demo, committed as a transcript in the repo. A principal signs one delegation: $5.00 per rolling 24 hours, across every rail the agent operates on. Conversion rates are attested inside the credential itself, no oracle, no runtime dependency on us. Then the agent goes shopping.</p>
+  <p>Here is the launch demo, committed as a transcript in the repo. A principal signs one delegation: $5.00 per rolling 24 hours, across every rail the agent operates on. <span data-shared-copy="offline-scope">Conversion rates are attested inside the credential itself, no oracle, no runtime dependency on us.</span> Then the agent goes shopping.</p>
 
   <p>It buys an API call from a seller running Cloudflare's x402-proxy-template, unmodified, exactly as Cloudflare ships it: 402, sign, pay, 200. It runs a 5,940-sat L402 invoice through the engine's pre-payment hook, called in-process on a synthetic invoice: no LND node, and the engine ships no payment path. It moves 2 USDT on TRON through the policy engine running on the WDK's policy hook (Tether's PR #55). Two more x402 calls, and the budget sits at exactly $5.00, spent to the cent across three rails under one credential.</p>
 
