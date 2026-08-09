@@ -148,23 +148,31 @@
 <section style="background: var(--bg2); border-bottom: 1px solid var(--border); padding: 3rem 2.5rem;">
   <div class="section-inner">
     <div class="section-label">Network Activity</div>
+    <p class="section-intro" style="margin-bottom:1.5rem;">
+      Read from <code>/observer/stats</code> on 9 August 2026 and typed here. <strong>These are counts of rows, not
+      of verifications.</strong> The API's own field notes say so: <code>total_transactions</code> is
+      &ldquo;an UNFILTERED count &hellip; NOT a count of verified or attested transactions&rdquo;, and the field
+      this page previously called &ldquo;VACs Issued&rdquo; has been removed upstream because it
+      &ldquo;counted neither&rdquo;.
+    </p>
     <div class="stats-grid">
       <div class="stat-block">
-        <div class="stat-num">54</div>
+        <div class="stat-num">121</div>
         <div class="stat-label">Registered Agents</div>
         <div class="stat-note">This OP instance</div>
       </div>
       <div class="stat-block">
-        <div class="stat-num">35</div>
-        <div class="stat-label">Verified Transactions</div>
+        <div class="stat-num">56</div>
+        <div class="stat-label">Recorded Events</div>
+        <div class="stat-note">Unfiltered. <strong>1</strong> is settlement-attested; the rest carry no proof.</div>
       </div>
       <div class="stat-block">
-        <div class="stat-num">6</div>
-        <div class="stat-label">VACs Issued</div>
-        <div class="stat-note">W3C Verifiable Credentials</div>
+        <div class="stat-num">2</div>
+        <div class="stat-label">VAC Credentials Unexpired</div>
+        <div class="stat-note">Expiry is the only property this deployment can establish</div>
       </div>
       <div class="stat-block">
-        <div class="stat-num">8</div>
+        <div class="stat-num">7</div>
         <div class="stat-label">Active Rails</div>
         <div class="stat-note">Lightning · x402 · MPP · more</div>
       </div>
