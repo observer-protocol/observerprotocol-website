@@ -129,6 +129,25 @@
   </div>
 </section>
 
+<!-- SCOPE LINE -->
+<section style="background:var(--bg); border-bottom:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">The scope line</div>
+    <h2>What we attest, and what we do not observe.</h2>
+    <p class="body" style="max-width:770px;">
+      <strong>We attest to a decision something else made. We do not observe the decision being made.</strong>
+      That is a scope line, not a roadmap item, and it does not close with more engineering.
+    </p>
+    <p class="body" style="max-width:770px;">
+      An attestation records that a deciding system declared an outcome, under a named policy, over a stated set of
+      inputs. It does not record whether the reasoning was sound, whether the inputs were honest, or whether the
+      decision was made in good faith. <strong>An agent acting maliciously inside its mandate, citing a genuine
+      determination, passes every check on this page.</strong> The bound holds. The intent is not examined, and nothing
+      here claims to examine it.
+    </p>
+  </div>
+</section>
+
 <!-- WHAT YOU CAN CHECK -->
 <section style="background:var(--bg); border-bottom:1px solid var(--border);">
   <div class="section-inner">
@@ -219,22 +238,105 @@
 <!-- COMPLETENESS -->
 <section style="background:var(--bg); border-bottom:1px solid var(--border);">
   <div class="section-inner">
+<!-- THE PAIR -->
+<section style="background:var(--bg); border-bottom:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">Two layers</div>
+    <span class="fwd">Argument · the second layer is not built</span>
+    <h2>Four conditions neither layer can see alone.</h2>
+
+    <p class="body" style="max-width:770px;">
+      Two different records exist about an agent's behaviour, and each is blind to a different half.
+    </p>
+    <p class="body" style="max-width:770px;">
+      <strong>An attestation layer records what a deciding system declared</strong> — the policy, the inputs, the
+      outcome, signed. It cannot tell you whether the thing it describes ever executed.
+    </p>
+    <p class="body" style="max-width:770px;">
+      <strong>A runtime observation layer records what actually executed</strong> — calls made, payments attempted,
+      paths taken. It cannot tell you what was authorised, because authority is not visible in a trace.
+    </p>
+    <p class="body" style="max-width:770px;">Four conditions are visible only to the pair:</p>
+    <div style="border:1px solid var(--border); background:var(--bg2); padding:1.5rem 1.75rem; margin:1.25rem 0; max-width:770px;">
+      <div style="font-size:0.92rem; color:var(--text-dim); line-height:2; font-weight:300;">
+        <div>&mdash; a payment attempted with no corresponding observed decision;</div>
+        <div>&mdash; an observed decision that never reached a payment;</div>
+        <div>&mdash; an attestation cited at the enforcement boundary that fails verification, which no observability system sees because nothing was routed through one;</div>
+        <div>&mdash; a decision whose declared policy and whose observed execution disagree.</div>
+      </div>
+    </div>
+
+    <!-- ==========================================================================
+         REVIEWER: THE SENTENCE BEGINNING "Each of these is a discrepancy" IS THE
+         SUPERVISORY ARGUMENT IN ONE LINE. IT MUST SURVIVE ANY SHORTENING.
+
+         Specifically: "a firm holding only one of the two can report itself clean
+         while every one of them is occurring."
+
+         Without it, the four conditions read as a feature list — things a product
+         could detect. With it, they are the reason this page exists: the failure
+         is invisible from inside a single layer, which is why a supervisor cannot
+         get the answer by asking the firm for better records.
+
+         Cut anything else in this section first.
+         ========================================================================== -->
+    <p class="body" style="max-width:770px;">
+      Each of these is a discrepancy <em>between</em> the records. Neither layer computes any of them alone, and
+      <strong>a firm holding only one of the two can report itself clean while every one of them is occurring.</strong>
+    </p>
+
+    <div class="callout">
+      <h4>The second layer is not ours, and it is not built</h4>
+      <p>An attestation carries an assurance level with two values: <code>self-declared</code> and
+      <code>independently-observed</code>. <strong>The second has been specified since July 2026 and no implementation
+      ships today.</strong> The first implementation is scoped to Arbis, a runtime assurance partner. Everything above
+      describes what the pair would make visible. Specified is not shipped, and <strong>every attestation you can obtain
+      from us today is <code>self-declared</code></strong>.</p>
+      <p><strong>What the pair still cannot establish.</strong> Arbis's own stated limit travels with this claim: it
+      describes the executions it sees, and <strong>cannot prove that an unobserved path does not exist</strong>. A page
+      arguing that pairing two layers closes a gap has to say what the pair still leaves open, and that is the thing it
+      leaves open. The four conditions become visible; the universe they are visible across is still bounded by what the
+      observation layer was routed through.</p>
+    </div>
+  </div>
+</section>
+
     <div class="section-label">04 · What is unsolved</div>
     <h2>Completeness. Stated plainly, because it is the first thing you would find.</h2>
     <p class="body">
       Portable attestations solve authenticity. <strong>They do not solve completeness, and nothing on this site should be read as claiming otherwise.</strong>
     </p>
-    <p class="body">
-      If you hold ten attestations and all ten verify, you know ten actions fell inside granted authority. You do not know whether there were eleven. The absence of an attestation is not evidence of the absence of an action — it is equally consistent with an action taken outside the system entirely, by a process that never consulted a mandate and therefore never produced a record to withhold.
+    <p class="body" data-shared-copy="completeness">
+      <strong>A firm can hand over a hundred clean determinations and withhold the hundred-and-first, and all hundred verify.</strong> That is the whole problem, and no property of the signatures addresses it. The cryptography for transparency logs is solved. What is unsolved is <strong>who runs the log, who is obliged to publish to it, what a gap in it legally means, and how a firm demonstrates completeness without exposing commercially sensitive volume.</strong> Those are governance and regulatory questions, and we cannot answer them by ourselves or by shipping anything.
     </p>
     <p class="body">
-      This is the point at which the guarantee stops and ordinary examination resumes. A cryptographic record can establish that what you were shown is genuine. Establishing that you were shown everything is a different kind of problem, and it is not one signatures can reach. Anyone claiming a signed-evidence scheme delivers completeness is selling you the wrong property.
+      This is the point at which the guarantee stops and ordinary examination resumes. A cryptographic record can establish that what you were shown is genuine. Establishing that you were shown everything is a different kind of problem, and it is not one signatures can reach.
     </p>
     <div class="callout">
       <h4>What would move it, and what would not</h4>
       <p>Enforcement at the signing boundary narrows the gap, because an action that cannot be signed without passing a check cannot occur silently — the population of possible actions and the population of recorded ones converge. That is why the enforcement point matters more than the record format.</p>
       <p>It narrows the gap; it does not close it. It holds only for actions routed through that boundary, and establishing that all of them are is, again, a coverage question rather than a cryptographic one.</p>
     </div>
+  </div>
+</section>
+
+<!-- THE REGISTRY LIMIT -->
+<section style="background:var(--bg); border-bottom:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">What cryptography cannot supply</div>
+    <span class="fwd">Argument</span>
+    <h2>The record names keys, not people.</h2>
+    <p class="body" style="max-width:770px;">
+      Every artifact on this site identifies parties by cryptographic key. <strong>Cryptography gives continuity, not
+      identity:</strong> it establishes that the same key signed both of these things. It does not establish who holds
+      that key, whether they are who they claim, or whether they are the same legal person as last quarter.
+    </p>
+    <p class="body" style="max-width:770px;">
+      A workable Know Your Agent standard therefore needs <strong>a registry layer that cryptography cannot supply</strong>
+      — something that binds a key to an accountable party and keeps that binding current. What that layer should be, who
+      operates it, and what obligations attach to an entry are <strong>regulatory questions rather than engineering
+      ones</strong>, and we would rather say so than imply that a better signature scheme reaches them.
+    </p>
   </div>
 </section>
 
