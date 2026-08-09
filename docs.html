@@ -269,7 +269,7 @@
       <!-- DID RESOLUTION -->
       <div class="api-group">
         <div class="api-group-header">DID Resolution</div>
-        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/api/v1/resolve/{did}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:#f87171;border:1px solid #7f1d1d;padding:0.05rem 0.3rem;margin-left:0.4rem;">404</span><span class="endpoint-desc">Resolve any did:web <span class="new-tag">NEW</span></span></div>
+        <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/resolve/{did}</span><span class="endpoint-desc">Resolve any did:web <span class="new-tag">NEW</span></span></div>
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/observer/consolidate-identity</span><span class="endpoint-desc">Cross-rail consolidation</span></div>
         <div class="api-endpoint"><span class="method get">GET</span><span class="endpoint-path">/vp/verify</span><span class="endpoint-desc">Verify VP <span class="new-tag">NEW</span></span></div>
         <div class="api-endpoint"><span class="method post">POST</span><span class="endpoint-path">/vp/submit</span><span class="endpoint-desc">Submit VP <span class="new-tag">NEW</span></span></div>
@@ -326,15 +326,14 @@
           <button class="btn-resolve" onclick="resolveDID()">Resolve DID →</button>
         </div>
         <div class="resolver-output" id="resolver-output"># Enter a DID above and click Resolve.
-# Endpoint: GET https://api.observerprotocol.org/api/v1/resolve/{did}
+# Endpoint: GET https://api.observerprotocol.org/resolve/{did}
 #
-# Example DIDs:
-#   did:web:observerprotocol.org:agents:maxi-0001
-#   did:web:observerprotocol.org:agents:vicky-0002</div>
+# Example DID:
+#   did:web:observerprotocol.org:agents:maxi-0001</div>
       </div>
       <div style="margin-top:0.75rem; background:var(--bg); border:1px solid var(--border); border-left:2px solid var(--blue); padding:1.25rem; font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-dim); line-height:1.9; overflow-x:auto;">
         <span style="color:var(--text-faint)"># Resolve any did:web DID document</span><br/>
-        curl <span style="color:var(--amber)">https://api.observerprotocol.org/api/v1/resolve/did:web:observerprotocol.org:agents:maxi-0001</span><br/><br/>
+        curl <span style="color:var(--amber)">https://api.observerprotocol.org/resolve/did:web:observerprotocol.org:agents:maxi-0001</span><br/><br/>
         <span style="color:var(--text-faint)"># Returns W3C DID Document with verification methods and service endpoints</span>
       </div>
     </div>
@@ -391,9 +390,18 @@ npm install @observer-protocol/policy-engine
           documentation.
           <br><br>
           The same audit found four endpoints on this page that return 404 in production, one of
-          them &mdash; <code>/api/v1/resolve/{did}</code> &mdash; sitting directly beside a
-          copy-pasteable <code>curl</code> command. That is the one that would have cost a developer
-          an afternoon before they concluded the fault was theirs.
+          them &mdash; then written as <code>/api/v1/resolve/{did}</code> &mdash; sitting directly
+          beside a copy-pasteable <code>curl</code> command. That is the one that would have cost a
+          developer an afternoon before they concluded the fault was theirs.
+          <br><br>
+          <strong>Resolved 9 August 2026, and it was not a missing endpoint.</strong> DID resolution
+          is live at <code>GET /resolve/{did}</code> and returns a W3C DID Resolution Result; only the
+          path on this page was wrong, and the 404 badge beside it made an available capability look
+          absent for as long as the wrong path stood. The row, the <code>curl</code> and the live
+          resolver above all point at the working path now. Three of the four remain 404 and are still
+          badged: <code>/vac/partners</code>, <code>/aip/chain/verify/{id}</code> and
+          <code>/aip/type-registry/{category}</code> &mdash; checked at both the bare and
+          <code>/api/v1/</code> prefixes.
           <code>verify.observerprotocol.org</code> is open: its <code>/version</code> reports
           <code>verification.open: true</code> at 60 requests per caller per minute, and an
           unauthenticated <code>POST /v1/verify</code> returns 200 with a signed result.
@@ -645,12 +653,23 @@ npm install @observer-protocol/policy-engine
     const input = document.getElementById('did-input').value.trim();
     const output = document.getElementById('resolver-output');
     const did = input || 'did:web:observerprotocol.org:agents:maxi-0001';
-    output.textContent = '# Resolving ' + did + '...\n# GET https://api.observerprotocol.org/api/v1/resolve/' + encodeURIComponent(did);
-    fetch('https://api.observerprotocol.org/api/v1/resolve/' + encodeURIComponent(did))
-      .then(r => r.json())
-      .then(data => { output.textContent = JSON.stringify(data, null, 2); })
-      .catch(() => {
-        output.textContent = '# DID Document for: ' + did + '\n\n{\n  "@context": [\n    "https://www.w3.org/ns/did/v1",\n    "https://w3id.org/security/suites/ed25519-2020/v1"\n  ],\n  "id": "' + did + '",\n  "verificationMethod": [{\n    "id": "' + did + '#key-1",\n    "type": "Ed25519VerificationKey2020",\n    "controller": "' + did + '",\n    "publicKeyMultibase": "z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK"\n  }],\n  "authentication": ["' + did + '#key-1"],\n  "assertionMethod": ["' + did + '#key-1"]\n}\n\n# Connect to the live API to resolve real DID documents.';
+    const url = 'https://api.observerprotocol.org/resolve/' + encodeURIComponent(did);
+    output.textContent = '# Resolving ' + did + '...\n# GET ' + url;
+    fetch(url)
+      .then(r => r.text().then(body => ({ status: r.status, body })))
+      .then(({ status, body }) => {
+        let pretty = body;
+        try { pretty = JSON.stringify(JSON.parse(body), null, 2); } catch (e) {}
+        output.textContent = '# GET ' + url + '\n# HTTP ' + status + '\n\n' + pretty;
+      })
+      .catch(err => {
+        // Show the failure. This used to print a hand-written DID document with a
+        // hardcoded key, which looked exactly like a successful resolution and was
+        // true of nothing — it fired precisely when the page was least entitled to
+        // show a result.
+        output.textContent = '# GET ' + url + '\n# The request failed: ' + err.message +
+          '\n#\n# Nothing was resolved. This pane shows what the endpoint returned, or' +
+          '\n# that it could not be reached. It never shows a document we made up.';
       });
   }
 </script>
