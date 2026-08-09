@@ -562,7 +562,7 @@
         <div class="pillar">
           <div class="pillar-label">Installation</div>
           <div class="pillar-title">One command</div>
-          <div class="pillar-body">Install, generate your keys, set your limits: your agent's wallet is gated. No account, no domain, no service to phone home to. Verifies offline.</div>
+          <div class="pillar-body">Install, generate your keys, set your limits: your agent's wallet is gated. <span data-shared-copy="offline-scope">No account, no domain, no service to phone home to. Verifies offline.</span></div>
         </div>
         <div class="pillar">
           <div class="pillar-label">Authority</div>
@@ -572,12 +572,12 @@
         <div class="pillar">
           <div class="pillar-label">Enforcement</div>
           <div class="pillar-title">The key is out of reach</div>
-          <div class="pillar-body">Your agent can't read the wallet key: it lives in a separate user account. The only path to a signed payment is through the gate, which checks every spend against your mandate and defaults to deny.</div>
+          <div class="pillar-body">Your agent can't read the wallet key: it lives in a separate user account, so the agent never holds the material that signs. The gate checks every spend it is asked to authorise against your mandate and defaults to deny. It still trusts the agent to route payments through it in the first place &mdash; the boundary section below is precise about what that does and does not stop.</div>
         </div>
         <div class="pillar">
           <div class="pillar-label">Ownership</div>
           <div class="pillar-title">Open source, Apache-2.0</div>
-          <div class="pillar-body">Self-hosted, yours, no lock-in. The mandate, the key, the gate: all local, all yours. Nothing leaves your machine to authorize a transaction.</div>
+          <div class="pillar-body">Self-hosted, yours, no lock-in. The mandate, the key, the gate: all local, all yours. <span data-shared-copy="offline-scope">Nothing leaves your machine to authorize a transaction.</span></div>
         </div>
       </div>
 
