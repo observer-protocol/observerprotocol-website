@@ -184,6 +184,42 @@ moved above the instructions.
 **A cross-reference is not a limit.** A reader in the section that promises does not scroll to the
 section that qualifies.
 
+## 2d. Position is relative to the reader's path, not to the section
+
+A qualification must sit before **every** claim it qualifies, in the order a reader meets them.
+
+`crossrail.html` was rewritten specifically because a caveat below a claim comes too late, and the
+correction — *"The budget is a design. The ceiling is a control."* — was placed above the transcript.
+It was above the transcript and **below the engine cards**, two of which still asserted *"the same
+shared budget as every other rail"* and *"one rolling budget"*. A reader met both, formed the
+adversarially-binding reading, and only then reached the correction.
+
+**"Above the transcript" was a position relative to the artifact, not relative to the reader.** The
+unit is the reader's sequence through the page.
+
+Practically: after moving or adding a qualification, read the page **from the top** and list every
+claim it is supposed to cover. If any appears earlier than the qualification, the placement is wrong
+however deliberate it was.
+
+## 2e. Editing under a rule produces defects in the surroundings
+
+**Expect to introduce instances of the family you are fixing.** This is not carelessness; it is what
+working through a list does. The rule occupies the attention that would otherwise go to what is around
+the edit.
+
+Three examples, all from one evening, all introduced by the person applying the rule:
+
+- Rebuilding `architecture.html` around the mandate spine — to remove marks nothing computes — added
+  three green `live` badges that nothing computes.
+- Rebuilding `agents.html` to state nothing it cannot establish left `<title>Verified Agents</title>`
+  and a description claiming *"cryptographically verified transaction history"*.
+- Correcting `trading.html`'s verification claim added a fresh untagged instance of the claim being
+  enumerated, caught minutes later by the check.
+
+**So: after any pass, re-run the pass's own test against the pass's own output.** The check that found
+the third one had been written an hour earlier for exactly this and still had to be run to catch it.
+A rule applied by hand does not check its own edits.
+
 ## 3. Adding a non-web file makes it public
 
 `publish = "."`. A new `.md`, `.sh`, `.csv` or `.py` at the root is served the moment it merges, and
