@@ -430,3 +430,35 @@ that describes a subset closes the question.
 
 **Name a check by what it establishes, and if it establishes less than its subject needs, say so in
 the name.** The step is now "Engine version matches the lockfile AND what npm serves a reader".
+
+## 11. Position decides what a claim means, and the summary is where a reader stops
+
+Found three times on 2026-08-09, on three unrelated pages, always the same way round: **the confident
+sentence above, the careful one below.**
+
+| page | above | below |
+|---|---|---|
+| `crossrail.html` | two shared-budget claims | the section correcting them |
+| `hermes-agents.html` | "The only path to a signed payment is through the gate" | "it trusts the agent to route payments through the gate in the first place" |
+| `free-your-agent.html` | "It is shipped, running, and open" | a caption saying the hook is not in shipped Aqua |
+
+In each case both sentences were on the page and neither was hidden. The defect is **ordering**, and
+it is invisible to any check, because every individual sentence passes.
+
+**Why it happens:** a correction gets written where the error was found — in the detail section, the
+caption, the boundary note. The summary was written earlier, by someone confident, and nobody re-reads
+a summary when correcting a detail.
+
+**The rules:**
+
+- **A caveat belongs at the altitude of the claim it qualifies.** A limit disclosed in a caption does
+  not qualify a headline. If the summary makes the strong claim, the summary carries the limit.
+- **Correct the summary last, deliberately, as its own step.** After fixing anything, re-read the
+  page's opening and closing paragraphs and ask whether they still describe what the page now says.
+  Those two are where a skimming reader forms and keeps their impression.
+- **A page's strongest claim and its most careful sentence should be findable from each other.** If
+  the honest version lives 400 lines below the confident one, link them or move one.
+
+Corollary, and it is the reason this needs a rule rather than vigilance: **a page can be entirely
+composed of true sentences and still mislead every reader who does not finish it.** That is family 3
+in the audit taxonomy, and ordering is its most common form.
