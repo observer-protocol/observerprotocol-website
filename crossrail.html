@@ -124,7 +124,7 @@
     <div class="engine">
       <h3>L402 · Lightning</h3>
       <span class="locus">DENIAL AT THE PRE-PAYMENT HOOK</span>
-      <p>The invoice is refused at the hook, from the same shared budget as every other rail. Decision layer only: the engine ships no payment path, the paying client must call the hook.</p>
+      <p>The invoice is refused at the hook, against the same counter the co-located adapters share (see below for exactly what that counter is). Decision layer only: the engine ships no payment path, the paying client must call the hook.</p>
     </div>
     <div class="engine">
       <h3>WDK · USDT on TRON</h3>
@@ -132,7 +132,7 @@
       <p>Runs on Tether's merged WDK policy hook (PR #55). The transfer is never invoked.</p>
     </div>
   </div>
-  <p class="core-line">The shared core carries one credential, one rolling budget, and one append-only decision log. A 245-case parity harness keeps every engine identical on verdicts.</p>
+  <p class="core-line">The shared core carries one credential, one rolling counter, and one append-only decision log. A 245-case parity harness keeps every engine identical on verdicts.</p>
   <div class="installs">
     <span class="c"># the layer</span><br/>
     npm install @observer-protocol/policy-engine<br/>
