@@ -321,7 +321,6 @@ console.log('✅ Agent registered on Observer Protocol');</code></pre>
           <pre><code>// Check if recipient is verified
 const recipientCheck = await wallet.checkRecipient('merchant-bot-beta');
 console.log('Recipient verified:', recipientCheck.verified);
-console.log('Reputation score:', recipientCheck.reputationScore);
 
 // Send USDT on Polygon (fast, cheap)
 const payment = await wallet.verifiedSend({
@@ -334,7 +333,7 @@ const payment = await wallet.verifiedSend({
 console.log('Payment result:', payment);
 // {
 //   success: true,
-//   verification: { alias, publicKeyHash, reputationScore, ... },
+//   verification: { alias, publicKeyHash, ... },
 //   payment: { txid, status, amount, recipient, chain, ... }
 // }</code></pre>
           
