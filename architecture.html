@@ -594,7 +594,7 @@
         <div class="layer-items">
           <div class="layer-item new">Delegation credentials · new</div>
           <div class="layer-item new">Remediation envelope · new</div>
-          <div class="layer-item new">Revocation + cascade · new</div>
+          <div class="layer-item">Revocation + cascade · specified, not working in this deployment</div>
           <div class="layer-item new">Type registry · new</div>
           <div class="layer-item new">Eager chain verification · new</div>
         </div>
@@ -634,10 +634,10 @@
           </div>
         </div>
         <div class="aip-primitive">
-          <div class="aip-primitive-icon">NEW</div>
-          <div>
-            <h4>Revocation + Cascade</h4>
-            <p>Revoking a delegation credential cascades automatically to all sub-delegations. No manual cleanup required. Revocation reasons are enumerated in the Type Registry.</p>
+          <div class="aip-primitive-icon" style="background:#7f1d1d; color:#f87171;">SPEC</div>
+        <div>
+          <h4>Revocation + Cascade</h4>
+          <p><strong>Specified, and not working in this deployment.</strong> AIP defines revocation with cascade to sub-delegations, and revocation reasons are enumerated in the Type Registry. In production, <code>VACGenerator.revoke_vac</code> raises: it writes to a table that was repurposed into the status-list registry. <strong>A credential can only be marked revoked by hand, and absence of a revocation mark is not evidence that a credential is unrevoked.</strong> This page previously said the cascade was automatic with no manual cleanup required, which was the opposite of what runs.</p>
           </div>
         </div>
         <div class="aip-primitive">
