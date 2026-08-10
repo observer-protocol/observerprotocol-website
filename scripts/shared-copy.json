@@ -73,6 +73,25 @@
     "theWordOfflineWasMissingEntirely": "2026-08-09, second pass. ZERO of the eighteen patterns above contained the word 'offline' — the plainest way the site says this, and the way the org's own GitHub description says it ('verifiable offline by anyone'). Nine untagged instances were live, including a capability pill on index.html, the thesis sentence on docs.html ('Offline verification is not an SDK detail. It is the protocol's central affordance'), and 'The offline path is the claim' on verify.html. The eighteen patterns were each written from a sentence somebody had READ; the vocabulary nobody happened to read in the hour the list was written was simply absent, and the enumeration reported complete throughout. A pattern list records where its author has been. The five patterns added here are claim-shaped on purpose: `offline.didDocumentPath` is a config key appearing nine times and matching it would force allowlist rows for non-claims, which is the failure the allowlist exists to avoid.",
     "claimPatternNote": "Any occurrence of these in an HTML file MUST sit inside an element tagged data-shared-copy=\"offline-scope\". That is what makes a tenth instance a build failure rather than a discovery. Add the tag, or add the file to mustAppearIn if it is a new home for the claim. Some tagged instances REFER to the claim rather than asserting it (docs.html's resolution-hosting rationale is one). They are tagged anyway: the enumeration's job is to know everywhere the phrase appears, and a human scoping the claim decides per instance."
   },
+  "verifiable-set": {
+    "why": "PHRASE CHECK, not an enumeration. The list of what a counterparty can verify without us is the estate's central claim and it MOVES: refusal records joined it at engine rc.9, and determinations, resolutions, instructions and releases are named work rather than permanent exclusions. When one of them lands, every sentence stating the set goes stale on the same day, and a stale version of this sentence UNDERSTATES what we can prove, which is the failure nobody reports because it reads as caution.\n\nMEASURED 2026-08-10, and it is why this key exists rather than relying on offline-scope: with the set sentence WIDENED to include releases, NARROWED to \"delegation credentials only\", and DELETED outright, check-shared-copy exited 0 on all three. offline-scope carries an empty `phrases` array by design: it knows WHERE the claim lives, not WHAT it says. Deleting the sentence passed because index.html carries other offline-scope blocks, so mustAppearIn was still satisfied.\n\nWHAT THIS CATCHES AND WHAT IT DOES NOT. `phrases` is satisfied by ANY tagged block in the file, so this fails when a file stops stating the set anywhere, and it does NOT fail when one of two statements in the same file drifts while the other stays correct. index.html states the set twice, so that gap is real there; verify.html states it once, so it is exact. Widening the list breaks the pinned string at the conjunction, which is the direction that matters most.",
+    "mustAppearIn": [
+      "index.html",
+      "verify.html"
+    ],
+    "phrases": [
+      "delegation credentials, refusal records and lapse records"
+    ]
+  },
+  "verifiable-set-excluded": {
+    "why": "The negative half, kept as its own key because it is stated on index.html and not on verify.html, and `phrases` applies to every file in a key's mustAppearIn. Splitting is the alternative to weakening the positive key's coverage to the intersection of both pages. The conjunction is deliberately excluded from the pinned string: index.html says \"instructions or releases\" in one place and \"instructions and releases\" in the other, and pinning the shorter run keeps both sites honest without pinning a comma.",
+    "mustAppearIn": [
+      "index.html"
+    ],
+    "phrases": [
+      "determinations, resolutions, instructions"
+    ]
+  },
   "crossrail-budget-scope": {
     "why": "ENUMERATION ENTRY, not a phrase check. Same shape as offline-scope and created for the same reason one surface out. The cross-rail budget claim was corrected so thoroughly that crossrail.html was rewritten around 'The budget is a design. The ceiling is a control.', and the correction was placed above the transcript per CONVENTIONS 2d. It was never applied to crossrail.html's own <meta name=\"description\"> or og:description, which asserted 'one cross-rail budget' unqualified until 2026-08-09. A META DESCRIPTION IS THE ONE SURFACE WHERE POSITION CANNOT HELP: it travels alone into a search result and a social card, with no page under it for a correction to sit on, so every positional rule in CONVENTIONS 2c/2d/11 is structurally unavailable there. The claim is enumerated rather than banned because the budget is real, it is simply not adversarially binding: it is an agent-owned local append-only file the agent can truncate, shared only by adapters co-located in one process, and it has never run in production.",
     "mustAppearIn": [
