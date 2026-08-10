@@ -46,10 +46,36 @@ jobs:
       # it when it cannot, silently; ci refuses outright on a lock/manifest mismatch.
       # Measured 2026-08-08: with the lockfile removed, ^1.0.0-rc.5 resolves to rc.7,
       # so the pin was doing all the work and nothing enforced that it would keep doing it.
-      - run: npm ci --no-audit --no-fund
+      - id: deps
+        run: npm ci --no-audit --no-fund
+
+      # EVERY CHECK BELOW RUNS EVEN IF AN EARLIER ONE FAILED, and that is the point of
+      # `if: !cancelled()`.
+      #
+      # MEASURED 2026-08-10. A step failure ends the job, so when the engine-version check
+      # went red on an rc.10-vs-rc.12 drift, `check-shared-copy` was SKIPPED on every run
+      # for at least thirteen hours — including the run for PR #46, which merged with the
+      # estate's principal copy control never having executed. The PR page said
+      # `verify fail` and said nothing about what else had not run.
+      #
+      # A red build then meant one known failure and an unknown number of unrun checks,
+      # which is strictly worse than several known failures. An earlier gate hiding a later
+      # one is the same defect this repository keeps finding in its own documents, at
+      # workflow scope.
+      #
+      # The order also changed: the two checks about THIS REPOSITORY'S CONTENT come first,
+      # and the version check — which can go red because someone published to npm, with no
+      # commit here — comes last. If a future edit removes the conditions, the steps that
+      # survive are the ones about our own artifacts.
+      #
+      # `steps.deps.outcome` is required, not decorative: without npm ci these three cannot
+      # run at all, and letting them try would report a missing module as a copy defect.
       - name: Verify every published credential
+        if: ${{ !cancelled() && steps.deps.outcome == 'success' }}
         run: node ./verify-published-credentials.mjs
-      - name: Engine version matches the lockfile AND what npm serves a reader
-        run: node ./sync-engine-version.mjs --check
       - name: Shared copy has not diverged between pages
+        if: ${{ !cancelled() && steps.deps.outcome == 'success' }}
         run: node ./check-shared-copy.mjs
+      - name: Engine version matches the lockfile AND what npm serves a reader
+        if: ${{ !cancelled() && steps.deps.outcome == 'success' }}
+        run: node ./sync-engine-version.mjs --check
