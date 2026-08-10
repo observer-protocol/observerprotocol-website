@@ -21,5 +21,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm ci || npm install
-      - run: npm run verify:local
+      # npm ci, WITHOUT an `|| npm install` fallback. It had one until 2026-08-10.
+      #
+      # `install` honours the lockfile when it can and REWRITES IT SILENTLY when it cannot;
+      # `ci` refuses outright on a lock/manifest mismatch. Measured 2026-08-08 in the sibling
+      # workflow: with the lockfile removed, ^1.0.0-rc.5 resolved to rc.7, so the pin was
+      # doing all the work and nothing enforced that it would keep doing it.
+      #
+      # That matters more here than anywhere else in the repository. This job exists to
+      # REPRODUCE A PROOF. A silently rewritten lockfile does not fail the proof: it changes
+      # which libraries produced it, and the run still says `verify -> true`. The claim on
+      # /wdk is that the canonical W3C reference libraries verify our credential, and a
+      # fallback that quietly swaps their versions makes that a different claim reported in
+      # the same words.
+      - run: npm ci
+      # Every published PolicyEvaluationCredential, discovered rather than listed. This was
+      # `verify:local`, hardcoded to one of the two the repository publishes, while
+      # credential-expectations.json already asserted in a note that the other one verifies
+      # too. A provable claim, a committed tool that proves it, and nothing gating it.
+      - run: npm run verify:local:all

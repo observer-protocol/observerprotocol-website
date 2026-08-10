@@ -6,7 +6,8 @@
   "description": "Endpoint-free verification of the hosted PolicyEvaluationCredential using the canonical W3C Data Integrity reference libraries (no OP endpoint).",
   "scripts": {
     "verify": "node verify.mjs",
-    "verify:local": "PEC_URL=file://${PWD}/../../credentials/maxi-0001-wdk-demo-pec.json DID_URL=file://${PWD}/../../.well-known/did.json node verify.mjs"
+    "verify:local": "PEC_URL=file://${PWD}/../../credentials/maxi-0001-wdk-demo-pec.json DID_URL=file://${PWD}/../../.well-known/did.json node verify.mjs",
+    "verify:local:all": "node verify-all-local.mjs"
   },
   "dependencies": {
     "@digitalbazaar/data-integrity": "^2.5.0",
