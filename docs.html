@@ -247,7 +247,7 @@
     <div class="section-label">API Reference</div>
     <h2>HTTP API v1.0.0 · Base URL: api.observerprotocol.org</h2>
     <p class="section-intro">
-      All non-DID endpoints use the <code style="font-family:'IBM Plex Mono',monospace; font-size:0.85em; color:var(--amber); background:var(--bg); padding:0.1rem 0.4rem;">/api/v1/</code> prefix. DID document paths follow the W3C did:web resolution standard and are documented separately below. Full interactive documentation available via Swagger UI.
+      Endpoint paths are literal, and the <code style="font-family:'IBM Plex Mono',monospace; font-size:0.85em; color:var(--amber); background:var(--bg); padding:0.1rem 0.4rem;">/api/v1/</code> prefix is not general: six of the twenty-nine endpoints listed below carry it and twenty-three are served at the bare path shown. The two are not interchangeable. Measured 13 August 2026: <code>/api/v1/health</code> returns 200 and <code>/health</code> returns 404, while <code>/observer/trends</code> returns 200 and <code>/api/v1/observer/trends</code> returns 404. DID document paths follow the W3C did:web resolution standard and are documented separately below. Full interactive documentation available via Swagger UI.
     </p>
 
     <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
@@ -372,13 +372,54 @@ npm install @observer-protocol/policy-engine
   Date.<span class="code-fn">now</span>()      <span class="code-comment">// evaluated at this instant</span>
 );
 
-<span class="code-comment">// Checks issuer, structure, validity window, the</span>
+<span class="code-comment">// Checks the pinned issuer, the validity window, the</span>
 <span class="code-comment">// eddsa-jcs-2022 proof against the issuer DID document,</span>
-<span class="code-comment">// and revocation. Fail-closed.</span>
+<span class="code-comment">// structure, and revocation where the credential</span>
+<span class="code-comment">// carries a credentialStatus entry.</span>
+<span class="code-comment">//</span>
+<span class="code-comment">// Structure and revocation are narrower than they</span>
+<span class="code-comment">// read. Read the note below before relying on either.</span>
 <span class="code-comment">//</span>
 <span class="code-comment">// Note: verifyCredential(config, nowMs) is a DIFFERENT</span>
 <span class="code-comment">// function and does not take the credential.</span>
 <span class="code-comment">// Types are the reference; no worked example ships yet.</span>
+        </div>
+        <div class="sdk-note">
+          <div class="sdk-note-icon">⚠</div>
+          <div><strong>Two of those five checks establish less than the line above reads.
+          Measured 13 August 2026 against <code><span data-engine-version="historical">1.0.0-rc.10</span></code>,
+          which is the version this page documents. npm's <code>latest</code> served
+          <code><span data-engine-version="historical">1.0.0-rc.12</span></code> on that date and these figures were
+          not re-run against it.</strong>
+          <br><br>
+          <strong>Structure does not read the schema the credential declares.</strong>
+          <code>validateStructure</code> is synchronous and performs no fetch. It checks the shape
+          the engine already knows, and it checks that <code>credentialSchema.id</code> appears in
+          your <code>schemaAllowlist</code>; it does not retrieve the document at that URL. A
+          credential declaring <code>delegation/v2.7.json</code> while omitting
+          <code>credentialStatus</code>, which is in that schema's <code>required</code> list,
+          returns <code>{ ok: true }</code>. Pinning a schema version pins a string, not the
+          constraints the version exists to impose.
+          <br><br>
+          <strong>Revocation is fail-closed until it has a cached copy, and permissive afterwards.</strong>
+          With no cache and an unreachable status list the verdict is a denial:
+          <code>[revocation] status could not be established: unreachable (fetch failed) and no
+          cached copy exists</code>. After one successful fetch, the same unreachable list returns
+          <code>allow: true</code>, <code>reason: 'credential verified'</code> and
+          <code>checks.revocation: 'not-revoked'</code>. The substitution is recorded only in
+          <code>notes</code>, as <code>served from cache aged 0.0h (limit 24h)</code>, and
+          <code>checks</code> carries no value that distinguishes a live answer from a cached one
+          even though it carries <code>'status-absent'</code> and <code>'not-configured'</code> for
+          other checks that did not run. The staleness limit is measured against the cached file's
+          own age, not against the <code>nowMs</code> you pass in. Read <code>notes</code>, not only
+          <code>checks</code>.
+          <br><br>
+          <strong>The other three hold as written.</strong> The issuer pin is enforced: a credential
+          whose <code>issuer</code> differs from <code>config.issuerDid</code> is denied at the
+          structure gate with <code>issuer &hellip; does not match the pinned trusted issuer
+          &hellip;</code>, including when that credential is validly signed by a key its own domain
+          publishes and raises the mandate ceiling. The validity window and the
+          <code>eddsa-jcs-2022</code> proof both deny as documented.</div>
         </div>
         <div class="sdk-note">
           <div class="sdk-note-icon">⚠</div>
@@ -419,20 +460,28 @@ npm install @observer-protocol/policy-engine
       </div>
       <div>
         <div class="code-block">
-<span class="code-comment"># Verify agent identity</span>
-<span class="code-key">const</span> verified = <span class="code-key">await</span> observer.<span class="code-fn">verifyAgent</span>(
-  agent.id, challenge, signature
-);
+<span class="code-comment">// What this package actually exports for verification.</span>
+<span class="code-comment">// Checked against the installed package, 13 August 2026.</span>
 
-<span class="code-comment"># Record a transaction</span>
-<span class="code-key">await</span> observer.<span class="code-fn">recordTransaction</span>({
-  senderId: agent.id,
-  paymentHash: hash,
-  proof: preimage
-});
+<span class="code-fn">verifyCredentialObject</span>(cred, config, nowMs)
+<span class="code-comment">//   structure + issuer pin + full crypto</span>
 
-<span class="code-comment"># Get VAC</span>
-<span class="code-key">const</span> vac = <span class="code-key">await</span> observer.<span class="code-fn">getVAC</span>(agent.id);
+<span class="code-fn">verifyCredentialCrypto</span>(cred, config, nowMs)
+<span class="code-comment">//   crypto only. NO structure, schema or issuer-pin</span>
+<span class="code-comment">//   gate. Gate the trust anchor by other means.</span>
+
+<span class="code-fn">enforceMandate</span>(ctx, cred, config, resolved)
+<span class="code-comment">//   the mandate check, against a decoded transfer</span>
+        </div>
+        <div class="sdk-note">
+          <div class="sdk-note-icon">⚠</div>
+          <div><strong>Correction, 13 August 2026.</strong> This panel published a sample calling
+          <code>observer.verifyAgent</code>, <code>observer.recordTransaction</code> and
+          <code>observer.getVAC</code>, under the heading of this package. No <code>observer</code>
+          object was defined anywhere on this page and the package exports no such object; those
+          three are operations of the deprecated SDK, and two of them are HTTP calls rather than
+          library functions. A reader copying that block had nothing to bind <code>observer</code>
+          to. The panel now lists the entry points the installed package exports.</div>
         </div>
         <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
           <a href="https://github.com/observer-protocol/aip/tree/master/sdk" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--amber); text-decoration:none; border:1px solid var(--amber-dim); padding:0.4rem 0.85rem; background:var(--amber-glow);">GitHub → sdk-js ↗</a>
@@ -449,7 +498,7 @@ npm install @observer-protocol/policy-engine
     <div class="section-label">Spec &amp; AIP</div>
     <h2>Open standards. Versioned specs.</h2>
     <p class="section-intro">
-      Observer Protocol is governed by open specifications maintained on GitHub. AIP v0.9 was ratified on 25 July 2026 and is tagged <code>v0.9</code> in the specification repository, with the review record in its pull request. It is additive over v0.6: an implementation conforming to v0.6 remains conforming.
+      Observer Protocol is governed by open specifications maintained on GitHub. AIP v0.9 was ratified on 25 July 2026 and is tagged <code>v0.9</code> in the specification repository, with the review record in its pull request. It is additive over v0.6 through v0.8: an implementation conforming to any of those remains conforming.
     </p>
     <div class="spec-cards">
       <a href="https://github.com/observer-protocol/aip" target="_blank" class="spec-card">
@@ -473,7 +522,7 @@ npm install @observer-protocol/policy-engine
       <a href="./architecture.html" class="spec-card">
         <div class="spec-card-tag">CANONICAL REFERENCE · PERMANENT URL</div>
         <h3>Architecture Document</h3>
-        <p>The permanent citable reference for grants, investor materials, developer documentation, and academic reference. Updated April 2026.</p>
+        <p>The permanent citable reference for grants, investor materials, developer documentation, and academic reference. Updated 13 August 2026.</p>
         <div class="spec-card-cta">observerprotocol.org/architecture ↗</div>
       </a>
       <a href="https://observerprotocol.org/schemas/x402/v1.json" target="_blank" class="spec-card">

@@ -355,7 +355,7 @@
     <div class="page-meta">
       Published: February 24, 2026
       <span>·</span>
-      Updated: April 2026
+      Updated: 13 August 2026
       <span>·</span>
       Permanent URL: observerprotocol.org/architecture
       <span>·</span>
@@ -370,7 +370,7 @@
     <div class="section-label">Full Stack Diagram</div>
     <h2>Observer Protocol + Agentic Terminal</h2>
     <p class="section-intro">
-      Read left to right: <strong>mandate → evaluation → refusal or instruction → attestation → verification.</strong> Identity enters from the left as an input we consume rather than issue. Verification sits on the right as a terminal reached without us, and nothing in our column is in its path. intelligence.
+      Read left to right: <strong>mandate → evaluation → refusal or instruction → attestation → verification.</strong> Identity enters from the left as an input we consume rather than issue. Verification sits on the right as a terminal reached without us, and nothing in our column is in its path.
     </p>
     <div class="arch-wrap">
       <div class="arch-title">Observer Protocol · the spine</div>
@@ -511,11 +511,21 @@
     <div style="border-left:2px solid #7f1d1d; background:var(--bg); padding:1.5rem 1.75rem; margin-top:1.5rem; max-width:760px;">
       <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:#f87171; margin-bottom:0.75rem;">What is not there yet</div>
       <p style="font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300;">
-        There is <strong>no published schema for a <code>PolicyEvaluationCredential</code> and no verifier path for the
-        type</strong> — not in the published engine, not in the hosted service, not in the schema set. The shape is
-        specified and implemented; verifying one is not something a reader can do today.
-        <code>delegation/v2.7.json</code>, published 8 August 2026, carries <code>requiresDecisionAttestation</code>.
-        <strong>A published schema is not a verifier.</strong>
+        <strong>No schema for a decision attestation is published at any URL.</strong> The related
+        <code>PolicyEvaluationCredential</code> has the same gap and one more:
+        <strong>no schema is published for that type either, and neither the published engine nor the hosted service
+        has a verifier path for it</strong>. The shape is specified and implemented; verifying one as a credential is
+        not something a reader can do today. <code>delegation/v2.7.json</code>, published 8 August 2026, carries
+        <code>requiresDecisionAttestation</code>. <strong>A published schema is not a verifier.</strong>
+      </p>
+      <p style="font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-top:1rem;">
+        <strong>What is checkable today is narrower than the type, and the difference is the whole point.</strong> The
+        <code>eddsa-jcs-2022</code> signature on both published <code>PolicyEvaluationCredential</code>s verifies
+        against <code>did:web:observerprotocol.org#key-3</code> under the canonical W3C Data Integrity libraries, with
+        no Observer Protocol endpoint in the path. That is a signature check, not verification of the credential, and
+        only the first is available. We run that check in CI over one of the two. The tool that runs it is not served
+        from this domain, so it is not something you can fetch here; the route you can run is the canonical
+        libraries directly.
         <a href="/verify.html" style="color:var(--amber);">The full disclosure &rarr;</a>
       </p>
     </div>
@@ -562,7 +572,7 @@
         <div class="layer-num">LAYER 02</div>
         <h3>Payment Rails</h3>
         <div class="layer-tag">Rail-agnostic · Verification is the constant</div>
-        <p>Observer Protocol supports six payment rails today. The verification logic is identical regardless of settlement layer: a Lightning preimage, an ECDSA signature over a transaction hash, or a verifiedSend() call all produce the same output: a cryptographically verified economic event that cannot be faked at scale.</p>
+        <p>Four payment rails are live today. Two more are listed below and are not live. The verification logic is identical regardless of settlement layer: a Lightning preimage, an ECDSA signature over a transaction hash, or a verifiedSend() call all produce the same output: a cryptographically verified economic event that cannot be faked at scale.</p>
         <div class="layer-items">
           <div class="layer-item live">Lightning / L402 · live</div>
           <div class="layer-item live">x402 / Solana · live</div>
@@ -590,7 +600,7 @@
         <div class="layer-num">LAYER 04</div>
         <h3>Agentic Identity Protocol (AIP)</h3>
         <div class="layer-tag">Behavioral governance · Delegation · Remediation</div>
-        <p>AIP governs how agents interact, not just who they are. It defines delegation credentials (org → agent signed scopes), bilateral attestation, remediation flows when a request falls outside its mandate, a type registry for counterparty classification, and, added in v0.7 and v0.8, trading-mandate and spending-mandate surfaces with a cryptographically-bound <code>PolicyEvaluationCredential</code> verdict envelope. AIP v0.9 is the current canonical draft; v0.5 / v0.6 / v0.7 remain published as immutable historical drafts. It sits above the VAC layer, adding behavioral governance to cryptographic identity.</p>
+        <p>AIP governs how agents interact, not just who they are. It defines delegation credentials (org → agent signed scopes), bilateral attestation, remediation flows when a request falls outside its mandate, a type registry for counterparty classification, and, added in v0.7 and v0.8, trading-mandate and spending-mandate surfaces with a cryptographically-bound <code>PolicyEvaluationCredential</code> verdict envelope. AIP v0.9 is the current canonical draft; v0.6 / v0.7 / v0.8 remain published as historical drafts. It sits above the VAC layer, adding behavioral governance to cryptographic identity.</p>
         <div class="layer-items">
           <div class="layer-item new">Delegation credentials · new</div>
           <div class="layer-item new">Remediation envelope · new</div>
@@ -687,7 +697,7 @@
       <div class="principle">
         <div class="principle-num">06</div>
         <h4>Self-hostable.</h4>
-        <p>Run your own OP node. The protocol is infrastructure, not a platform. Anyone can implement it, extend it, or fork it under CC BY 4.0.</p>
+        <p>Run your own OP node. The protocol is infrastructure, not a platform. The code is MIT and the specification is CC BY 4.0, so anyone can implement it, extend it, or fork it.</p>
       </div>
     </div>
   </div>
