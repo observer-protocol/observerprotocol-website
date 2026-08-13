@@ -9,8 +9,10 @@ it does. All three are served publicly and are meant to be downloaded.
 | `must-not-verify-tampered-signature.json` | **allow: false** | `[proof] eddsa-jcs-2022 signature does not verify against the issuer key` |
 | `must-not-verify-expired-mandate.json` | **allow: false** | `validity: credential expired (validUntil 2026-02-01T00:00:00Z)` |
 
-Measured with `@observer-protocol/policy-engine@1.0.0-rc.5` on 8 August 2026. The reason strings
-above are the engine's own output, copied from the run, not paraphrases.
+Measured with `@observer-protocol/policy-engine@1.0.0-rc.10` on 13 August 2026, and byte-identical
+to the rc.5 run of 8 August 2026 that this table previously cited. The reason strings above are the
+engine's own output, copied from the run, not paraphrases. npm's `latest` served 1.0.0-rc.12 on
+that date and these three were not re-run against it.
 
 ## What each one is
 

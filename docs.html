@@ -460,20 +460,28 @@ npm install @observer-protocol/policy-engine
       </div>
       <div>
         <div class="code-block">
-<span class="code-comment"># Verify agent identity</span>
-<span class="code-key">const</span> verified = <span class="code-key">await</span> observer.<span class="code-fn">verifyAgent</span>(
-  agent.id, challenge, signature
-);
+<span class="code-comment">// What this package actually exports for verification.</span>
+<span class="code-comment">// Checked against the installed package, 13 August 2026.</span>
 
-<span class="code-comment"># Record a transaction</span>
-<span class="code-key">await</span> observer.<span class="code-fn">recordTransaction</span>({
-  senderId: agent.id,
-  paymentHash: hash,
-  proof: preimage
-});
+<span class="code-fn">verifyCredentialObject</span>(cred, config, nowMs)
+<span class="code-comment">//   structure + issuer pin + full crypto</span>
 
-<span class="code-comment"># Get VAC</span>
-<span class="code-key">const</span> vac = <span class="code-key">await</span> observer.<span class="code-fn">getVAC</span>(agent.id);
+<span class="code-fn">verifyCredentialCrypto</span>(cred, config, nowMs)
+<span class="code-comment">//   crypto only. NO structure, schema or issuer-pin</span>
+<span class="code-comment">//   gate. Gate the trust anchor by other means.</span>
+
+<span class="code-fn">enforceMandate</span>(ctx, cred, config, resolved)
+<span class="code-comment">//   the mandate check, against a decoded transfer</span>
+        </div>
+        <div class="sdk-note">
+          <div class="sdk-note-icon">⚠</div>
+          <div><strong>Correction, 13 August 2026.</strong> This panel published a sample calling
+          <code>observer.verifyAgent</code>, <code>observer.recordTransaction</code> and
+          <code>observer.getVAC</code>, under the heading of this package. No <code>observer</code>
+          object was defined anywhere on this page and the package exports no such object; those
+          three are operations of the deprecated SDK, and two of them are HTTP calls rather than
+          library functions. A reader copying that block had nothing to bind <code>observer</code>
+          to. The panel now lists the entry points the installed package exports.</div>
         </div>
         <div style="margin-top:1rem; display:flex; gap:0.75rem; flex-wrap:wrap;">
           <a href="https://github.com/observer-protocol/aip/tree/master/sdk" target="_blank" style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--amber); text-decoration:none; border:1px solid var(--amber-dim); padding:0.4rem 0.85rem; background:var(--amber-glow);">GitHub → sdk-js ↗</a>
@@ -514,7 +522,7 @@ npm install @observer-protocol/policy-engine
       <a href="./architecture.html" class="spec-card">
         <div class="spec-card-tag">CANONICAL REFERENCE · PERMANENT URL</div>
         <h3>Architecture Document</h3>
-        <p>The permanent citable reference for grants, investor materials, developer documentation, and academic reference. Updated April 2026.</p>
+        <p>The permanent citable reference for grants, investor materials, developer documentation, and academic reference. Updated 13 August 2026.</p>
         <div class="spec-card-cta">observerprotocol.org/architecture ↗</div>
       </a>
       <a href="https://observerprotocol.org/schemas/x402/v1.json" target="_blank" class="spec-card">
