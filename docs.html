@@ -247,7 +247,7 @@
     <div class="section-label">API Reference</div>
     <h2>HTTP API v1.0.0 · Base URL: api.observerprotocol.org</h2>
     <p class="section-intro">
-      All non-DID endpoints use the <code style="font-family:'IBM Plex Mono',monospace; font-size:0.85em; color:var(--amber); background:var(--bg); padding:0.1rem 0.4rem;">/api/v1/</code> prefix. DID document paths follow the W3C did:web resolution standard and are documented separately below. Full interactive documentation available via Swagger UI.
+      Endpoint paths are literal, and the <code style="font-family:'IBM Plex Mono',monospace; font-size:0.85em; color:var(--amber); background:var(--bg); padding:0.1rem 0.4rem;">/api/v1/</code> prefix is not general: six of the twenty-nine endpoints listed below carry it and twenty-three are served at the bare path shown. The two are not interchangeable. Measured 13 August 2026: <code>/api/v1/health</code> returns 200 and <code>/health</code> returns 404, while <code>/observer/trends</code> returns 200 and <code>/api/v1/observer/trends</code> returns 404. DID document paths follow the W3C did:web resolution standard and are documented separately below. Full interactive documentation available via Swagger UI.
     </p>
 
     <div style="margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
@@ -449,7 +449,7 @@ npm install @observer-protocol/policy-engine
     <div class="section-label">Spec &amp; AIP</div>
     <h2>Open standards. Versioned specs.</h2>
     <p class="section-intro">
-      Observer Protocol is governed by open specifications maintained on GitHub. AIP v0.9 was ratified on 25 July 2026 and is tagged <code>v0.9</code> in the specification repository, with the review record in its pull request. It is additive over v0.6: an implementation conforming to v0.6 remains conforming.
+      Observer Protocol is governed by open specifications maintained on GitHub. AIP v0.9 was ratified on 25 July 2026 and is tagged <code>v0.9</code> in the specification repository, with the review record in its pull request. It is additive over v0.6 through v0.8: an implementation conforming to any of those remains conforming.
     </p>
     <div class="spec-cards">
       <a href="https://github.com/observer-protocol/aip" target="_blank" class="spec-card">
