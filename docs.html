@@ -372,13 +372,54 @@ npm install @observer-protocol/policy-engine
   Date.<span class="code-fn">now</span>()      <span class="code-comment">// evaluated at this instant</span>
 );
 
-<span class="code-comment">// Checks issuer, structure, validity window, the</span>
+<span class="code-comment">// Checks the pinned issuer, the validity window, the</span>
 <span class="code-comment">// eddsa-jcs-2022 proof against the issuer DID document,</span>
-<span class="code-comment">// and revocation. Fail-closed.</span>
+<span class="code-comment">// structure, and revocation where the credential</span>
+<span class="code-comment">// carries a credentialStatus entry.</span>
+<span class="code-comment">//</span>
+<span class="code-comment">// Structure and revocation are narrower than they</span>
+<span class="code-comment">// read. Read the note below before relying on either.</span>
 <span class="code-comment">//</span>
 <span class="code-comment">// Note: verifyCredential(config, nowMs) is a DIFFERENT</span>
 <span class="code-comment">// function and does not take the credential.</span>
 <span class="code-comment">// Types are the reference; no worked example ships yet.</span>
+        </div>
+        <div class="sdk-note">
+          <div class="sdk-note-icon">⚠</div>
+          <div><strong>Two of those five checks establish less than the line above reads.
+          Measured 13 August 2026 against <code><span data-engine-version="historical">1.0.0-rc.10</span></code>,
+          which is the version this page documents. npm's <code>latest</code> served
+          <code><span data-engine-version="historical">1.0.0-rc.12</span></code> on that date and these figures were
+          not re-run against it.</strong>
+          <br><br>
+          <strong>Structure does not read the schema the credential declares.</strong>
+          <code>validateStructure</code> is synchronous and performs no fetch. It checks the shape
+          the engine already knows, and it checks that <code>credentialSchema.id</code> appears in
+          your <code>schemaAllowlist</code>; it does not retrieve the document at that URL. A
+          credential declaring <code>delegation/v2.7.json</code> while omitting
+          <code>credentialStatus</code>, which is in that schema's <code>required</code> list,
+          returns <code>{ ok: true }</code>. Pinning a schema version pins a string, not the
+          constraints the version exists to impose.
+          <br><br>
+          <strong>Revocation is fail-closed until it has a cached copy, and permissive afterwards.</strong>
+          With no cache and an unreachable status list the verdict is a denial:
+          <code>[revocation] status could not be established: unreachable (fetch failed) and no
+          cached copy exists</code>. After one successful fetch, the same unreachable list returns
+          <code>allow: true</code>, <code>reason: 'credential verified'</code> and
+          <code>checks.revocation: 'not-revoked'</code>. The substitution is recorded only in
+          <code>notes</code>, as <code>served from cache aged 0.0h (limit 24h)</code>, and
+          <code>checks</code> carries no value that distinguishes a live answer from a cached one
+          even though it carries <code>'status-absent'</code> and <code>'not-configured'</code> for
+          other checks that did not run. The staleness limit is measured against the cached file's
+          own age, not against the <code>nowMs</code> you pass in. Read <code>notes</code>, not only
+          <code>checks</code>.
+          <br><br>
+          <strong>The other three hold as written.</strong> The issuer pin is enforced: a credential
+          whose <code>issuer</code> differs from <code>config.issuerDid</code> is denied at the
+          structure gate with <code>issuer &hellip; does not match the pinned trusted issuer
+          &hellip;</code>, including when that credential is validly signed by a key its own domain
+          publishes and raises the mandate ceiling. The validity window and the
+          <code>eddsa-jcs-2022</code> proof both deny as documented.</div>
         </div>
         <div class="sdk-note">
           <div class="sdk-note-icon">⚠</div>
