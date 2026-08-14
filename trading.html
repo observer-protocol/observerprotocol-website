@@ -1432,8 +1432,10 @@ print('key:  ', k.get('publicKeyMultibase','')[:40], '...')
       <div class="verify-step">
         <div class="verify-num">3</div>
         <div class="verify-body">
-          <div class="verify-label">Fetch the live delegation credential</div>
+          <div class="verify-label">Fetch the delegation credential this evaluation cites</div>
           <div class="verify-desc">Confirm issuer is bitcoinsingularity.ai (the principal, not the evaluator), $10 cap, no drawdownCap declared.</div>
+          <div class="verify-desc"><strong>Read what you are fetching. This credential is superseded and its structure is incomplete.</strong> It expired on 4 August 2026. It declares <code class="code-inline">authorizationLevel: policy</code> without the <code class="code-inline">authorizationConfig.policy</code> that level requires, so our own verifier denies it: <code class="code-inline">[schema] structure: authorizationLevel policy requires authorizationConfig.policy</code>. It is typed <code class="code-inline">DelegationCredential</code> where every other delegation on this site is an <code class="code-inline">ObserverDelegationCredential</code>. It carries no <code class="code-inline">credentialStatus</code>, and it pins schema v2.2 while v2.7 is the current one.</div>
+          <div class="verify-desc">It stays published, and this step keeps pointing at it, because the evaluation credential binds this exact document. The PEC records <code class="code-inline">delegationCredentialHash</code> <code class="code-inline">3e8abc4b</code>, so substituting the current mandate would break the binding this section exists to demonstrate. The hash check below establishes that the two are the same document. That is the only claim being made about it here. The register carries the same status at <a href="/registry.html" style="color:var(--accent-2);">registry.html</a>.</div>
           <div class="verify-cmd"><code>curl -s https://observerprotocol.org/credentials/maxi-0001-trading-mandate.json \
   | python3 -c "
 import json, sys, hashlib
@@ -1474,7 +1476,7 @@ print('hash match:', h == expected, '(', h[:16], '...' ,')')
   <!-- ── Footer ────────────────────────────────────────── -->
   <footer class="footer">
     <div class="footer-item">
-      <span>Delegation credential</span>
+      <span>Delegation credential · superseded, incomplete structure</span>
       <a href="https://observerprotocol.org/credentials/maxi-0001-trading-mandate.json">
         observerprotocol.org/credentials/maxi-0001-trading-mandate.json
       </a>
