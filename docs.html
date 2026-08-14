@@ -218,7 +218,7 @@
       </a>
       <a href="https://github.com/observer-protocol/op-policy-engine" target="_blank" class="qs-card">
         <div class="qs-icon">📦</div>
-        <div class="qs-tag">NPM INSTALL · v<span data-engine-version="current">1.0.0-rc.10</span></div>
+        <div class="qs-tag">NPM INSTALL · v<span data-engine-version="current">1.0.0-rc.12</span></div>
         <div class="qs-name">Verify a credential</div>
         <div class="qs-meta">npm install @observer-protocol/policy-engine</div>
         <div class="qs-desc" data-shared-copy="offline-scope">Verify a delegation credential yourself — issuer, structure, validity window, eddsa-jcs-2022 proof against the issuer DID document, and revocation. No API key, no token, no Observer Protocol API in the path. It fetches the issuer's DID document and the revocation status list over ordinary HTTPS from the origins the credential names; point <code>offline.didDocumentPath</code> at a local copy and it makes no network call at all. The hosted verifier is a separate deployment running a different engine version; see the SDK section.</div>
@@ -387,10 +387,9 @@ npm install @observer-protocol/policy-engine
         <div class="sdk-note">
           <div class="sdk-note-icon">⚠</div>
           <div><strong>Two of those five checks establish less than the line above reads.
-          Measured 13 August 2026 against <code><span data-engine-version="historical">1.0.0-rc.10</span></code>,
-          which is the version this page documents. npm's <code>latest</code> served
-          <code><span data-engine-version="historical">1.0.0-rc.12</span></code> on that date and these figures were
-          not re-run against it.</strong>
+          Measured 13 August 2026 against <code><span data-engine-version="historical">1.0.0-rc.10</span></code>
+          and re-measured the same day against <code><span data-engine-version="historical">1.0.0-rc.12</span></code>,
+          which is the version this page now documents. Both runs produced identical results.</strong>
           <br><br>
           <strong>Structure does not read the schema the credential declares.</strong>
           <code>validateStructure</code> is synchronous and performs no fetch. It checks the shape
@@ -448,7 +447,7 @@ npm install @observer-protocol/policy-engine
           unauthenticated <code>POST /v1/verify</code> returns 200 with a signed result.
           <br><br>
           It is a <em>different build</em>, though. The hosted service reports
-          <code>engine.running: "0.3.3"</code>; the package above is <code><span data-engine-version="current">1.0.0-rc.10</span></code>. Re-measured against
+          <code>engine.running: "0.3.3"</code>; the package above is <code><span data-engine-version="current">1.0.0-rc.12</span></code>. Re-measured against
           rc.10 on 9 August 2026: they agree on 7 of the 8 artifacts this site publishes. The eighth is
           never evaluated by the hosted engine at all &mdash; it is refused at that deployment's issuer
           allowlist, which does not carry the testbed issuer. So the agreement is on samples rather
@@ -674,7 +673,9 @@ npm install @observer-protocol/policy-engine
         <strong>Correction, 13 August 2026. This section previously read "there is no published schema for it, and no verifier accepts one." The first half is true. The second was false, and it was false in the direction that reads as modesty.</strong> The published package verifies a decision attestation, and what it establishes is narrower than the word verifier suggests, so both halves are stated here rather than one.
       </p>
       <p style="font-size:0.92rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1rem;">
-        <strong style="color:var(--green);">What it does establish.</strong> <code>verifyDecisionAttestation</code>, exported from <code>@observer-protocol/policy-engine</code>, checks an Ed25519 signature over a canonicalisation of the <em>whole</em> document. Measured against <code><span data-engine-version="historical">1.0.0-rc.10</span></code> on 13 August 2026: no field can be altered, added or removed without the check failing, including fields the function never reads. It also requires that the identifier the payment cites is the identifier the document carries. So a third party learns that a named key signed those exact bytes, and that nobody has changed them since. That is non-repudiation, and it is real.
+        <strong style="color:var(--green);">What it does establish.</strong> <code>verifyDecisionAttestation</code>, exported from <code>@observer-protocol/policy-engine</code>, checks an Ed25519 signature over a canonicalisation of the <em>whole</em> document. Measured against <code><span data-engine-version="historical">1.0.0-rc.10</span></code> and re-measured against
+        <code><span data-engine-version="historical">1.0.0-rc.12</span></code>, both on 13 August 2026 with identical
+        results: no field can be altered, added or removed without the check failing, including fields the function never reads. It also requires that the identifier the payment cites is the identifier the document carries. So a third party learns that a named key signed those exact bytes, and that nobody has changed them since. That is non-repudiation, and it is real.
       </p>
       <p style="font-size:0.92rem; color:var(--text-dim); line-height:1.8; font-weight:300; margin-bottom:1rem;">
         <strong style="color:#f87171;">What it does not establish, and you can check each of these against the package.</strong>

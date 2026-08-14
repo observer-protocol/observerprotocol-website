@@ -526,3 +526,44 @@ describes a control which does not exist is indistinguishable from a real except
 - **When you write an exemption, name what the control actually does, and re-read it when the
   control changes.** Both allowlist reasons in this repo were written truthfully and became false
   without anyone editing them.
+
+## 14. `git fetch` before you branch. Every control here reads the working tree, so a stale base is invisible
+
+**Bought on 2026-08-13, and the defect reached the live site.**
+
+`#48` merged at 09:15 MDT on 2026-08-10 giving `f89f24a`. `#49` merged **seventeen minutes later**
+giving `f7a04c8`. Three days on, a corrections pass branched from local `master`, which was still
+`f89f24a`, because nothing had run `git fetch` since. `git merge-base --is-ancestor f7a04c8 f89f24a`
+returns false: the branch point was never `master`.
+
+`#49` is the PR that replaced `tools/pec-verify`'s hardcoded single-credential `verify:local` with
+`verify:local:all`. The pass added a sentence to `architecture.html` reading *"We run that check in
+CI over one of the two"*, drafted deliberately against "master's tool" — the right instinct, applied
+to a ref that was not master. It shipped, and it **understated the control by half**.
+
+**Why nothing caught it.** Every control in this repository reads the working tree:
+`check-shared-copy`, `verify-published-credentials`, `check-aip-sync` and `sync-engine-version` all
+open files on disk. **None of them compares a local ref against its remote.** A stale base is not a
+file, so it is not a thing any of them can see. The one control that reaches outside the repository,
+`sync-engine-version`'s registry comparison, exists precisely because "our documents agree with each
+other" is satisfiable by a consistently wrong pair — and a stale base is that same shape one layer
+down: the working tree is internally consistent and consistent with the wrong parent.
+
+It also failed in the direction [§13](#13-something-correct-and-partial-is-harder-to-see-than-something-absent)
+names. Understating a control reads as caution. Nobody queries a sentence that claims less than the
+truth, so it survives review that a wrong claim would not.
+
+### The check that would have caught it
+
+```bash
+git fetch origin && git rev-parse HEAD origin/master
+```
+
+Two identical hashes means the base is current. Different hashes, before any branch is cut, is the
+entire finding. Run it **before branching**, not before pushing: by push time the work is already
+built on the wrong parent, and `git push` succeeds regardless because a branch from an old commit is
+a perfectly valid branch.
+
+**And when a correction describes a mechanism in this repository, read the mechanism on the ref you
+are about to branch from, not on the ref you happen to have checked out.** The sentence above was
+measured carefully against a real file; the file was three days old.

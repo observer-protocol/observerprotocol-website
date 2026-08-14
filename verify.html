@@ -119,7 +119,7 @@
     </p>
 
     <div class="code">
-      <div class="head"><span>verify.mjs</span><span>@observer-protocol/policy-engine <span data-engine-version="current">1.0.0-rc.10</span> · MIT</span></div>
+      <div class="head"><span>verify.mjs</span><span>@observer-protocol/policy-engine <span data-engine-version="current">1.0.0-rc.12</span> · MIT</span></div>
 <pre><span class="c">$</span> <span class="k">npm install</span> @observer-protocol/policy-engine
 <span class="c">$</span> <span class="k">curl -O</span> https://observerprotocol.org/verify-samples/verifies-delegation-mandate.json
 
@@ -347,7 +347,7 @@ console.log(<span class="k">await</span> verifyCredentialObject(credential, conf
 
     <div class="callout">
       <h4>The two verifiers are not the same build</h4>
-      <p>The hosted service reports <code>engine.running: "0.3.3"</code>. The published package is <code><span data-engine-version="current">1.0.0-rc.10</span></code>. Re-measured against rc.10 on 9 August 2026: of the 8 artifacts this site publishes, they agree on 7, including on the exact reason string for a structural failure. The eighth, the testbed-issuer demonstration credential, the hosted engine never evaluates — that deployment refuses it at its issuer allowlist, so the refusal is evidence about the allowlist and not about the engine. That is agreement observed on samples, not a shared code path, and you should not treat one as a substitute for the other. Bringing the hosted service onto the published engine is tracked; until it lands, this notice stays.</p>
+      <p>The hosted service reports <code>engine.running: "0.3.3"</code>. The published package is <code><span data-engine-version="current">1.0.0-rc.12</span></code>. Re-measured against rc.10 on 9 August 2026: of the 8 artifacts this site publishes, they agree on 7, including on the exact reason string for a structural failure. The eighth, the testbed-issuer demonstration credential, the hosted engine never evaluates — that deployment refuses it at its issuer allowlist, so the refusal is evidence about the allowlist and not about the engine. That is agreement observed on samples, not a shared code path, and you should not treat one as a substitute for the other. Bringing the hosted service onto the published engine is tracked; until it lands, this notice stays.</p>
       <p>The service is also candid about a second limit, in its own <code>/version</code> response: the schema and issuer allowlists it enforces come from environment variables on the host, <code>inRepo: false</code>, so a change to what it accepts "leaves no reviewable record". <span data-shared-copy="offline-scope">The offline path has no such property, because the allowlist is the one you wrote.</span></p>
       <p><strong>Two further limits, and they are worse than the two above.</strong></p>
       <p><strong>A scope answer that does not vary with its input.</strong> Attach a proposal and <code>scope.inScope</code> returns <code>false</code> for every USDC amount &mdash; a compliant one, an absurd one, any of them. The cause is that engine 0.3.3 cannot scale USDC minor units, so the comparison it is asked to make cannot be made and it fails closed. Still true on 9 August 2026, and the service now names the cause in the answer: <code>currency "USDC" has no known minor-unit exponent &mdash; amount cannot be scaled (fail closed)</code>. Re-measured at two amounts three orders of magnitude apart; both returned the same <code>inScope: false</code>. Failing closed is the correct behaviour and the outcome is still useless: <strong>a check that returns the same answer for every input is not telling you about your input.</strong> Read a <code>false</code> here as &ldquo;not evaluated&rdquo;, never as &ldquo;out of scope&rdquo;. The offline package does not share this limit.</p>
@@ -388,7 +388,7 @@ console.log(<span class="k">await</span> verifyCredentialObject(credential, conf
     </div>
   </div>
   <div class="footer-note">
-    Engine <code>@observer-protocol/policy-engine</code> <span data-engine-version="current">1.0.0-rc.10</span> · hosted service engine 0.3.3 · verdicts on this page <span data-engine-version="historical">re-measured against rc.6 on 8 August 2026</span> · AIP v0.9, ratified 25 July 2026 · MIT
+    Engine <code>@observer-protocol/policy-engine</code> <span data-engine-version="current">1.0.0-rc.12</span> · hosted service engine 0.3.3 · verdicts on this page <span data-engine-version="historical">re-measured against rc.6 on 8 August 2026 and against rc.12 on 13 August 2026, identical both times</span> · AIP v0.9, ratified 25 July 2026 · MIT
   </div>
 </footer>
 
