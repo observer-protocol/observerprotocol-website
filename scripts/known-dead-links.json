@@ -1,0 +1,146 @@
+{
+  "$comment": [
+    "KNOWN-DEAD OUTBOUND LINKS, dated 2026-08-16, held open with the failure stated.",
+    "",
+    "check-outbound-links.mjs was added on 2026-08-16 and found 15 published 404s on",
+    "its first run. None was introduced by that change. Deleting the links quietly, or",
+    "letting the check report-only, would both have made the build green while leaving",
+    "a reader to find the same thing. This repository already refuses that trade for",
+    "artifacts that do not verify, and a published address that names nothing is the",
+    "same class of defect.",
+    "",
+    "SO THIS LIST IS DEBT, NOT AN ALLOWLIST, and the check enforces it in BOTH",
+    "directions:",
+    "  a 404 not on this list          FAILS. New rot cannot enter.",
+    "  a listed URL that now RESOLVES  FAILS. Fix it and delete the row in the same",
+    "                                  commit, so the list can only shrink.",
+    "",
+    "Every row names the page that carries it. It is meant to be emptied.",
+    "The count on the day it was written was 15."
+  ],
+  "recordedOn": "2026-08-16",
+  "recordedAtCount": 15,
+  "known": [
+    {
+      "url": "https://agenticterminal.io/sovereign",
+      "status": 404,
+      "pages": [
+        "registry.html"
+      ],
+      "note": "The same dead CTA this check was written for, still carried on registry.html. Removed from agentic-terminal.html tonight; registry.html is a separate copy decision and the Sovereign subdomain's future is Boyd's call."
+    },
+    {
+      "url": "https://api.observerprotocol.org",
+      "status": 404,
+      "pages": [
+        "papers/positioning-paper.html"
+      ],
+      "note": "Bare origin 404s; the API answers on its routes. Either the link should name a route or the origin should answer."
+    },
+    {
+      "url": "https://app.agenticterminal.io/sovereign",
+      "status": 404,
+      "pages": [
+        "registry.html"
+      ],
+      "note": "Legacy host from a previous stack. Same decision as the row above."
+    },
+    {
+      "url": "https://app.agenticterminal.io/sovereign/agents/maxi-0001",
+      "status": 404,
+      "pages": [
+        "wdk.html"
+      ],
+      "note": "A public agent profile on the legacy host. It is linked as evidence, which makes a 404 here worse than a broken nav link."
+    },
+    {
+      "url": "https://github.com/observer-protocol/aip/blob/master/docs/developer-guide/agent-quickstart.md",
+      "status": 404,
+      "pages": [
+        "docs.html"
+      ],
+      "note": "The AIP repository has no docs/developer-guide, rails/erc8004 or sdk path on master. /docs sends developers to eight addresses that name nothing."
+    },
+    {
+      "url": "https://github.com/observer-protocol/aip/blob/master/docs/developer-guide/api-reference.md",
+      "status": 404,
+      "pages": [
+        "docs.html"
+      ],
+      "note": "The AIP repository has no docs/developer-guide, rails/erc8004 or sdk path on master. /docs sends developers to eight addresses that name nothing."
+    },
+    {
+      "url": "https://github.com/observer-protocol/aip/blob/master/docs/developer-guide/chain-verification.md",
+      "status": 404,
+      "pages": [
+        "docs.html"
+      ],
+      "note": "The AIP repository has no docs/developer-guide, rails/erc8004 or sdk path on master. /docs sends developers to eight addresses that name nothing."
+    },
+    {
+      "url": "https://github.com/observer-protocol/aip/blob/master/docs/developer-guide/network-operator-guide.md",
+      "status": 404,
+      "pages": [
+        "docs.html"
+      ],
+      "note": "The AIP repository has no docs/developer-guide, rails/erc8004 or sdk path on master. /docs sends developers to eight addresses that name nothing."
+    },
+    {
+      "url": "https://github.com/observer-protocol/aip/tree/master/docs/developer-guide",
+      "status": 404,
+      "pages": [
+        "docs.html"
+      ],
+      "note": "The AIP repository has no docs/developer-guide, rails/erc8004 or sdk path on master. /docs sends developers to eight addresses that name nothing."
+    },
+    {
+      "url": "https://github.com/observer-protocol/aip/tree/master/rails/erc8004",
+      "status": 404,
+      "pages": [
+        "docs.html"
+      ],
+      "note": "The AIP repository has no docs/developer-guide, rails/erc8004 or sdk path on master. /docs sends developers to eight addresses that name nothing."
+    },
+    {
+      "url": "https://github.com/observer-protocol/aip/tree/master/sdk",
+      "status": 404,
+      "pages": [
+        "docs.html"
+      ],
+      "note": "The AIP repository has no docs/developer-guide, rails/erc8004 or sdk path on master. /docs sends developers to eight addresses that name nothing."
+    },
+    {
+      "url": "https://github.com/observer-protocol/aip/tree/master/sdk/python",
+      "status": 404,
+      "pages": [
+        "docs.html"
+      ],
+      "note": "The AIP repository has no docs/developer-guide, rails/erc8004 or sdk path on master. /docs sends developers to eight addresses that name nothing."
+    },
+    {
+      "url": "https://github.com/observer-protocol/op-policy-engine/blob/main/KNOWN-LIMITS.md",
+      "status": 404,
+      "pages": [
+        "index.html"
+      ],
+      "note": "The file ships INSIDE the npm tarball but is not at that path on the default branch. The homepage cites it as the limits document."
+    },
+    {
+      "url": "https://stripe.com/annual-letter",
+      "status": 404,
+      "pages": [
+        "papers/technical-paper.html"
+      ],
+      "note": "Third-party page moved. Cited in the technical paper."
+    },
+    {
+      "url": "https://verify.observerprotocol.org/health",
+      "status": 404,
+      "pages": [
+        "quickstart.html",
+        "sdk.html"
+      ],
+      "note": "/version answers, /health does not. Two quickstarts tell a reader to curl an endpoint that is not there."
+    }
+  ]
+}
