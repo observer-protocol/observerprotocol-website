@@ -1,0 +1,26 @@
+{
+  "k": "verdict",
+  "id": "verdict-631",
+  "reservationId": "probe-02-deliberate-release-above-ceiling",
+  "at": "2026-08-15T19:18:43.451Z",
+  "payload": {
+    "decision": "release",
+    "mandateId": "urn:uuid:ppp-forgiveness-june-2020-12909",
+    "agentId": "did:web:agent.example",
+    "issuerId": "did:web:issuer.example",
+    "rail": "eip155:8453",
+    "asset": "USDC",
+    "amountRaw": "2339635210000",
+    "decimals": "6",
+    "counterpartyMatchedAs": "0x9999999999999999999999999999999999999999",
+    "notBefore": "2026-08-15T19:08:59.075Z",
+    "notAfter": "2026-08-16T19:08:59.075Z"
+  },
+  "signature": "/WKQzMp84Q2NTF6AR85HE7UUxHg5zKzm7hHUej+kqMpu1V+4Ibq+PHboVleWYVQWe+XVloVFPZGd5QHJBPErBg==",
+  "evaluator": "did:key:z6MksSKYrTJ7a1buUtDAjppEwbDQVf1NQUq8U48BXzhi67Cw",
+  "construction": {
+    "state": "recorded",
+    "type": "op.evaluation.verdict.v4"
+  },
+  "observedAt": "2026-08-15T19:18:43.454Z"
+}

@@ -1,0 +1,31 @@
+{
+  "k": "refused",
+  "refusalId": "refusal-416",
+  "authority": "mandate",
+  "at": "2026-08-15T19:18:43.451Z",
+  "code": "CEILING_EXCEEDED",
+  "reason": "This payment moves 2339635210000 minor units (6 dp) of USDC and the mandate's per_transaction_ceiling is 700000 USDC, which is 700000000000 at the same scale. The payment exceeds it and is refused. The constraint breached is `actionScope.per_transaction_ceiling`. This figure is the EFFECTIVE ceiling: a deployment may tighten it below what the credential declares and may never raise it, so compare against the credential to see whether it was tightened.",
+  "network": "eip155:8453",
+  "attribution": {
+    "agentId": "did:web:agent.example",
+    "mandateId": "urn:uuid:ppp-forgiveness-june-2020-12909"
+  },
+  "spend": {
+    "amountRaw": "2339635210000",
+    "asset": "USDC",
+    "counterparty": "0x9999999999999999999999999999999999999999",
+    "decimals": 6,
+    "rail": "eip155:8453"
+  },
+  "breachedConstraint": "actionScope.per_transaction_ceiling",
+  "appliedBound": {
+    "state": "recorded",
+    "limit": "700000",
+    "unit": "USDC",
+    "observed": "2339635.210000"
+  },
+  "signature": "Q6XnRkmhS/f3nLXEbi1WOl7DUOH8enIRhGci2UIwQ9FlSGtRXZiW0ZgSIttQX8wDOLutrozqtQoqdbdXaVDtBA==",
+  "signedBy": "did:key:z6MkgURiyuwxEi2GrcvhSGpqcuwuk2W38u51sAirJm7ZAoAH",
+  "payloadType": "op.enforcement.refusal.v2",
+  "observedAt": "2026-08-15T19:18:43.457Z"
+}

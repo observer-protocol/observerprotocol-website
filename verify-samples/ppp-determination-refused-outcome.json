@@ -1,0 +1,79 @@
+{
+  "k": "determination",
+  "admission": {
+    "path": "payment",
+    "grantRequired": false,
+    "decider": "did:key:z6MkoMCP6imN1HfKC1gVHDMffgP3af58VnGY621KRHrEsbDq",
+    "grant": {
+      "state": "held",
+      "grantId": "decider-grant-1",
+      "judgedAt": "2026-08-15T20:17:44.609Z"
+    }
+  },
+  "decisionId": "urn:ppp-cases:decision:MF-0001:APR",
+  "decisionIdSource": "signed-document",
+  "document": "eyJhc3N1cmFuY2UiOiAic2VsZi1kZWNsYXJlZCIsICJkZWNpZGVkQXQiOiAiMjAyNi0wOC0xNFQwMDowMDowMFoiLCAiZGVjaWRlciI6ICJkaWQ6a2V5Ono2TWtvTUNQNmltTjFIZktDMWdWSERNZmZnUDNhZjU4Vm5HWTYyMUtSSHJFc2JEcSIsICJkZWNpZGVyQXJ0aWZhY3REaWdlc3QiOiB7InN0YXRlIjogImRpZ2VzdCIsICJ2YWx1ZSI6ICJzaGEyNTY6ZDRiYjQxZTMwNGZlODFjNDM5MjRjOTgwMzQ4OGQxZGYwY2U0MjQ1OWZmMDc5MDY2MmQxZjBlMTBhMzQ3MDI3OCJ9LCAiZGVjaXNpb25JZCI6ICJ1cm46cHBwLWNhc2VzOmRlY2lzaW9uOk1GLTAwMDE6QVBSIiwgImRldGVybWluYXRpb24iOiB7ImNhc2VDYXRlZ29yeSI6ICJtYWxmb3JtZWQiLCAiY2FzZUlkIjogIk1GLTAwMDEiLCAiY2FzZVJlY29yZERpZ2VzdCI6ICI4ZjMzNDg3YmIwMDZhMmNiNDY4MTg2NDQ4MjVlZThlNmQ2MmU1NWIxODkyNjgyYmVkMzM2OTM2OTg5NDgyN2VlIiwgImNhc2VSZWNvcmREaWdlc3RNZXRob2QiOiAic2hhMjU2IG92ZXIgdGhlIFVURi04IGJ5dGVzIG9mIHRoZSBjYXNlJ3MgbGluZSBpbiBjYXNlcy9jYXNlcy5qc29ubCwgZXhjbHVkaW5nIHRoZSBuZXdsaW5lIiwgImNhc2VTZXQiOiAiY2FzZXMvY2FzZXMuanNvbmwiLCAiZGVjaWRlckFydGlmYWN0IjogInBwcC9lbmdpbmUucHksIHRoZSBkZXRlcm1pbmF0aW9uIGVuZ2luZSB3aG9zZSBkaWdlc3QgZGVjaWRlckFydGlmYWN0RGlnZXN0IGNhcnJpZXMiLCAicmVmdXNhbENsYXNzIjogIlNDSEVNQSIsICJyZWZ1c2FsQ29kZXMiOiBbIkVfUFJJTkNJUEFMX01JU1NJTkciXSwgInJlZnVzZWQiOiAidHJ1ZSIsICJydWxlQ2l0YXRpb24iOiAiODUgRlIgMjA4MTEiLCAicnVsZVZlcnNpb24iOiAiQVBSIn0sICJvdXRjb21lIjogImRldGVybWluYXRpb24tcmVmdXNlZC1zY2hlbWEiLCAicG9saWN5UmVmIjogeyJoYXNoIjogIjliN2M1NjFiYmNmMGFmYTc5YThkODI5NGUxMTRjY2YxOWM1Zjg1ZmQ2Yjc3OGE5NDAzNWI0NTM0MzI3MWJlOTYiLCAiaGFzaE1ldGhvZCI6ICJzaGEyNTYiLCAiaWQiOiAidXJuOnVzLWZyOmRvY3VtZW50OjIwMjAtMDc2NzIiLCAicHVibGlzaGVySWQiOiAiODUgRlIgMjA4MTEiLCAicmV0cmlldmVkRnJvbSI6ICJodHRwczovL3d3dy5nb3ZpbmZvLmdvdi9jb250ZW50L3BrZy9GUi0yMDIwLTA0LTE1L3BkZi8yMDIwLTA3NjcyLnBkZiIsICJ2ZXJzaW9uIjogIjIwMjAtMDQtMTUsIFJJTiAzMjQ1LUFIMzQifSwgInR5cGUiOiAiRGVjaXNpb25BdHRlc3RhdGlvbiIsICJ2b2NhYnVsYXJ5UmVmIjogeyJoYXNoIjogImU5NzcxZTM3ODZjMzkxOGE2MjRhNjkyYTI0M2FhM2NkZTkxNmMyYTM2NDI4N2JjOGU3MjJmZTk2ZmRkODRiNjQiLCAiaGFzaE1ldGhvZCI6ICJzaGEyNTYiLCAiaWQiOiAidXJuOnBwcC1jYXNlczp2b2NhYnVsYXJ5OmZvcmdpdmVuZXNzLW91dGNvbWVzIiwgInNvdXJjZSI6ICJjbGllbnQtZGVmaW5lZCIsICJ2YWx1ZXMiOiBbImZvcmdpdmVuZXNzLWZ1bGwiLCAiZm9yZ2l2ZW5lc3MtcGFydGlhbCIsICJmb3JnaXZlbmVzcy1ub25lIiwgImRldGVybWluYXRpb24tcmVmdXNlZC1zY2hlbWEiLCAiZGV0ZXJtaW5hdGlvbi1yZWZ1c2VkLXJ1bGUiXSwgInZlcnNpb24iOiAiMS4wLjAifX0=",
+  "documentEncoding": "base64",
+  "documentHash": "sha256:b6c0bdd0aa958567665e816a9aa9a589b6ecd368f1c012bcd2480c7c4951a4eb",
+  "signature": "PoSqP9d+pxyk4A/hxtpFpK42TRaUbRYYiq/XCxKAp7La8wnQ/d5Bx9Q737TJddPtNSpM/Z2/aYqNt4w4zg+UBA==",
+  "verification": {
+    "state": "attested",
+    "construction": "jcs-2022-over-parsed-document",
+    "note": "The signature was checked against JCS bytes re-derived from the parsed document, using the decider's key recovered from its own DID. The bytes stored here are the WIRE form and were not themselves the verified input; for a document whose wire form is already canonical they are the same sequence, and for one that is not they differ."
+  },
+  "decider": "did:key:z6MkoMCP6imN1HfKC1gVHDMffgP3af58VnGY621KRHrEsbDq",
+  "outcomeTerm": "determination-refused-schema",
+  "vocabularyRef": {
+    "hash": "e9771e3786c3918a624a692a243aa3cde916c2a364287bc8e722fe96fdd84b64",
+    "hashMethod": "sha256",
+    "id": "urn:ppp-cases:vocabulary:forgiveness-outcomes",
+    "source": "client-defined",
+    "values": [
+      "forgiveness-full",
+      "forgiveness-partial",
+      "forgiveness-none",
+      "determination-refused-schema",
+      "determination-refused-rule"
+    ],
+    "version": "1.0.0"
+  },
+  "policyRef": {
+    "hash": "9b7c561bbcf0afa79a8d8294e114ccf19c5f85fd6b778a94035b45343271be96",
+    "hashMethod": "sha256",
+    "id": "urn:us-fr:document:2020-07672",
+    "publisherId": "85 FR 20811",
+    "retrievedFrom": "https://www.govinfo.gov/content/pkg/FR-2020-04-15/pdf/2020-07672.pdf",
+    "version": "2020-04-15, RIN 3245-AH34"
+  },
+  "documentOnly": {
+    "assurance": "self-declared",
+    "determination": {
+      "caseCategory": "malformed",
+      "caseId": "MF-0001",
+      "caseRecordDigest": "8f33487bb006a2cb46818644825ee8e6d62e55b1892682bed3369369894827ee",
+      "caseRecordDigestMethod": "sha256 over the UTF-8 bytes of the case's line in cases/cases.jsonl, excluding the newline",
+      "caseSet": "cases/cases.jsonl",
+      "deciderArtifact": "ppp/engine.py, the determination engine whose digest deciderArtifactDigest carries",
+      "refusalClass": "SCHEMA",
+      "refusalCodes": [
+        "E_PRINCIPAL_MISSING"
+      ],
+      "refused": "true",
+      "ruleCitation": "85 FR 20811",
+      "ruleVersion": "APR"
+    },
+    "type": "DecisionAttestation"
+  },
+  "deciderArtifactDigest": {
+    "state": "digest",
+    "value": "sha256:d4bb41e304fe81c43924c9803488d1df0ce42459ff0790662d1f0e10a3470278"
+  },
+  "decidedAt": "2026-08-14T00:00:00Z",
+  "bound": {
+    "state": "not-read",
+    "note": "This build does not extract a bound from a decider's document. The document may state one; nothing here has looked. This is a statement about this reader, NOT about the decider — \"the decider supplied no bound\" is a different fact and is `not-supplied`."
+  },
+  "at": "2026-08-15T20:17:44.583Z",
+  "id": "determination-904",
+  "observedAt": "2026-08-15T20:17:44.609Z"
+}

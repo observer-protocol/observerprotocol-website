@@ -1,0 +1,26 @@
+{
+  "k": "verdict",
+  "id": "verdict-737",
+  "reservationId": "probe-01-deliberate-release-above-escalation-threshold",
+  "at": "2026-08-15T19:18:45.402Z",
+  "payload": {
+    "decision": "release",
+    "mandateId": "urn:uuid:ppp-forgiveness-april-2020-07672",
+    "agentId": "did:web:agent.example",
+    "issuerId": "did:web:issuer.example",
+    "rail": "eip155:8453",
+    "asset": "USDC",
+    "amountRaw": "500589980000",
+    "decimals": "6",
+    "counterpartyMatchedAs": "0x9999999999999999999999999999999999999999",
+    "notBefore": "2026-08-15T19:08:59.075Z",
+    "notAfter": "2026-08-16T19:08:59.075Z"
+  },
+  "signature": "zGh1NQfb3QT8kXVBkOgIInEPYCZC8LHdETRRxtKmXQNeD0CxsOx0b8+DH0+LeSIkoVU+Y/y/FZispBzcqcvRCQ==",
+  "evaluator": "did:key:z6MksSKYrTJ7a1buUtDAjppEwbDQVf1NQUq8U48BXzhi67Cw",
+  "construction": {
+    "state": "recorded",
+    "type": "op.evaluation.verdict.v4"
+  },
+  "observedAt": "2026-08-15T19:18:45.404Z"
+}

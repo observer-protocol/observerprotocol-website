@@ -1,0 +1,28 @@
+{
+  "k": "verdict",
+  "id": "verdict-4",
+  "reservationId": "res-1173",
+  "at": "2026-08-15T19:10:06.718Z",
+  "payload": {
+    "decision": "deny",
+    "mandateId": "urn:uuid:ppp-forgiveness-april-2020-07672",
+    "agentId": "did:web:agent.example",
+    "issuerId": "did:web:issuer.example",
+    "rail": "eip155:8453",
+    "asset": "USDC",
+    "amountRaw": "1156884630000",
+    "decimals": "6",
+    "counterpartyMatchedAs": "0x9999999999999999999999999999999999999999",
+    "notBefore": "2026-08-15T19:08:59.075Z",
+    "notAfter": "2026-08-16T19:08:59.075Z",
+    "breachedConstraint": "per_transaction_ceiling",
+    "denialDetail": {}
+  },
+  "signature": "Gy3/d6w8WPMS6j9XKUjB86obKQcFBn3QN2rtHFk0xtTv9VSYYBzt7/F5LCzZ20t+TSttIpFtM170gUdVcOrzAA==",
+  "evaluator": "did:key:z6MksSKYrTJ7a1buUtDAjppEwbDQVf1NQUq8U48BXzhi67Cw",
+  "construction": {
+    "state": "recorded",
+    "type": "op.evaluation.verdict.v4"
+  },
+  "observedAt": "2026-08-15T19:10:06.741Z"
+}
