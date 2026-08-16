@@ -120,6 +120,90 @@
         "verify.html"
       ],
       "why": "How many consecutive releases the gap spans, derived rather than counted by a reader off the two endpoints."
+    },
+    {
+      "key": "schema-claims:citeInsteadUrl",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "The schema this section derives its field names from. It is the whole provenance claim of section 03; unmarked, it was wrong and nothing could say so."
+    },
+    {
+      "key": "schema-claims:citedDefines",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "How many of the documented fields the previously cited schema defines. Zero is the finding."
+    },
+    {
+      "key": "schema-claims:claimsTotal",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "The denominator. Adding a tenth field block without measuring it would leave this figure quietly wrong."
+    },
+    {
+      "key": "schema-claims:citedBytes",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "The size of the placeholder. It is what makes 'defines nothing' concrete rather than rhetorical."
+    },
+    {
+      "key": "schema-claims:otherVersionsDefiningAll",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "That every other published version defines all of them, which is what makes the citation an error rather than a gap in the schema estate."
+    },
+    {
+      "key": "schema-claims:citeInstead",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "The version now cited, derived from which one both defines the fields and validates the artifact."
+    },
+    {
+      "key": "schema-claims:servedArtifacts.pinningCited",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "How many served artifacts pin the vacuous schema. This is the reason the code samples were not changed."
+    },
+    {
+      "key": "schema-claims:servedArtifacts.total",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "The denominator for the line above."
+    },
+    {
+      "key": "hosted-verifier:commitShort",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "The commit in which the two verifiers converged. Naming it turns 'they converged' into something a reader can look up."
+    },
+    {
+      "key": "hosted-verifier:builtAtDate",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "When convergence landed. The page contradicted its own subject from this date until the correction."
+    },
+    {
+      "key": "hosted-verifier:engineRunning",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "What the hosted service actually runs. The superseded claim that it runs 0.3.3 is exactly the figure that went stale unnoticed."
+    },
+    {
+      "key": "hosted-verifier:engineBuiltAgainst",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "Stated beside engineRunning because 'agree' is the service's own self-report, and a reader should see the two strings rather than take the boolean."
     }
   ]
 }

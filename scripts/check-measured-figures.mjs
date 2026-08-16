@@ -17,31 +17,39 @@
  * value at that path, comparing with thousands separators removed, so a page may write
  * 3,089 where results/ holds 3089 and may not write 3,090.
  *
- * THREE COMPARISONS, AND THEY ESTABLISH DIFFERENT THINGS
- * -----------------------------------------------------
+ * TWO KINDS OF COMPARISON, AND ONLY ONE OF THEM ESTABLISHES CURRENCY
+ * -----------------------------------------------------------------
  * This is the lesson sync-engine-version.mjs learned the hard way, applied here before
- * rather than after:
+ * rather than after.
  *
- *   1. page  <->  results/            "the copy agrees with our recorded measurement"
- *   2. results/engine-payload-exports  <->  npm    "that measurement still describes npm"
- *   3. results/signed-record-coverage  <->  the stores    NOT POSSIBLE HERE
+ * FIRST, always: page <-> results/. "The copy agrees with our recorded measurement."
+ * On its own this is satisfiable by a consistently wrong pair, which is exactly how the
+ * site once documented rc.6 while npm served rc.10 and every check passed. It is
+ * necessary and it is not sufficient.
  *
- * (1) alone is satisfiable by a consistently wrong pair, which is exactly how the site
- * once documented rc.6 while npm served rc.10 and every check passed.
+ * SECOND, per source: results/ <-> the subject. "That measurement still describes the
+ * world." Four sources, and they differ in whether this is even possible:
  *
- * (2) is re-derived from the registry when the network allows and is SKIPPED WITH A
- * NOTICE, never passed, when it does not.
+ *   engine-payload-exports  <-> npm registry        re-derived, skipped WITH A NOTICE
+ *   schema-claims           <-> schemas/delegation  re-derived by digest, always
+ *   hosted-verifier         <-> the live service    re-derived, skipped WITH A NOTICE
+ *   signed-record-coverage  <-> the record stores   NOT POSSIBLE
  *
- * (3) cannot be made: the record stores are working artifacts that are deliberately not
- * in this repository, so CI has no access to the subject. This check therefore reports
- * that figure as a dated measurement IT DID NOT RE-DERIVE, and prints the date and the
- * file digests it was taken over. A check that cannot reach its subject must say it did
- * not look. Reporting it green would be the defect wearing this file's own badge.
+ * The last one cannot be made here: the stores are working artifacts deliberately not in
+ * this repository, so CI has no access to the subject. That figure is reported as a dated
+ * measurement IT DID NOT RE-DERIVE, with the date and the per-file digests it was taken
+ * over. A check that cannot reach its subject must say it did not look; reporting it green
+ * would be the defect wearing this file's own badge.
+ *
+ * The hosted-verifier comparison is the one section 04 of /verify exists because of. That
+ * section described the service's engine version for a week after it changed, because a
+ * claim about somebody else's deployment goes stale with no commit here to notice.
  *
  *   node scripts/check-measured-figures.mjs
  */
 
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -174,6 +182,66 @@ if (engine) {
   }
 }
 
+// ─── COMPARISON 2b: are the schemas still the ones that were measured? ───────────────────────────
+// These ARE in the repository, so unlike the record stores this input is re-derivable here. A
+// schema edited after the measurement would leave section 03 citing a document that no longer says
+// what the page reports, and the digest is what notices.
+let schemasChecked = 0;
+const schemaClaims = results['schema-claims'];
+if (schemaClaims) {
+  for (const v of schemaClaims.versions ?? []) {
+    const p = join(root, 'schemas/delegation', `${v.version}.json`);
+    if (!existsSync(p)) {
+      failures.push(`results/schema-claims.json measured ${v.version}, which is no longer published at schemas/delegation/.`);
+      continue;
+    }
+    const digest = createHash('sha256').update(readFileSync(p)).digest('hex');
+    schemasChecked++;
+    if (digest !== v.sha256) {
+      failures.push(
+        `schemas/delegation/${v.version}.json changed since the measurement.\n` +
+        `    measured: ${v.sha256}\n` +
+        `    now:      ${digest}\n` +
+        `    Re-run: node scripts/measure-schema-claims.mjs`
+      );
+    }
+  }
+}
+
+// ─── COMPARISON 2c: does the hosted verifier still report what we published about it? ────────────
+// THIS IS THE ONE SECTION 04 EXISTS BECAUSE OF. The page described that service's engine version
+// for a week after it changed, because a claim about somebody else's deployment goes stale with no
+// commit here. Re-derived every run, skipped with a notice when unreachable, never assumed.
+let hostedChecked = false, hostedErr = null;
+const hosted = results['hosted-verifier'];
+if (hosted?.endpoint) {
+  try {
+    const ac = new AbortController();
+    const t = setTimeout(() => ac.abort(), 20000);
+    const live = await fetch(hosted.endpoint, { signal: ac.signal, headers: { accept: 'application/json' } })
+      .finally(() => clearTimeout(t));
+    if (!live.ok) throw new Error(`HTTP ${live.status}`);
+    const v = await live.json();
+    hostedChecked = true;
+    const pairs = [
+      ['engineRunning', v.engine?.running, hosted.engineRunning],
+      ['engineBuiltAgainst', v.engine?.builtAgainst, hosted.engineBuiltAgainst],
+      ['commit', v.build?.commit, hosted.commit],
+    ];
+    for (const [name, now, measured] of pairs) {
+      if (now !== measured) {
+        failures.push(
+          `The hosted verifier's ${name} is now "${now}", recorded as "${measured}".\n` +
+          `    Section 04 of /verify describes that deployment. It has moved and the page has not.\n` +
+          `    Re-run: node scripts/measure-hosted-verifier.mjs, then re-read what section 04 claims.`
+        );
+      }
+    }
+  } catch (e) {
+    hostedErr = e.message.split('\n')[0];
+  }
+}
+
 // ─── REPORT ──────────────────────────────────────────────────────────────────────────────────────
 console.log(`${seen.size} distinct measured figure(s) across ${[...seen.values()].reduce((a, b) => a + b, 0)} marker(s) in ${htmlFiles.length} page(s).`);
 
@@ -186,6 +254,20 @@ if (coverage) {
     `still describes the stores. It is a dated measurement. Re-derive with:\n` +
     `  node scripts/measure-signed-record-coverage.mjs`
   );
+}
+
+if (schemaClaims) {
+  console.log(`\nRE-DERIVED: ${schemasChecked} published schema(s) still digest-match the measurement.`);
+}
+
+if (hosted) {
+  if (hostedChecked) {
+    console.log(`RE-DERIVED: the hosted verifier still reports engine ${hosted.engineRunning} at commit ${hosted.commitShort}.`);
+  } else {
+    console.log(`NOT CHECKED: the hosted verifier at ${hosted.endpoint} (${hostedErr ?? 'no network'}).`);
+    console.log('Section 04 describes a deployment this run could not reach, so nothing here');
+    console.log('establishes that what it says about that service is still true.');
+  }
 }
 
 if (engine) {

@@ -1,0 +1,543 @@
+{
+  "$comment": [
+    "MEASURED OUTPUT. Regenerate with: node scripts/measure-schema-claims.mjs",
+    "Asks one question per field: does this schema version say ANYTHING about it.",
+    "It is not a validation run. See results/schema-validation.json for that."
+  ],
+  "measuredOn": "2026-08-16",
+  "citedVersion": "v2.2",
+  "citedDefines": 0,
+  "claimsTotal": 9,
+  "citedBytes": 576,
+  "citedImposesNoConstraints": true,
+  "otherVersionCount": 7,
+  "otherVersionsDefiningAll": 7,
+  "earliestFullVersion": "v2",
+  "citeInstead": "v2.4",
+  "citeInsteadUrl": "https://observerprotocol.org/schemas/delegation/v2.4.json",
+  "conformingVersions": [
+    "v2.4"
+  ],
+  "validation": {
+    "validationRun": true,
+    "reason": null,
+    "ajvVersion": "8.20.0",
+    "artifact": "credentials/maxi-0001-trading-mandate-2026-08.json",
+    "results": [
+      {
+        "version": "v2",
+        "draft": "http://json-schema.org/draft-07/schema#",
+        "valid": false,
+        "errors": [
+          "/proof/type must be equal to constant"
+        ],
+        "vacuous": false
+      },
+      {
+        "version": "v2.1",
+        "draft": "http://json-schema.org/draft-07/schema#",
+        "valid": false,
+        "errors": [
+          "/proof/type must be equal to constant"
+        ],
+        "vacuous": false
+      },
+      {
+        "version": "v2.2",
+        "draft": "https://json-schema.org/draft/2020-12/schema",
+        "valid": true,
+        "errors": [],
+        "vacuous": true
+      },
+      {
+        "version": "v2.3",
+        "draft": "http://json-schema.org/draft-07/schema#",
+        "valid": false,
+        "errors": [
+          "/proof/type must be equal to constant"
+        ],
+        "vacuous": false
+      },
+      {
+        "version": "v2.4",
+        "draft": "http://json-schema.org/draft-07/schema#",
+        "valid": true,
+        "errors": [],
+        "vacuous": false
+      },
+      {
+        "version": "v2.5",
+        "draft": "http://json-schema.org/draft-07/schema#",
+        "valid": false,
+        "errors": [
+          "/ must have required property 'credentialStatus'",
+          "/credentialSubject/tradingMandate must NOT have additional properties",
+          "/credentialSubject/tradingMandate must NOT have additional properties"
+        ],
+        "vacuous": false
+      },
+      {
+        "version": "v2.6",
+        "draft": "http://json-schema.org/draft-07/schema#",
+        "valid": false,
+        "errors": [
+          "/ must have required property 'credentialStatus'",
+          "/credentialSubject/tradingMandate must NOT have additional properties",
+          "/credentialSubject/tradingMandate must NOT have additional properties"
+        ],
+        "vacuous": false
+      },
+      {
+        "version": "v2.7",
+        "draft": "http://json-schema.org/draft-07/schema#",
+        "valid": false,
+        "errors": [
+          "/ must have required property 'credentialStatus'",
+          "/credentialSubject/tradingMandate must NOT have additional properties",
+          "/credentialSubject/tradingMandate must NOT have additional properties"
+        ],
+        "vacuous": false
+      }
+    ]
+  },
+  "allowlistEnforcement": "schemaAllowlist is an identifier comparison. The engine does allowlist.includes(credentialSchema.id) and never dereferences the URL, so no schema at any version is applied to a served artifact by the published verifier.",
+  "servedArtifacts": {
+    "total": 8,
+    "pinningCited": 5,
+    "pins": [
+      {
+        "path": "credentials/demonstration-in-mandate-administrator-to-maxi-0001.json",
+        "credentialSchemaId": "https://observerprotocol.org/schemas/delegation/v2.4.json"
+      },
+      {
+        "path": "credentials/maxi-0001-policy-eval-mainnet-20260623.json",
+        "credentialSchemaId": null
+      },
+      {
+        "path": "credentials/maxi-0001-trading-mandate-2026-08.json",
+        "credentialSchemaId": "https://observerprotocol.org/schemas/delegation/v2.2.json"
+      },
+      {
+        "path": "credentials/maxi-0001-trading-mandate.json",
+        "credentialSchemaId": "https://observerprotocol.org/schemas/delegation/v2.2.json"
+      },
+      {
+        "path": "credentials/maxi-0001-wdk-demo-pec.json",
+        "credentialSchemaId": null
+      },
+      {
+        "path": "verify-samples/must-not-verify-expired-mandate.json",
+        "credentialSchemaId": "https://observerprotocol.org/schemas/delegation/v2.2.json"
+      },
+      {
+        "path": "verify-samples/must-not-verify-tampered-signature.json",
+        "credentialSchemaId": "https://observerprotocol.org/schemas/delegation/v2.2.json"
+      },
+      {
+        "path": "verify-samples/verifies-delegation-mandate.json",
+        "credentialSchemaId": "https://observerprotocol.org/schemas/delegation/v2.2.json"
+      }
+    ]
+  },
+  "codeSamples": [
+    {
+      "page": "index.html",
+      "allowlists": [
+        "v2.2"
+      ]
+    },
+    {
+      "page": "verify.html",
+      "allowlists": [
+        "v2.2",
+        "v2.4"
+      ]
+    }
+  ],
+  "versions": [
+    {
+      "version": "v2",
+      "url": "https://observerprotocol.org/schemas/delegation/v2.json",
+      "bytes": 20080,
+      "sha256": "946df31e59fa89f662ad94b0f621f60ffe298f3ff5e0e9f627d15e0ee678298b",
+      "title": "Delegation Credential Schema v2",
+      "imposesNoConstraints": false,
+      "claimsDefined": 9,
+      "claimsTotal": 9,
+      "claims": [
+        {
+          "label": "issuer",
+          "defined": true
+        },
+        {
+          "label": "credentialSubject.id",
+          "defined": true
+        },
+        {
+          "label": "validFrom / validUntil",
+          "defined": true
+        },
+        {
+          "label": "tradingMandate.maxNotionalPerOrder",
+          "defined": true
+        },
+        {
+          "label": "tradingMandate.temporal.allowedTimeWindows",
+          "defined": true
+        },
+        {
+          "label": "enforcementMode",
+          "defined": true
+        },
+        {
+          "label": "delegationScope.may_delegate_further",
+          "defined": true
+        },
+        {
+          "label": "credentialStatus",
+          "defined": true
+        },
+        {
+          "label": "proof",
+          "defined": true
+        }
+      ]
+    },
+    {
+      "version": "v2.1",
+      "url": "https://observerprotocol.org/schemas/delegation/v2.1.json",
+      "bytes": 22846,
+      "sha256": "f0a7eedf2b7073b5920dd5dc86e48717c7b2149e8db44943f3019a3afa82ca9f",
+      "title": "Delegation Credential Schema v2.1",
+      "imposesNoConstraints": false,
+      "claimsDefined": 9,
+      "claimsTotal": 9,
+      "claims": [
+        {
+          "label": "issuer",
+          "defined": true
+        },
+        {
+          "label": "credentialSubject.id",
+          "defined": true
+        },
+        {
+          "label": "validFrom / validUntil",
+          "defined": true
+        },
+        {
+          "label": "tradingMandate.maxNotionalPerOrder",
+          "defined": true
+        },
+        {
+          "label": "tradingMandate.temporal.allowedTimeWindows",
+          "defined": true
+        },
+        {
+          "label": "enforcementMode",
+          "defined": true
+        },
+        {
+          "label": "delegationScope.may_delegate_further",
+          "defined": true
+        },
+        {
+          "label": "credentialStatus",
+          "defined": true
+        },
+        {
+          "label": "proof",
+          "defined": true
+        }
+      ]
+    },
+    {
+      "version": "v2.2",
+      "url": "https://observerprotocol.org/schemas/delegation/v2.2.json",
+      "bytes": 576,
+      "sha256": "af99d279bcac9a83cfca3234a1bfc5d4fbda6f78a758638bb13034a9fc11a2c0",
+      "title": "ObserverDelegationCredential subject - v2.2 (reserved)",
+      "imposesNoConstraints": true,
+      "claimsDefined": 0,
+      "claimsTotal": 9,
+      "claims": [
+        {
+          "label": "issuer",
+          "defined": false
+        },
+        {
+          "label": "credentialSubject.id",
+          "defined": false
+        },
+        {
+          "label": "validFrom / validUntil",
+          "defined": false
+        },
+        {
+          "label": "tradingMandate.maxNotionalPerOrder",
+          "defined": false
+        },
+        {
+          "label": "tradingMandate.temporal.allowedTimeWindows",
+          "defined": false
+        },
+        {
+          "label": "enforcementMode",
+          "defined": false
+        },
+        {
+          "label": "delegationScope.may_delegate_further",
+          "defined": false
+        },
+        {
+          "label": "credentialStatus",
+          "defined": false
+        },
+        {
+          "label": "proof",
+          "defined": false
+        }
+      ]
+    },
+    {
+      "version": "v2.3",
+      "url": "https://observerprotocol.org/schemas/delegation/v2.3.json",
+      "bytes": 30070,
+      "sha256": "f1150096ba182d41481f3d4510755f1ca0faf03c813eb2bd454e64ed92e602be",
+      "title": "Delegation Credential Schema v2.3",
+      "imposesNoConstraints": false,
+      "claimsDefined": 9,
+      "claimsTotal": 9,
+      "claims": [
+        {
+          "label": "issuer",
+          "defined": true
+        },
+        {
+          "label": "credentialSubject.id",
+          "defined": true
+        },
+        {
+          "label": "validFrom / validUntil",
+          "defined": true
+        },
+        {
+          "label": "tradingMandate.maxNotionalPerOrder",
+          "defined": true
+        },
+        {
+          "label": "tradingMandate.temporal.allowedTimeWindows",
+          "defined": true
+        },
+        {
+          "label": "enforcementMode",
+          "defined": true
+        },
+        {
+          "label": "delegationScope.may_delegate_further",
+          "defined": true
+        },
+        {
+          "label": "credentialStatus",
+          "defined": true
+        },
+        {
+          "label": "proof",
+          "defined": true
+        }
+      ]
+    },
+    {
+      "version": "v2.4",
+      "url": "https://observerprotocol.org/schemas/delegation/v2.4.json",
+      "bytes": 35180,
+      "sha256": "c2545ffcb23d081b07d4bdf70ff78dc137220d108d743211150a98846d127c8d",
+      "title": "Observer Protocol Delegation Credential v2.4",
+      "imposesNoConstraints": false,
+      "claimsDefined": 9,
+      "claimsTotal": 9,
+      "claims": [
+        {
+          "label": "issuer",
+          "defined": true
+        },
+        {
+          "label": "credentialSubject.id",
+          "defined": true
+        },
+        {
+          "label": "validFrom / validUntil",
+          "defined": true
+        },
+        {
+          "label": "tradingMandate.maxNotionalPerOrder",
+          "defined": true
+        },
+        {
+          "label": "tradingMandate.temporal.allowedTimeWindows",
+          "defined": true
+        },
+        {
+          "label": "enforcementMode",
+          "defined": true
+        },
+        {
+          "label": "delegationScope.may_delegate_further",
+          "defined": true
+        },
+        {
+          "label": "credentialStatus",
+          "defined": true
+        },
+        {
+          "label": "proof",
+          "defined": true
+        }
+      ]
+    },
+    {
+      "version": "v2.5",
+      "url": "https://observerprotocol.org/schemas/delegation/v2.5.json",
+      "bytes": 109471,
+      "sha256": "863b65472cc15e2ff61836a3ae00cc5700162da21ab37ace47c5f1f0d65fc9fa",
+      "title": "Observer Protocol Delegation Credential v2.5",
+      "imposesNoConstraints": false,
+      "claimsDefined": 9,
+      "claimsTotal": 9,
+      "claims": [
+        {
+          "label": "issuer",
+          "defined": true
+        },
+        {
+          "label": "credentialSubject.id",
+          "defined": true
+        },
+        {
+          "label": "validFrom / validUntil",
+          "defined": true
+        },
+        {
+          "label": "tradingMandate.maxNotionalPerOrder",
+          "defined": true
+        },
+        {
+          "label": "tradingMandate.temporal.allowedTimeWindows",
+          "defined": true
+        },
+        {
+          "label": "enforcementMode",
+          "defined": true
+        },
+        {
+          "label": "delegationScope.may_delegate_further",
+          "defined": true
+        },
+        {
+          "label": "credentialStatus",
+          "defined": true
+        },
+        {
+          "label": "proof",
+          "defined": true
+        }
+      ]
+    },
+    {
+      "version": "v2.6",
+      "url": "https://observerprotocol.org/schemas/delegation/v2.6.json",
+      "bytes": 115882,
+      "sha256": "97eea5ac1dc081d39c062df34b2e08e161482f05dd55dc9a0854683b8a12abc3",
+      "title": "Observer Protocol Delegation Credential v2.6",
+      "imposesNoConstraints": false,
+      "claimsDefined": 9,
+      "claimsTotal": 9,
+      "claims": [
+        {
+          "label": "issuer",
+          "defined": true
+        },
+        {
+          "label": "credentialSubject.id",
+          "defined": true
+        },
+        {
+          "label": "validFrom / validUntil",
+          "defined": true
+        },
+        {
+          "label": "tradingMandate.maxNotionalPerOrder",
+          "defined": true
+        },
+        {
+          "label": "tradingMandate.temporal.allowedTimeWindows",
+          "defined": true
+        },
+        {
+          "label": "enforcementMode",
+          "defined": true
+        },
+        {
+          "label": "delegationScope.may_delegate_further",
+          "defined": true
+        },
+        {
+          "label": "credentialStatus",
+          "defined": true
+        },
+        {
+          "label": "proof",
+          "defined": true
+        }
+      ]
+    },
+    {
+      "version": "v2.7",
+      "url": "https://observerprotocol.org/schemas/delegation/v2.7.json",
+      "bytes": 122976,
+      "sha256": "f58324d6a42424f625cda29b752deb00266f6095b55936854ee89a585b9c279e",
+      "title": "Observer Protocol Delegation Credential v2.7",
+      "imposesNoConstraints": false,
+      "claimsDefined": 9,
+      "claimsTotal": 9,
+      "claims": [
+        {
+          "label": "issuer",
+          "defined": true
+        },
+        {
+          "label": "credentialSubject.id",
+          "defined": true
+        },
+        {
+          "label": "validFrom / validUntil",
+          "defined": true
+        },
+        {
+          "label": "tradingMandate.maxNotionalPerOrder",
+          "defined": true
+        },
+        {
+          "label": "tradingMandate.temporal.allowedTimeWindows",
+          "defined": true
+        },
+        {
+          "label": "enforcementMode",
+          "defined": true
+        },
+        {
+          "label": "delegationScope.may_delegate_further",
+          "defined": true
+        },
+        {
+          "label": "credentialStatus",
+          "defined": true
+        },
+        {
+          "label": "proof",
+          "defined": true
+        }
+      ]
+    }
+  ]
+}
