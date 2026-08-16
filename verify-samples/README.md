@@ -45,69 +45,124 @@ below is the checker's own output, copied from the run, not a paraphrase. The sa
 recorded in `scripts/credential-expectations.json` and asserted in CI in both directions: a passing
 artifact that regresses fails the build, and a failing artifact that starts passing fails it too.
 
+**The Group column is load-bearing.** A red result means one of three unrelated things here, and
+the section below the tables says which. Do not read a group 2 row as a defect in the artifact.
+
 ### Delegation credentials
 
-| File | Construction | Expected | Reason returned |
-|---|---|---|---|
-| `verifies-delegation-mandate.json` | `delegation-credential` | **allow: true** | `credential verified` |
-| `must-not-verify-tampered-signature.json` | `delegation-credential` | **allow: false** | `[proof] eddsa-jcs-2022 signature does not verify against the issuer key` |
-| `must-not-verify-expired-mandate.json` | `delegation-credential` | **allow: false** | `validity: credential expired (validUntil 2026-02-01T00:00:00Z)` |
+| File | Construction | Expected | Group | Reason returned |
+|---|---|---|---|---|
+| `verifies-delegation-mandate.json` | `delegation-credential` | **allow: true** | passes | `credential verified` |
+| `must-not-verify-tampered-signature.json` | `delegation-credential` | **allow: false** | **1** | `[proof] eddsa-jcs-2022 signature does not verify against the issuer key` |
+| `must-not-verify-expired-mandate.json` | `delegation-credential` | **allow: false** | **1** | `validity: credential expired (validUntil 2026-02-01T00:00:00Z)` |
 
 ### PPP corpus
 
-| File | Construction | Expected | Reason returned |
+| File | Construction | Expected | Group | Reason returned |
+|---|---|---|---|---|
+| `ppp-determination-refused-outcome.json` | `op.decision.attestation` | **allow: true** | passes | `attestation verified; state=attested` |
+| `ppp-verdict-released.json` | `op.evaluation.verdict` | **allow: false** | **2** | `signature does not verify over the payload this build rebuilds (op.evaluation.verdict.v3); the record states construction op.evaluation.verdict.v4` |
+| `ppp-verdict-denied-ceiling.json` | `op.evaluation.verdict` | **allow: false** | **2** | same as above |
+| `ppp-refusal-applied-bound.json` | `op.enforcement.refusal` | **allow: true** | passes | `signature verifies over the payload the record states (op.enforcement.refusal.v2)` |
+| `ppp-probe-a-verdict-release-above-escalation.json` | `op.evaluation.verdict` | **allow: false** | **2** | same version mismatch as above |
+| `ppp-probe-a-instruction-executed.json` | `op.payment.instruction` | **no-verifier-path** | **3** | `the package rebuilds no payload for record kind 'instructed'; its payload builders are evaluationVerdictPayload, lapsePayload, refusalPayload` |
+| `ppp-probe-b-verdict-release-above-ceiling.json` | `op.evaluation.verdict` | **allow: false** | **2** | same version mismatch as above |
+| `ppp-probe-b-refusal-by-the-mandate.json` | `op.enforcement.refusal` | **allow: true** | passes | `signature verifies over the payload the record states (op.enforcement.refusal.v2)` |
+
+## Seven artifacts here do not come back green, in three different ways
+
+**Read this before concluding anything from a red result.** Four of the eleven files in this
+directory verify cleanly. The other seven do not, and they do so for three unrelated reasons. A
+reader who collapses them into one bucket draws the same wrong conclusion from all seven, that the
+corpus is unreliable. **The corpus is not the thing under test in five of the seven.**
+
+| group | files | why it fails | what it demonstrates |
 |---|---|---|---|
-| `ppp-determination-refused-outcome.json` | `op.decision.attestation` | **allow: true** | `attestation verified; state=attested` |
-| `ppp-verdict-released.json` | `op.evaluation.verdict` | **allow: false** | `signature does not verify over the payload this build rebuilds (op.evaluation.verdict.v3); the record states construction op.evaluation.verdict.v4` |
-| `ppp-verdict-denied-ceiling.json` | `op.evaluation.verdict` | **allow: false** | same as above |
-| `ppp-refusal-applied-bound.json` | `op.enforcement.refusal` | **allow: true** | `signature verifies over the payload the record states (op.enforcement.refusal.v2)` |
-| `ppp-probe-a-verdict-release-above-escalation.json` | `op.evaluation.verdict` | **allow: false** | same version mismatch as above |
-| `ppp-probe-a-instruction-executed.json` | `op.payment.instruction` | **no-verifier-path** | `the package rebuilds no payload for record kind 'instructed'; its payload builders are evaluationVerdictPayload, lapsePayload, refusalPayload` |
-| `ppp-probe-b-verdict-release-above-ceiling.json` | `op.evaluation.verdict` | **allow: false** | same version mismatch as above |
-| `ppp-probe-b-refusal-by-the-mandate.json` | `op.enforcement.refusal` | **allow: true** | `signature verifies over the payload the record states (op.enforcement.refusal.v2)` |
+| 1. Broken on purpose | 2 | the artifact is damaged | the check is real |
+| 2. Sound, and unreadable at the pinned version | 4 | the verifier rebuilds the wrong version | the engine ignores a field the record carries |
+| 3. Not checked at all | 1 | no verifier exists | absence is a state, not a failure |
 
-**`no-verifier-path` is a third answer and not a soft failure.** A check that ran and failed and a
-check that could not run are different facts about an artifact, and a surface that renders them
-alike is asserting one of them without having established it.
+### Group 1: broken on purpose. `must-not-verify-tampered-signature`, `must-not-verify-expired-mandate`
 
-## The four that do not verify, and why they stay published
+Two delegation credentials, damaged deliberately. One has a single character changed inside
+`proof.proofValue`; the other has its validity window moved into the past. **These must never
+verify, at any version, forever.** If either one passes, the signature check is broken and nothing
+else on this site is worth reading.
 
-**All four verdicts fail, and the records are sound. The failure is a version pin.**
+**What the group demonstrates: that the verifier can say no.** A tool that returns a green tick for
+every input has told you nothing, and the fastest way to establish that this one is real is to hand
+you the inputs it must reject. The claim is permanent, which is why it is encoded in the filenames.
 
-Each of the four was signed under `op.evaluation.verdict.v4`, which the record states in its own
-`construction` field. `EVALUATION_VERDICT_PAYLOAD_TYPE` is a module constant emitted **inside** the
-canonicalised bytes, so a build can only ever rebuild the version it ships. rc.12 ships v3, the
-bytes differ in that one string, and the signature does not verify.
+### Group 2: sound records, unreadable at the version this site pins. The four verdicts
 
-Measured on 16 August 2026, against these exact eight files:
+`ppp-verdict-released`, `ppp-verdict-denied-ceiling`, and the two probe verdicts.
 
-| engine | serves | rebuilds | the four verdicts | the two refusals | the determination |
-|---|---|---|---|---|---|
-| `1.0.0-rc.12` | npm `latest` | `op.evaluation.verdict.v3` | **do not verify** | verify | attested |
-| `1.0.0-rc.18` | npm `rc` | `op.evaluation.verdict.v4` | verify | verify | attested |
+**These four records are sound.** They are correctly signed by the evaluator over exactly the fields
+they claim to cover. Nothing has been altered, nothing has expired, and no key has rotated. They
+fail here for one reason and it is a property of the verifier, not of the artifact.
 
-So these records are not broken. They are correctly signed artifacts that the version this site
-pins cannot check, and **the version this site pins is the one a reader gets.** `npm install
-@observer-protocol/policy-engine` serves rc.12 today. That is why the table above states the failure
-rather than the repository quietly installing `@rc` to make it disappear: the expectation recorded
-in CI is what a reader will actually see when they follow the instructions on this site.
+**The two version numbers.** Each verdict was signed under **`op.evaluation.verdict.v4`**, and each
+record says so in its own `construction.type` field. `EVALUATION_VERDICT_PAYLOAD_TYPE` is a module
+constant emitted **inside** the canonicalised bytes, so a build can only rebuild the version it
+ships. `1.0.0-rc.12` ships **`op.evaluation.verdict.v3`**. The rebuilt bytes therefore differ from
+the signed bytes in exactly one field, the signature does not verify, and the record's own statement
+of which version it used is sitting right there unread.
 
-**The refusal path survives the same bump, and that contrast is the finding.**
-`signableFromRefusal` reads `payloadType` off the record and rebuilds under the version that record
-was signed with, so a refusal verifies under either engine. A verdict record has no such field for
-the package to read; `construction.type` is on the record and nothing in the package consults it.
-One design decision applied to one signed class and not the other. A verdict signed under v3 fails
-at rc.18 for exactly the same reason these fail at rc.12, in the opposite direction.
+Measured 16 August 2026 by reading the constant out of every published tarball:
 
-**It is not worked around here.** Rebuilding the v4 bytes inside this repository would put a second
-copy of the signing construction beside the package's own, and it would turn a real gap into a green
-tick. The expectation names both versions instead, so whichever way the pin moves, this build goes
-red and the expectation has to be updated in the same commit as the move.
+| engine versions | rebuilds | the four verdicts |
+|---|---|---|
+| `rc.11` through `rc.17` (includes `rc.12`, npm `latest`) | `op.evaluation.verdict.v3` | **do not verify** |
+| `rc.18` (npm `rc`) | `op.evaluation.verdict.v4` | verify |
 
-**Nothing in this directory is deliberately broken except the two `must-not-verify-*` files.** Those
-two are tampered fixtures and must never verify. The four verdicts are sound records a pinned
-verifier cannot check, which is a different thing, and it is why the distinction is not encoded in
-their filenames: a filename saying `must-not-verify` would still be saying it after the pin moves.
+No published version emits `v1` or `v2`: `evaluationVerdictPayload` was first exported at `rc.11`,
+already at v3.
+
+**The failure is recoverable, and that is not a detail.** The version token is one field in the
+canonicalised bytes, drawn from a contiguous band of small integers, so a verifier holding one of
+these records and no knowledge of which version signed it can rebuild the payload once per candidate
+and try each. Measured against all four files, trialling `v1` through `v8`: **exactly one candidate
+verifies each record, and it is `v4` for all four.** Four rebuilds and four signature checks, no
+network, no ambiguity, one answer.
+
+So the correct description of these artifacts is **recoverable by trial across a contiguous band**,
+not fragile. A record whose recovery required guessing an unbounded string, or a nonce, or a
+timestamp, would be fragile. This one requires counting. **Do not describe these as fragile without
+the band**, because "the signature does not verify" and "the signature verifies once you increment
+one integer" are different findings and only the second is true here.
+
+**What the group demonstrates: that a package can ignore a field the record carries.** The contrast
+inside one package is the whole point. `signableFromRefusal` reads `payloadType` off the record and
+rebuilds under the version *that record* was signed with, so the two refusals in this directory
+verify under every version tested. The verdict path has no equivalent, even though the field it
+would need is present on the record. One design decision, applied to one signed class and not the
+other. A verdict signed under v3 fails at `rc.18` for the identical reason these fail at `rc.12`,
+pointed the other way.
+
+**Why the pin does not move.** `npm install @observer-protocol/policy-engine` serves `rc.12` today,
+and `sync-engine-version --check` asserts that this site states what npm serves a **reader**. That
+check is correct to refuse a bump to `rc.18`, which is on the `rc` tag and is not what anybody
+following the instructions on this site receives. Installing `@rc` here would make the build green
+and the reader's experience unchanged, which is the wrong trade in both directions.
+
+**And it is not worked around.** Rebuilding the v4 bytes inside this repository would put a second
+copy of the signing construction beside the package's own. The recorded expectation names both
+version tokens instead, so the pin cannot move either way without turning this check red.
+
+**Why it is not in the filenames.** A file called `must-not-verify-*` is making a permanent claim.
+Group 1 can make it. Group 2 cannot: these verify today at `rc.18` and will verify at `latest` the
+moment the tag moves, and a filename asserting otherwise would still be asserting it afterwards.
+
+### Group 3: not checked at all. `ppp-probe-a-instruction-executed`
+
+**`no-verifier-path` is a third answer and not a soft failure.** No published version of the package
+rebuilds a payload for a payment instruction, so nothing has looked at this record. A check that ran
+and failed and a check that could not run are different facts, and a surface that renders them alike
+is asserting one of them without having established it.
+
+**What the group demonstrates: that absence has to be carried as a state.** The honest report is
+that this record is unverified, not that it is invalid. See the note on `attestation.state` below
+for the same distinction failing in the other direction, inside a record this directory publishes.
 
 ## The case behind each artifact
 
