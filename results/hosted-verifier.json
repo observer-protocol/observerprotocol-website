@@ -1,0 +1,77 @@
+{
+  "$comment": [
+    "MEASURED OUTPUT. Regenerate with: node scripts/measure-hosted-verifier.mjs",
+    "One GET against the service. Nothing was submitted to it and nothing here is a",
+    "claim about whether it VERIFIES correctly, only about what it says it is."
+  ],
+  "measuredOn": "2026-08-16",
+  "endpoint": "https://verify.observerprotocol.org/version",
+  "service": "@observer-protocol/op-verify-service",
+  "commit": "d3278efb3cb2b5dd3027fb9c40a82f624bdd0faa",
+  "commitShort": "d3278efb3cb2",
+  "branch": "main",
+  "dirty": "clean",
+  "builtAt": "2026-08-09T22:37:04.404Z",
+  "builtAtDate": "2026-08-09",
+  "engineRunning": "1.0.0-rc.10",
+  "engineBuiltAgainst": "1.0.0-rc.10",
+  "engineAgreeReported": true,
+  "runningEqualsBuiltAgainst": true,
+  "allowlists": {
+    "issuers": [
+      "did:web:observerprotocol.org",
+      "did:web:bitcoinsingularity.ai"
+    ],
+    "schemas": [
+      "https://observerprotocol.org/schemas/delegation/v2.1.json",
+      "https://observerprotocol.org/schemas/delegation/v2.2.json",
+      "https://observerprotocol.org/schemas/delegation/v2.3.json",
+      "https://observerprotocol.org/schemas/delegation/v2.4.json",
+      "https://observerprotocol.org/schemas/delegation/v2.5.json",
+      "https://observerprotocol.org/schemas/delegation/v2.6.json",
+      "https://observerprotocol.org/schemas/delegation/v2.7.json"
+    ],
+    "inRepo": false,
+    "sourceNote": "Both lists are deployment environment, not code. They are set in an env file on the host that no repository contains, so a change to either leaves no reviewable record. This endpoint reports them so the question is answerable without shell access; it does not make them reproducible."
+  },
+  "raw": {
+    "service": "@observer-protocol/op-verify-service",
+    "build": {
+      "commit": "d3278efb3cb2b5dd3027fb9c40a82f624bdd0faa",
+      "branch": "main",
+      "dirty": "clean",
+      "builtAt": "2026-08-09T22:37:04.404Z"
+    },
+    "engine": {
+      "builtAgainst": "1.0.0-rc.10",
+      "running": "1.0.0-rc.10",
+      "agree": true
+    },
+    "verification": {
+      "open": true,
+      "rateLimitPerCallerPerMin": 60,
+      "rateLimitGlobalPerMin": 600
+    },
+    "accepts": {
+      "schemas": [
+        "https://observerprotocol.org/schemas/delegation/v2.1.json",
+        "https://observerprotocol.org/schemas/delegation/v2.2.json",
+        "https://observerprotocol.org/schemas/delegation/v2.3.json",
+        "https://observerprotocol.org/schemas/delegation/v2.4.json",
+        "https://observerprotocol.org/schemas/delegation/v2.5.json",
+        "https://observerprotocol.org/schemas/delegation/v2.6.json",
+        "https://observerprotocol.org/schemas/delegation/v2.7.json"
+      ],
+      "issuers": [
+        "did:web:observerprotocol.org",
+        "did:web:bitcoinsingularity.ai"
+      ],
+      "source": {
+        "schemas": "env:OP_VERIFY_SCHEMA_ALLOWLIST",
+        "issuers": "env:OP_VERIFY_ISSUER_ALLOWLIST",
+        "inRepo": false,
+        "note": "Both lists are deployment environment, not code. They are set in an env file on the host that no repository contains, so a change to either leaves no reviewable record. This endpoint reports them so the question is answerable without shell access; it does not make them reproducible."
+      }
+    }
+  }
+}
