@@ -1,0 +1,26 @@
+{
+  "k": "verdict",
+  "id": "verdict-5",
+  "reservationId": "res-0001",
+  "at": "2026-08-15T19:11:31.955Z",
+  "payload": {
+    "decision": "release",
+    "mandateId": "urn:uuid:ppp-forgiveness-april-2020-07672",
+    "agentId": "did:web:agent.example",
+    "issuerId": "did:web:issuer.example",
+    "rail": "eip155:8453",
+    "asset": "USDC",
+    "amountRaw": "105922000000",
+    "decimals": "6",
+    "counterpartyMatchedAs": "0x9999999999999999999999999999999999999999",
+    "notBefore": "2026-08-15T19:08:59.075Z",
+    "notAfter": "2026-08-16T19:08:59.075Z"
+  },
+  "signature": "u2ZGZaDiOY8D8pT4OLor0tiJ/tsbq/2vOAWQz6sOk5ZxPzed1hNuJg/XAaxte/huN8YAyIDsx626X4nEGgl1AQ==",
+  "evaluator": "did:key:z6MksSKYrTJ7a1buUtDAjppEwbDQVf1NQUq8U48BXzhi67Cw",
+  "construction": {
+    "state": "recorded",
+    "type": "op.evaluation.verdict.v4"
+  },
+  "observedAt": "2026-08-15T19:11:31.979Z"
+}

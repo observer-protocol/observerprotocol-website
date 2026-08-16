@@ -1,0 +1,61 @@
+{
+  "k": "instructed",
+  "signature": "LlG0wb2lcMpCl763a0T2ciz7tqkWiY2+7q/BHmAjfXfSEpbYmAMkMcHhg5vTbSOPW194BRb4+QRPZINJEvBTCQ==",
+  "signedBy": "did:key:z6MkjvPLHN8zFqeXqpXcTqBtT8ayTMfCfRiUSGDjhBhHdKec",
+  "instructionId": "oi_e092d3ff0c7ebb9bb9990d1377688f0d",
+  "reservationId": "probe-01-deliberate-release-above-escalation-threshold",
+  "requestSeq": "254",
+  "spend": {
+    "amountRaw": "500589980000",
+    "asset": "USDC",
+    "counterparty": "0x9999999999999999999999999999999999999999",
+    "decimals": 6,
+    "rail": "eip155:8453"
+  },
+  "at": "2026-08-15T19:18:45.402Z",
+  "executorRef": "did:key:z6Mkm8ey2kz1fHjLrLwGetsDEwZYDKcKrpuGFzpWnzNsTUaj",
+  "notAfter": "2026-08-16T19:18:45.402Z",
+  "attestation": {
+    "state": "attested",
+    "decisionId": "urn:ppp-cases:decision:DV-0004:APR",
+    "decider": "did:key:z6MkoMCP6imN1HfKC1gVHDMffgP3af58VnGY621KRHrEsbDq",
+    "outcome": "forgiveness-partial",
+    "policyRef": {
+      "clauses": [
+        "85 FR 20813 III.2.o",
+        "85 FR 20814 III.2.t.v"
+      ],
+      "hash": "9b7c561bbcf0afa79a8d8294e114ccf19c5f85fd6b778a94035b45343271be96",
+      "hashMethod": "sha256",
+      "id": "urn:us-fr:document:2020-07672",
+      "publisherId": "85 FR 20811",
+      "retrievedFrom": "https://www.govinfo.gov/content/pkg/FR-2020-04-15/pdf/2020-07672.pdf",
+      "version": "2020-04-15, RIN 3245-AH34"
+    },
+    "vocabularyRef": {
+      "hash": "e9771e3786c3918a624a692a243aa3cde916c2a364287bc8e722fe96fdd84b64",
+      "hashMethod": "sha256",
+      "id": "urn:ppp-cases:vocabulary:forgiveness-outcomes",
+      "source": "client-defined",
+      "values": [
+        "forgiveness-full",
+        "forgiveness-partial",
+        "forgiveness-none",
+        "determination-refused-schema",
+        "determination-refused-rule"
+      ],
+      "version": "1.0.0"
+    },
+    "decidedAt": "2026-08-14T00:00:00Z",
+    "deciderArtifactDigest": {
+      "state": "digest",
+      "value": "sha256:d4bb41e304fe81c43924c9803488d1df0ce42459ff0790662d1f0e10a3470278"
+    },
+    "amount": {
+      "amountRaw": "500589980000",
+      "asset": "USDC",
+      "decimals": "6"
+    }
+  },
+  "observedAt": "2026-08-15T19:18:45.421Z"
+}
