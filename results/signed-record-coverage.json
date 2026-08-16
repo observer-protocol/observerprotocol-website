@@ -1,0 +1,172 @@
+{
+  "$comment": [
+    "MEASURED OUTPUT. Do not hand-edit: regenerate with",
+    "  node scripts/measure-signed-record-coverage.mjs",
+    "Every figure quoted on a page must appear here first. check-measured-figures.mjs",
+    "fails the build when a page and this file disagree.",
+    "",
+    "A signature is counted as PRESENT, never as valid. Nothing here verifies anything.",
+    "The question asked is narrower and worse: can the bytes be rebuilt at all."
+  ],
+  "measuredOn": "2026-08-16",
+  "storesRoot": "~/op-artifacts",
+  "storeFileCount": 13,
+  "unparsedLines": 0,
+  "signedRecordTotal": 11432,
+  "recordTotal": 23004,
+  "signedRange": {
+    "earliest": "2026-08-05T23:53:53.128Z",
+    "latest": "2026-08-15T20:18:35.791Z",
+    "earliestDate": "2026-08-05",
+    "latestDate": "2026-08-15"
+  },
+  "classes": [
+    {
+      "kind": "verdict",
+      "signed": 4250,
+      "total": 4250,
+      "rebuildRoute": "evaluationVerdictPayload",
+      "rebuildableEver": true,
+      "rebuildableAtNpmLatest": true
+    },
+    {
+      "kind": "determination",
+      "signed": 2908,
+      "total": 2908,
+      "rebuildRoute": "verifyDecisionAttestation",
+      "rebuildableEver": true,
+      "rebuildableAtNpmLatest": true
+    },
+    {
+      "kind": "instructed",
+      "signed": 2809,
+      "total": 2809,
+      "rebuildRoute": null,
+      "rebuildableEver": false,
+      "rebuildableAtNpmLatest": false
+    },
+    {
+      "kind": "refused",
+      "signed": 1063,
+      "total": 1063,
+      "rebuildRoute": "refusalPayload",
+      "rebuildableEver": true,
+      "rebuildableAtNpmLatest": true
+    },
+    {
+      "kind": "report",
+      "signed": 280,
+      "total": 280,
+      "rebuildRoute": null,
+      "rebuildableEver": false,
+      "rebuildableAtNpmLatest": false
+    },
+    {
+      "kind": "resolution",
+      "signed": 122,
+      "total": 122,
+      "rebuildRoute": "resolutionPayload",
+      "rebuildableEver": true,
+      "rebuildableAtNpmLatest": false
+    }
+  ],
+  "headline": {
+    "neverRebuildable": {
+      "kinds": [
+        "instructed",
+        "report"
+      ],
+      "count": 3089,
+      "percentOfSigned": "27.0%",
+      "note": "No published version of the package rebuilds these. Not fragile, not version-pinned: unverifiable by anyone, permanently, on the evidence of every version published to date."
+    },
+    "notRebuildableAtNpmLatest": {
+      "kinds": [
+        "resolution"
+      ],
+      "count": 122,
+      "percentOfSigned": "1.1%",
+      "note": "Rebuildable at some published version but NOT at 1.0.0-rc.12, which is what npm install serves a reader today."
+    }
+  },
+  "files": [
+    {
+      "path": "citation-bundle-2026-08-13/store.jsonl",
+      "lines": 235,
+      "signed": 127,
+      "sha256": "35fd3c2eeeeeebde1a5d5ef717bcc1074773eb49f96bb45217557ceaa8632418"
+    },
+    {
+      "path": "citation-bundle-snapshot-2026-08-13/store.jsonl",
+      "lines": 228,
+      "signed": 120,
+      "sha256": "a3bd70a73b88e2d67795308e95635bcc50e04b768e4ac26c4ea495ede97f2572"
+    },
+    {
+      "path": "citation-full-story-2026-08-12/store.jsonl",
+      "lines": 346,
+      "signed": 160,
+      "sha256": "c99f01f66bfdc5cb59eadfbc9026979cdc87e853ec840d1b9692ad0e660bbe25"
+    },
+    {
+      "path": "citation-required-demo-2026-08-05/store.jsonl",
+      "lines": 151,
+      "signed": 59,
+      "sha256": "b3527c53a4b7f051db2ebb23660a22efbb93f0c93b6581ff6e05232884078b47"
+    },
+    {
+      "path": "citation-required-demo-2026-08-08/store.jsonl",
+      "lines": 295,
+      "signed": 105,
+      "sha256": "79beb84f2a9f71e748f3a45234583a0df966c83ba12f256ab0c729b197295868"
+    },
+    {
+      "path": "citation-required-mas-2026-08-09/store.jsonl",
+      "lines": 465,
+      "signed": 249,
+      "sha256": "34d4b5953a9fe1d36d1706b57f9b6bc15b8540839f39a9f3d9cf3b4aeb0b4586"
+    },
+    {
+      "path": "demo-stores-live/op-run-2026-08-11/store.jsonl",
+      "lines": 332,
+      "signed": 150,
+      "sha256": "6b430051fbd45df23fafd60b59afe823089e7083aa560a4bf860de31a5008982"
+    },
+    {
+      "path": "demo-stores-live/op-run4-2026-08-11/store.jsonl",
+      "lines": 1131,
+      "signed": 535,
+      "sha256": "d3844d7e76cd6e43f3dd091c98fb09b9207638ab325f498c6c06e950ad2ffc66"
+    },
+    {
+      "path": "in-mandate-demo-2026-08-09/store.PARTIAL-WRITE-EVIDENCE-20260809.jsonl",
+      "lines": 111,
+      "signed": 34,
+      "sha256": "4456b2bb1969622cbdfb9323e13a4735c6f452cd363abe164cd2bc660d7603f9"
+    },
+    {
+      "path": "in-mandate-demo-2026-08-09/store.jsonl",
+      "lines": 214,
+      "signed": 73,
+      "sha256": "6d1bc105feb8abfa902123223631045bc342cb24b71a0660cbcae8e033a8c3cc"
+    },
+    {
+      "path": "recording-store-snapshot-2026-08-12/store.jsonl",
+      "lines": 346,
+      "signed": 160,
+      "sha256": "c99f01f66bfdc5cb59eadfbc9026979cdc87e853ec840d1b9692ad0e660bbe25"
+    },
+    {
+      "path": "run4-determinations/store.jsonl",
+      "lines": 11012,
+      "signed": 5602,
+      "sha256": "f24d1f31211e48ee314b48d12d761b132c068671c7e394d4a343a51ab7f0fc49"
+    },
+    {
+      "path": "run5-ppp/store.jsonl",
+      "lines": 8138,
+      "signed": 4058,
+      "sha256": "0658cbe91af3d2e34937a8f158fcfa02dadc02c19d78cbb56fba48551b9ead4b"
+    }
+  ]
+}

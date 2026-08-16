@@ -72,6 +72,19 @@ const htmlFiles = [];
 
 const MARKED = /<span data-engine-version="(current|historical)">(.*?)<\/span>/gs;
 
+// A THIRD MARKER, OWNED BY A DIFFERENT CHECK, and it is not a loophole.
+//
+// `<span data-measured="…">1.0.0-rc.9</span>` holds a version string that was READ OUT OF THE
+// PUBLISHED TARBALLS and written to results/. check-measured-figures.mjs asserts it equals the
+// measured value exactly, and re-derives the measurement from npm on every run. That is a
+// STRICTER guarantee than this file offers: "current" here only tracks the lockfile.
+//
+// So these are excluded from the unmarked scan because they are covered, not because they are
+// exempt. The rule is unchanged: an unaccounted version string is a failure. Deleting
+// check-measured-figures.mjs from CI would leave these uncovered, which is why both run in the
+// same job and neither is conditional on the other passing.
+const MEASURED = /<span data-measured="[^"]*">(.*?)<\/span>/gs;
+
 let changed = [], stale = [], unmarked = [];
 
 for (const file of htmlFiles) {
@@ -89,7 +102,7 @@ for (const file of htmlFiles) {
   });
 
   // 2. Any full version string OUTSIDE a marker is an unaccounted occurrence.
-  const stripped = out.replace(MARKED, '');
+  const stripped = out.replace(MARKED, '').replace(MEASURED, '');
   for (const m of stripped.matchAll(/\d+\.\d+\.\d+-rc\.\d+/g)) {
     unmarked.push(`${rel}: ${m[0]} is not inside a data-engine-version marker`);
   }
