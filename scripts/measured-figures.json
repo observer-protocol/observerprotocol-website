@@ -1,0 +1,125 @@
+{
+  "$comment": [
+    "WHICH MEASURED FIGURES MUST BE ON WHICH PAGE, and this half is the point.",
+    "",
+    "check-measured-figures.mjs on its own only compares figures that ARE marked. That",
+    "catches a figure going stale and catches nothing at all if the figure is deleted.",
+    "Removing an uncomfortable number from a page would turn the build GREEN, which is",
+    "the same defect the check was written to close, pointed the other way.",
+    "",
+    "So coverage is declared here and enforced in both directions:",
+    "  - a key listed here and absent from its page      -> FAIL, the claim was dropped",
+    "  - a key marked on a page and absent from here     -> FAIL, an undeclared figure",
+    "",
+    "Adding a row is a deliberate act. Deleting one is too, and it should be argued for",
+    "in the commit that does it rather than happening as a side effect of an edit."
+  ],
+  "required": [
+    {
+      "key": "signed-record-coverage:signedRecordTotal",
+      "mustAppearIn": [
+        "index.html"
+      ],
+      "why": "The denominator. A percentage without it is a figure nobody can place."
+    },
+    {
+      "key": "signed-record-coverage:headline.neverRebuildable.count",
+      "mustAppearIn": [
+        "index.html"
+      ],
+      "why": "The count of signed records no published version can rebuild. This is the row's whole claim and it is the least comfortable number on the site."
+    },
+    {
+      "key": "signed-record-coverage:headline.neverRebuildable.percentOfSigned",
+      "mustAppearIn": [
+        "index.html"
+      ],
+      "why": "Stated as a proportion as well as a count, because 3,089 reads as small until it is set against 11,432."
+    },
+    {
+      "key": "signed-record-coverage:headline.neverRebuildable.kinds",
+      "mustAppearIn": [
+        "index.html"
+      ],
+      "why": "WHICH classes. A count with no classes cannot be checked by a reader who holds one of these records and wants to know if theirs is affected."
+    },
+    {
+      "key": "signed-record-coverage:headline.notRebuildableAtNpmLatest.count",
+      "mustAppearIn": [
+        "index.html",
+        "verify.html"
+      ],
+      "why": "The resolution records a reader on npm latest cannot check. On both pages because the register states the scale and /verify states the cause."
+    },
+    {
+      "key": "signed-record-coverage:storeFileCount",
+      "mustAppearIn": [
+        "index.html"
+      ],
+      "why": "The population the figure was measured over. A coverage claim whose denominator is unstated is unfalsifiable."
+    },
+    {
+      "key": "signed-record-coverage:signedRange.earliestDate",
+      "mustAppearIn": [
+        "index.html"
+      ],
+      "why": "A coverage figure is a dated measurement. Both ends of the window are stated so a reader can see what it does not cover."
+    },
+    {
+      "key": "signed-record-coverage:signedRange.latestDate",
+      "mustAppearIn": [
+        "index.html"
+      ],
+      "why": "See above."
+    },
+    {
+      "key": "engine-payload-exports:withdrawals.resolutionPayload.0.from",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "The start of the band in which npm latest sits. Without it the reader cannot tell whether the version they hold is affected."
+    },
+    {
+      "key": "engine-payload-exports:withdrawals.resolutionPayload.0.to",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "The end of the band. Same reason."
+    },
+    {
+      "key": "engine-payload-exports:withdrawals.resolutionPayload.0.restoredAt",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "That it was restored is what makes this a withdrawal rather than an absence, and the difference decides what a reader should do about it."
+    },
+    {
+      "key": "engine-payload-exports:npmLatest",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "The claim is that latest sits INSIDE the withdrawn band. Naming the band without naming latest leaves the reader to make the comparison the page is asserting."
+    },
+    {
+      "key": "signed-record-coverage:headline.notRebuildableAtNpmLatest.kinds",
+      "mustAppearIn": [
+        "index.html"
+      ],
+      "why": "Which class is affected by the withdrawn constructor. A count with no class name cannot be acted on."
+    },
+    {
+      "key": "engine-payload-exports:withdrawals.resolutionPayload.0.lastPresentBefore",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "The version it worked at before the withdrawal. Without it the band reads as 'never shipped' rather than 'taken away'."
+    },
+    {
+      "key": "engine-payload-exports:withdrawals.resolutionPayload.0.count",
+      "mustAppearIn": [
+        "verify.html"
+      ],
+      "why": "How many consecutive releases the gap spans, derived rather than counted by a reader off the two endpoints."
+    }
+  ]
+}

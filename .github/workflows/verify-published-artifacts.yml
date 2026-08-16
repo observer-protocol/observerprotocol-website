@@ -21,6 +21,11 @@ on:
       - 'scripts/sync-engine-version.mjs'
       - 'scripts/check-shared-copy.mjs'
       - 'scripts/shared-copy.json'
+      - 'scripts/check-measured-figures.mjs'
+      - 'scripts/measured-figures.json'
+      - 'scripts/measure-signed-record-coverage.mjs'
+      - 'scripts/measure-engine-payload-exports.mjs'
+      - 'results/**'
       - '**/*.html'
       - '.github/workflows/verify-published-artifacts.yml'
   pull_request:
@@ -68,8 +73,17 @@ jobs:
       # commit here — comes last. If a future edit removes the conditions, the steps that
       # survive are the ones about our own artifacts.
       #
-      # `steps.deps.outcome` is required, not decorative: without npm ci these three cannot
-      # run at all, and letting them try would report a missing module as a copy defect.
+      # `steps.deps.outcome` is required, not decorative, ON THE THREE STEPS THAT CARRY IT:
+      # without npm ci those three cannot run at all, and letting them try would report a
+      # missing module as a copy defect.
+      #
+      # The first step below deliberately does NOT carry it. It imports nothing from the
+      # package: it compares figures printed on our pages against results/, and both are in
+      # this repository. Gating it on an npm install would let a registry outage skip the one
+      # check that stops a count on the homepage drifting away from the measurement behind it.
+      - name: Figures in copy match results/
+        if: ${{ !cancelled() }}
+        run: node ./check-measured-figures.mjs
       - name: Verify every published credential
         if: ${{ !cancelled() && steps.deps.outcome == 'success' }}
         run: node ./verify-published-credentials.mjs

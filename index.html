@@ -1106,6 +1106,13 @@ console.log(<span class="k">await</span> verifyCredentialObject(
       </div>
       <div class="reg-row">
         <div>
+          <div class="reg-what">Signed records an outside party can rebuild</div>
+          <div class="reg-detail">Of <span data-measured="signed-record-coverage:signedRecordTotal">11,432</span> signed records across <span data-measured="signed-record-coverage:storeFileCount">13</span> record stores we hold, written between <span data-measured="signed-record-coverage:signedRange.earliestDate">2026-08-05</span> and <span data-measured="signed-record-coverage:signedRange.latestDate">2026-08-15</span>, <strong><span data-measured="signed-record-coverage:headline.neverRebuildable.count">3,089</span> of them (<span data-measured="signed-record-coverage:headline.neverRebuildable.percentOfSigned">27.0%</span>) cannot be checked by anyone.</strong> They are <code><span data-measured="signed-record-coverage:headline.neverRebuildable.kinds">instructed, report</span></code> records, and <strong>no version of the engine ever published rebuilds their signed bytes</strong>, so there is nothing to verify a signature against. This is not a version pin and it is not a gap that a reader can work around by installing something else: those records carry a signature that no counterparty, and no one here, can check. <strong>Principle 04 below says the evidence is portable or it isn't evidence.</strong> For better than a quarter of what we sign, it isn't. A further <span data-measured="signed-record-coverage:headline.notRebuildableAtNpmLatest.count">122</span> <code><span data-measured="signed-record-coverage:headline.notRebuildableAtNpmLatest.kinds">resolution</span></code> records are rebuildable at some published version but not at the one <code>npm install</code> serves; section 04 of <a href="/verify" style="color:var(--amber); text-decoration:none;">/verify</a> carries that. Every figure in this row is read from <code>results/</code> and fails the build if the copy and the measurement disagree.</div>
+        </div>
+        <div class="reg-state no"><span data-measured="signed-record-coverage:headline.neverRebuildable.percentOfSigned">27.0%</span> unverifiable</div>
+      </div>
+      <div class="reg-row">
+        <div>
           <div class="reg-what">Specification</div>
           <div class="reg-detail">AIP v0.9, ratified 25 July 2026, tagged <code>v0.9</code>, review record in the public repository. Additive over v0.6 through v0.8; an implementation conforming to any of those remains conforming.</div>
         </div>
