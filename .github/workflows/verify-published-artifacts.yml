@@ -27,6 +27,9 @@ on:
       - 'scripts/measure-engine-payload-exports.mjs'
       - 'scripts/measure-schema-claims.mjs'
       - 'scripts/measure-hosted-verifier.mjs'
+      - 'scripts/check-outbound-links.mjs'
+      - 'scripts/mustresolve.json'
+      - 'scripts/known-dead-links.json'
       - 'schemas/**'
       - 'results/**'
       - '**/*.html'
@@ -87,6 +90,11 @@ jobs:
       - name: Figures in copy match results/
         if: ${{ !cancelled() }}
         run: node ./check-measured-figures.mjs
+      # Also ungated on `steps.deps`: it imports nothing from the package, and a registry
+      # outage must not skip the check that follows what we publish to a reader.
+      - name: Outbound links resolve
+        if: ${{ !cancelled() }}
+        run: node ./check-outbound-links.mjs
       - name: Verify every published credential
         if: ${{ !cancelled() && steps.deps.outcome == 'success' }}
         run: node ./verify-published-credentials.mjs

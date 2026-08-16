@@ -1,0 +1,42 @@
+{
+  "$comment": [
+    "OUTBOUND LINKS THAT MUST BE PRESENT AND MUST RESOLVE.",
+    "",
+    "Why this exists, dated 2026-08-16: /agentic-terminal carried a primary CTA,",
+    "'Open Sovereign Dashboard', pointing at https://agenticterminal.io/sovereign.",
+    "It returned 404. The page's only call to action for the tier it was advertising",
+    "was dead, and nothing in this repository looked at an outbound link, so nothing",
+    "could notice. Every other claim surface here fails the build when it drifts.",
+    "",
+    "TWO HALVES, and the second is the one that gets skipped.",
+    "  presence  a declared URL missing from its page FAILS. A CTA can be broken by",
+    "            deletion as easily as by a 404, and deletion is the quieter failure.",
+    "  status    a declared URL that does not resolve FAILS.",
+    "",
+    "Undeclared outbound links are swept too, and a 404 or 410 on any of them fails.",
+    "That sweep is deliberately narrower: a transport error or a 5xx on somebody",
+    "else's host is reported as NOT CHECKED rather than failing our build, because a",
+    "third party's outage is not our defect. A 404 is different. It means the address",
+    "we published does not name anything, which is a fact about our page.",
+    "",
+    "This file is for links we ASSERT. It is not an allowlist and adding a row does",
+    "not make a link exempt from anything."
+  ],
+  "mustResolve": [
+    {
+      "url": "https://agenticterminal.io",
+      "mustAppearIn": ["agentic-terminal.html"],
+      "why": "The design-partner CTA and the page's own citation of the status section it is reconciled against. If this stops resolving, the page is asserting a reconciliation against a document nobody can reach."
+    },
+    {
+      "url": "https://github.com/observer-protocol",
+      "mustAppearIn": ["agentic-terminal.html"],
+      "why": "The open-source claim on this page is checkable only by following it. A dead link here turns 'free, open source, self-hostable' into an assertion."
+    }
+  ],
+  "skipHosts": [
+    "fonts.googleapis.com",
+    "fonts.gstatic.com"
+  ],
+  "$skipHostsNote": "Font CDNs only. They are referenced from every page, they are not claims, and checking them 38 times per run buys nothing. Anything that carries a claim stays in the sweep."
+}

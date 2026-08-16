@@ -7,8 +7,8 @@
   "measuredOn": "2026-08-16",
   "package": "@observer-protocol/policy-engine",
   "npmLatest": "1.0.0-rc.12",
-  "npmRc": "1.0.0-rc.18",
-  "versionCount": 23,
+  "npmRc": "1.0.0-rc.19",
+  "versionCount": 24,
   "withdrawals": {
     "resolutionPayload": [
       {
@@ -298,6 +298,22 @@
     },
     {
       "version": "1.0.0-rc.18",
+      "exports": [
+        "evaluationVerdictPayload",
+        "lapsePayload",
+        "refusalPayload",
+        "resolutionPayload"
+      ],
+      "verifiers": [
+        "verifyDecisionAttestation",
+        "verifyCredentialObject",
+        "signableFromRefusal"
+      ],
+      "verdictPayloadType": "op.evaluation.verdict.v4",
+      "refusalPayloadType": "op.enforcement.refusal.v2"
+    },
+    {
+      "version": "1.0.0-rc.19",
       "exports": [
         "evaluationVerdictPayload",
         "lapsePayload",
