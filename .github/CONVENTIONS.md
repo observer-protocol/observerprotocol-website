@@ -46,6 +46,7 @@ better.
 | `architecture.html` | *"A system that both made the determination and sold assurance over it would be attesting to its own work"* | the decider's separation reading as an implementation detail a customer could ask us to waive |
 | `architecture.html` | the decision attestation is drawn **below** the spine | drawing it on the spine puts us in the decision path in the picture while the prose says we are not |
 | `supervisors.html` | *"a firm holding only one of the two can report itself clean while every one of them is occurring"* | the four cross-firm conditions reading as a feature list rather than as the reason the page exists |
+| `index.html` | *"A determination is independently verifiable by a party who was not there"*, stated with no qualifier attached | a hedge on a measured property. Its two limits are separate register rows, and a caveat in this sentence would make a claim we can run read as one we are unsure of |
 
 Add a row when you add a comment. A protected sentence nobody knows about is one edit from gone.
 
