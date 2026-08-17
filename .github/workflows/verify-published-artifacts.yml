@@ -122,3 +122,14 @@ jobs:
       - name: The public checker verifies the published sample and refuses broken ones
         if: ${{ !cancelled() }}
         run: node ./check-public-checker.mjs
+
+      # served-page-audit.mjs runs OUTSIDE this repository, on a clock, because the change
+      # it watches for produces no commit. It therefore carries baked-in values it cannot
+      # derive at run time: the hashes of check.html's own inline scripts, and its own
+      # content hash. This step is the only thing keeping those true.
+      #
+      # It touches no network, so it runs on pull requests too. It has to: the values go
+      # stale on a commit to check.html, which is exactly what a pull request is.
+      - name: The standalone audit's baked-in hashes still match the files
+        if: ${{ !cancelled() }}
+        run: node ./check-audit-expectations.mjs
