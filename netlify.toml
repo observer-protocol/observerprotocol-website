@@ -118,6 +118,18 @@
   to = "/enforcement.html"
   status = 200
 
+# The public attestation checker — canonical extension-less URL.
+#
+# Deliberately NO [[headers]] block for this page. It loads nothing: no font, no
+# stylesheet, no script src, no fetch. There is no origin to allow, nothing to cache
+# beyond the document, and a CORS or cache header here would be the first line of a
+# drift towards this page fetching something. The sitewide /* header block already
+# gives it X-Frame-Options, nosniff and a referrer policy.
+[[redirects]]
+  from = "/check"
+  to = "/check.html"
+  status = 200
+
 # DID document resolution — must serve JSON per W3C did:web spec.
 # The api. subdomain is the canonical source; proxy through the apex
 # so the W3C-mandated path observerprotocol.org/agents/{id}/did.json

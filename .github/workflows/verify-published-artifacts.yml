@@ -104,3 +104,21 @@ jobs:
       - name: Engine version matches the lockfile AND what npm serves a reader
         if: ${{ !cancelled() && steps.deps.outcome == 'success' }}
         run: node ./sync-engine-version.mjs --check
+
+      # LAST, AND ON ITS OWN NODE, for one reason: the public checker's signature cases run
+      # on WebCrypto Ed25519, and this job otherwise pins Node 20, where that primitive is
+      # still experimental. Putting the newer runtime on the final step leaves every step
+      # above on the version it was measured against, and makes a failure here a fact about
+      # check.html rather than about a runtime difference. The script refuses outright when
+      # the primitive is missing rather than letting the resulting mess read as a page defect.
+      #
+      # Not gated on `steps.deps`: it imports nothing from the package. /check.html is the one
+      # page on this site that reaches a verdict on a visitor's own artifact, and a registry
+      # outage must not be the reason nothing checked it.
+      - uses: actions/setup-node@v4
+        if: ${{ !cancelled() }}
+        with:
+          node-version: 22
+      - name: The public checker verifies the published sample and refuses broken ones
+        if: ${{ !cancelled() }}
+        run: node ./check-public-checker.mjs

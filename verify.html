@@ -90,6 +90,7 @@
   <a class="nav-logo" href="/">Observer Protocol</a>
   <ul class="nav-links">
     <li><a href="/verify.html" class="active">Verify</a></li>
+    <li><a href="/check.html">Check</a></li>
     <li><a href="/supervisors.html">Supervisors</a></li>
     <li><a href="/architecture.html">Architecture</a></li>
     <li><a href="/docs.html">Docs</a></li>
@@ -217,6 +218,7 @@ console.log(<span class="k">await</span> verifyCredentialObject(credential, conf
       <p><strong>A determination is independently verifiable by a party who was not there.</strong> The record carries the document that was signed, as base64 of the bytes that were received, beside a <code>documentHash</code>. Sha256 over those stored bytes reproduces the hash, so you can rebuild the verifier's input from the record alone, and <code>verifyDecisionAttestation</code> is exported by the version the install line above gives you. <code>/verify-samples/ppp-determination-refused-outcome.json</code> is a real stored determination record and the run below is its output, not a description of it.</p>
       <p><strong>Read the state, not the absence of an error.</strong> <code>attested</code> means a key recovered from the decider's own <code>did:key</code> signed a canonicalisation of the whole document, that the decision identifier in the document is the one the payment cited, and that the outcome is a member of the vocabulary the document declares. It does not mean the policy, the vocabulary or the decider's artifact was fetched and compared: those references are confirmed present and resolved against nothing. <code>inputsDigest</code> is not even confirmed present, and the sample below carries none. <a href="/docs.html" style="color:var(--amber); text-decoration:none;">Field by field, including what a reader cannot establish ↗</a></p>
       <p><strong>A <code>PolicyEvaluationCredential</code> is a different artifact and the next box is about it.</strong> Both record a determination; only one of them has a verifier. Conflating them is the error this page keeps separate on purpose.</p>
+      <p data-shared-copy="offline-scope"><strong>Without installing anything:</strong> <a href="/check.html" style="color:var(--amber); text-decoration:none;">/check</a> runs this same sequence in your browser. Paste the record, get the verdict, and nothing you paste leaves your browser. It covers the decision attestation and nothing else, so the rest of this page is still the route for a delegation credential or a refusal record.</p>
     </div>
 
     <div class="code">
