@@ -133,3 +133,30 @@ jobs:
       - name: The standalone audit's baked-in hashes still match the files
         if: ${{ !cancelled() }}
         run: node ./check-audit-expectations.mjs
+
+      # THE SUBJECT HERE IS THE LIVE SITE, NOT THIS CHECKOUT, and it runs through a wrapper
+      # rather than directly because the audit has four exit codes and a `run:` step has two.
+      #
+      #   0  clean                                 step passes
+      #   1  established mismatch                  step FAILS
+      #   3  absent on a single observation        step FAILS
+      #   2  production could not be reached       step PASSES, with NOT CHECKED on the run
+      #                                            page as a summary block and an annotation
+      #
+      # Collapsing 2 into failure would let somebody else's outage redden a build that is
+      # reviewing a diff, and a red build meaning "a host was down" teaches people that red
+      # means nothing. Collapsing it into a silent pass is the same defect one layer up, in
+      # the display: a skipped check that looks identical to a passed one.
+      #
+      # MEASURED BY MUTATION 2026-08-17: with the exit-2 branch removed from the wrapper, an
+      # unreachable host takes this step from exit 0 to exit 1. The separation is
+      # load-bearing rather than decorative, which is the thing that had to be established.
+      #
+      # No --observations: a runner is ephemeral, so nothing it writes survives to a next run
+      # and absence could never be corroborated from here. Corroboration is the scheduled
+      # copy's job, on a host that keeps its own file. What CI can say is "absent, and nobody
+      # has established that", which is exit 3, which blocks.
+      - name: What a visitor receives at /check
+        if: ${{ !cancelled() }}
+        shell: bash
+        run: ./ci-served-page-audit.sh https://observerprotocol.org/check --disclose=cloudflareinsights

@@ -76,6 +76,18 @@
  * corroborated and this exits 3 every time, which is the honest default: a single run
  * cannot corroborate itself.
  *
+ * THE OBSERVATIONS FILE IS A LOCAL TIMER. IT IS NOT EVIDENCE.
+ * This program writes the sighting that this program later reads. Nothing signs it,
+ * nothing else witnesses it, and anyone holding the file can edit it, so it establishes
+ * nothing to a third party and must never be cited as if it did. It is a way of
+ * remembering how long ago something was first noticed, and that is its entire job.
+ *
+ * What sixty minutes buys is correspondingly narrow: it RULES OUT A TRANSIENT. It rules
+ * out nothing else. It does not establish that a setting was changed, who changed it,
+ * when, or that it will stay changed. The authority for that is the operator stating the
+ * toggle was flipped, plus the CDN's incident being resolved. Corroboration is a filter
+ * on noise, not a source of authority, and this file is not the record of anything.
+ *
  * THIS GATES A DECISION, and the decision is stated here so the code and the rule cannot
  * drift apart. /check's strong sentence goes back to its full form only when ALL THREE of
  * these hold, not on a clean run alone:
@@ -104,10 +116,10 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
-const AUDIT_VERSION = '3.0.0';
+const AUDIT_VERSION = '3.1.0';
 // sha256 of this file with the literal on the line below normalised to an empty string.
 // Recompute with --version. Update it in the same commit as any edit to this file.
-const AUDIT_SHA256 = 'f8ce5f92a2a8d1b43122a91d225e0168aa1ab93d2d87b672c5be1c47323fd176';
+const AUDIT_SHA256 = '590b0ae5dcf5b96bda2c67215a5339877e4d3455afefd35b5a475186d60b0dc0';
 
 const sha256 = (s) => createHash('sha256').update(s).digest('hex');
 
