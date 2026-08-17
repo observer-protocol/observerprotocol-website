@@ -808,10 +808,31 @@
         <h3>A request outside mandate produces no instruction.</h3>
         <p>Not a warning. Not a flag on a dashboard for someone to review on Monday. No instruction is emitted, so there is nothing downstream to recall, reverse, or dispute. The check fails closed: if the mandate cannot be read, or the revocation status cannot be established, the answer is no. And the refusal is itself a signed record, which is the part nobody else publishes.</p>
       </div>
+      <!-- ==========================================================================
+           REVIEWER: DO NOT ATTACH A QUALIFIER TO "A determination is independently
+           verifiable by a party who was not there."
+
+           It is flat on purpose. The two limits a reader thinks of next are both
+           real and both are in the register in section 08, as separate rows:
+           determination records written before the document bytes were kept are
+           not reconstructible, and no public surface exists for an outsider to
+           run the check.
+
+           Neither narrows this sentence. The first is about which records exist,
+           the second is about who has been handed a tool, and this sentence is
+           about what a determination in your hands is worth. Hedging it here
+           would trade a measured property for the appearance of caution: the
+           artifact is verify-samples/ppp-determination-refused-outcome.json, the
+           call is verifyDecisionAttestation, and verify-published-credentials.mjs
+           runs it in CI on every build.
+
+           If this tile has to be shortened, cut the opening sentence listing what
+           the attestation carries. Keep this one, and keep the set that follows it.
+           ========================================================================== -->
       <div class="prim">
         <div class="prim-num">03 · THE ATTESTATION</div>
         <h3>What was decided, under which policy, over which inputs.</h3>
-        <p data-shared-copy="offline-scope">A signed statement naming the decision, the policy version and its content hash, a digest of the inputs it ran over, the outcome, and the party that decided, kept separate from the party that issued the mandate. It verifies offline, against public keys, with nothing from us &mdash; for the credentials the published engine knows how to read. <strong data-shared-copy="verifiable-set">That set is delegation credentials, refusal records and lapse records. <span data-shared-copy="verifiable-set-excluded">It does not include determinations, resolutions, instructions or releases.</span></strong> It travels with the counterparty rather than living in our database.</p>
+        <p data-shared-copy="offline-scope">A signed statement naming the decision, the policy version and its content hash, a digest of the inputs it ran over, the outcome, and the party that decided, kept separate from the party that issued the mandate. It verifies offline, against public keys, with nothing from us. <strong>A determination is independently verifiable by a party who was not there.</strong> <strong data-shared-copy="verifiable-set">The set the published engine reads is delegation credentials, refusal records, lapse records and decision attestations. <span data-shared-copy="verifiable-set-excluded">It does not include policy evaluation credentials, resolutions, instructions or releases.</span></strong> It travels with the counterparty rather than living in our database.</p>
       </div>
     </div>
   </div>
@@ -884,15 +905,30 @@
          The "no checkout" part is the whole point: it is a counterparty proof, not a
          parity test that works because two repos sit adjacent on one machine.
 
-         DO NOT WIDEN THIS LIST. It is delegation credentials, refusal records and
-         lapse records. Determinations, resolutions, instructions and releases are
-         NOT verifiable without us. A PolicyEvaluationCredential is a determination
-         and is a DIFFERENT ARTIFACT from a refusal record: both published PECs still
-         fail with PEC-NO-VERIFIER-PATH, which scripts/verify-published-credentials.mjs
-         enforces in CI. Conflating the two is the error this correction removed.
+         WIDENED 2026-08-17, and the list is now delegation credentials, refusal
+         records, lapse records and decision attestations. Widen it again only on a
+         measurement, and record the measurement here.
+
+         WHAT WAS MEASURED FOR THE DECISION ATTESTATION, on 2026-08-17, against the
+         version npm's latest tag serves: verify-samples/ppp-determination-refused-outcome.json
+         is a published op.decision.attestation record, and
+         scripts/verify-published-credentials.mjs returns allow=true on it through
+         verifyDecisionAttestation, which every published tarball from rc.8 to rc.19
+         exports. The record carries the wire document as base64 with a documentHash of
+         sha256:b6c0bdd0, and sha256 over those stored bytes reproduces that hash, so the
+         input to the signature can be rebuilt from the record by someone holding nothing
+         else. rc.8, rc.12 and rc.19 are HISTORICAL references here and are written
+         without a full version string, for the same reason rc.9 is above.
+
+         A PolicyEvaluationCredential IS STILL EXCLUDED and is a DIFFERENT ARTIFACT
+         from a decision attestation: both published PECs still fail with
+         PEC-NO-VERIFIER-PATH in the same CI check. Conflating the two is the error the
+         previous correction removed and this one keeps removed. Resolutions, instructions
+         and releases are also still excluded; resolutionPayload is absent from rc.9
+         through rc.12 and section 02 of /verify carries that band.
          ========================================================================== -->
     <p class="section-intro" data-shared-copy="offline-scope">
-      The strongest claim we make is that you do not need our cooperation to check our work. That claim is worth nothing unless you can run it, so here it is, against a credential that is live on this domain right now. <strong data-shared-copy="verifiable-set">What you can check without us: delegation credentials, refusal records and lapse records.</strong> What you cannot, yet: determinations, resolutions, instructions and releases.
+      The strongest claim we make is that you do not need our cooperation to check our work. That claim is worth nothing unless you can run it, so here it is, against a credential that is live on this domain right now. <strong data-shared-copy="verifiable-set">What you can check without us: delegation credentials, refusal records, lapse records and decision attestations.</strong> <span data-shared-copy="verifiable-set">What you cannot: <span data-shared-copy="verifiable-set-excluded">policy evaluation credentials, resolutions, instructions and releases.</span></span>
     </p>
 
     <div class="verify-grid">
@@ -1019,7 +1055,7 @@ console.log(<span class="k">await</span> verifyCredentialObject(
           <div class="pill">Rail adapters</div>
           <div class="pill">Schemas &amp; engine</div>
         </div>
-        <p data-shared-copy="offline-scope">Signed attestations for decisions, refusals and approvals. Verification that needs nothing from us. Spec-governed, and you can run all of it yourself without telling us you have.</p>
+        <p data-shared-copy="offline-scope">Signed attestations for decisions, refusals and approvals. Decisions and refusals verify with nothing from us. An approval does not, at the version <code>npm install</code> serves, and section 08 carries the band. Spec-governed, and what verifies you can run yourself without telling us you have.</p>
         <div class="at-card-cta"><a href="./architecture.html" style="color:var(--amber); text-decoration:none;">Architecture →</a></div>
       </div>
       <a href="./agentic-terminal.html" class="at-card">
@@ -1110,6 +1146,34 @@ console.log(<span class="k">await</span> verifyCredentialObject(
           <div class="reg-detail">Of <span data-measured="signed-record-coverage:signedRecordTotal">11,432</span> signed records across <span data-measured="signed-record-coverage:storeFileCount">13</span> record stores we hold, written between <span data-measured="signed-record-coverage:signedRange.earliestDate">2026-08-05</span> and <span data-measured="signed-record-coverage:signedRange.latestDate">2026-08-15</span>, <strong><span data-measured="signed-record-coverage:headline.neverRebuildable.count">3,089</span> of them (<span data-measured="signed-record-coverage:headline.neverRebuildable.percentOfSigned">27.0%</span>) cannot be checked by anyone.</strong> They are <code><span data-measured="signed-record-coverage:headline.neverRebuildable.kinds">instructed, report</span></code> records, and <strong>no version of the engine ever published rebuilds their signed bytes</strong>, so there is nothing to verify a signature against. This is not a version pin and it is not a gap that a reader can work around by installing something else: those records carry a signature that no counterparty, and no one here, can check. <strong>Principle 04 below says the evidence is portable or it isn't evidence.</strong> For better than a quarter of what we sign, it isn't. A further <span data-measured="signed-record-coverage:headline.notRebuildableAtNpmLatest.count">122</span> <code><span data-measured="signed-record-coverage:headline.notRebuildableAtNpmLatest.kinds">resolution</span></code> records are rebuildable at some published version but not at the one <code>npm install</code> serves; section 04 of <a href="/verify" style="color:var(--amber); text-decoration:none;">/verify</a> carries that. Every figure in this row is read from <code>results/</code> and fails the build if the copy and the measurement disagree.</div>
         </div>
         <div class="reg-state no"><span data-measured="signed-record-coverage:headline.neverRebuildable.percentOfSigned">27.0%</span> unverifiable</div>
+      </div>
+      <div class="reg-row">
+        <div>
+          <div class="reg-what">A determination re-checked by a party who was not there</div>
+          <div class="reg-detail"><code>verifyDecisionAttestation</code> is exported by the version <code>npm install</code> serves, and <code>verify-samples/ppp-determination-refused-outcome.json</code> is a published decision attestation it returns <code>attested</code> on. The record carries the document that was signed as base64 beside a <code>documentHash</code>, and sha256 over those stored bytes reproduces that hash, so the input to the signature is rebuildable from the record alone, by someone who holds nothing else and was present for none of it. Checked in CI in both directions, so a regression and a silent repair both break the build. <strong>What it establishes is narrower than the word verifier suggests, and the narrowness is stated where the check is run rather than here:</strong> a named key signed those exact bytes and nobody has altered them since, while <code>policyRef.hash</code>, <code>vocabularyRef.hash</code> and <code>deciderArtifactDigest.value</code> are confirmed present and never resolved against anything. <a href="/docs.html" style="color:var(--amber); text-decoration:none;">The field-level account is on the docs page</a>.</div>
+        </div>
+        <div class="reg-state live">Verifiable</div>
+      </div>
+      <div class="reg-row">
+        <div>
+          <div class="reg-what">Determination records written before the document bytes were kept</div>
+          <div class="reg-detail">The property above rests on the raw document and signature being preserved through ingestion. That is true of deployments running the determination-records path. It is not true of what came before it: those deployments verified an attestation once on receipt and did not keep what they verified, so <strong>a determination recorded on one of them cannot be rebuilt by us or by anyone else, permanently.</strong> <strong>This repository cannot tell you which records those are.</strong> The boundary is a property of a deployment, it is not readable from any artifact published here, and no version string in this estate marks it. Read the row above as a statement about a determination you are holding, not as a statement about every determination that exists.</div>
+        </div>
+        <div class="reg-state no">Not reconstructible</div>
+      </div>
+      <div class="reg-row">
+        <div>
+          <div class="reg-what">A public surface where an outside party performs the check</div>
+          <div class="reg-detail">None. The verification runs in the console, which sits behind the client's own login, so the party who can exercise it today is the client. <strong>The property is held and the surface for an outsider to use it is not built.</strong> That is the same distinction this register draws between a schema and a verifier, and between a specification and an implementation: the artifact you hold verifies against published code on your own machine, and there is no address you can send someone to and have them check one without holding it first.</div>
+        </div>
+        <div class="reg-state no">Not built</div>
+      </div>
+      <div class="reg-row">
+        <div>
+          <div class="reg-what">A refused payment joined to the determination it cited</div>
+          <div class="reg-detail">On a corpus of 908 refusals, the determination-side join is closed for <strong>7</strong>. A refusal that fires before the attestation is read records no citation, and the record says so positively rather than leaving the field blank, so the gap is visible in the data rather than inferred from its absence. <strong>So a refused payment mostly cannot be connected to the determination it cited</strong>, and the party asking which determination a refusal was about will not get an answer from these records. <strong>Provenance:</strong> measured on the payment stack and relayed here on 17 August 2026. Unlike the figures in the rebuildable-records row above, nothing in this repository re-derives it, and the record stores it was taken over are not published here.</div>
+        </div>
+        <div class="reg-state no">7 of 908</div>
       </div>
       <div class="reg-row">
         <div>

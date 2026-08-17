@@ -508,6 +508,21 @@
       </div>
     </div>
 
+    <div style="border-left:2px solid #166534; background:var(--bg); padding:1.5rem 1.75rem; margin-top:1.5rem; max-width:760px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--green); margin-bottom:0.75rem;">What is there, and it is the whole point of carrying the attestation</div>
+      <p style="font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300;" data-shared-copy="offline-scope">
+        <strong>A determination is independently verifiable by a party who was not there.</strong> The record keeps the
+        document that was signed, as base64 of the bytes that were received, beside a <code>documentHash</code> that is
+        sha256 over them, so the input to the signature can be rebuilt from the record. <code>verifyDecisionAttestation</code>
+        is exported by the version <code>npm install</code> serves, and a decision attestation published under
+        <code>/verify-samples/</code> verifies against it with no Observer Protocol endpoint in the path.
+        <strong>What that establishes is bounded and the bound is not a formality:</strong> a named key signed those exact
+        bytes, nobody has altered them since, and the decision identifier the payment cites is the one the document carries.
+        Every reference the document points at is confirmed present and resolved against nothing, and the digest of the
+        inputs is not even confirmed present. <a href="/docs.html" style="color:var(--amber);">Field by field &rarr;</a>
+      </p>
+    </div>
+
     <div style="border-left:2px solid #7f1d1d; background:var(--bg); padding:1.5rem 1.75rem; margin-top:1.5rem; max-width:760px;">
       <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:#f87171; margin-bottom:0.75rem;">What is not there yet</div>
       <p style="font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300;">

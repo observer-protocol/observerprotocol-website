@@ -102,9 +102,9 @@
 <div class="page-header">
   <div class="page-header-inner">
     <div class="breadcrumb">OBSERVER PROTOCOL · <span>VERIFY A RECORD</span></div>
-    <h1>You have a delegation credential.<br/>Here is how to check it.</h1>
+    <h1>You have a delegation credential or a decision attestation.<br/>Here is how to check it.</h1>
     <p class="page-sub">
-      This page is for the party doing the checking: a supervisor, an external auditor, a counterparty's risk function, someone contesting a determination made about them. <strong data-shared-copy="verifiable-set">It covers delegation credentials, refusal records and lapse records, which is what the published engine knows how to read</strong> &mdash; if you are holding a <code>PolicyEvaluationCredential</code>, see the note in section 02 before you start. You are not our customer and you should not have to become one. Everything below runs on your machine, against artifacts we had no part in putting in your hands.
+      This page is for the party doing the checking: a supervisor, an external auditor, a counterparty's risk function, someone contesting a determination made about them. <strong data-shared-copy="verifiable-set">It covers delegation credentials, refusal records, lapse records and decision attestations, which is what the published engine knows how to read</strong> &mdash; if you are holding a <code>PolicyEvaluationCredential</code>, see the note in section 02 before you start. You are not our customer and you should not have to become one. Everything below runs on your machine, against artifacts we had no part in putting in your hands.
     </p>
   </div>
 </div>
@@ -210,6 +210,55 @@ console.log(<span class="k">await</span> verifyCredentialObject(credential, conf
       <h4>Eight more artifacts in that directory, and they are not credentials</h4>
       <p>A delegation credential is one of five constructions this estate signs. <code>/verify-samples/</code> also carries a decision attestation, four evaluation verdicts, two enforcement refusals and a payment instruction, taken verbatim from a run of a determination and payment stack against <strong>two real Federal Register instruments</strong>, over constructed loan cases. Each is published with the case that produced it, with its expected verdict recorded in the same CI check as the three above.</p>
       <p><strong>Four of the eight do not verify against the version this page tells you to install, and they stay published saying so.</strong> <strong>The records are sound.</strong> Each verdict was signed under <code>op.evaluation.verdict.v4</code> and says so in its own <code>construction.type</code>; <code>rc.12</code> rebuilds <code>v3</code> and never reads that field, so the bytes differ by one string and the signature fails. The failure is recoverable by trial across a contiguous band: rebuild once per candidate version and exactly one verifies. That is a different fact from the two tampered fixtures above, which must never verify at any version, and the README keeps the two apart rather than leaving you to guess which kind of red you are looking at. A further one of the eight, the payment instruction, is checked by nothing at all at any published version, which is recorded as its own state rather than as a failure. <a href="/verify-samples/README.md" style="color:var(--amber); text-decoration:none;">The three groups, and what verifying any of them does not establish ↗</a></p>
+    </div>
+
+    <div class="callout">
+      <h4>A decision attestation checks out with the same install, and one is published here</h4>
+      <p><strong>A determination is independently verifiable by a party who was not there.</strong> The record carries the document that was signed, as base64 of the bytes that were received, beside a <code>documentHash</code>. Sha256 over those stored bytes reproduces the hash, so you can rebuild the verifier's input from the record alone, and <code>verifyDecisionAttestation</code> is exported by the version the install line above gives you. <code>/verify-samples/ppp-determination-refused-outcome.json</code> is a real stored determination record and the run below is its output, not a description of it.</p>
+      <p><strong>Read the state, not the absence of an error.</strong> <code>attested</code> means a key recovered from the decider's own <code>did:key</code> signed a canonicalisation of the whole document, that the decision identifier in the document is the one the payment cited, and that the outcome is a member of the vocabulary the document declares. It does not mean the policy, the vocabulary or the decider's artifact was fetched and compared: those references are confirmed present and resolved against nothing. <code>inputsDigest</code> is not even confirmed present, and the sample below carries none. <a href="/docs.html" style="color:var(--amber); text-decoration:none;">Field by field, including what a reader cannot establish ↗</a></p>
+      <p><strong>A <code>PolicyEvaluationCredential</code> is a different artifact and the next box is about it.</strong> Both record a determination; only one of them has a verifier. Conflating them is the error this page keeps separate on purpose.</p>
+    </div>
+
+    <div class="code">
+      <div class="head"><span>attestation.mjs</span><span>measured 17 August 2026 · no network call</span></div>
+<pre><span class="c">$</span> <span class="k">npm install</span> @observer-protocol/policy-engine
+<span class="c">$</span> <span class="k">curl -O</span> https://observerprotocol.org/verify-samples/ppp-determination-refused-outcome.json
+
+<span class="k">import</span> { verifyDecisionAttestation, ed25519Verify, base58Decode }
+  <span class="k">from</span> <span class="s">'@observer-protocol/policy-engine'</span>;
+<span class="k">import</span> { createHash } <span class="k">from</span> <span class="s">'node:crypto'</span>;
+<span class="k">import</span> fs <span class="k">from</span> <span class="s">'node:fs'</span>;
+
+<span class="k">const</span> record = JSON.parse(fs.readFileSync(<span class="s">'./ppp-determination-refused-outcome.json'</span>));
+
+<span class="c">// The record stores the document as base64 of the bytes that were received.</span>
+<span class="k">const</span> bytes = Buffer.from(record.document, <span class="s">'base64'</span>);
+<span class="k">const</span> hash  = <span class="s">'sha256:'</span> + createHash(<span class="s">'sha256'</span>).update(bytes).digest(<span class="s">'hex'</span>);
+console.log(<span class="s">'documentHash matches the stored bytes:'</span>, hash === record.documentHash);
+
+<span class="c">// did:key -> the multicodec-prefixed key bytes the engine expects.</span>
+<span class="k">const</span> didKeyBytes = (did) =&gt; base58Decode(did.slice(<span class="s">'did:key:z'</span>.length));
+
+console.log(verifyDecisionAttestation(
+  record.decisionId,
+  JSON.parse(bytes.toString(<span class="s">'utf8'</span>)),
+  record.signature,
+  (msg, sig, pk) =&gt; ed25519Verify(Buffer.from(pk), Buffer.from(msg, <span class="s">'utf8'</span>), Buffer.from(sig)),
+  didKeyBytes,
+));</pre>
+    </div>
+
+    <div class="code">
+      <div class="head"><span>what that prints</span><span>truncated after the two lines that carry the verdict</span></div>
+<pre><span class="o">documentHash matches the stored bytes: true
+{
+  state: 'attested',
+  decisionId: 'urn:ppp-cases:decision:MF-0001:APR',
+  decider: 'did:key:z6MkoMCP6imN1HfKC1gVHDMffgP3af58VnGY621KRHrEsbDq',
+  outcome: 'determination-refused-schema',
+  ...
+  inputsDigest: undefined
+}</span></pre>
     </div>
 
     <div class="callout" style="border-left-color:var(--red-dim);">

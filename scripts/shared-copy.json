@@ -75,13 +75,20 @@
   },
   "verifiable-set": {
     "why": "PHRASE CHECK, not an enumeration. The list of what a counterparty can verify without us is the estate's central claim and it MOVES: refusal records joined it at engine rc.9, and determinations, resolutions, instructions and releases are named work rather than permanent exclusions. When one of them lands, every sentence stating the set goes stale on the same day, and a stale version of this sentence UNDERSTATES what we can prove, which is the failure nobody reports because it reads as caution.\n\nMEASURED 2026-08-10, and it is why this key exists rather than relying on offline-scope: with the set sentence WIDENED to include releases, NARROWED to \"delegation credentials only\", and DELETED outright, check-shared-copy exited 0 on all three. offline-scope carries an empty `phrases` array by design: it knows WHERE the claim lives, not WHAT it says. Deleting the sentence passed because index.html carries other offline-scope blocks, so mustAppearIn was still satisfied.\n\nWHAT THIS CATCHES AND WHAT IT DOES NOT. `phrases` is satisfied by ANY tagged block in the file, so this fails when a file stops stating the set anywhere, and it does NOT fail when one of two statements in the same file drifts while the other stays correct. index.html states the set twice, so that gap is real there; verify.html states it once, so it is exact. Widening the list breaks the pinned string at the conjunction, which is the direction that matters most.",
+    "movedOn": "2026-08-17. The set widened to include decision attestations, and the pinned run moved with it. This is the event the paragraph above anticipated, so the note it predicted is written here rather than in a commit message. WHAT WAS MEASURED, against the version npm's latest tag serves: verify-samples/ppp-determination-refused-outcome.json is a published op.decision.attestation and verify-published-credentials.mjs returns allow=true on it through verifyDecisionAttestation, which every published tarball from rc.8 to rc.19 exports. The record stores the wire document as base64 with a documentHash, and sha256 over those bytes reproduces it, so the verifier's input is rebuildable from the record alone. The word 'determinations' LEFT the excluded list and 'policy evaluation credentials' took its place, because the old wording named one artifact and excluded two: a PolicyEvaluationCredential still has no verifier path at any published version, a decision attestation has had one throughout, and results/signed-record-coverage.json was already calling the second kind 'determination' while index.html was excluding it under the same word.",
     "mustAppearIn": [
       "index.html",
       "verify.html"
     ],
     "phrases": [
-      "delegation credentials, refusal records and lapse records"
-    ]
+      "delegation credentials, refusal records, lapse records and decision attestations"
+    ],
+    "claimPatterns": [
+      "refusal records,? (and )?lapse records",
+      "instructions (and|or) releases",
+      "what you (can|cannot) check without us"
+    ],
+    "claimPatternNote": "Added 2026-08-17, on the corollary in CONVENTIONS 8: the wording you write to correct a claim is a new instance of that claim, and until now this key had `phrases` but no matcher, so a FOURTH statement of the set on an untagged page would not have failed anything. `phrases` catches a tagged block that drifts; these catch a block nobody tagged. Both halves of the set are matched, the positive run and the excluded run, because the defect this key exists for is one of the two moving without the other."
   },
   "verifiable-set-excluded": {
     "why": "The negative half, kept as its own key because it is stated on index.html and not on verify.html, and `phrases` applies to every file in a key's mustAppearIn. Splitting is the alternative to weakening the positive key's coverage to the intersection of both pages. The conjunction is deliberately excluded from the pinned string: index.html says \"instructions or releases\" in one place and \"instructions and releases\" in the other, and pinning the shorter run keeps both sites honest without pinning a comma.",
@@ -89,8 +96,9 @@
       "index.html"
     ],
     "phrases": [
-      "determinations, resolutions, instructions"
-    ]
+      "policy evaluation credentials, resolutions, instructions"
+    ],
+    "movedOn": "2026-08-17. Was \"determinations, resolutions, instructions\". A decision attestation is a determination and it verifies against the published engine, so keeping the word here excluded an artifact the estate can prove. A PolicyEvaluationCredential is also a determination and still has no verifier path anywhere, so the exclusion is real and now names the artifact it is true of. If a verifier for the type is ever published, this string moves again and index.html is the only file it lives in."
   },
   "crossrail-budget-scope": {
     "why": "ENUMERATION ENTRY, not a phrase check. Same shape as offline-scope and created for the same reason one surface out. The cross-rail budget claim was corrected so thoroughly that crossrail.html was rewritten around 'The budget is a design. The ceiling is a control.', and the correction was placed above the transcript per CONVENTIONS 2d. It was never applied to crossrail.html's own <meta name=\"description\"> or og:description, which asserted 'one cross-rail budget' unqualified until 2026-08-09. A META DESCRIPTION IS THE ONE SURFACE WHERE POSITION CANNOT HELP: it travels alone into a search result and a social card, with no page under it for a correction to sit on, so every positional rule in CONVENTIONS 2c/2d/11 is structurally unavailable there. The claim is enumerated rather than banned because the budget is real, it is simply not adversarially binding: it is an agent-owned local append-only file the agent can truncate, shared only by adapters co-located in one process, and it has never run in production.",
