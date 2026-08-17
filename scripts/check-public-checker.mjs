@@ -24,6 +24,14 @@
  *      <form>, no @import, no url(http…). The page tells a visitor that nothing they
  *      paste leaves the browser, and that sentence is only as true as this list.
  *
+ *      WHAT THAT ASSERTION DOES NOT COVER, and it took a live page to find out: it reads
+ *      check.html ON DISK. Cloudflare injects a RUM beacon into every HTML response on
+ *      this zone, only for requests carrying browser headers, so the file was clean, this
+ *      check was green, and a visitor was loading a third-party script. The other half is
+ *      scripts/check-served-page-loads-nothing.mjs, which fetches the production URL as a
+ *      browser. Neither is sufficient: this one runs before a deploy and cannot see the
+ *      CDN; that one runs after and cannot see a pull request.
+ *
  * The signature check runs on WebCrypto Ed25519, the same primitive the browser uses.
  *
  *   node scripts/check-public-checker.mjs

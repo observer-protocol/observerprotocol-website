@@ -122,3 +122,15 @@ jobs:
       - name: The public checker verifies the published sample and refuses broken ones
         if: ${{ !cancelled() }}
         run: node ./check-public-checker.mjs
+
+      # THE SUBJECT OF THIS ONE IS THE LIVE SITE, NOT THIS CHECKOUT, so it does not run on
+      # pull requests: on a PR it would measure whatever is already deployed and report it
+      # against a branch that has nothing to do with it.
+      #
+      # It exists because the step above reads check.html on disk and was green while the
+      # served page loaded a Cloudflare RUM beacon, injected at the edge and only for
+      # requests carrying browser headers. The file was clean, a curl of the URL was clean,
+      # and the page in a browser was not. Nothing in this repository could have noticed.
+      - name: What a visitor actually receives at /check
+        if: ${{ !cancelled() && github.event_name != 'pull_request' }}
+        run: node ./check-served-page-loads-nothing.mjs
