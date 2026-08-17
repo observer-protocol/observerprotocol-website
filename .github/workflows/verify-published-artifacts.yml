@@ -152,6 +152,12 @@ jobs:
       # unreachable host takes this step from exit 0 to exit 1. The separation is
       # load-bearing rather than decorative, which is the thing that had to be established.
       #
+      # NOTHING IS DISCLOSED, and that is the point of the invocation rather than an omission.
+      # With no --disclose the audit asserts that the page carries its own two scripts and
+      # nothing else, so the absence of the analytics injection is PROVEN on every run instead
+      # of having been asserted once in a paragraph. The day anything is added at the edge, this
+      # goes red without anybody having to remember what used to be there.
+      #
       # No --observations: a runner is ephemeral, so nothing it writes survives to a next run
       # and absence could never be corroborated from here. Corroboration is the scheduled
       # copy's job, on a host that keeps its own file. What CI can say is "absent, and nobody
@@ -159,4 +165,4 @@ jobs:
       - name: What a visitor receives at /check
         if: ${{ !cancelled() }}
         shell: bash
-        run: ./ci-served-page-audit.sh https://observerprotocol.org/check --disclose=cloudflareinsights
+        run: ./ci-served-page-audit.sh https://observerprotocol.org/check
