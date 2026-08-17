@@ -18,6 +18,20 @@
        decision made against them is the reader this page is for.
 
        If this page ever needs an asset, inline it. Do not add a link tag.
+
+       AND THIS FILE BEING CLEAN IS NOT THE CLAIM. Measured 2026-08-17, minutes after this
+       page went live: the SERVED page loaded static.cloudflareinsights.com/beacon.min.js
+       and POSTed to /cdn-cgi/rum. Nothing in this repository had changed. Cloudflare sits
+       in front of the origin and injects its RUM beacon into every HTML response on the
+       zone, and it injects ONLY when the request carries browser headers, so a plain curl
+       of this URL comes back clean. Three instruments agreed the claim held: the build
+       check reading the file, a curl of the live page, and this page in a browser on
+       localhost with no CDN in the path. It was false for every real visitor.
+
+       scripts/served-page-audit.mjs fetches this URL WITH browser headers
+       for that reason. Keep that file pointed at production, and if the beacon is ever
+       turned off at the zone, the paragraph on the page that discloses it comes out in
+       the same commit that proves it is gone.
        ========================================================================== -->
   <style>
     :root {
@@ -123,9 +137,10 @@
     <div class="breadcrumb">OBSERVER PROTOCOL · <span>CHECK A DECISION ATTESTATION</span></div>
     <h1>Paste a decision attestation.<br/>Find out whether it holds.</h1>
     <p class="page-sub" data-shared-copy="offline-scope">
-      <strong>Nothing you paste leaves this browser.</strong> The page loads no font, no script and no data from anywhere,
-      makes no request after it loads, sends nothing, stores nothing and logs nothing. The check runs on your machine,
-      against a key recovered from the decider's own identifier. You do not need an account and you are not our customer.
+      <strong>Nothing you paste leaves this browser.</strong> No code on this page sends it anywhere: no fetch, no form,
+      no upload, no storage. Measured against this page as it is served, on 17 August 2026: pasting a record and checking
+      it produces no network request at all. The check runs on your machine, against a key recovered from the decider's
+      own identifier. You do not need an account and you are not our customer.
     </p>
   </div>
 </div>
@@ -154,6 +169,19 @@
     <div class="result" id="result">
       <div class="result-head"><span class="state" id="result-state"></span><span id="result-kind"></span></div>
       <div class="result-body" id="result-body"></div>
+    </div>
+
+    <div class="note" data-shared-copy="offline-scope">
+      <h4>One thing on this page is not this page's</h4>
+      <p><strong>This domain sits behind a CDN, and it adds a performance beacon to every page it serves, including this
+      one.</strong> The beacon loads before there is anything in the box and reports how quickly the page rendered, not
+      what you put in it. The file itself carries no script tag of its own: the beacon is added between the origin and
+      you, by a setting on the domain rather than by a line in this page.</p>
+      <p>It is written down because the sentence at the top of this page is worth nothing if it is only true of the file
+      and not of what a visitor receives. A plain fetch of this URL returns a page with no beacon in it, and a browser
+      gets one, so every check that reads the file or fetches it without browser headers reported clean while a visitor
+      was loading a third-party script. <strong>That was found by loading the live page rather than by reading it, and
+      the check that now watches for it fetches this URL as a browser.</strong></p>
     </div>
 
     <div class="note">
