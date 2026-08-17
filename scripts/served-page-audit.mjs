@@ -63,21 +63,51 @@
  * page's own verifier being removed, or rewritten by a script-rewriting optimiser, leaves
  * a page that looks fine and checks nothing.
  *
+ * ABSENCE IS A STATE WITH TWO CAUSES, AND THEY MUST NOT BE COLLAPSED
+ * ------------------------------------------------------------------
+ * A disclosed thing that is not in the response might have been removed at the zone, or
+ * the edge might have transiently stopped injecting it. One observation cannot tell those
+ * apart, and the difference is the whole question: the first means the toggle was flipped,
+ * the second means nothing at all.
+ *
+ * So absence is not reported as established until a second observation, at least
+ * --corroborate-after minutes later, sees it absent too. `--observations <path>` is where
+ * that first sighting is written down. With no such path, absence can never be
+ * corroborated and this exits 3 every time, which is the honest default: a single run
+ * cannot corroborate itself.
+ *
+ * THIS GATES A DECISION, and the decision is stated here so the code and the rule cannot
+ * drift apart. /check's strong sentence goes back to its full form only when ALL THREE of
+ * these hold, not on a clean run alone:
+ *
+ *   1. the operator states the toggle was flipped
+ *   2. two runs of this file, at least 60 minutes apart, both come back with the beacon
+ *      absent and corroborated
+ *   3. the CDN's own status page shows the dashboard incident resolved
+ *
+ * Condition 3 is not ceremony. While the dashboard is in an incident the toggle cannot be
+ * flipped, so an absence observed during one is evidence of the incident and not of the
+ * setting.
+ *
  * EXIT CODES, because this is meant to be scheduled
  *   0  what the page carries is exactly what is expected and disclosed
- *   1  mismatch, in any of the three directions
+ *   1  mismatch, established. Something undisclosed is present, something expected is
+ *      missing, or something disclosed is absent AND corroborated.
  *   2  could not reach the page. NOT a pass. A check that cannot reach its subject must
  *      say it did not look, and a scheduler must tell that apart from a clean result.
+ *   3  something disclosed is absent on a single observation. NOT a pass, and not the
+ *      signal either. Same reasoning as 2 being separate from 1: a state nobody has
+ *      established yet is its own answer.
  */
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
-const AUDIT_VERSION = '2.0.0';
+const AUDIT_VERSION = '3.0.0';
 // sha256 of this file with the literal on the line below normalised to an empty string.
 // Recompute with --version. Update it in the same commit as any edit to this file.
-const AUDIT_SHA256 = '2503d04de15ebb6b15fd0273602442bd385cf1c1643d71a2d922f9ebd3b515e2';
+const AUDIT_SHA256 = 'f8ce5f92a2a8d1b43122a91d225e0168aa1ab93d2d87b672c5be1c47323fd176';
 
 const sha256 = (s) => createHash('sha256').update(s).digest('hex');
 
@@ -127,6 +157,22 @@ const disclosed = args
   .flatMap((a) => a.slice('--disclose='.length).split(','))
   .map((s) => s.trim())
   .filter(Boolean);
+
+// Where a first sighting of an absence is written down, so a later run can corroborate it.
+// Absent by default, and the default is the strict one: with nowhere to write, absence is
+// never corroborated and this exits 3 every time.
+const observationsPath = args.find((a) => a.startsWith('--observations='))?.slice('--observations='.length);
+const corroborateAfterMin = Number(args.find((a) => a.startsWith('--corroborate-after='))?.slice('--corroborate-after='.length) ?? 60);
+
+const readObservations = () => {
+  if (!observationsPath) return {};
+  try { return JSON.parse(readFileSync(observationsPath, 'utf8')); } catch { return {}; }
+};
+const writeObservations = (o) => {
+  if (!observationsPath) return;
+  try { writeFileSync(observationsPath, JSON.stringify(o, null, 2) + '\n'); }
+  catch (e) { console.log(`(could not write ${observationsPath}: ${e.message}. Absence cannot be corroborated without it.)`); }
+};
 
 const BROWSER_HEADERS = {
   'User-Agent':
@@ -211,13 +257,38 @@ for (const e of EXPECTED) {
   }
 }
 
+// ─── absence, and whether anyone has established it ───────────────────────────────
+//
+// Three answers, not two. `served` is one observation and needs no second, because
+// presence has one cause. Absence has two, so it gets a state of its own until a run
+// separated in time sees the same thing.
+const observations = readObservations();
+const now = Date.now();
+const uncorroborated = [];
+
 for (const d of disclosed) {
   const stillThere = scripts.some((s) => (s.ref !== undefined ? s.ref.includes(d) : s.body.includes(d) || s.hash.startsWith(d)));
-  if (!stillThere) {
-    rows.push(['FAIL', 'stale', `${d}  is disclosed and no longer present`]);
-    problems.missingDisclosure.push(d);
+  if (stillThere) {
+    if (observations[d]) { delete observations[d]; }   // present again: the clock restarts
+    continue;
   }
+  const first = observations[d]?.firstAbsentAt;
+  if (first === undefined) {
+    observations[d] = { firstAbsentAt: new Date(now).toISOString(), url };
+    rows.push(['....', 'absent', `${d}  absent, first observation, nothing established yet`]);
+    uncorroborated.push({ token: d, minutes: 0 });
+    continue;
+  }
+  const minutes = Math.floor((now - Date.parse(first)) / 60000);
+  if (minutes < corroborateAfterMin) {
+    rows.push(['....', 'absent', `${d}  absent, ${minutes} min since first sighting, ${corroborateAfterMin} needed`]);
+    uncorroborated.push({ token: d, minutes });
+    continue;
+  }
+  rows.push(['FAIL', 'stale', `${d}  absent and corroborated, ${minutes} min apart`]);
+  problems.missingDisclosure.push(d);
 }
+writeObservations(observations);
 
 // ─── report ───────────────────────────────────────────────────────────────────────
 console.log(`url          ${url}`);
@@ -250,6 +321,27 @@ if (failed) {
   console.log('Read this as what was DELIVERED. Nothing here was executed, so a runtime request');
   console.log('made by a script listed above is outside what this establishes.');
   process.exit(1);
+}
+
+if (uncorroborated.length) {
+  console.log('');
+  console.log('Something disclosed is absent, and one observation does not establish that.');
+  for (const u of uncorroborated) {
+    console.log(`  ${u.token}: absent, ${u.minutes} min since first sighting.`);
+  }
+  console.log('');
+  console.log('  Absence has two causes and this cannot tell them apart: removed at the zone,');
+  console.log('  or the edge transiently not injecting. Run again at least');
+  console.log(`  ${corroborateAfterMin} minutes from the first sighting.`);
+  if (!observationsPath) {
+    console.log('');
+    console.log('  No --observations path was given, so nothing was written down and this can');
+    console.log('  never corroborate. That is the default on purpose: a single run cannot');
+    console.log('  corroborate itself. Pass --observations=<path> to let a later run do it.');
+  }
+  console.log('');
+  console.log('  THIS IS NOT A PASS. It is also not the signal. Exit 3.');
+  process.exit(3);
 }
 
 console.log('');
