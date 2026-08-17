@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Check a decision attestation · Observer Protocol</title>
+  <meta name="description" data-shared-copy="offline-scope" content="Paste a decision attestation and its signature. It is checked in your browser, against the decider's own key, and nothing you paste leaves the page." />
+  <!-- ==========================================================================
+       REVIEWER: THIS PAGE LOADS NOTHING FROM ANYWHERE. KEEP IT THAT WAY.
+
+       No webfont link, no stylesheet, no script src, no fetch, no form action,
+       no analytics, no favicon link. Every other page on this site pulls IBM
+       Plex from fonts.googleapis.com; this one uses the same family names with
+       a system fallback so a visitor who has the font gets it and a visitor who
+       does not costs no request. The page states that nothing a visitor pastes
+       leaves the browser, and a page making ANY request while saying so is the
+       one defect that would matter here: a person pasting an artifact about a
+       decision made against them is the reader this page is for.
+
+       If this page ever needs an asset, inline it. Do not add a link tag.
+       ========================================================================== -->
+  <style>
+    :root {
+      --bg:#0a0a08; --bg2:#111110; --bg3:#1a1a18; --border:#2a2a26;
+      --amber:#f5a623; --amber-dim:#b8791a;
+      --green:#4ade80; --green-dim:#166534; --red:#f87171; --red-dim:#7f1d1d;
+      --text:#e8e8e0; --text-dim:#888880; --text-faint:#444440; --teal:#5eead4;
+      --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+      --sans:'IBM Plex Sans',ui-sans-serif,system-ui,-apple-system,sans-serif;
+    }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    body { background:var(--bg); color:var(--text); font-family:var(--sans); font-size:16px; line-height:1.6; overflow-x:hidden; }
+    code { font-family:var(--mono); font-size:0.92em; color:var(--teal); word-break:break-word; }
+
+    nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:0 2.5rem; height:56px; background:rgba(10,10,8,0.92); backdrop-filter:blur(12px); border-bottom:1px solid var(--border); }
+    .nav-logo { font-family:var(--mono); font-size:0.8rem; font-weight:500; color:var(--amber); letter-spacing:0.12em; text-transform:uppercase; text-decoration:none; }
+    .nav-links { display:flex; gap:2rem; list-style:none; }
+    .nav-links a { font-family:var(--mono); font-size:0.72rem; color:var(--text-dim); text-decoration:none; letter-spacing:0.06em; }
+    .nav-links a:hover { color:var(--text); }
+    .nav-links a.active { color:var(--amber); }
+    @media (max-width:900px) { .nav-links { display:none; } }
+
+    .page-header { padding:9rem 2.5rem 3rem; border-bottom:1px solid var(--border); }
+    .page-header-inner { max-width:900px; margin:0 auto; }
+    .breadcrumb { font-family:var(--mono); font-size:0.68rem; color:var(--text-faint); letter-spacing:0.1em; margin-bottom:1.5rem; }
+    .breadcrumb span { color:var(--amber); }
+    h1 { font-size:clamp(2rem,3.6vw,3rem); font-weight:600; line-height:1.1; letter-spacing:-0.02em; margin-bottom:1.25rem; }
+    .page-sub { font-size:1.02rem; color:var(--text-dim); max-width:700px; line-height:1.8; font-weight:300; }
+    .page-sub strong { color:var(--text); font-weight:400; }
+
+    section { padding:3.5rem 2.5rem; }
+    .section-inner { max-width:900px; margin:0 auto; }
+    .section-label { font-family:var(--mono); font-size:0.68rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--amber); margin-bottom:1rem; }
+    h2 { font-size:1.4rem; font-weight:500; margin-bottom:1rem; letter-spacing:-0.01em; }
+    .body { font-size:0.94rem; color:var(--text-dim); line-height:1.85; font-weight:300; margin-bottom:1rem; }
+    .body strong { color:var(--text); font-weight:400; }
+
+    label { display:block; font-family:var(--mono); font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim); margin-bottom:0.5rem; }
+    textarea, input[type=text] {
+      width:100%; background:var(--bg2); color:var(--text); border:1px solid var(--border);
+      font-family:var(--mono); font-size:0.76rem; line-height:1.7; padding:0.9rem 1rem; resize:vertical;
+    }
+    textarea:focus, input[type=text]:focus { outline:none; border-color:var(--amber-dim); }
+    textarea { min-height:220px; }
+    .field { margin-bottom:1.25rem; }
+    .hint { font-size:0.78rem; color:var(--text-faint); margin-top:0.4rem; line-height:1.7; }
+    .controls { display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center; }
+    button {
+      font-family:var(--mono); font-size:0.74rem; letter-spacing:0.08em; text-transform:uppercase;
+      padding:0.75rem 1.4rem; border:1px solid var(--amber-dim); background:transparent; color:var(--amber); cursor:pointer;
+    }
+    button:hover { background:#f5a6231a; }
+    button.secondary { border-color:var(--border); color:var(--text-dim); }
+    button.secondary:hover { background:var(--bg3); color:var(--text); }
+
+    .result { margin-top:2rem; border:1px solid var(--border); background:var(--bg2); display:none; }
+    .result.shown { display:block; }
+    .result-head { padding:1rem 1.25rem; border-bottom:1px solid var(--border); font-family:var(--mono); font-size:0.8rem; letter-spacing:0.06em; display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
+    .result-head .state { font-weight:500; }
+    .result.ok .result-head { border-left:2px solid var(--green); }
+    .result.ok .state { color:var(--green); }
+    .result.bad .result-head { border-left:2px solid var(--red); }
+    .result.bad .state { color:var(--red); }
+    .result.info .result-head { border-left:2px solid var(--amber); }
+    .result.info .state { color:var(--amber); }
+    .result-body { padding:1.25rem; font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300; }
+    .result-body p + p { margin-top:0.75rem; }
+    .checklist { list-style:none; margin-top:1rem; }
+    .checklist li { font-family:var(--mono); font-size:0.76rem; color:var(--text-dim); line-height:2; padding-left:1.4rem; position:relative; }
+    .checklist li::before { content:'✓'; position:absolute; left:0; color:var(--green); }
+    .fields { margin-top:1.25rem; border-top:1px solid var(--border); padding-top:1rem; }
+    .fields div { font-family:var(--mono); font-size:0.76rem; line-height:2; color:var(--text-dim); word-break:break-all; }
+    .fields b { color:var(--text-faint); font-weight:400; display:inline-block; min-width:11rem; }
+
+    .note { border-left:2px solid var(--border); background:var(--bg2); padding:1.25rem 1.5rem; margin-top:1.5rem; font-size:0.88rem; color:var(--text-dim); line-height:1.8; font-weight:300; }
+    .note h4 { font-family:var(--mono); font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text); margin-bottom:0.6rem; font-weight:500; }
+    .next { border:1px solid var(--border); }
+    .next-row { display:grid; grid-template-columns:1fr auto; gap:1rem; padding:0.9rem 1.25rem; border-bottom:1px solid var(--border); font-family:var(--mono); font-size:0.76rem; color:var(--text-dim); align-items:center; }
+    .next-row:last-child { border-bottom:none; }
+    .next-row .tag { color:var(--amber); font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase; }
+    .next-row .tag.live { color:var(--green); }
+
+    footer { border-top:1px solid var(--border); padding:2.5rem; }
+    .footer-inner { max-width:900px; margin:0 auto; display:flex; justify-content:space-between; gap:2rem; flex-wrap:wrap; font-family:var(--mono); font-size:0.7rem; color:var(--text-faint); }
+    .footer-inner a { color:var(--text-dim); text-decoration:none; margin-right:1.5rem; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="/architecture.html">Architecture</a></li>
+    <li><a href="/docs.html">Docs</a></li>
+    <li><a href="/verify.html">Verify</a></li>
+    <li><a href="/check.html" class="active">Check</a></li>
+    <li><a href="/supervisors.html">Supervisors</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb">OBSERVER PROTOCOL · <span>CHECK A DECISION ATTESTATION</span></div>
+    <h1>Paste a decision attestation.<br/>Find out whether it holds.</h1>
+    <p class="page-sub" data-shared-copy="offline-scope">
+      <strong>Nothing you paste leaves this browser.</strong> The page loads no font, no script and no data from anywhere,
+      makes no request after it loads, sends nothing, stores nothing and logs nothing. The check runs on your machine,
+      against a key recovered from the decider's own identifier. You do not need an account and you are not our customer.
+    </p>
+  </div>
+</div>
+
+<section>
+  <div class="section-inner">
+    <div class="section-label">01 · The check</div>
+
+    <div class="field">
+      <label for="artifact">The record, or the attestation document</label>
+      <textarea id="artifact" spellcheck="false" autocomplete="off" placeholder="Paste JSON here."></textarea>
+      <div class="hint">A stored determination record carries the document and its signature together. A bare attestation document does not, so paste its signature below.</div>
+    </div>
+
+    <div class="field">
+      <label for="signature">Signature, base64 · only needed for a bare document</label>
+      <input type="text" id="signature" spellcheck="false" autocomplete="off" placeholder="Leave empty when the JSON above carries its own signature." />
+    </div>
+
+    <div class="controls">
+      <button id="run" type="button">Check it</button>
+      <button id="load-sample" class="secondary" type="button">Load the published example</button>
+      <button id="clear" class="secondary" type="button">Clear</button>
+    </div>
+
+    <div class="result" id="result">
+      <div class="result-head"><span class="state" id="result-state"></span><span id="result-kind"></span></div>
+      <div class="result-body" id="result-body"></div>
+    </div>
+
+    <div class="note">
+      <h4>The example, and why it is this one</h4>
+      <p><strong>Load the published example</strong> fills the box with <code>ppp-determination-refused-outcome.json</code>, served from this domain
+      and checked in CI on every build. It is a refusal determination: an agent declining a claim, which is the case a
+      disputing party actually arrives with. Try the tool on it before you have an artifact of your own.</p>
+    </div>
+
+    <div class="note">
+      <h4>What this runs</h4>
+      <p>The same sequence as <code>verifyDecisionAttestation</code>, exported by <code>@observer-protocol/policy-engine</code>: the
+      document is canonicalised, the decider's key is recovered from its <code>did:key</code>, and an Ed25519 signature is
+      checked over those bytes with your browser's own WebCrypto. <a href="/verify.html" style="color:var(--amber); text-decoration:none;">The
+      same check, run from npm on your own machine ↗</a></p>
+    </div>
+  </div>
+</section>
+
+<section style="background:var(--bg2); border-top:1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">02 · What this checker covers next</div>
+    <h2>One artifact type today.</h2>
+    <p class="body">
+      This page checks a decision attestation. The two below <strong>verify against the published engine already</strong>, on a
+      reader's own machine, by the route <a href="/verify.html" style="color:var(--amber); text-decoration:none;">/verify</a> sets out.
+      What is not built is their box on this page.
+    </p>
+    <div class="next">
+      <div class="next-row"><span>Decision attestation</span><span class="tag live">On this page</span></div>
+      <div class="next-row"><span>Delegation credential</span><span class="tag">Next</span></div>
+      <div class="next-row"><span>Refusal record</span><span class="tag">Next</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <a href="/">Home</a>
+      <a href="/verify.html">Verify</a>
+      <a href="/docs.html">Docs</a>
+      <a href="/architecture.html">Architecture</a>
+    </div>
+    <div>Observer Protocol · AIP v0.9 · MIT · observerprotocol.org</div>
+  </div>
+</footer>
+
+<!-- The published example, embedded verbatim so that loading it costs no request.
+     scripts/check-public-checker.mjs asserts this block parses equal to
+     verify-samples/ppp-determination-refused-outcome.json and fails the build otherwise. -->
+<script type="application/json" id="op-sample">
+{
+  "k": "determination",
+  "admission": {
+    "path": "payment",
+    "grantRequired": false,
+    "decider": "did:key:z6MkoMCP6imN1HfKC1gVHDMffgP3af58VnGY621KRHrEsbDq",
+    "grant": {
+      "state": "held",
+      "grantId": "decider-grant-1",
+      "judgedAt": "2026-08-15T20:17:44.609Z"
+    }
+  },
+  "decisionId": "urn:ppp-cases:decision:MF-0001:APR",
+  "decisionIdSource": "signed-document",
+  "document": "eyJhc3N1cmFuY2UiOiAic2VsZi1kZWNsYXJlZCIsICJkZWNpZGVkQXQiOiAiMjAyNi0wOC0xNFQwMDowMDowMFoiLCAiZGVjaWRlciI6ICJkaWQ6a2V5Ono2TWtvTUNQNmltTjFIZktDMWdWSERNZmZnUDNhZjU4Vm5HWTYyMUtSSHJFc2JEcSIsICJkZWNpZGVyQXJ0aWZhY3REaWdlc3QiOiB7InN0YXRlIjogImRpZ2VzdCIsICJ2YWx1ZSI6ICJzaGEyNTY6ZDRiYjQxZTMwNGZlODFjNDM5MjRjOTgwMzQ4OGQxZGYwY2U0MjQ1OWZmMDc5MDY2MmQxZjBlMTBhMzQ3MDI3OCJ9LCAiZGVjaXNpb25JZCI6ICJ1cm46cHBwLWNhc2VzOmRlY2lzaW9uOk1GLTAwMDE6QVBSIiwgImRldGVybWluYXRpb24iOiB7ImNhc2VDYXRlZ29yeSI6ICJtYWxmb3JtZWQiLCAiY2FzZUlkIjogIk1GLTAwMDEiLCAiY2FzZVJlY29yZERpZ2VzdCI6ICI4ZjMzNDg3YmIwMDZhMmNiNDY4MTg2NDQ4MjVlZThlNmQ2MmU1NWIxODkyNjgyYmVkMzM2OTM2OTg5NDgyN2VlIiwgImNhc2VSZWNvcmREaWdlc3RNZXRob2QiOiAic2hhMjU2IG92ZXIgdGhlIFVURi04IGJ5dGVzIG9mIHRoZSBjYXNlJ3MgbGluZSBpbiBjYXNlcy9jYXNlcy5qc29ubCwgZXhjbHVkaW5nIHRoZSBuZXdsaW5lIiwgImNhc2VTZXQiOiAiY2FzZXMvY2FzZXMuanNvbmwiLCAiZGVjaWRlckFydGlmYWN0IjogInBwcC9lbmdpbmUucHksIHRoZSBkZXRlcm1pbmF0aW9uIGVuZ2luZSB3aG9zZSBkaWdlc3QgZGVjaWRlckFydGlmYWN0RGlnZXN0IGNhcnJpZXMiLCAicmVmdXNhbENsYXNzIjogIlNDSEVNQSIsICJyZWZ1c2FsQ29kZXMiOiBbIkVfUFJJTkNJUEFMX01JU1NJTkciXSwgInJlZnVzZWQiOiAidHJ1ZSIsICJydWxlQ2l0YXRpb24iOiAiODUgRlIgMjA4MTEiLCAicnVsZVZlcnNpb24iOiAiQVBSIn0sICJvdXRjb21lIjogImRldGVybWluYXRpb24tcmVmdXNlZC1zY2hlbWEiLCAicG9saWN5UmVmIjogeyJoYXNoIjogIjliN2M1NjFiYmNmMGFmYTc5YThkODI5NGUxMTRjY2YxOWM1Zjg1ZmQ2Yjc3OGE5NDAzNWI0NTM0MzI3MWJlOTYiLCAiaGFzaE1ldGhvZCI6ICJzaGEyNTYiLCAiaWQiOiAidXJuOnVzLWZyOmRvY3VtZW50OjIwMjAtMDc2NzIiLCAicHVibGlzaGVySWQiOiAiODUgRlIgMjA4MTEiLCAicmV0cmlldmVkRnJvbSI6ICJodHRwczovL3d3dy5nb3ZpbmZvLmdvdi9jb250ZW50L3BrZy9GUi0yMDIwLTA0LTE1L3BkZi8yMDIwLTA3NjcyLnBkZiIsICJ2ZXJzaW9uIjogIjIwMjAtMDQtMTUsIFJJTiAzMjQ1LUFIMzQifSwgInR5cGUiOiAiRGVjaXNpb25BdHRlc3RhdGlvbiIsICJ2b2NhYnVsYXJ5UmVmIjogeyJoYXNoIjogImU5NzcxZTM3ODZjMzkxOGE2MjRhNjkyYTI0M2FhM2NkZTkxNmMyYTM2NDI4N2JjOGU3MjJmZTk2ZmRkODRiNjQiLCAiaGFzaE1ldGhvZCI6ICJzaGEyNTYiLCAiaWQiOiAidXJuOnBwcC1jYXNlczp2b2NhYnVsYXJ5OmZvcmdpdmVuZXNzLW91dGNvbWVzIiwgInNvdXJjZSI6ICJjbGllbnQtZGVmaW5lZCIsICJ2YWx1ZXMiOiBbImZvcmdpdmVuZXNzLWZ1bGwiLCAiZm9yZ2l2ZW5lc3MtcGFydGlhbCIsICJmb3JnaXZlbmVzcy1ub25lIiwgImRldGVybWluYXRpb24tcmVmdXNlZC1zY2hlbWEiLCAiZGV0ZXJtaW5hdGlvbi1yZWZ1c2VkLXJ1bGUiXSwgInZlcnNpb24iOiAiMS4wLjAifX0=",
+  "documentEncoding": "base64",
+  "documentHash": "sha256:b6c0bdd0aa958567665e816a9aa9a589b6ecd368f1c012bcd2480c7c4951a4eb",
+  "signature": "PoSqP9d+pxyk4A/hxtpFpK42TRaUbRYYiq/XCxKAp7La8wnQ/d5Bx9Q737TJddPtNSpM/Z2/aYqNt4w4zg+UBA==",
+  "verification": {
+    "state": "attested",
+    "construction": "jcs-2022-over-parsed-document",
+    "note": "The signature was checked against JCS bytes re-derived from the parsed document, using the decider's key recovered from its own DID. The bytes stored here are the WIRE form and were not themselves the verified input; for a document whose wire form is already canonical they are the same sequence, and for one that is not they differ."
+  },
+  "decider": "did:key:z6MkoMCP6imN1HfKC1gVHDMffgP3af58VnGY621KRHrEsbDq",
+  "outcomeTerm": "determination-refused-schema",
+  "vocabularyRef": {
+    "hash": "e9771e3786c3918a624a692a243aa3cde916c2a364287bc8e722fe96fdd84b64",
+    "hashMethod": "sha256",
+    "id": "urn:ppp-cases:vocabulary:forgiveness-outcomes",
+    "source": "client-defined",
+    "values": [
+      "forgiveness-full",
+      "forgiveness-partial",
+      "forgiveness-none",
+      "determination-refused-schema",
+      "determination-refused-rule"
+    ],
+    "version": "1.0.0"
+  },
+  "policyRef": {
+    "hash": "9b7c561bbcf0afa79a8d8294e114ccf19c5f85fd6b778a94035b45343271be96",
+    "hashMethod": "sha256",
+    "id": "urn:us-fr:document:2020-07672",
+    "publisherId": "85 FR 20811",
+    "retrievedFrom": "https://www.govinfo.gov/content/pkg/FR-2020-04-15/pdf/2020-07672.pdf",
+    "version": "2020-04-15, RIN 3245-AH34"
+  },
+  "documentOnly": {
+    "assurance": "self-declared",
+    "determination": {
+      "caseCategory": "malformed",
+      "caseId": "MF-0001",
+      "caseRecordDigest": "8f33487bb006a2cb46818644825ee8e6d62e55b1892682bed3369369894827ee",
+      "caseRecordDigestMethod": "sha256 over the UTF-8 bytes of the case's line in cases/cases.jsonl, excluding the newline",
+      "caseSet": "cases/cases.jsonl",
+      "deciderArtifact": "ppp/engine.py, the determination engine whose digest deciderArtifactDigest carries",
+      "refusalClass": "SCHEMA",
+      "refusalCodes": [
+        "E_PRINCIPAL_MISSING"
+      ],
+      "refused": "true",
+      "ruleCitation": "85 FR 20811",
+      "ruleVersion": "APR"
+    },
+    "type": "DecisionAttestation"
+  },
+  "deciderArtifactDigest": {
+    "state": "digest",
+    "value": "sha256:d4bb41e304fe81c43924c9803488d1df0ce42459ff0790662d1f0e10a3470278"
+  },
+  "decidedAt": "2026-08-14T00:00:00Z",
+  "bound": {
+    "state": "not-read",
+    "note": "This build does not extract a bound from a decider's document. The document may state one; nothing here has looked. This is a statement about this reader, NOT about the decider — \"the decider supplied no bound\" is a different fact and is `not-supplied`."
+  },
+  "at": "2026-08-15T20:17:44.583Z",
+  "id": "determination-904",
+  "observedAt": "2026-08-15T20:17:44.609Z"
+}</script>
+
+<!-- ── OP_CHECK ── the verifier. Mirrors verifyDecisionAttestation's sequence and state
+     vocabulary. Exposed on globalThis so scripts/check-public-checker.mjs can drive it
+     in Node against the published artifact and against deliberately broken variants. ── -->
+<script data-shared-copy="offline-scope">
+(function () {
+  'use strict';
+
+  var ED25519_MULTICODEC = [0xed, 0x01];
+  var B58 = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+
+  function base58Decode(s) {
+    var bytes = [0];
+    for (var i = 0; i < s.length; i++) {
+      var v = B58.indexOf(s[i]);
+      if (v < 0) throw new Error('not base58: ' + s[i]);
+      for (var j = 0; j < bytes.length; j++) bytes[j] *= 58;
+      bytes[0] += v;
+      var carry = 0;
+      for (var k = 0; k < bytes.length; k++) {
+        bytes[k] += carry;
+        carry = bytes[k] >> 8;
+        bytes[k] &= 0xff;
+      }
+      while (carry) { bytes.push(carry & 0xff); carry >>= 8; }
+    }
+    for (var z = 0; z < s.length && s[z] === '1'; z++) bytes.push(0);
+    return new Uint8Array(bytes.reverse());
+  }
+
+  // The engine's canonicaliser, not RFC 8785 in full: strings, arrays and objects only.
+  // A number, a boolean or a null is REFUSED rather than guessed at, because that is
+  // where two canonicalisers stop agreeing and produce bytes that look right.
+  function canonicalise(value, path) {
+    path = path || '$';
+    if (typeof value === 'string') return JSON.stringify(value);
+    if (Array.isArray(value)) {
+      return '[' + value.map(function (v, i) { return canonicalise(v, path + '[' + i + ']'); }).join(',') + ']';
+    }
+    if (value !== null && typeof value === 'object') {
+      var entries = Object.keys(value)
+        .filter(function (k) { return value[k] !== undefined; })
+        .sort(function (a, b) { return a < b ? -1 : a > b ? 1 : 0; });
+      return '{' + entries.map(function (k) {
+        return JSON.stringify(k) + ':' + canonicalise(value[k], path + '.' + k);
+      }).join(',') + '}';
+    }
+    var e = new Error('Cannot canonicalise ' + path + ': ' + (value === null ? 'null' : typeof value) +
+      '. This canonicaliser covers objects, arrays and strings, which is everything this estate signs.');
+    e.notCanonicalisable = true;
+    throw e;
+  }
+
+  var nonEmpty = function (v) { return typeof v === 'string' && v !== ''; };
+
+  function checkDecisionRefs(policyRef, vocabularyRef) {
+    var pairs = [['policyRef', policyRef], ['vocabularyRef', vocabularyRef]];
+    for (var i = 0; i < pairs.length; i++) {
+      var label = pairs[i][0], ref = pairs[i][1];
+      if (ref === undefined || ref === null) return 'The document carries no ' + label + '.';
+      var fields = ['id', 'hash', 'hashMethod'];
+      for (var j = 0; j < fields.length; j++) {
+        if (!nonEmpty(ref[fields[j]])) {
+          return label + '.' + fields[j] + ' is missing or empty, so the reference is named rather than fixed.';
+        }
+      }
+    }
+    if (!nonEmpty(vocabularyRef.version)) return 'vocabularyRef.version is missing, so nothing can be compared against it.';
+    if (vocabularyRef.source !== 'op-starter-set' && vocabularyRef.source !== 'client-defined') {
+      return 'vocabularyRef.source is ' + JSON.stringify(vocabularyRef.source) +
+        '. The two values are op-starter-set and client-defined.';
+    }
+    var values = vocabularyRef.values;
+    if (!Array.isArray(values) || values.length === 0) {
+      return 'vocabularyRef declares no values, so membership cannot be checked by anyone.';
+    }
+    for (var v = 0; v < values.length; v++) {
+      if (typeof values[v] !== 'string' || values[v] === '') return 'vocabularyRef.values carries a non-string or empty entry.';
+    }
+    if (new Set(values).size !== values.length) return 'vocabularyRef.values repeats a value.';
+    return null;
+  }
+
+  function checkDeciderArtifactRef(ref) {
+    if (ref === undefined || ref === null) {
+      return 'The document does not state whether the decider supplied an artifact of its own. An omitted field leaves an absent artifact indistinguishable from a dropped one.';
+    }
+    if (ref.state === 'digest') {
+      return nonEmpty(ref.value) ? null : 'deciderArtifactDigest says digest and carries no value.';
+    }
+    if (ref.state === 'not-supplied') {
+      return nonEmpty(ref.note) ? null : 'deciderArtifactDigest says not-supplied and carries no note.';
+    }
+    return 'deciderArtifactDigest.state is ' + JSON.stringify(ref.state) + '. The two states are digest and not-supplied.';
+  }
+
+  function checkOutcomeInVocabulary(outcome, vocabularyRef) {
+    if (vocabularyRef === undefined || !Array.isArray(vocabularyRef.values)) return null;
+    if (typeof outcome !== 'string' || outcome === '') return 'The document states no outcome.';
+    if (vocabularyRef.values.indexOf(outcome) !== -1) return null;
+    return 'The outcome ' + JSON.stringify(outcome) + ' is not a member of the vocabulary the document cites (' +
+      vocabularyRef.id + ' v' + vocabularyRef.version + '), so the document asserts a choice from a set that does not contain it.';
+  }
+
+  function ed25519Available() {
+    return typeof crypto !== 'undefined' && crypto.subtle && typeof crypto.subtle.importKey === 'function';
+  }
+
+  async function ed25519Verify(publicKeyBytes, message, signature) {
+    var key = await crypto.subtle.importKey('raw', publicKeyBytes, { name: 'Ed25519' }, false, ['verify']);
+    return crypto.subtle.verify('Ed25519', key, signature, message);
+  }
+
+  function b64ToBytes(b64) {
+    var bin = atob(String(b64).replace(/\s+/g, ''));
+    var out = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+
+  async function sha256Hex(bytes) {
+    var digest = await crypto.subtle.digest('SHA-256', bytes);
+    return Array.prototype.map.call(new Uint8Array(digest), function (b) {
+      return b.toString(16).padStart(2, '0');
+    }).join('');
+  }
+
+  // The engine's own state vocabulary: not-cited, cited-unresolvable, cited-invalid, attested.
+  async function verifyAttestation(citedDecisionId, document, signature) {
+    var passed = [];
+    if (citedDecisionId === undefined) return { state: 'not-cited', passed: passed };
+    if (document === null || typeof document !== 'object' || signature === undefined) {
+      return {
+        state: 'cited-unresolvable', passed: passed,
+        reason: 'There is an identifier but no attestation document. A decisionId is an identifier, not a locator: nothing here can fetch a document from an id, so the document has to travel with the record.'
+      };
+    }
+    var att = document;
+
+    if (typeof att.decider !== 'string') {
+      return { state: 'cited-invalid', passed: passed, reason: 'The document names no decider, so nothing identifies who decided.' };
+    }
+    var publicKey;
+    if (att.decider.indexOf('did:web:') === 0) {
+      return {
+        state: 'cited-unresolvable', passed: passed,
+        reason: 'The decider is a did:web, and resolving one means fetching a document over the network. This page makes no network request, so the key cannot be recovered here and the decision is shown as unverified rather than read as verified. The published engine treats a did:web decider the same way unless a deployment passes it a resolver. A did:key decider checks out here with nothing else.'
+      };
+    } else if (att.decider.indexOf('did:key:z') === 0) {
+      var raw;
+      try { raw = base58Decode(att.decider.slice('did:key:z'.length)); } catch (e) { raw = undefined; }
+      if (raw === undefined || raw.length !== 34 || raw[0] !== ED25519_MULTICODEC[0] || raw[1] !== ED25519_MULTICODEC[1]) {
+        return { state: 'cited-invalid', passed: passed, reason: 'The decider is not a well-formed Ed25519 did:key, so no key can be recovered from it.' };
+      }
+      publicKey = raw.slice(2);
+      passed.push('the decider key was recovered from its own did:key');
+    } else {
+      return {
+        state: 'cited-unresolvable', passed: passed,
+        reason: 'The decider uses an unsupported DID method: ' + String(att.decider).slice(0, 24) + '. Only did:key and did:web are verifiable at all, and only did:key without a network call.'
+      };
+    }
+
+    if (att.decisionId !== citedDecisionId) {
+      return {
+        state: 'cited-invalid', passed: passed,
+        reason: 'The record cites decision ' + JSON.stringify(citedDecisionId) + ' and carries a document for ' +
+          JSON.stringify(att.decisionId) + '. Citing one decision and shipping another would have a reader read the shipped one.'
+      };
+    }
+    passed.push('the decision identifier in the document is the one the record cites');
+
+    var required = ['outcome', 'decidedAt'];
+    for (var i = 0; i < required.length; i++) {
+      if (typeof att[required[i]] !== 'string') {
+        return { state: 'cited-invalid', passed: passed, reason: 'The document is missing ' + required[i] + ', so it cannot state what was decided.' };
+      }
+    }
+
+    var refs = checkDecisionRefs(att.policyRef, att.vocabularyRef);
+    if (refs !== null) return { state: 'cited-invalid', passed: passed, reason: refs };
+    passed.push('the policy and vocabulary references each carry an id, a hash and a named hash method');
+
+    var artifact = checkDeciderArtifactRef(att.deciderArtifactDigest);
+    if (artifact !== null) return { state: 'cited-invalid', passed: passed, reason: artifact };
+    passed.push('the decider states whether it supplied an artifact of its own');
+
+    var membership = checkOutcomeInVocabulary(att.outcome, att.vocabularyRef);
+    if (membership !== null) return { state: 'cited-invalid', passed: passed, reason: membership };
+    passed.push('the outcome is a member of the vocabulary the document declares');
+
+    if (att.assurance !== undefined && att.assurance !== 'self-declared') {
+      return {
+        state: 'cited-unresolvable', passed: passed,
+        reason: 'The document declares assurance ' + JSON.stringify(att.assurance) + ', and only self-declared can be established without resolving an observer. The signature and the fields are sound; the level it claims is one nobody here can check, so it is declined rather than accepted at face value.'
+      };
+    }
+
+    if (!ed25519Available()) {
+      return {
+        state: 'no-verdict', passed: passed,
+        reason: 'This browser does not expose Ed25519 through WebCrypto, so no signature check ran and no verdict was reached. Nothing here is a statement about the document. /verify sets out the same check run from npm.'
+      };
+    }
+
+    var bytes;
+    try { bytes = new TextEncoder().encode(canonicalise(att)); }
+    catch (e) {
+      return {
+        state: 'cited-invalid', passed: passed,
+        reason: e.notCanonicalisable ? e.message : 'The document could not be canonicalised: ' + String(e.message)
+      };
+    }
+
+    var ok;
+    try { ok = await ed25519Verify(publicKey, bytes, b64ToBytes(signature)); }
+    catch (e) {
+      return { state: 'cited-invalid', passed: passed, reason: 'The signature could not be checked: ' + String(e && e.message ? e.message : e) };
+    }
+    if (!ok) {
+      return {
+        state: 'cited-invalid', passed: passed,
+        reason: 'The signature does not verify against the decider’s own key. This is not a missing record: it is a signed artifact failing its own check.'
+      };
+    }
+    passed.push('the signature verifies against the decider’s key, over a canonicalisation of the whole document');
+
+    return {
+      state: 'attested', passed: passed,
+      decisionId: att.decisionId, decider: att.decider, outcome: att.outcome, decidedAt: att.decidedAt,
+      policyRef: att.policyRef, vocabularyRef: att.vocabularyRef, assurance: att.assurance
+    };
+  }
+
+  // What kind of thing was pasted. The record states its own kind in `k`; that is read
+  // rather than sniffed, which is how the console does it. Nothing is guessed: a shape
+  // this does not recognise is reported as unrecognised.
+  var KNOWN_KINDS = {
+    determination: 'a decision attestation',
+    verdict: 'a policy evaluation verdict',
+    refused: 'an enforcement refusal record',
+    instructed: 'a payment instruction',
+    resolution: 'an approval resolution',
+    report: 'a report record'
+  };
+
+  function classify(parsed) {
+    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      return { kind: 'unrecognised', why: 'The JSON parsed to ' + (Array.isArray(parsed) ? 'an array' : String(parsed === null ? 'null' : typeof parsed)) + ' rather than to an object.' };
+    }
+    if (typeof parsed.k === 'string') {
+      if (parsed.k === 'determination') return { kind: 'record' };
+      if (KNOWN_KINDS[parsed.k]) return { kind: 'other-record', label: KNOWN_KINDS[parsed.k], k: parsed.k };
+      return { kind: 'unrecognised', why: 'The record states its kind as ' + JSON.stringify(parsed.k) + ', which this page does not recognise. It is not being guessed at.' };
+    }
+    var types = Array.isArray(parsed.type) ? parsed.type : (parsed.type === undefined ? [] : [parsed.type]);
+    if (types.indexOf('VerifiableCredential') !== -1) return { kind: 'other-record', label: 'a verifiable credential, most likely a delegation credential' };
+    if (typeof parsed.decider === 'string' && typeof parsed.decisionId === 'string' && parsed.policyRef !== undefined) {
+      return { kind: 'document' };
+    }
+    return { kind: 'unrecognised', why: 'This is not a stored record, which would state its kind in a k field, and not an attestation document, which would carry a decider, a decisionId and a policyRef.' };
+  }
+
+  // Takes the pasted text and an optional signature, returns one result object.
+  async function check(text, signatureField) {
+    var parsed;
+    try { parsed = JSON.parse(text); }
+    catch (e) { return { outcome: 'not-json', reason: 'That did not parse as JSON: ' + String(e.message) }; }
+
+    var seen = classify(parsed);
+
+    if (seen.kind === 'unrecognised') return { outcome: 'unrecognised', reason: seen.why };
+
+    if (seen.kind === 'other-record') {
+      return {
+        outcome: 'not-covered', label: seen.label,
+        reason: 'This page checks a decision attestation and what you pasted is ' + seen.label +
+          '. That is the scope of this page rather than a fault in your artifact: it verifies by a different route, set out on /verify.'
+      };
+    }
+
+    var doc, signature, cited, hashChecked = null;
+
+    if (seen.kind === 'record') {
+      if (typeof parsed.document !== 'string') {
+        return { outcome: 'unrecognised', reason: 'The record states kind determination and carries no document, so there is nothing to check a signature over.' };
+      }
+      var bytes;
+      try { bytes = parsed.documentEncoding === 'base64' ? b64ToBytes(parsed.document) : new TextEncoder().encode(parsed.document); }
+      catch (e) { return { outcome: 'unrecognised', reason: 'The stored document is not decodable: ' + String(e.message) }; }
+
+      if (nonEmpty(parsed.documentHash) && crypto && crypto.subtle) {
+        var want = String(parsed.documentHash).replace(/^sha256:/, '');
+        var got = await sha256Hex(bytes);
+        hashChecked = got === want;
+        if (!hashChecked) {
+          return {
+            outcome: 'hash-mismatch',
+            reason: 'sha256 over the stored document bytes is ' + got + ' and the record says ' + want +
+              '. The bytes and the hash beside them disagree, so the record is internally inconsistent before any signature is considered.'
+          };
+        }
+      }
+      try { doc = JSON.parse(new TextDecoder().decode(bytes)); }
+      catch (e) { return { outcome: 'unrecognised', reason: 'The stored document did not parse as JSON: ' + String(e.message) }; }
+      signature = parsed.signature;
+      cited = parsed.decisionId !== undefined ? parsed.decisionId : doc.decisionId;
+    } else {
+      doc = parsed;
+      signature = nonEmpty(signatureField) ? signatureField.trim() : parsed.signature;
+      cited = doc.decisionId;
+      if (!nonEmpty(signature)) {
+        return {
+          outcome: 'need-signature',
+          reason: 'That is an attestation document and it carries no signature. Paste the signature in the field below the box. A document on its own says what was decided and establishes nothing about who decided it.'
+        };
+      }
+    }
+
+    var verdict = await verifyAttestation(cited, doc, signature);
+    verdict.outcome = 'checked';
+    verdict.hashChecked = hashChecked;
+    return verdict;
+  }
+
+  globalThis.OP_CHECK = { check: check, canonicalise: canonicalise, base58Decode: base58Decode, classify: classify };
+
+  // ── the page ──────────────────────────────────────────────────────────────────
+  if (typeof document === 'undefined' || !document.getElementById) return;
+
+  var $ = function (id) { return document.getElementById(id); };
+  var box = $('artifact'), sigField = $('signature'), panel = $('result');
+  if (!box || !panel) return;
+
+  var esc = function (s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  };
+
+  function show(cls, state, kind, html) {
+    panel.className = 'result shown ' + cls;
+    $('result-state').textContent = state;
+    $('result-kind').textContent = kind || '';
+    $('result-body').innerHTML = html;
+    panel.scrollIntoView({ block: 'nearest' });
+  }
+
+  function checklistHtml(passed) {
+    if (!passed || !passed.length) return '';
+    return '<ul class="checklist">' + passed.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ul>';
+  }
+
+  function fieldsHtml(v) {
+    var rows = [
+      ['decision', v.decisionId],
+      ['decider', v.decider],
+      ['outcome', v.outcome],
+      ['decided at', v.decidedAt],
+      ['policy', v.policyRef && v.policyRef.id],
+      ['policy hash', v.policyRef && (v.policyRef.hashMethod + ':' + v.policyRef.hash)],
+      ['vocabulary', v.vocabularyRef && (v.vocabularyRef.id + ' v' + v.vocabularyRef.version)],
+      ['assurance', v.assurance]
+    ].filter(function (r) { return r[1] !== undefined && r[1] !== null && r[1] !== ''; });
+    return '<div class="fields">' + rows.map(function (r) {
+      return '<div><b>' + esc(r[0]) + '</b>' + esc(r[1]) + '</div>';
+    }).join('') + '</div>';
+  }
+
+  async function run() {
+    var text = box.value.trim();
+    if (!text) { show('info', 'Nothing pasted', '', '<p>Paste a record in the box, or load the published example.</p>'); return; }
+
+    var r;
+    try { r = await OP_CHECK.check(text, sigField ? sigField.value : ''); }
+    catch (e) { show('bad', 'No verdict', '', '<p>' + esc('The check itself failed: ' + (e && e.message ? e.message : e)) + '</p>'); return; }
+
+    if (r.outcome === 'not-json') { show('info', 'Not JSON', '', '<p>' + esc(r.reason) + '</p>'); return; }
+    if (r.outcome === 'unrecognised') { show('info', 'Not recognised', '', '<p>' + esc(r.reason) + '</p>'); return; }
+    if (r.outcome === 'not-covered') { show('info', 'Not this page', '', '<p>' + esc(r.reason) + '</p>'); return; }
+    if (r.outcome === 'need-signature') { show('info', 'Signature needed', '', '<p>' + esc(r.reason) + '</p>'); return; }
+    if (r.outcome === 'hash-mismatch') { show('bad', 'Does not hold', 'stored bytes', '<p>' + esc(r.reason) + '</p>'); return; }
+
+    if (r.state === 'attested') {
+      var head = '<p><strong>This attestation holds.</strong> A key recovered from the decider’s own identifier signed exactly these bytes, and nobody has altered them since.</p>';
+      var hash = r.hashChecked ? '<p>sha256 over the stored document bytes reproduces the hash the record carries, so the bytes checked here are the bytes the record commits to.</p>' : '';
+      show('ok', 'attested', 'decision attestation', head + hash + checklistHtml(r.passed) + fieldsHtml(r));
+      return;
+    }
+    if (r.state === 'no-verdict') { show('info', 'No verdict', '', '<p>' + esc(r.reason) + '</p>' + checklistHtml(r.passed)); return; }
+    if (r.state === 'not-cited') { show('info', 'Nothing cited', '', '<p>The record cites no decision, so there is nothing to check.</p>'); return; }
+
+    var label = r.state === 'cited-unresolvable' ? 'Not established here' : 'Does not hold';
+    show(r.state === 'cited-unresolvable' ? 'info' : 'bad', label, r.state,
+      '<p>' + esc(r.reason) + '</p>' + checklistHtml(r.passed));
+  }
+
+  $('run').addEventListener('click', run);
+  $('clear').addEventListener('click', function () {
+    box.value = ''; sigField.value = ''; panel.className = 'result';
+  });
+  $('load-sample').addEventListener('click', function () {
+    var el = document.getElementById('op-sample');
+    box.value = el ? el.textContent.trim() : '';
+    sigField.value = '';
+    panel.className = 'result';
+  });
+})();
+</script>
+
+</body>
+</html>
