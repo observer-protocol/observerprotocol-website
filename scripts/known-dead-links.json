@@ -30,14 +30,6 @@
       "note": "Bare origin 404s; the API answers on its routes. Either the link should name a route or the origin should answer."
     },
     {
-      "url": "https://app.agenticterminal.io/sovereign",
-      "status": 404,
-      "pages": [
-        "registry.html"
-      ],
-      "note": "Legacy host from a previous stack. Same decision as the row above."
-    },
-    {
       "url": "https://app.agenticterminal.io/sovereign/agents/maxi-0001",
       "status": 404,
       "pages": [
