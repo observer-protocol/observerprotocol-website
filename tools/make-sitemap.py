@@ -46,6 +46,23 @@ ORIGIN = "https://observerprotocol.org"
 
 # Pages that serve 200 but are not destinations. Kept short and justified, because
 # every entry here is a hand-maintained exception to a derived list.
+def declared_canonical(relpath):
+    """The href of a <link rel="canonical"> in the file's head, or None.
+
+    Read from the repository rather than fetched, because this runs before the
+    change ships and the point is to keep the sitemap and the page agreeing at
+    the moment they are committed together.
+    """
+    try:
+        text = (ROOT / relpath).read_text(errors="replace")
+    except OSError:
+        return None
+    head = text[:text.find("</head>") + 7] if "</head>" in text else text[:8000]
+    head = re.sub(r"<!--.*?-->", "", head, flags=re.S)
+    m = re.search(r'<link[^>]+rel=["\']canonical["\'][^>]*href=["\']([^"\']+)', head, re.I)
+    return m.group(1) if m else None
+
+
 NOT_A_DESTINATION = {
     # The target of every forced-404 and 410 rule in netlify.toml. It serves 200
     # when fetched directly, so no rule excludes it, and listing the page that
@@ -143,6 +160,19 @@ def url_for(relpath, rules):
         return None, f"netlify.toml returns {rule['status']}"
     if rule and rule["status"] in (301, 302, 308):
         return None, f"netlify.toml redirects it ({rule['status']} to {rule['to']})"
+
+    # A PAGE THAT CANONICALISES SOMEWHERE ELSE DOES NOT BELONG IN THIS SITEMAP.
+    # The two artifacts make opposite claims: a sitemap entry says "index this
+    # URL", a canonical pointing elsewhere says "index that one instead". Listing
+    # such a page asks a crawler to resolve a contradiction we authored.
+    #
+    # Derived rather than listed, for the same reason the 410 exclusions are:
+    # agentic-terminal.html canonicalises to agenticterminal.io as of 2026-08-18,
+    # and the next page to do so should leave the sitemap without anyone
+    # remembering that it must.
+    declared = declared_canonical(relpath)
+    if declared and declared.rstrip("/") != (ORIGIN + path).rstrip("/"):
+        return None, f"canonicalises to {declared}"
 
     # An extension-less canonical is declared by a 200 rewrite pointing AT this
     # file. Prefer it: netlify.toml calls it canonical, so the sitemap should
