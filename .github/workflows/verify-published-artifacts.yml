@@ -130,6 +130,19 @@ jobs:
       #
       # It touches no network, so it runs on pull requests too. It has to: the values go
       # stale on a commit to check.html, which is exactly what a pull request is.
+      # A verifier that refuses every bad input it is shown, and also says yes when its own
+      # signature check returns something unexpected, passes every test written from the
+      # outside. This one attacks the verifier rather than the artifact: four mutations of
+      # check.html's own ed25519Verify, each run against the genuine published record.
+      #
+      # It found one on 2026-08-18. The guard read `if (!ok)`, so a verifier returning the
+      # string 'yes' reached `attested`. WebCrypto returns a boolean and no live path did
+      # that, and a guard that holds only because of what the callee happens to return is not
+      # a guard. It reads `ok !== true` now.
+      - name: /check cannot print attested unless verification returned true
+        if: ${{ !cancelled() }}
+        run: node ./check-affirmative-branch.mjs
+
       - name: The standalone audit's baked-in hashes still match the files
         if: ${{ !cancelled() }}
         run: node ./check-audit-expectations.mjs
