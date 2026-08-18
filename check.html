@@ -526,7 +526,12 @@
     catch (e) {
       return { state: 'cited-invalid', passed: passed, reason: 'The signature could not be checked: ' + String(e && e.message ? e.message : e) };
     }
-    if (!ok) {
+    // `ok !== true`, not `!ok`. The affirmative branch below must be conditional on the
+    // signature check having returned TRUE, not merely on it having returned something that
+    // is not falsy. Measured 2026-08-18: with `!ok`, a verifier returning the string 'yes'
+    // reached `attested`. WebCrypto returns a boolean, so no live path did that, and a
+    // guard that holds only because of what the callee happens to return is not a guard.
+    if (ok !== true) {
       return {
         state: 'cited-invalid', passed: passed,
         reason: 'The signature does not verify against the decider’s own key. This is not a missing record: it is a signed artifact failing its own check.'
@@ -544,13 +549,34 @@
   // What kind of thing was pasted. The record states its own kind in `k`; that is read
   // rather than sniffed, which is how the console does it. Nothing is guessed: a shape
   // this does not recognise is reported as unrecognised.
+  // Each kind carries what it IS and what a reader can actually do with it. The second
+  // half used to be one sentence for all of them, saying the artifact 'verifies by a
+  // different route, set out on /verify'. That is true of two of these six and false of
+  // four, and the page was telling a visitor holding one of the four to go and run
+  // something that does not exist for it. Measured 2026-08-18 against the version npm
+  // install serves.
   var KNOWN_KINDS = {
-    determination: 'a decision attestation',
-    verdict: 'a policy evaluation verdict',
-    refused: 'an enforcement refusal record',
-    instructed: 'a payment instruction',
-    resolution: 'an approval resolution',
-    report: 'a report record'
+    determination: { label: 'a decision attestation', route: '' },
+    verdict: {
+      label: 'a policy evaluation verdict',
+      route: 'These records are signed under a payload version that the engine on npm rebuilds an older form of, so they do not verify against the version this estate documents. Four are published under /verify-samples/ saying exactly that.'
+    },
+    refused: {
+      label: 'an enforcement refusal record',
+      route: 'That one does verify against the published engine, on your own machine, and /verify sets out how.'
+    },
+    instructed: {
+      label: 'a payment instruction',
+      route: 'No published version of the engine rebuilds its signed bytes, so there is nothing to check the signature against. That is recorded rather than worked around.'
+    },
+    resolution: {
+      label: 'an approval resolution',
+      route: 'Rebuilding its signed bytes needs a constructor the version npm install serves does not export. Section 02 of /verify carries the band of releases that is missing from.'
+    },
+    report: {
+      label: 'a report record',
+      route: 'No published version of the engine rebuilds its signed bytes, so nobody can check one, including us.'
+    }
   };
 
   function classify(parsed) {
@@ -559,11 +585,11 @@
     }
     if (typeof parsed.k === 'string') {
       if (parsed.k === 'determination') return { kind: 'record' };
-      if (KNOWN_KINDS[parsed.k]) return { kind: 'other-record', label: KNOWN_KINDS[parsed.k], k: parsed.k };
+      if (KNOWN_KINDS[parsed.k]) return { kind: 'other-record', label: KNOWN_KINDS[parsed.k].label, route: KNOWN_KINDS[parsed.k].route, k: parsed.k };
       return { kind: 'unrecognised', why: 'The record states its kind as ' + JSON.stringify(parsed.k) + ', which this page does not recognise. It is not being guessed at.' };
     }
     var types = Array.isArray(parsed.type) ? parsed.type : (parsed.type === undefined ? [] : [parsed.type]);
-    if (types.indexOf('VerifiableCredential') !== -1) return { kind: 'other-record', label: 'a verifiable credential, most likely a delegation credential' };
+    if (types.indexOf('VerifiableCredential') !== -1) return { kind: 'other-record', label: 'a verifiable credential, most likely a delegation credential', route: 'That one does verify against the published engine, on your own machine, and /verify sets out how.' };
     if (typeof parsed.decider === 'string' && typeof parsed.decisionId === 'string' && parsed.policyRef !== undefined) {
       return { kind: 'document' };
     }
@@ -584,7 +610,8 @@
       return {
         outcome: 'not-covered', label: seen.label,
         reason: 'This page checks a decision attestation and what you pasted is ' + seen.label +
-          '. That is the scope of this page rather than a fault in your artifact: it verifies by a different route, set out on /verify.'
+          '. That is the scope of this page rather than a fault in your artifact.' +
+          (seen.route ? ' ' + seen.route : '')
       };
     }
 
