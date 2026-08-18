@@ -1,0 +1,16 @@
+# observerprotocol.org
+#
+# This file was absent until 2026-08-18. Cloudflare answered for it: the live
+# response carried the content-signals boilerplate and not one directive, so no
+# Sitemap was declared and there was no sitemap to declare.
+#
+# NOTHING IS DISALLOWED HERE, AND THAT IS DELIBERATE. Paths that must not serve
+# are closed by forced 404 and 410 rules in netlify.toml, which is a control. A
+# robots.txt Disallow is a request, and it publishes the path it is asking
+# crawlers to avoid. Naming /internal/ here would advertise it to exactly the
+# readers the 404 exists to stop.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://observerprotocol.org/sitemap.xml
