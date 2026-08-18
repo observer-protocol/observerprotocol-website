@@ -36,6 +36,15 @@
  * because a control's scope silently defining the defect is how the previous version of
  * this file was wrong.
  *
+ * ONE CLIENT, ONE ORIGIN, ONE MOMENT. The same limit on a second axis, and it is the one
+ * an operator is most likely to over-read. Edge configuration can vary what is delivered
+ * by where the request came from, by user agent, and from one request to the next. Until
+ * 2026-08-17 the beacon on this zone was set to be added for some visitors and not others,
+ * decided at the edge by request origin, so a run from one place could have come back
+ * clean while a reader somewhere else was receiving it, with neither observation wrong
+ * about itself. A run of this file is evidence about that run. It is not coverage, and
+ * scheduling it from a single host does not make it coverage.
+ *
  * MEASURED 2026-08-17, and it is why inline is adjudicated at all: version 1.0.0 of this
  * file matched only `src=`, `href=`, `@import` and `url(`. An inline script injected into
  * the page, with no src, issuing `fetch('https://telemetry.example.com/collect', {method:
@@ -116,10 +125,10 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
-const AUDIT_VERSION = '3.1.0';
+const AUDIT_VERSION = '3.2.0';
 // sha256 of this file with the literal on the line below normalised to an empty string.
 // Recompute with --version. Update it in the same commit as any edit to this file.
-const AUDIT_SHA256 = '590b0ae5dcf5b96bda2c67215a5339877e4d3455afefd35b5a475186d60b0dc0';
+const AUDIT_SHA256 = 'ff825730cfb924575c1000ebf28e80ae5546532cd87ef67e1ebc973095f2a937';
 
 const sha256 = (s) => createHash('sha256').update(s).digest('hex');
 
