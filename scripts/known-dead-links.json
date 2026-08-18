@@ -22,14 +22,6 @@
   "recordedAtCount": 15,
   "known": [
     {
-      "url": "https://agenticterminal.io/sovereign",
-      "status": 404,
-      "pages": [
-        "registry.html"
-      ],
-      "note": "The same dead CTA this check was written for, still carried on registry.html. Removed from agentic-terminal.html tonight; registry.html is a separate copy decision and the Sovereign subdomain's future is Boyd's call."
-    },
-    {
       "url": "https://api.observerprotocol.org",
       "status": 404,
       "pages": [
