@@ -658,6 +658,19 @@
     return '<ul class="checklist">' + passed.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ul>';
   }
 
+  // A hash value may or may not carry its own method prefix, and both shapes are live.
+  // The published example stores a bare digest with the method in a field beside it;
+  // records coming off an enforcement point store "sha256:<digest>" in the value itself.
+  // Concatenating unconditionally rendered "sha256:sha256:..." on the second shape, on the
+  // line a reader checks the policy pin from. Qualify only when the prefix is absent.
+  function qualifiedHash(ref) {
+    if (!ref || !ref.hash) return undefined;
+    if (!ref.hashMethod) return ref.hash;
+    var prefix = ref.hashMethod + ':';
+    var carriesPrefix = String(ref.hash).slice(0, prefix.length).toLowerCase() === prefix.toLowerCase();
+    return carriesPrefix ? ref.hash : prefix + ref.hash;
+  }
+
   function fieldsHtml(v) {
     var rows = [
       ['decision', v.decisionId],
@@ -665,7 +678,7 @@
       ['outcome', v.outcome],
       ['decided at', v.decidedAt],
       ['policy', v.policyRef && v.policyRef.id],
-      ['policy hash', v.policyRef && (v.policyRef.hashMethod + ':' + v.policyRef.hash)],
+      ['policy hash', qualifiedHash(v.policyRef)],
       ['vocabulary', v.vocabularyRef && (v.vocabularyRef.id + ' v' + v.vocabularyRef.version)],
       ['assurance', v.assurance]
     ].filter(function (r) { return r[1] !== undefined && r[1] !== null && r[1] !== ''; });
