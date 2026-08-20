@@ -125,10 +125,10 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
-const AUDIT_VERSION = '3.2.1';
+const AUDIT_VERSION = '3.3.0';
 // sha256 of this file with the literal on the line below normalised to an empty string.
 // Recompute with --version. Update it in the same commit as any edit to this file.
-const AUDIT_SHA256 = 'e30f7c55338aac2de836f587a3e2d86db18caf8569e171e63a818192e8fe136b';
+const AUDIT_SHA256 = 'b68a6abe68396e90375766f5784151cc94d8eb2643cfb4a50cb22b7b119ef1d9';
 
 const sha256 = (s) => createHash('sha256').update(s).digest('hex');
 
@@ -149,8 +149,13 @@ const EXPECTED = [
     why: 'The worked example, carried in the page so that loading it costs no request. Its absence would send the example over the network; its alteration would show a visitor an artifact that is not the published one.',
   },
   {
+    label: 'the embedded refusal example',
+    sha256: 'a37510d6a853f3c369bf8f23f22d98f66541b50986343366e727c1d977fcc7f8',
+    why: 'The refusal record the page hands a visitor who arrives without one. Its absence would leave the refusal route with no worked example; its alteration would hand a visitor a record that is not the one this repository checks on every build.',
+  },
+  {
     label: 'the page verifier',
-    sha256: 'fbe3b4dd0c92755dfa2cde93f14050d32220bb071684ca40ea52a9edd3e6d19b',
+    sha256: 'b468ed5a39b35b0e46bc562db747be17d4bcbc0dd8774f96efeeb2bbadc5cd6c',
     why: 'The code that reaches the verdict. If this is missing the page renders and decides nothing; if it is altered, it decides something else.',
   },
 ];
