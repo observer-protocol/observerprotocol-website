@@ -446,7 +446,7 @@ console.log(verifyDecisionAttestation(
       The verifier is MIT-licensed and self-hostable. <strong>A verifier you run from your own infrastructure is worth considerably more than one you load from us</strong>, and we would rather you did that. The source, the known limits, and the schemas are all public.
     </p>
     <p class="body">
-      A browser-based verifier that runs entirely client-side is not available yet, and we are not going to ship one that sends your artifact to a server while calling it client-side. The published package depends on Node built-ins — <code>node:crypto</code>, <code>node:fs</code>, <code>node:dns</code> among them — and the DNS use is a live guard against a hostile URL rather than incidental. Porting it means replacing that guard honestly, not stubbing it. Until then, the two paths above are what exist.
+      <span data-shared-copy="offline-scope">A browser-based verifier that runs entirely client-side is live at <a href="/check.html" style="color:var(--amber); text-decoration:none;">/check</a>, and it covers one artifact type, the decision attestation.</span> The published package as a whole has not been ported, and we are not going to ship one that sends your artifact to a server while calling it client-side. It depends on Node built-ins, <code>node:crypto</code>, <code>node:fs</code> and <code>node:dns</code> among them, and the DNS use is a live guard against a hostile URL rather than incidental. Porting it means replacing that guard honestly, not stubbing it. Until that happens, the two paths above are the route for every artifact that page does not cover.
     </p>
   </div>
 </section>
@@ -465,7 +465,7 @@ console.log(verifyDecisionAttestation(
     </div>
   </div>
   <div class="footer-note">
-    Engine <code>@observer-protocol/policy-engine</code> <span data-engine-version="current">1.0.0-rc.12</span> · hosted service engine 0.3.3 · verdicts on this page <span data-engine-version="historical">re-measured against rc.6 on 8 August 2026 and against rc.12 on 13 August 2026, identical both times</span> · AIP v0.9, ratified 25 July 2026 · MIT
+    Engine <code>@observer-protocol/policy-engine</code> <span data-engine-version="current">1.0.0-rc.12</span> · hosted service engine <span data-measured="hosted-verifier:engineRunning">1.0.0-rc.10</span> · verdicts on this page <span data-engine-version="historical">re-measured against rc.6 on 8 August 2026 and against rc.12 on 13 August 2026, identical both times</span> · AIP v0.9, ratified 25 July 2026 · MIT
   </div>
 </footer>
 
