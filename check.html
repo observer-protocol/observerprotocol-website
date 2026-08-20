@@ -191,15 +191,18 @@
       <p><strong>Load the published example</strong> fills the box with <code>ppp-determination-refused-outcome.json</code>, served from this domain
       and checked in CI on every build. It is a refusal determination: an agent declining a claim, which is the case a
       disputing party actually arrives with. Try the tool on it before you have an artifact of your own.</p>
-      <p><strong>Load a refusal record</strong> fills it with an enforcement refusal instead, taken from a run of a card-dispute
-      demonstration against Banxico Circular 34/2010 numeral 3.6. A reversal of a credited amount was requested after the
-      numeral's period had elapsed, the decider found the credit already firm, and the mandate refused the payment because that
-      outcome is not one it treats as authorising. The figures and the parties in it are constructed and the regulation is real;
-      nothing in it is a client record and it is an authorisation for nothing.</p>
-      <p><strong>It is this record rather than a simpler one for a reason.</strong> It cites a determination, so the panel below
-      the verdict can show you the thing that is easiest to get wrong: the refusal's signature covers four fields of that
-      citation and not the rest of it, and the page derives that boundary from the record in front of you rather than asserting
-      it from a list.</p>
+      <p><strong>Load a refusal record</strong> fills it with an enforcement refusal instead, from a card-dispute demonstration
+      against Banxico Circular 34/2010 numeral 3.6. A reversal of a credited amount was requested, the decider found it did not
+      proceed, and the mandate refused the payment because that outcome is not one it treats as authorising. The figures and the
+      parties are constructed and the regulation is real; nothing in it is a client record and it is an authorisation for
+      nothing.</p>
+      <p><strong>It is the record a service actually sent, not one written for this page.</strong> It was taken unmodified from
+      a <code>GET /v1/refusals</code> response, which is the shape a console's copy button puts on your clipboard, and it is
+      signed under <code>op.enforcement.refusal.v3</code>. So the example here is the same thing you would be holding, in the
+      same shape, under the construction the enforcement point issues today.</p>
+      <p><strong>It cites a determination, which is what makes the panel below the verdict worth reading.</strong> The refusal's
+      signature covers four fields of that citation and not the rest of it, and the page derives that boundary by rebuilding the
+      payload without each field rather than by consulting a list.</p>
     </div>
 
     <div class="note">
@@ -255,38 +258,47 @@
      scripts/check-public-checker.mjs asserts this block parses equal to
      verify-samples/ppp-determination-refused-outcome.json and fails the build otherwise. -->
 <!-- A refusal record, embedded verbatim so that loading it costs no request.
-     Taken from a run of a card-dispute demonstration against Banxico Circular 34/2010
-     numeral 3.6. Constructed figures, constructed parties, a real regulation, and an
-     authorisation for nothing. scripts/check-public-checker.mjs verifies this block with
-     the page's own verifier and asserts a one-character change to it stops verifying;
-     scripts/check-page-payload-parity.mjs asserts the payload the page rebuilds for it is
-     byte-identical to the published package's own. -->
+     LIFTED UNMODIFIED FROM A RUNNING SERVICE, GET /v1/refusals, on 2026-08-20. It is the
+     SERVED shape a console copy button emits, not the store shape, and it is signed under
+     op.enforcement.refusal.v3 so the example a visitor loads is the construction the
+     enforcement point issues rather than the one it used to.
+     Constructed figures, constructed parties, a real regulation, an authorisation for
+     nothing. scripts/check-public-checker.mjs verifies this block with the page's own
+     verifier and asserts a one-character change to it stops verifying;
+     scripts/check-page-payload-parity.mjs holds the v3 construction to signatures the
+     enforcement point produced. -->
 <script type="application/json" id="op-refusal-sample">
 {
-  "k": "refused",
-  "refusalId": "refusal-3",
-  "authority": "mandate",
-  "at": "2026-07-19T10:05:00.000Z",
+  "refusalId": "refusal-1",
+  "at": "2026-08-20T17:51:23.382Z",
+  "observedAt": "2026-08-20T17:52:41.490Z",
+  "agentId": "did:web:emisor-demo.example:agents:disputas-0001",
+  "mandateId": "urn:uuid:card-dispute-demo-mandate",
+  "refusedBy": "mandate",
   "code": "OUTCOME_NOT_AUTHORIZING",
-  "reason": "The attestation verified and its outcome, 'abono_firme_periodo_transcurrido', is not one this mandate treats as authorising a payment. Membership in the decider's declared vocabulary is checked elsewhere and is a different question: nothing in verification reads an outcome as permitting anything, so without this a requirement to cite a decision is satisfied by citing a signed DENIAL.",
-  "network": "demo:emisor-demo:tarjetas",
-  "attribution": {
-    "agentId": "did:web:emisor-demo.example:agents:disputas-0001",
-    "mandateId": "urn:uuid:card-dispute-demo-mandate"
-  },
-  "spend": {
-    "rail": "demo:emisor-demo:tarjetas",
-    "asset": "MXN",
-    "amountRaw": "845000",
+  "constraint": "actionScope.requiresDecisionAttestation",
+  "attempted": {
+    "amountRaw": "534598",
     "decimals": 2,
+    "asset": "MXN",
+    "rail": "demo:emisor-demo:tarjetas",
     "counterparty": "cuenta:emisor-demo-recuperaciones-0001"
   },
-  "breachedConstraint": "actionScope.requiresDecisionAttestation",
+  "appliedBound": {
+    "state": "not-supplied",
+    "constraint": "actionScope.requiresDecisionAttestation",
+    "reason": "not-reached",
+    "note": "The mandate required a decision attestation; the one this payment cited verified, and its outcome is not one this mandate treats as authorising a payment. No spending bound was compared, because no mandate amount constraint was reached."
+  },
+  "credential": {
+    "state": "not-supplied",
+    "note": "The evaluator supplied no credentialDigest with this verdict, so this service cannot say which credential document the bound came from."
+  },
   "attestation": {
     "state": "attested",
-    "decisionId": "DICT-2026-0455",
+    "decisionId": "DICT-2026-1003",
     "decider": "did:key:z6Mkj5deK1cmKEWgasaVX6gjjUNyRZZ9rA9cL3XW9sRy8ZVM",
-    "outcome": "abono_firme_periodo_transcurrido",
+    "outcome": "no_procede_reverso_abono",
     "policyRef": {
       "id": "https://emisor-demo.example/policy/banxico-34-2010/numeral-3-6/v1",
       "hash": "sha256:51ba8f7cf6300e6d71334954afccf740eae8effcf294016efb17ddd93f36537b",
@@ -305,29 +317,27 @@
       ],
       "hash": "sha256:669c84a02eac537c2d02f27ef3867ca8c95d231dca7e283da822d1f94e178c76"
     },
-    "decidedAt": "2026-07-19T09:00:00.000Z",
-    "inputsDigest": "sha256:d799c478d6c4dda19cd6b41313ddd20ccbef10126f699eb813f9d970cec8274a",
+    "decidedAt": "2026-08-18T17:51:23.382Z",
+    "inputsDigest": "sha256:2b3f9476dfd9ac146db99a7d8c783505f908a734f8487c0f0ec5f261207da005",
     "deciderArtifactDigest": {
       "state": "digest",
-      "value": "sha256:0f18bcf5685bd967c8bf4970d397713f0e3117dd86cbcd6cb1629baabe20210c"
+      "value": "sha256:3f856973618843ccd7c6a8caa7cd9ef34e3f36d20d5b442a2c81180a35878d27"
     },
     "amount": {
-      "amountRaw": "845000",
+      "amountRaw": "534598",
       "decimals": "2",
       "asset": "MXN"
     },
     "counterparty": "cuenta:emisor-demo-recuperaciones-0001",
     "rail": "demo:emisor-demo:tarjetas"
   },
-  "appliedBound": {
-    "state": "not-supplied",
-    "constraint": "actionScope.requiresDecisionAttestation",
-    "note": "The mandate required a decision attestation; the one this payment cited verified, and its outcome is not one this mandate treats as authorising a payment. No spending bound was compared, because no mandate amount constraint was reached."
-  },
-  "signature": "YZHEaDVr5rIbibfpEhxBIg3inkFvYx6OX+o1yCREQQ/BR+XhvaHUF6pI/SgSIbq3QiVlTGDFeq7SwhnVfpQ1Bw==",
-  "signedBy": "did:key:z6Mkp2vSmTw2YHjC8uYqMNd8UpFHvh6zc6fNX7xgLDU7bv52",
-  "payloadType": "op.enforcement.refusal.v2",
-  "observedAt": "2026-08-19T12:00:00.000Z"
+  "network": "demo:emisor-demo:tarjetas",
+  "signature": {
+    "state": "signed",
+    "value": "+weFCe2Hs9NLWiZp5l2808P6DlM1svxzyPfzfmT6oNkFPB0R/b2/jLlMiyEfrqtM1B74DmFAFTH9NIoNnC5fDw==",
+    "signedBy": "did:key:z6MkfanQUxSYHy3xVWA2KJm6cKwrUSCHVJVQFr8mXWHD7o6s",
+    "payloadType": "op.enforcement.refusal.v3"
+  }
 }
 </script>
 

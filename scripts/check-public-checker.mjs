@@ -279,7 +279,8 @@ const cases = [
     why: 'THE NEGATIVE CONTROL, and the page offers this same mutation to the reader after a pass. A check nobody has seen fail is not evidence.',
     input: () => {
       const m = clone(embeddedRefusal);
-      m.spend.amountRaw = flipLast(m.spend.amountRaw);
+      const spend = m.spend ?? m.attempted;
+      spend.amountRaw = flipLast(spend.amountRaw);
       return JSON.stringify(m);
     },
     expect: (r) => r.outcome === 'checked-refusal' && r.state === 'does-not-verify',
@@ -290,7 +291,8 @@ const cases = [
     why: 'the other direction: the signature itself altered rather than what it covers.',
     input: () => {
       const m = clone(embeddedRefusal);
-      m.signature = flipChar(m.signature, 4);
+      if (m.signature && typeof m.signature === 'object') m.signature.value = flipChar(m.signature.value, 4);
+      else m.signature = flipChar(m.signature, 4);
       return JSON.stringify(m);
     },
     expect: (r) => r.outcome === 'checked-refusal' && r.state === 'does-not-verify',
@@ -318,31 +320,44 @@ const cases = [
     expect: (r) => r.outcome === 'checked-refusal' && r.state === 'verifies',
     describe: 'state=verifies, because policyRef is not inside the signed payload',
   },
-  {
-    name: 'a refusal whose authority nobody recognises',
-    why: 'a payload that cannot be rebuilt is a third answer. It is not a failed signature and must not render as one.',
-    input: () => {
-      const m = clone(embeddedRefusal);
-      m.authority = 'something-else';
-      return JSON.stringify(m);
+  // ─── THESE TWO ARE SHAPE-AWARE, AND THEY STOPPED TESTING WHAT THEY NAME ONCE ──────
+  //
+  // They mutated `authority` and `signedBy` on the embedded example. When that example moved from
+  // the store shape to the SERVED shape, those fields stopped existing on it: a served row spells
+  // them `refusedBy` and `signature.signedBy`. So the mutations added ignored top-level keys, the
+  // record still verified, and both cases reported the wrong verdict rather than the wrong shape.
+  //
+  // The checker caught it, which is the only reason this is a comment and not a live defect. Each
+  // now runs against BOTH shapes: the field name is part of what is under test, and a case that
+  // silently mutates nothing is a case that has stopped asking its question.
+  ...[['store', () => clone(refusal)], ['served', () => clone(embeddedRefusal)]].flatMap(([shape, get]) => [
+    {
+      name: `a ${shape}-shape refusal whose authority nobody recognises`,
+      why: 'a payload that cannot be rebuilt is a third answer. It is not a failed signature and must not render as one.',
+      input: () => {
+        const m = get();
+        if ('refusedBy' in m) m.refusedBy = 'something-else'; else m.authority = 'something-else';
+        return JSON.stringify(m);
+      },
+      expect: (r) => r.outcome === 'checked-refusal' && r.state === 'unrebuildable',
+      describe: 'state=unrebuildable, refused rather than reported as a bad signature',
     },
-    expect: (r) => r.outcome === 'checked-refusal' && r.state === 'unrebuildable',
-    describe: 'state=unrebuildable, refused rather than reported as a bad signature',
-  },
-  {
-    name: 'a refusal signed by a did:web',
-    why: 'resolving one needs the network, and this page makes no request. It has to say so rather than fail closed and look like a bad signature. The identifier is asserted UNTRUNCATED: an earlier version cut it at 28 characters and a mangled DID reads as a damaged record, which is the exact misreading this case exists to prevent.',
-    input: () => {
-      const m = clone(embeddedRefusal);
-      m.signedBy = 'did:web:example.org';
-      return JSON.stringify(m);
+    {
+      name: `a ${shape}-shape refusal signed by a did:web`,
+      why: 'resolving one needs the network, and this page makes no request. It has to say so rather than fail closed and look like a bad signature. The identifier is asserted UNTRUNCATED: an earlier version cut it at 28 characters and a mangled DID reads as a damaged record, which is the exact misreading this case exists to prevent.',
+      input: () => {
+        const m = get();
+        if (m.signature && typeof m.signature === 'object') m.signature.signedBy = 'did:web:example.org';
+        else m.signedBy = 'did:web:example.org';
+        return JSON.stringify(m);
+      },
+      expect: (r) => r.outcome === 'checked-refusal' && r.state === 'signer-unresolvable'
+        && /NO SIGNATURE CHECK RAN/.test(r.reason || '')
+        && /network/i.test(r.reason || '')
+        && (r.signedBy || '') === 'did:web:example.org',
+      describe: 'state=signer-unresolvable, saying no check ran, naming the network, identifier intact',
     },
-    expect: (r) => r.outcome === 'checked-refusal' && r.state === 'signer-unresolvable'
-      && /NO SIGNATURE CHECK RAN/.test(r.reason || '')
-      && /network/i.test(r.reason || '')
-      && (r.signedBy || '') === 'did:web:example.org',
-    describe: 'state=signer-unresolvable, saying no check ran, naming the network, identifier intact',
-  },
+  ]),
   {
     name: 'a served verdict row, as a console copy button emits it',
     why: 'THE PASTE THAT PRODUCED "not recognised". A verdict card has its own Copy record button, and what it emits carries no `k`. This page does not check verdicts and it must still NAME one: a page that cannot identify a real artifact reads as a page that has decided the artifact is junk.',
@@ -359,7 +374,7 @@ const cases = [
   },
   {
     name: 'a served REFUSAL is not swallowed by the verdict test',
-    why: 'ORDERING. The verdict test is positive on evaluator+payload+signature and runs before the refusal test. A served refusal carries `signature` as an OBJECT and no evaluator, so it must fall through. This case exists so an edit that loosens either test turns the build red rather than reclassifying live records.',
+    why: 'ORDERING. The verdict test is positive on evaluator+payload+signature and runs before the refusal test. A served refusal carries `signature` as an OBJECT and no evaluator, so it must fall through. This case exists so an edit that loosens either test turns the build red rather than reclassifying live records. IT ONLY BECAME A REAL TEST when the embedded example moved to the served shape: a store record has no evaluator, no payload and a flat signature, so it could never have been swallowed and the case was asserting something it did not exercise.',
     input: () => JSON.stringify(embeddedRefusal),
     expect: (r) => r.outcome === 'checked-refusal' && r.state === 'verifies',
     describe: 'still reaches the refusal path and verifies',

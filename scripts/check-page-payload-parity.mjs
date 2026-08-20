@@ -44,6 +44,7 @@
  */
 
 import { readFileSync, readdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { signableFromRefusal, refusalPayload } from '@observer-protocol/policy-engine';
@@ -251,6 +252,44 @@ const v3Arms = new Set(v3Rows.map((r) => r?.appliedBound?.state));
 for (const arm of ['not-supplied', 'recorded']) {
   if (!v3Arms.has(arm)) fail(`the v3 population carries no \`${arm}\` bound. v3 adds \`reason\` on not-supplied and signs \`note\` on recorded; a population missing an arm cannot see that arm's gating.`);
 }
+// ─── THE VECTORS HAVE NOT DRIFTED FROM WHAT THEY WERE COPIED FROM ─────────────────
+//
+// RULED: pinned copies with recorded digests, and a SEPARATE check comparing them, rather than
+// regenerating the vectors from the service on every run.
+//
+// A fixture regenerated from its subject cannot fail against its subject. If the served projection
+// changes, regenerated vectors change with it, both sides move together, and this gate stays green
+// while the page silently stops matching what a reader holds. Pinned copies can go STALE, and stale
+// is a state somebody notices; lockstep is not. That is the difference between a gate and a mirror.
+//
+// AND A CHECK THAT CANNOT REACH ITS SUBJECT MUST SAY IT DID NOT LOOK. The source directory is
+// outside this repository and will usually be absent, in CI always. That is reported as NOT
+// CHECKED with the date and the pinned digests, never as a pass: an unrun check and a clean one are
+// different facts, and a build that renders them alike is asserting the one it did not establish.
+{
+  const meta = JSON.parse(readFileSync(v3Path, 'utf8'));
+  const dir = meta.source?.replace(/^.*?,\s*/, '') ?? '';
+  const digests = meta.sourceDigests ?? {};
+  let reached = 0, drifted = 0;
+  for (const [name, pinned] of Object.entries(digests)) {
+    let raw;
+    try { raw = readFileSync(join(dir, name)); } catch { continue; }
+    reached++;
+    const now = createHash('sha256').update(raw).digest('hex');
+    if (now !== pinned) {
+      drifted++;
+      fail(`the v3 vector ${name} has DRIFTED from the copy pinned here.\n      pinned: ${pinned}\n      source: ${now}\n      One of the two is no longer what the service emits. Re-copy deliberately, with the digests, rather than assuming the newer one is right.`);
+    }
+  }
+  if (reached === 0) {
+    console.log(`NOT CHECKED: the v3 vector source is not reachable at ${dir || '(no path recorded)'}.`);
+    console.log(`             ${Object.keys(digests).length} vector(s) pinned here on ${meta.receivedOn}, compared to nothing this run.`);
+    console.log('             This is an unrun check reported as unrun, not a pass.');
+  } else if (drifted === 0) {
+    console.log(`ok    v3 vectors match their source        ${reached}/${Object.keys(digests).length} reachable`);
+  }
+}
+
 // ─── THE COMBINATION MATRIX, AND THE ONE CELL NOTHING PRODUCES ────────────────────
 //
 // v3 changes appliedBound in two places on two different arms, and this page reads two record
