@@ -1,27 +1,36 @@
 {
   "$comment": [
-    "v3 REFUSAL VECTORS, SUPPLIED BY CC CORPUS 2026-08-20, copied verbatim.",
+    "v3 REFUSAL VECTORS FROM CC CORPUS, copied verbatim. Five records, two shapes, both arms.",
     "",
-    "Two are SERVED RECORDS lifted unmodified from the running corpus on 9093. The third is",
-    "CONSTRUCTED, signed with the same refusal key, and named so because nothing on that",
-    "deployment emits it.",
+    "FOUR ARE LIFTED UNMODIFIED FROM THE RUNNING SERVICE on 9093: two out of the store and two",
+    "off GET /v1/refusals. The fifth is CONSTRUCTED and named so.",
     "",
-    "WHY THE CONSTRUCTED ONE IS NOT OPTIONAL, and it is the reason this file has three rows and",
-    "not two. The recorded arm's note path is UNEXERCISED on the live corpus: 18 of 145 refusals",
-    "sit on that arm and none carries a note, because the ceiling refusal builds",
-    "{state, limit, unit, observed} and never sets one. Vectors taken only from what the service",
-    "serves would exercise the recorded arm WITHOUT its note, and a page could pass both served",
-    "records while silently dropping the field v3 exists to sign. Same shape as the served-row",
-    "population carrying no nulls, and as every row carrying a digest credential.",
+    "THE COMBINATION MATRIX, AND THE ONE CELL THAT DOES NOT EXIST ANYWHERE:",
     "",
-    "ALL THREE VERIFY AND ALL THREE REJECT a one-unit change to spend.amountRaw, so a verifier",
-    "that passes them is checking rather than agreeing. That is asserted below, not assumed.",
+    "                        not-supplied        recorded, no note    recorded WITH note",
+    "  store shape           served-not-supplied served-recorded      constructed-...  (built)",
+    "  served shape          served-row-not-...  served-row-recorded  NONE",
     "",
-    "ALL THREE ARE STORE SHAPE. Their names say served because they came off the service's store,",
-    "not because they are /v1/refusals projections. So served-shape x v3 is covered here by",
-    "PROJECTING them and requiring their own signatures to still verify: the signature is CC",
-    "Corpus's, so a wrong projection fails loudly rather than passing falsely. A genuine served",
-    "v3 row is still worth having and is asked for.",
+    "The empty cell is not an oversight. The live service never emits a served row on the",
+    "recorded arm carrying a note, because the ceiling refusal builds {state, limit, unit,",
+    "observed} and sets none. So that path is covered by PROJECTING the constructed store record",
+    "to the served shape and requiring CC Corpus's own signature to verify over it: a wrong",
+    "projection fails loudly rather than passing quietly. It is the one cell held by a",
+    "construction rather than by a record a deployment produced, and the gate says so on every",
+    "run rather than leaving it to be noticed.",
+    "",
+    "IT CLOSES WHEN THE CEILING REFUSAL WRITES ITS NOTE. payment-host.ts:1352 already records the",
+    "fact such a note would carry: the effective ceiling may be the credential's figure or a",
+    "deployment's tighter one, and the two are indistinguishable at that point. That is the claim",
+    "S10 kept the field for. Writing it into the signed note makes this cell real. CC Corpus",
+    "recommends it; it needs a corpus regeneration and is Boyd's call.",
+    "",
+    "ALL FIVE VERIFY AND ALL FIVE REJECT a one-unit change to the amount. Asserted, not assumed.",
+    "",
+    "THESE ARE LOAD-BEARING IN A WAY TEST DATA USUALLY IS NOT. The parity gate compares this page",
+    "to npm latest, which is rc.12 and has no v3, so the v3 half is oracled entirely by these",
+    "records and not by the package. Until the pin moves past v3 they are the only thing between",
+    "a v3 record and a false negative on this page.",
     "",
     "Under scripts/, which netlify.toml 404s, so this is not published."
   ],
@@ -29,11 +38,45 @@
   "engineCommit": "6f58fcb",
   "receivedOn": "2026-08-20",
   "sourceDigests": {
-    "served-not-supplied": "237d356f34d581a1ea13c8673cea5b682ea801818c924e8e6f5f5d5ca7c1bc1a",
-    "served-recorded": "63cdb89ccd39bb2ea874ca0d459ebb80ab9bcd2ee14818899830ed20572714fd",
-    "constructed-recorded-with-note": "97151493203511307a49bca6d44d8f9171817e4b5e7ae54c2289c2b3269c54ce"
+    "constructed-recorded-with-note.json": "97151493203511307a49bca6d44d8f9171817e4b5e7ae54c2289c2b3269c54ce",
+    "served-not-supplied.json": "237d356f34d581a1ea13c8673cea5b682ea801818c924e8e6f5f5d5ca7c1bc1a",
+    "served-recorded.json": "63cdb89ccd39bb2ea874ca0d459ebb80ab9bcd2ee14818899830ed20572714fd",
+    "served-row-not-supplied.json": "5abc9a4be60157756ceae83afc19547845e498674cbe5cdc8a0e84788d2b0901",
+    "served-row-recorded.json": "fa571ef363574758fd240477b4116336b0cd47635aa97d3e823a19b4174c101b"
   },
   "refusals": [
+    {
+      "k": "refused",
+      "refusalId": "constructed-recorded-with-note-1",
+      "authority": "mandate",
+      "at": "2026-08-20T17:50:24.382Z",
+      "code": "CEILING_EXCEEDED",
+      "reason": "This payment moves 2887437 minor units (2 dp) of MXN and the mandate's per_transaction_ceiling is 25000 MXN, which is 2500000 at the same scale. The payment exceeds it and is refused. The constraint breached is `actionScope.per_transaction_ceiling`. This figure is the EFFECTIVE ceiling: a deployment may tighten it below what the credential declares and may never raise it, so compare against the credential to see whether it was tightened.",
+      "network": "demo:emisor-demo:tarjetas",
+      "attribution": {
+        "agentId": "did:web:emisor-demo.example:agents:disputas-0001",
+        "mandateId": "urn:uuid:card-dispute-demo-mandate"
+      },
+      "spend": {
+        "rail": "demo:emisor-demo:tarjetas",
+        "asset": "MXN",
+        "amountRaw": "2887437",
+        "decimals": 2,
+        "counterparty": "cuenta:emisor-demo-recuperaciones-0001"
+      },
+      "breachedConstraint": "actionScope.per_transaction_ceiling",
+      "appliedBound": {
+        "state": "recorded",
+        "limit": "25000",
+        "unit": "MXN",
+        "observed": "28874.37",
+        "note": "The ceiling applied is the EFFECTIVE one: a deployment may have tightened the credential figure, and at this point the two are indistinguishable."
+      },
+      "payloadType": "op.enforcement.refusal.v3",
+      "signature": "QLjNu6pTJmX7omQf/UWNdCK38F2A5/n9POaEJN9UAp5m8gMeRZM9KFHwKdJ5KyP4ppx7zZMM8yuSxox0s2F8Bg==",
+      "signedBy": "did:key:z6MkfanQUxSYHy3xVWA2KJm6cKwrUSCHVJVQFr8mXWHD7o6s",
+      "$vector": "constructed-recorded-with-note"
+    },
     {
       "k": "refused",
       "refusalId": "refusal-1",
@@ -100,7 +143,8 @@
       "signature": "+weFCe2Hs9NLWiZp5l2808P6DlM1svxzyPfzfmT6oNkFPB0R/b2/jLlMiyEfrqtM1B74DmFAFTH9NIoNnC5fDw==",
       "signedBy": "did:key:z6MkfanQUxSYHy3xVWA2KJm6cKwrUSCHVJVQFr8mXWHD7o6s",
       "payloadType": "op.enforcement.refusal.v3",
-      "observedAt": "2026-08-20T17:52:41.490Z"
+      "observedAt": "2026-08-20T17:52:41.490Z",
+      "$vector": "served-not-supplied"
     },
     {
       "k": "refused",
@@ -131,38 +175,119 @@
       "signature": "/c7D4dpHaEQ3Wr4Z8q7y+4phsxODhwYb8fLvZCMXcf0LVuzUCthENYbBz81Y+JFIWcSBvZ+1ivONav4G6zWKBQ==",
       "signedBy": "did:key:z6MkfanQUxSYHy3xVWA2KJm6cKwrUSCHVJVQFr8mXWHD7o6s",
       "payloadType": "op.enforcement.refusal.v3",
-      "observedAt": "2026-08-20T17:52:41.507Z"
+      "observedAt": "2026-08-20T17:52:41.507Z",
+      "$vector": "served-recorded"
     },
     {
-      "k": "refused",
-      "refusalId": "constructed-recorded-with-note-1",
-      "authority": "mandate",
-      "at": "2026-08-20T17:50:24.382Z",
-      "code": "CEILING_EXCEEDED",
-      "reason": "This payment moves 2887437 minor units (2 dp) of MXN and the mandate's per_transaction_ceiling is 25000 MXN, which is 2500000 at the same scale. The payment exceeds it and is refused. The constraint breached is `actionScope.per_transaction_ceiling`. This figure is the EFFECTIVE ceiling: a deployment may tighten it below what the credential declares and may never raise it, so compare against the credential to see whether it was tightened.",
-      "network": "demo:emisor-demo:tarjetas",
-      "attribution": {
-        "agentId": "did:web:emisor-demo.example:agents:disputas-0001",
-        "mandateId": "urn:uuid:card-dispute-demo-mandate"
-      },
-      "spend": {
-        "rail": "demo:emisor-demo:tarjetas",
-        "asset": "MXN",
-        "amountRaw": "2887437",
+      "refusalId": "refusal-1",
+      "at": "2026-08-20T17:51:23.382Z",
+      "observedAt": "2026-08-20T17:52:41.490Z",
+      "agentId": "did:web:emisor-demo.example:agents:disputas-0001",
+      "mandateId": "urn:uuid:card-dispute-demo-mandate",
+      "refusedBy": "mandate",
+      "code": "OUTCOME_NOT_AUTHORIZING",
+      "constraint": "actionScope.requiresDecisionAttestation",
+      "attempted": {
+        "amountRaw": "534598",
         "decimals": 2,
+        "asset": "MXN",
+        "rail": "demo:emisor-demo:tarjetas",
         "counterparty": "cuenta:emisor-demo-recuperaciones-0001"
       },
-      "breachedConstraint": "actionScope.per_transaction_ceiling",
+      "appliedBound": {
+        "state": "not-supplied",
+        "constraint": "actionScope.requiresDecisionAttestation",
+        "reason": "not-reached",
+        "note": "The mandate required a decision attestation; the one this payment cited verified, and its outcome is not one this mandate treats as authorising a payment. No spending bound was compared, because no mandate amount constraint was reached."
+      },
+      "credential": {
+        "state": "not-supplied",
+        "note": "The evaluator supplied no credentialDigest with this verdict, so this service cannot say which credential document the bound came from."
+      },
+      "attestation": {
+        "state": "attested",
+        "decisionId": "DICT-2026-1003",
+        "decider": "did:key:z6Mkj5deK1cmKEWgasaVX6gjjUNyRZZ9rA9cL3XW9sRy8ZVM",
+        "outcome": "no_procede_reverso_abono",
+        "policyRef": {
+          "id": "https://emisor-demo.example/policy/banxico-34-2010/numeral-3-6/v1",
+          "hash": "sha256:51ba8f7cf6300e6d71334954afccf740eae8effcf294016efb17ddd93f36537b",
+          "hashMethod": "sha256"
+        },
+        "vocabularyRef": {
+          "id": "https://emisor-demo.example/vocab/dictamen-34-2010",
+          "version": "1.0.0",
+          "hashMethod": "sha256",
+          "source": "client-defined",
+          "values": [
+            "procede_reverso_abono",
+            "no_acredita_elemento_36b",
+            "abono_firme_periodo_transcurrido",
+            "no_procede_reverso_abono"
+          ],
+          "hash": "sha256:669c84a02eac537c2d02f27ef3867ca8c95d231dca7e283da822d1f94e178c76"
+        },
+        "decidedAt": "2026-08-18T17:51:23.382Z",
+        "inputsDigest": "sha256:2b3f9476dfd9ac146db99a7d8c783505f908a734f8487c0f0ec5f261207da005",
+        "deciderArtifactDigest": {
+          "state": "digest",
+          "value": "sha256:3f856973618843ccd7c6a8caa7cd9ef34e3f36d20d5b442a2c81180a35878d27"
+        },
+        "amount": {
+          "amountRaw": "534598",
+          "decimals": "2",
+          "asset": "MXN"
+        },
+        "counterparty": "cuenta:emisor-demo-recuperaciones-0001",
+        "rail": "demo:emisor-demo:tarjetas"
+      },
+      "network": "demo:emisor-demo:tarjetas",
+      "signature": {
+        "state": "signed",
+        "value": "+weFCe2Hs9NLWiZp5l2808P6DlM1svxzyPfzfmT6oNkFPB0R/b2/jLlMiyEfrqtM1B74DmFAFTH9NIoNnC5fDw==",
+        "signedBy": "did:key:z6MkfanQUxSYHy3xVWA2KJm6cKwrUSCHVJVQFr8mXWHD7o6s",
+        "payloadType": "op.enforcement.refusal.v3"
+      },
+      "$vector": "served-row-not-supplied"
+    },
+    {
+      "refusalId": "refusal-2",
+      "at": "2026-08-20T17:50:24.382Z",
+      "observedAt": "2026-08-20T17:52:41.507Z",
+      "agentId": "did:web:emisor-demo.example:agents:disputas-0001",
+      "mandateId": "urn:uuid:card-dispute-demo-mandate",
+      "refusedBy": "mandate",
+      "code": "CEILING_EXCEEDED",
+      "constraint": "actionScope.per_transaction_ceiling",
+      "attempted": {
+        "amountRaw": "2887437",
+        "decimals": 2,
+        "asset": "MXN",
+        "rail": "demo:emisor-demo:tarjetas",
+        "counterparty": "cuenta:emisor-demo-recuperaciones-0001"
+      },
       "appliedBound": {
         "state": "recorded",
         "limit": "25000",
         "unit": "MXN",
-        "observed": "28874.37",
-        "note": "The ceiling applied is the EFFECTIVE one: a deployment may have tightened the credential figure, and at this point the two are indistinguishable."
+        "observed": "28874.37"
       },
-      "payloadType": "op.enforcement.refusal.v3",
-      "signature": "QLjNu6pTJmX7omQf/UWNdCK38F2A5/n9POaEJN9UAp5m8gMeRZM9KFHwKdJ5KyP4ppx7zZMM8yuSxox0s2F8Bg==",
-      "signedBy": "did:key:z6MkfanQUxSYHy3xVWA2KJm6cKwrUSCHVJVQFr8mXWHD7o6s"
+      "credential": {
+        "state": "not-supplied",
+        "note": "The evaluator supplied no credentialDigest with this verdict, so this service cannot say which credential document the bound came from."
+      },
+      "attestation": {
+        "state": "not-evaluated",
+        "note": "This refusal was recorded before any attestation was verified, so there is no block to report. It is NOT a claim that the payment cited nothing \u2014 that is `not-cited`, which means the citation was looked for. Nothing here was looked at."
+      },
+      "network": "demo:emisor-demo:tarjetas",
+      "signature": {
+        "state": "signed",
+        "value": "/c7D4dpHaEQ3Wr4Z8q7y+4phsxODhwYb8fLvZCMXcf0LVuzUCthENYbBz81Y+JFIWcSBvZ+1ivONav4G6zWKBQ==",
+        "signedBy": "did:key:z6MkfanQUxSYHy3xVWA2KJm6cKwrUSCHVJVQFr8mXWHD7o6s",
+        "payloadType": "op.enforcement.refusal.v3"
+      },
+      "$vector": "served-row-recorded"
     }
   ]
 }
