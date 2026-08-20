@@ -344,6 +344,27 @@ const cases = [
     describe: 'state=signer-unresolvable, saying no check ran, naming the network, identifier intact',
   },
   {
+    name: 'a served verdict row, as a console copy button emits it',
+    why: 'THE PASTE THAT PRODUCED "not recognised". A verdict card has its own Copy record button, and what it emits carries no `k`. This page does not check verdicts and it must still NAME one: a page that cannot identify a real artifact reads as a page that has decided the artifact is junk.',
+    input: () => JSON.stringify({
+      id: 'verdict-5', reservationId: 'res-0001', at: '2026-08-15T19:11:31.955Z',
+      evaluator: 'did:key:z6MksSKYrTJ7a1buUtDAjppEwbDQVf1NQUq8U48BXzhi67Cw',
+      signature: 'u2ZGZaDiOY8D8pT4OLor0tiJ/tsbq/2vOAWQz6sOk5ZxPzed1hNuJg/XAaxte/huN8YAyIDsx626X4nEGgl1AQ==',
+      payload: { decision: 'release', mandateId: 'urn:uuid:x', agentId: 'did:web:a.example' },
+      construction: { state: 'recorded', type: 'op.evaluation.verdict.v4' },
+    }),
+    expect: (r) => r.outcome === 'not-covered' && /evaluation verdict/i.test(r.label || '')
+      && /module constant/i.test(r.reason || ''),
+    describe: 'outcome=not-covered, named as a verdict, with the reason it cannot be rebuilt',
+  },
+  {
+    name: 'a served REFUSAL is not swallowed by the verdict test',
+    why: 'ORDERING. The verdict test is positive on evaluator+payload+signature and runs before the refusal test. A served refusal carries `signature` as an OBJECT and no evaluator, so it must fall through. This case exists so an edit that loosens either test turns the build red rather than reclassifying live records.',
+    input: () => JSON.stringify(embeddedRefusal),
+    expect: (r) => r.outcome === 'checked-refusal' && r.state === 'verifies',
+    describe: 'still reaches the refusal path and verifies',
+  },
+  {
     name: 'a delegation credential',
     why: 'the artifact most visitors will have. It must be told what it is holding.',
     input: () => JSON.stringify(delegation),
