@@ -1075,6 +1075,25 @@
     report: 'a report record'
   };
 
+  // ─── NAMING WHAT YOU RECEIVED IS NOT THE SAME AS NAMING WHAT YOU WANTED ─────────
+  //
+  // "Not recognised" is the right answer to an unknown shape and the wrong answer to a
+  // record this page can identify perfectly well and does not check. Someone who has just
+  // pressed Copy record on a console is holding a real artifact, and a page that cannot name
+  // it reads as a page that has decided their record is junk.
+  //
+  // A SINGLE SENTENCE POINTING AT /verify WOULD BE WRONG FOR MOST OF THESE. /verify sets out
+  // a route for a delegation credential and for nothing else on this list, so each kind says
+  // what is actually true of it. Every reason below is a fact already published on this site
+  // or in verify-samples/README.md, not a new claim.
+  var NOT_COVERED_WHY = {
+    verdict: 'No published version of the engine can rebuild it. `evaluationVerdictPayload` emits the payload version it ships as a module constant rather than reading the one the record states in `construction.type`, so a verdict signed under a different version cannot be checked by it, in either direction. That is a gap in the package rather than a fault in your record, and your record states its own version, which is what a verifier would need to read.',
+    instructed: 'Nothing checks a payment instruction, at any published version. The package rebuilds no payload for one, so this is not a check that failed: it is a check that does not exist. Recorded as its own state rather than as a failure.',
+    resolution: 'Rebuilding the signed bytes of an approval resolution needs `resolutionPayload`, which the version npm serves today does not export. It was exported earlier, withdrawn across four releases, and restored later; the tag most people install sits inside that band.',
+    report: 'This page checks signed determinations and refusals. A report record is not one of the signed constructions this estate publishes a verifier for.'
+  };
+  var VERIFY_ROUTE_KINDS = { credential: 1 };
+
   function classify(parsed) {
     if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
       return { kind: 'unrecognised', why: 'The JSON parsed to ' + (Array.isArray(parsed) ? 'an array' : String(parsed === null ? 'null' : typeof parsed)) + ' rather than to an object.' };
@@ -1085,6 +1104,17 @@
       if (KNOWN_KINDS[parsed.k]) return { kind: 'other-record', label: KNOWN_KINDS[parsed.k], k: parsed.k };
       return { kind: 'unrecognised', why: 'The record states its kind as ' + JSON.stringify(parsed.k) + ', which this page does not recognise. It is not being guessed at.' };
     }
+    // ─── A SERVED VERDICT ROW ───────────────────────────────────────────────────────
+    //
+    // Same problem as the served refusal, on the artifact next to it: a console's verdict card
+    // has its own Copy record button, and what it emits carries no `k` either. This page does
+    // not check verdicts, but it can say so by name instead of calling a real record
+    // unrecognised. Positive test, for the same reason as below.
+    if (parsed.payload !== null && typeof parsed.payload === 'object' &&
+        nonEmpty(parsed.evaluator) && nonEmpty(parsed.signature)) {
+      return { kind: 'other-record', label: KNOWN_KINDS.verdict, k: 'verdict' };
+    }
+
     // ─── A SERVED REFUSAL ROW, RECOGNISED BY WHAT IT HAS ────────────────────────────
     //
     // POSITIVE, not "it has no k". Testing for the ABSENCE of a kind tag would funnel every
@@ -1097,11 +1127,11 @@
     }
 
     var types = Array.isArray(parsed.type) ? parsed.type : (parsed.type === undefined ? [] : [parsed.type]);
-    if (types.indexOf('VerifiableCredential') !== -1) return { kind: 'other-record', label: 'a verifiable credential, most likely a delegation credential' };
+    if (types.indexOf('VerifiableCredential') !== -1) return { kind: 'other-record', label: 'a verifiable credential, most likely a delegation credential', k: 'credential' };
     if (typeof parsed.decider === 'string' && typeof parsed.decisionId === 'string' && parsed.policyRef !== undefined) {
       return { kind: 'document' };
     }
-    return { kind: 'unrecognised', why: 'This is not a stored record, which would state its kind in a k field; not a served refusal row, which would carry a refusalId, a refusedBy and an attempted; and not an attestation document, which would carry a decider, a decisionId and a policyRef.' };
+    return { kind: 'unrecognised', why: 'This does not match any shape this page recognises, so it is not being guessed at. It reads: a stored record, which states its kind in a k field; a served refusal row, carrying a refusalId, a refusedBy and an attempted; a served verdict row, carrying an evaluator, a payload and a signature; and a bare attestation document, carrying a decider, a decisionId and a policyRef. If you copied this from a console and it is none of those, the shape is one nothing here has been shown yet.' };
   }
 
   // Takes the pasted text and an optional signature, returns one result object.
@@ -1121,10 +1151,15 @@
     }
 
     if (seen.kind === 'other-record') {
+      var why = seen.k ? NOT_COVERED_WHY[seen.k] : undefined;
+      if (why === undefined) {
+        why = VERIFY_ROUTE_KINDS[seen.k]
+          ? 'It verifies against the published engine on your own machine, by the route /verify sets out.'
+          : 'It verifies by a different route, set out on /verify.';
+      }
       return {
-        outcome: 'not-covered', label: seen.label,
-        reason: 'This page checks a decision attestation and an enforcement refusal record, and what you pasted is ' + seen.label +
-          '. That is the scope of this page rather than a fault in your artifact: it verifies by a different route, set out on /verify.'
+        outcome: 'not-covered', label: seen.label, k: seen.k,
+        reason: 'That is ' + seen.label + ', and it is a real artifact. This page checks a decision attestation and an enforcement refusal record, so yours is out of its scope rather than at fault. ' + why
       };
     }
 

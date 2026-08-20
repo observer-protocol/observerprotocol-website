@@ -125,10 +125,10 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
-const AUDIT_VERSION = '3.4.0';
+const AUDIT_VERSION = '3.4.1';
 // sha256 of this file with the literal on the line below normalised to an empty string.
 // Recompute with --version. Update it in the same commit as any edit to this file.
-const AUDIT_SHA256 = '59fddf3155159a2d59da7ce0d9fb3c952a6dcdd26922903c94ea3b880e78f655';
+const AUDIT_SHA256 = '0617ef24806771c7a6ee3a44c946b8599ea79bbfdae2ab879c2a9f17a17ad3cf';
 
 const sha256 = (s) => createHash('sha256').update(s).digest('hex');
 
@@ -155,7 +155,7 @@ const EXPECTED = [
   },
   {
     label: 'the page verifier',
-    sha256: '20100bfac69727cb90ddec8ae79d63cd70f0d6d67e67c41bfda4a99cd26004aa',
+    sha256: 'b86e879365904f1a0c897c7112dcc9dc19cfe25919575501acf70f8be6d9dd89',
     why: 'The code that reaches the verdict. If this is missing the page renders and decides nothing; if it is altered, it decides something else.',
   },
 ];
