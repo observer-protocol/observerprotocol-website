@@ -251,100 +251,124 @@ const v3Arms = new Set(v3Rows.map((r) => r?.appliedBound?.state));
 for (const arm of ['not-supplied', 'recorded']) {
   if (!v3Arms.has(arm)) fail(`the v3 population carries no \`${arm}\` bound. v3 adds \`reason\` on not-supplied and signs \`note\` on recorded; a population missing an arm cannot see that arm's gating.`);
 }
-// THE RECORDED ARM'S NOTE, WHICH THE LIVE CORPUS DOES NOT PRODUCE. 18 of 145 refusals sit on
-// that arm and none carries a note, so a population drawn only from what the service serves would
-// exercise the arm WITHOUT the field v3 exists to sign, and this page could drop it and pass.
-if (!v3Rows.some((r) => r?.appliedBound?.state === 'recorded' && r.appliedBound.note !== undefined)) {
-  fail('no v3 record carries a `recorded` bound WITH a note. That arm is the one v3 newly signs and the live deployment does not emit it, so without a constructed vector the field can be dropped silently and every check still passes.');
+// ─── THE COMBINATION MATRIX, AND THE ONE CELL NOTHING PRODUCES ────────────────────
+//
+// v3 changes appliedBound in two places on two different arms, and this page reads two record
+// shapes. So the thing to cover is a matrix, not a list, and a population that happens to fill
+// one row of it tells you nothing about the other.
+const shapeOf = (r) => ('refusedBy' in r ? 'served' : 'store');
+const armOf = (r) => r?.appliedBound?.state;
+const hasNote = (r) => r?.appliedBound?.note !== undefined;
+const cell = (r) => `${shapeOf(r)}/${armOf(r)}${armOf(r) === 'recorded' ? (hasNote(r) ? '+note' : '') : ''}`;
+const present = new Set(v3Rows.map(cell));
+for (const want of ['store/not-supplied', 'store/recorded', 'store/recorded+note', 'served/not-supplied', 'served/recorded']) {
+  if (!present.has(want)) fail(`the v3 population has no \`${want}\` record. That cell is a distinct path through the rebuild and an absent one is a path nothing checks.`);
 }
 
 let v3Verified = 0;
 for (const row of v3Rows) {
+  const shape = OP.SHAPES[shapeOf(row)];
   let ok;
   try {
-    const bytes = OP.refusalPayload(OP.signableFromRefusal(row));
-    const key = Buffer.from(base58Decode(row.signedBy.slice('did:key:z'.length)).slice(2));
-    ok = ed25519Verify(key, Buffer.from(bytes, 'utf8'), Buffer.from(row.signature, 'base64'));
+    const bytes = OP.refusalPayload(shape.toSignable(row));
+    const key = Buffer.from(base58Decode(shape.signerOf(row).slice('did:key:z'.length)).slice(2));
+    ok = ed25519Verify(key, Buffer.from(bytes, 'utf8'), Buffer.from(shape.signatureOf(row), 'base64'));
   } catch (e) { ok = `threw: ${e.message.slice(0, 110)}`; }
-  if (ok === true) { v3Verified++; console.log(`ok    v3 verifies             ${row.refusalId}  ${row.appliedBound.state} arm`); }
-  else fail(`a v3 record on the ${row.appliedBound?.state} arm does not verify: ${ok}. The bytes were signed by the engine, so this page's v3 rebuild differs from it and every v3 record would read as a bad signature.`);
+  if (ok === true) { v3Verified++; console.log(`ok    v3 ${cell(row).padEnd(22)} ${row.$vector}`); }
+  else fail(`v3 vector ${row.$vector} (${cell(row)}) does not verify: ${ok}. Its bytes were signed by the enforcement point, so this page's v3 rebuild differs from it and every record of that shape and arm would read as a bad signature.`);
+
+  // AND THROUGH THE PAGE, not only through the exported helpers. A rebuild that is right and
+  // never reached because the classifier does not route to it is the served-shape defect again.
+  const through = await OP.check(JSON.stringify(row), '');
+  if (!(through.outcome === 'checked-refusal' && through.state === 'verifies')) {
+    fail(`v3 vector ${row.$vector} does not reach a verifying verdict through the page: outcome=${through.outcome} state=${through.state}.`);
+  }
 }
 
-// THE NEGATIVE CONTROL CC CORPUS BUILT INTO THE VECTORS. Each rejects a one-unit change to the
-// amount. Asserted here rather than taken on trust: a fixture said to discriminate, and never shown
-// to, is a fixture nobody has checked.
+// THE EMPTY CELL: served x recorded x note. The live service emits no such row, because the
+// ceiling refusal builds {state, limit, unit, observed} and sets no note. Held by projecting the
+// constructed store record, so the signature stays the enforcement point's and a wrong projection
+// fails loudly. This is the one cell not covered by a record a deployment produced, and saying so
+// on every run is what stops it being mistaken for one that is.
+{
+  const src = v3Rows.find((r) => cell(r) === 'store/recorded+note');
+  const asServed = {
+    refusalId: src.refusalId, at: src.at, observedAt: src.observedAt ?? null,
+    agentId: src.attribution?.agentId ?? null, mandateId: src.attribution?.mandateId ?? null,
+    refusedBy: src.authority, code: src.code, constraint: src.breachedConstraint ?? null,
+    attempted: {
+      amountRaw: src.spend.amountRaw, decimals: src.spend.decimals, asset: src.spend.asset,
+      rail: src.spend.rail, counterparty: src.spend.counterparty ?? null,
+    },
+    appliedBound: src.appliedBound, network: src.network ?? null,
+    credential: src.credentialDigest ? { state: 'digest', value: src.credentialDigest } : { state: 'not-supplied', note: 'n/a' },
+    attestation: src.attestation ?? null,
+    signature: { state: 'signed', value: src.signature, signedBy: src.signedBy, payloadType: src.payloadType },
+  };
+  const r = await OP.check(JSON.stringify(asServed), '');
+  if (!(r.outcome === 'checked-refusal' && r.state === 'verifies')) {
+    fail(`the served x recorded x note cell does not verify: outcome=${r.outcome} state=${r.state}. The served normalisation loses the recorded arm's signed note.`);
+  }
+  console.log('ok    v3 served/recorded+note      BY PROJECTION, no deployment emits this row yet');
+}
+
+// THE NEGATIVE CONTROL THE VECTORS CLAIM. Each rejects a one-unit change to the amount. Asserted
+// rather than taken on trust: a fixture said to discriminate, and never shown to, is a fixture
+// nobody has checked.
 for (const row of v3Rows) {
-  const tampered = JSON.parse(JSON.stringify(row));
-  const spend = tampered.spend ?? tampered.attempted;
+  const t = JSON.parse(JSON.stringify(row));
+  const spend = t.spend ?? t.attempted;
   spend.amountRaw = String(BigInt(spend.amountRaw) + 1n);
+  const shape = OP.SHAPES[shapeOf(t)];
   let stillVerifies = false;
   try {
-    const bytes = OP.refusalPayload(OP.signableFromRefusal(tampered));
-    const key = Buffer.from(base58Decode(tampered.signedBy.slice('did:key:z'.length)).slice(2));
-    stillVerifies = ed25519Verify(key, Buffer.from(bytes, 'utf8'), Buffer.from(tampered.signature, 'base64'));
+    const bytes = OP.refusalPayload(shape.toSignable(t));
+    const key = Buffer.from(base58Decode(shape.signerOf(t).slice('did:key:z'.length)).slice(2));
+    stillVerifies = ed25519Verify(key, Buffer.from(bytes, 'utf8'), Buffer.from(shape.signatureOf(t), 'base64'));
   } catch { stillVerifies = false; }
-  if (stillVerifies) fail(`v3 record ${row.refusalId} still verifies after one unit was added to the amount. A vector that cannot be broken is not evidence that this page is checking.`);
+  if (stillVerifies) fail(`v3 vector ${row.$vector} still verifies after one unit was added to the amount. A vector that cannot be broken is not evidence that this page is checking.`);
 }
 console.log(`ok    each v3 vector rejects a one-unit amount change  ${v3Rows.length}`);
 
-// SERVED SHAPE x v3, covered by PROJECTING the signed store records rather than by inventing a
-// signature. The signature stays CC Corpus's, so a projection that loses `reason` or the recorded
-// note fails loudly instead of passing quietly. A genuine served v3 row is still worth having.
+// ─── THE GATING, IN THE DIRECTION THAT BREAKS OLD RECORDS ─────────────────────────
+//
+// RESTORED after a restructure removed it: the matrix rewrite replaced a region that included
+// these two assertions, and the mutation sweep caught their absence by staying green on
+// "recorded note ungated" and "reason ungated". Noted here because a check deleted while
+// reorganising is the quietest way a gate loses a rule.
+//
+// v3 emits two fields older versions do not. Emitted unconditionally, every v2 record carrying a
+// `recorded` note or a stray `reason` would gain a field its signature never covered and flip to
+// DOES NOT VERIFY. Neither the store-shape comparison nor the v3 vectors can see this: the former
+// carry neither field, the latter are all v3.
 {
-  const project = (r) => ({
-    refusalId: r.refusalId, at: r.at, observedAt: r.observedAt ?? null,
-    agentId: r.attribution?.agentId ?? null, mandateId: r.attribution?.mandateId ?? null,
-    refusedBy: r.authority, code: r.code, constraint: r.breachedConstraint ?? null,
-    attempted: {
-      amountRaw: r.spend.amountRaw, decimals: r.spend.decimals, asset: r.spend.asset,
-      rail: r.spend.rail, counterparty: r.spend.counterparty ?? null,
-    },
-    appliedBound: r.appliedBound ?? null,
-    credential: r.credentialDigest ? { state: 'digest', value: r.credentialDigest } : { state: 'not-supplied', note: 'n/a' },
-    network: r.network ?? null,
-    attestation: r.attestation ?? null,
-    signature: { state: 'signed', value: r.signature, signedBy: r.signedBy, payloadType: r.payloadType },
-  });
-  let projected = 0;
-  for (const row of v3Rows) {
-    const asServed = project(row);
-    const r = await OP.check(JSON.stringify(asServed), '');
-    if (r.outcome === 'checked-refusal' && r.state === 'verifies') projected++;
-    else fail(`a v3 record projected to the served shape does not verify through the page: outcome=${r.outcome} state=${r.state}. The served normalisation loses something v3 signs.`);
+  const anyV3 = v3Rows.find((r) => !('refusedBy' in r));
+  const strayReason = JSON.parse(JSON.stringify(anyV3));
+  strayReason.payloadType = 'op.enforcement.refusal.v2';
+  strayReason.appliedBound = { state: 'not-supplied', constraint: 'x', reason: 'not-reached', note: 'n' };
+  if ('reason' in JSON.parse(OP.refusalPayload(OP.signableFromRefusal(strayReason))).appliedBound) {
+    fail('a v2 record carrying a stray `reason` had it emitted into the signed bytes. Older records must rebuild byte-identically, or this page invents a field their signature never covered.');
   }
-  console.log(`ok    v3 survives the served-shape normalisation      ${projected}/${v3Rows.length}`);
-}
-
-// AND THE GATING, IN THE DIRECTION THAT BREAKS OLD RECORDS. v3 emits two fields older versions do
-// not. If the page emitted them unconditionally, every v2 record carrying a `recorded` note or a
-// stray `reason` would gain a field its signature never covered and flip to DOES NOT VERIFY. The
-// store-shape comparison above cannot see this: its records carry neither field.
-{
-  const withBoth = JSON.parse(JSON.stringify(v3Rows[0]));
-  withBoth.payloadType = 'op.enforcement.refusal.v2';
-  withBoth.appliedBound = { state: 'not-supplied', constraint: 'x', reason: 'not-reached', note: 'n' };
-  const asV2 = JSON.parse(OP.refusalPayload(OP.signableFromRefusal(withBoth)));
-  if ('reason' in asV2.appliedBound) fail('a v2 record carrying a stray `reason` had it emitted into the signed bytes. Older records must rebuild byte-identically, or this page invents a field their signature never covered.');
-  const recV2 = JSON.parse(JSON.stringify(v3Rows[0]));
-  recV2.payloadType = 'op.enforcement.refusal.v2';
-  recV2.appliedBound = { state: 'recorded', limit: '1', note: 'n' };
-  const recBytes = JSON.parse(OP.refusalPayload(OP.signableFromRefusal(recV2)));
-  if ('note' in recBytes.appliedBound) fail('a v2 record with a `recorded` note had it emitted into the signed bytes. The recorded note is signed at v3 and not before.');
+  const recNote = JSON.parse(JSON.stringify(anyV3));
+  recNote.payloadType = 'op.enforcement.refusal.v2';
+  recNote.appliedBound = { state: 'recorded', limit: '1', note: 'n' };
+  if ('note' in JSON.parse(OP.refusalPayload(OP.signableFromRefusal(recNote))).appliedBound) {
+    fail('a v2 record with a `recorded` note had it emitted into the signed bytes. The recorded note is signed at v3 and not before.');
+  }
   console.log('ok    v2 rebuilds byte-identically with v3 fields present but gated off');
 }
 
-// THE REASON VOCABULARY, which no fixture exercises because both carry a valid one. The union is
-// a compiler fact and this page has no compiler, so without an explicit set the closed discriminant
-// is a convention. An unrecognised reason must be REFUSED rather than omitted: a bound whose
-// absence cannot be explained must not carry a signature saying it can.
+// THE REASON VOCABULARY, which no vector exercises because every one carries a valid reason. The
+// union is a compiler fact and this page has no compiler, so without a runtime set the closed
+// discriminant is a convention.
 {
-  const bad = JSON.parse(JSON.stringify(v3Rows.find((r) => r.appliedBound.state === 'not-supplied')));
+  const ns = JSON.parse(JSON.stringify(v3Rows.find((r) => r.appliedBound.state === 'not-supplied' && !('refusedBy' in r))));
   for (const [label, reason] of [['an unrecognised reason', 'made-up'], ['no reason at all', undefined]]) {
-    const probe = JSON.parse(JSON.stringify(bad));
+    const probe = JSON.parse(JSON.stringify(ns));
     if (reason === undefined) delete probe.appliedBound.reason; else probe.appliedBound.reason = reason;
     let refused = false;
     try { OP.refusalPayload(OP.signableFromRefusal(probe)); } catch { refused = true; }
-    if (!refused) fail(`a v3 refusal with ${label} was rebuilt rather than refused. The reason vocabulary is closed at the engine and the compiler enforces it there; here it is a runtime set or it is nothing, and a record this page cannot describe must not get a signature check that appears to describe it.`);
+    if (!refused) fail(`a v3 refusal with ${label} was rebuilt rather than refused. A record this page cannot describe must not get a signature check that appears to describe it.`);
   }
   console.log('ok    a v3 reason outside the vocabulary is refused, not omitted');
 }
