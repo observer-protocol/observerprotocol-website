@@ -722,18 +722,28 @@
     var signedBy = record.signedBy;
 
     if (typeof signedBy !== 'string' || signedBy === '') {
-      return { state: 'unrebuildable', passed: passed, reason: 'The record names no signedBy, so nothing identifies the key that signed it.' };
+      return { state: 'unrebuildable', passed: passed, reason: 'No signature check ran. The record names no signedBy, so nothing identifies the key that signed it.' };
     }
     if (signedBy.indexOf('did:key:z') !== 0) {
+      // ─── A STATE OF ITS OWN, AND NOT unrebuildable ────────────────────────────────
+      //
+      // "We cannot reach the key from here" and "this record cannot be rebuilt by anyone"
+      // are different findings and they must not share a headline. The attestation path
+      // already draws this line as cited-unresolvable against cited-invalid; this mirrors it.
+      //
+      // THE IDENTIFIER IS NOT TRUNCATED. An earlier version cut it at 28 characters, so
+      // did:web:tesoreria.emisor-demo.example rendered as did:web:tesoreria.emisor-dem and
+      // read like a corrupted field. A reader looking for a reason their record is bad will
+      // find one in a mangled identifier.
       return {
-        state: 'unrebuildable', passed: passed,
-        reason: 'This refusal is signed by ' + String(signedBy).slice(0, 28) + ', and only a did:key signer can be recovered without a network call. This page makes none, so the key cannot be reached here. /verify sets out the same check run from npm, where a resolver can be supplied.'
+        state: 'signer-unresolvable', passed: passed, signedBy: signedBy,
+        reason: 'NO SIGNATURE CHECK RAN, so nothing here is a statement about this record. It is signed by ' + signedBy + ', and resolving a did:web means fetching a document over the network. This page makes no network request, by design, so the key cannot be recovered here and the refusal is shown as unchecked rather than read as either good or bad. A did:key signer checks out here with nothing else. For this one, /verify sets out the same check run from npm, where a resolver can be supplied.'
       };
     }
     var raw;
     try { raw = base58Decode(signedBy.slice('did:key:z'.length)); } catch (e) { raw = undefined; }
     if (raw === undefined || raw.length !== 34 || raw[0] !== ED25519_MULTICODEC[0] || raw[1] !== ED25519_MULTICODEC[1]) {
-      return { state: 'unrebuildable', passed: passed, reason: 'signedBy is not a well-formed Ed25519 did:key, so no key can be recovered from it.' };
+      return { state: 'unrebuildable', passed: passed, reason: 'No signature check ran. signedBy is not a well-formed Ed25519 did:key, so no key can be recovered from it.' };
     }
 
     // ─── THE 32-VS-34 BYTE DISTINCTION, HANDLED HERE SO NO READER MEETS IT ──────────
@@ -760,7 +770,7 @@
     passed.push('the payload was rebuilt under the construction the record itself states, ' + declaredType + ', rather than under whichever version this page happens to ship');
 
     if (!nonEmpty(record.signature)) {
-      return { state: 'unrebuildable', passed: passed, reason: 'The record carries no signature, so there is nothing to check the rebuilt payload against.' };
+      return { state: 'unrebuildable', passed: passed, reason: 'No signature check ran. The record carries no signature, so there is nothing to check the rebuilt payload against.' };
     }
 
     if (!ed25519Available()) {
@@ -1184,7 +1194,15 @@
         return;
       }
       if (r.state === 'no-verdict') { show('info', 'No verdict', 'enforcement refusal', '<p>' + esc(r.reason) + '</p>' + checklistHtml(r.passed)); return; }
-      show('info', 'Not established here', 'enforcement refusal', '<p>' + esc(r.reason) + '</p>' + checklistHtml(r.passed));
+      // Neither of these is a verdict on the signature, and neither is rendered as one.
+      // They are separated because they are answers to different questions: one is about
+      // this page's reach, the other is about the record.
+      if (r.state === 'signer-unresolvable') {
+        show('info', 'Not checked here', 'enforcement refusal',
+          '<p>' + esc(r.reason) + '</p>' + checklistHtml(r.passed));
+        return;
+      }
+      show('info', 'Cannot be rebuilt', 'enforcement refusal', '<p>' + esc(r.reason) + '</p>' + checklistHtml(r.passed));
       return;
     }
 

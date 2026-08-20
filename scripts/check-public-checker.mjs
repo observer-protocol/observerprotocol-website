@@ -331,14 +331,17 @@ const cases = [
   },
   {
     name: 'a refusal signed by a did:web',
-    why: 'resolving one needs the network, and this page makes no request. It has to say so rather than fail closed and look like a bad signature.',
+    why: 'resolving one needs the network, and this page makes no request. It has to say so rather than fail closed and look like a bad signature. The identifier is asserted UNTRUNCATED: an earlier version cut it at 28 characters and a mangled DID reads as a damaged record, which is the exact misreading this case exists to prevent.',
     input: () => {
       const m = clone(embeddedRefusal);
       m.signedBy = 'did:web:example.org';
       return JSON.stringify(m);
     },
-    expect: (r) => r.outcome === 'checked-refusal' && r.state === 'unrebuildable' && /network/i.test(r.reason || ''),
-    describe: 'state=unrebuildable, naming the network as the reason',
+    expect: (r) => r.outcome === 'checked-refusal' && r.state === 'signer-unresolvable'
+      && /NO SIGNATURE CHECK RAN/.test(r.reason || '')
+      && /network/i.test(r.reason || '')
+      && (r.signedBy || '') === 'did:web:example.org',
+    describe: 'state=signer-unresolvable, saying no check ran, naming the network, identifier intact',
   },
   {
     name: 'a delegation credential',
@@ -400,7 +403,8 @@ if (failures.length) {
 // COUNTED, not typed. The refusal route added a second refusal state for a break, and a
 // hard-coded 5 here would have gone quietly wrong on the same commit that added them.
 const broken = results.filter((x) => x.r.state === 'cited-invalid' || x.r.state === 'does-not-verify').length;
-const refusedToRebuild = results.filter((x) => x.r.state === 'unrebuildable').length;
+const notAVerdict = results.filter((x) => x.r.state === 'unrebuildable' || x.r.state === 'signer-unresolvable').length;
 console.log(`${results.length} cases: the published examples verify, ${broken} deliberate breaks are refused,`);
-console.log(`${refusedToRebuild} records this page will not rebuild a payload for say so rather than reporting a bad`);
-console.log('signature, artifacts of other kinds are named rather than errored, and the page loads nothing.');
+console.log(`${notAVerdict} records this page reaches no signature verdict on say so plainly rather than`);
+console.log('reporting a bad signature, artifacts of other kinds are named rather than errored,');
+console.log('and the page loads nothing.');

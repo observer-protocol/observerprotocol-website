@@ -117,6 +117,14 @@ jobs:
         if: ${{ !cancelled() && steps.deps.outcome == 'success' }}
         run: node ./check-page-payload-parity.mjs
 
+      # The attestation half of the same problem, and the OLDER of the two reimplementations.
+      # The refusal gate above shipped first and left this one uncovered, which made the page
+      # look uniformly checked when half of it was not.
+      #
+      # Unlike its sibling this one needs WebCrypto Ed25519 to reach a verdict on the page's
+      # side, so it runs AFTER the Node 22 switch below. It is placed there rather than here,
+      # in the block after the setup-node step.
+
       # LAST, AND ON ITS OWN NODE, for one reason: the public checker's signature cases run
       # on WebCrypto Ed25519, and this job otherwise pins Node 20, where that primitive is
       # still experimental. Putting the newer runtime on the final step leaves every step
@@ -134,6 +142,13 @@ jobs:
       - name: The public checker verifies the published sample and refuses broken ones
         if: ${{ !cancelled() }}
         run: node ./check-public-checker.mjs
+
+      # Gated on `steps.deps` because it imports the package: without it there is nothing to
+      # compare the page against, and letting it run would report a missing module as a
+      # divergence. On Node 22 because the page's side needs WebCrypto Ed25519.
+      - name: The page's attestation check agrees with the package's, byte for byte
+        if: ${{ !cancelled() && steps.deps.outcome == 'success' }}
+        run: node ./check-page-attestation-parity.mjs
 
       # served-page-audit.mjs runs OUTSIDE this repository, on a clock, because the change
       # it watches for produces no commit. It therefore carries baked-in values it cannot
