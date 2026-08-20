@@ -125,10 +125,10 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
-const AUDIT_VERSION = '3.5.0';
+const AUDIT_VERSION = '3.6.0';
 // sha256 of this file with the literal on the line below normalised to an empty string.
 // Recompute with --version. Update it in the same commit as any edit to this file.
-const AUDIT_SHA256 = '97a97381f88c77ef9b33051ba8a45285e50e4eed0d7e45f5625d55a99a533a56';
+const AUDIT_SHA256 = '624de5d4eec128c41bd68a17d686a233ae3eb99e181a40e12a4e3a09422f3ba6';
 
 const sha256 = (s) => createHash('sha256').update(s).digest('hex');
 
@@ -150,7 +150,7 @@ const EXPECTED = [
   },
   {
     label: 'the embedded refusal example',
-    sha256: 'a37510d6a853f3c369bf8f23f22d98f66541b50986343366e727c1d977fcc7f8',
+    sha256: '570eb9bcce791f1ebd9a882b6f7198d6e1e99ff8cdd1cce14ddfb29389203e42',
     why: 'The refusal record the page hands a visitor who arrives without one. Its absence would leave the refusal route with no worked example; its alteration would hand a visitor a record that is not the one this repository checks on every build.',
   },
   {
