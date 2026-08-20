@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Check a decision attestation · Observer Protocol</title>
-  <meta name="description" data-shared-copy="offline-scope" content="Paste a decision attestation and its signature. It is checked in your browser, against the decider's own key, and nothing you paste leaves the page." />
+  <meta name="description" data-shared-copy="offline-scope" content="Paste a decision attestation or an enforcement refusal record. It is checked in your browser, against a key recovered from the record's own identifier, and nothing you paste leaves the page." />
   <!-- ==========================================================================
        REVIEWER: THIS PAGE LOADS NOTHING FROM ANYWHERE. KEEP IT THAT WAY.
 
@@ -145,14 +145,15 @@
 
 <div class="page-header">
   <div class="page-header-inner">
-    <div class="breadcrumb">OBSERVER PROTOCOL · <span>CHECK A DECISION ATTESTATION</span></div>
-    <h1>Paste a decision attestation.<br/>Find out whether it holds.</h1>
+    <div class="breadcrumb">OBSERVER PROTOCOL · <span>CHECK A DETERMINATION OR A REFUSAL</span></div>
+    <h1>Paste a decision attestation<br/>or an enforcement refusal record.<br/>Find out whether it holds.</h1>
     <p class="page-sub" data-shared-copy="offline-scope">
       <strong>Nothing you paste leaves this browser.</strong> The page loads no font, no script and no data from
       anywhere, makes no request after it loads, sends nothing, stores nothing and logs nothing. <strong>Measured against
-      the page as it is served, not against the file:</strong> on 18 August 2026 it carried two scripts, both its own and
+      the page as it is served, not against the file:</strong> on 20 August 2026 it carried three scripts, all three its own and
       nothing else, and pasting a record and checking it produced no network request at all. The check runs on your
-      machine, against a key recovered from the decider's own identifier. You do not need an account and you are not our
+      machine, against a key recovered from the record's own identifier: the decider's for a
+      determination, the enforcement point's for a refusal. You do not need an account and you are not our
       customer.
     </p>
   </div>
@@ -671,7 +672,127 @@
 
   function refusalPayload(r) { return canonicalise(refusalPayloadObject(r)); }
 
-  function payloadOfRecord(record) { return refusalPayload(signableFromRefusal(record)); }
+  // ─── THE SERVED SHAPE ───────────────────────────────────────────────────────────
+  //
+  // A refusal reaches a reader in one of TWO shapes and they are not the same document.
+  //
+  //   store shape   what a store file holds: `k`, `authority`, `spend`, `attribution`,
+  //                 and the signature inline as `signature` + `signedBy`.
+  //   served shape  what GET /v1/refusals sends, and what a console's copy button puts on
+  //                 the clipboard: no `k`, `refusedBy` for authority, `attempted` for spend,
+  //                 `agentId`/`mandateId` at the top level, and the signature as an OBJECT,
+  //                 { state, value, signedBy, payloadType }.
+  //
+  // The copy-from-console, paste-into-this-page loop produces the SECOND, and this page used
+  // to answer "Not recognised" to it.
+  //
+  // THIS IS NOT A NEW MAPPING. It is signableFromRefusalRow, which lives in
+  // op-mcp-payment-server/src/http/reads.ts, is vendored into the console, and is held
+  // byte-identical to its source there by a cross-repo test that executes both. Ported here
+  // because this page loads nothing and can import neither.
+  //
+  // ─── NULL MEANS ABSENT, AND THIS IS THE LINE THAT WILL GET "SIMPLIFIED" ─────────────
+  //
+  // A served row NULLS a field that is absent, so a reader can tell "no constraint" from
+  // "not reported". That is right for a surface and WRONG for a canonicaliser: `{x: null}`
+  // and `{}` are different bytes, and this estate's canonicaliser refuses null outright
+  // rather than guessing. So every null here becomes an OMITTED KEY, never a null and never
+  // an empty string.
+  //
+  // THE INVERSE OF THIS DEFECT HAS ALREADY BEEN PAID FOR. The payment server's own
+  // `appliedBoundView` turned ABSENT keys into null. The field was then PRESENT, every
+  // "is the field there" check passed, and the bytes still differed, so the signature did not
+  // verify and nothing said why. A check that asks whether a field exists passes on exactly
+  // that defect. Do not replace `strip` with a spread, do not "tidy" it into a JSON
+  // round-trip, and do not let a null through on the grounds that the field is there.
+
+  function stripNulls(obj) {
+    var out = {};
+    for (var k in obj) {
+      if (!Object.prototype.hasOwnProperty.call(obj, k)) continue;
+      if (obj[k] === null || obj[k] === undefined) continue;
+      out[k] = obj[k];
+    }
+    return out;
+  }
+
+  function signableFromRefusalRow(row) {
+    var sig = row.signature;
+    var sigPayloadType = (sig !== null && typeof sig === 'object' && 'payloadType' in sig)
+      ? sig.payloadType : undefined;
+    var bound = (row.appliedBound === null || row.appliedBound === undefined)
+      ? undefined : stripNulls(row.appliedBound);
+    var att = row.attestation;
+    // `not-evaluated` IS THE SERVICE DESCRIBING ITSELF. It means the citation was never read,
+    // it was never part of any signed payload, and citationOf must never receive it. Mapping
+    // it back to absent is what keeps the rebuild honest; carrying it through would sign a
+    // projection state the signer never saw.
+    var attOut = (att === null || att === undefined || att.state === 'not-evaluated') ? undefined : att;
+    var attempted = row.attempted || {};
+
+    var out = {
+      refusalId: row.refusalId,
+      at: row.at,
+      authority: row.refusedBy,
+      code: row.code,
+      attribution: stripNulls({ agentId: row.agentId, mandateId: row.mandateId }),
+      spend: stripNulls({
+        rail: attempted.rail, asset: attempted.asset,
+        amountRaw: attempted.amountRaw, decimals: attempted.decimals,
+        counterparty: attempted.counterparty
+      })
+    };
+    if (row.credential && row.credential.state === 'digest' && nonEmpty(row.credential.value)) {
+      out.credentialDigest = row.credential.value;
+    }
+    if (row.constraint !== null && row.constraint !== undefined) out.breachedConstraint = row.constraint;
+    if (bound !== undefined) out.appliedBound = bound;
+    if (row.network !== null && row.network !== undefined) out.network = row.network;
+    if (sigPayloadType !== undefined) out.payloadType = sigPayloadType;
+    if (attOut !== undefined) out.attestation = attOut;
+    return out;
+  }
+
+  // ─── ONE ADAPTER PER SHAPE, AND A THIRD SHAPE NEEDS ITS OWN ─────────────────────
+  //
+  // Each adapter says how to get from what the reader pasted to the signed bytes, where the
+  // signature is, and which key signed it. TWO SHAPES ARE COVERED: store and served, and both
+  // are run against the signature oracle in scripts/check-page-payload-parity.mjs.
+  //
+  // IF A THIRD SHAPE APPEARS, IT NEEDS ITS OWN ORACLE RUN. Do not assume this mapping
+  // generalises to it. The two here differ in field NAMES, in nesting, in where the signature
+  // lives and in whether absence is spelled null or omitted; a third could differ again in a
+  // way that still rebuilds and still produces the wrong bytes. The signature is the only
+  // thing that can tell you, so add fixtures of the new shape to the parity population and
+  // let it refuse you.
+  var SHAPES = {
+    store: {
+      name: 'store',
+      toSignable: function (r) { return signableFromRefusal(r); },
+      signatureOf: function (r) { return r.signature; },
+      signerOf: function (r) { return r.signedBy; },
+      unsigned: function (r) { return !nonEmpty(r.signature); },
+      skip: { k: 1, signature: 1, signedBy: 1 },
+      nested: ['attribution', 'spend', 'appliedBound', 'attestation']
+    },
+    served: {
+      name: 'served',
+      toSignable: function (r) { return signableFromRefusal(signableFromRefusalRow(r)); },
+      signatureOf: function (r) { return r.signature && r.signature.value; },
+      signerOf: function (r) { return r.signature && r.signature.signedBy; },
+      // AN UNSIGNED ROW IS NOT A FAILED ONE. Refusals written before this deployment signed
+      // them are not backfilled, because a signature applied afterwards would attest to a
+      // moment that did not happen. There is nothing to check, which is a statement about the
+      // record and not a finding against it.
+      unsigned: function (r) {
+        return !r.signature || r.signature.state === 'unsigned' || !nonEmpty(r.signature.value);
+      },
+      skip: { signature: 1 },
+      nested: ['attempted', 'appliedBound', 'attestation', 'credential']
+    }
+  };
+
+  function payloadOfRecord(record, shape) { return refusalPayload((shape || SHAPES.store).toSignable(record)); }
 
   // ─── WHAT THE SIGNATURE COVERS, DERIVED AND NOT LISTED ──────────────────────────
   //
@@ -680,12 +801,10 @@
   // payload, and compares bytes. A field whose removal leaves the payload identical is a
   // field the signature does not reach. Nobody maintains the answer, so it cannot go stale
   // against a record this page has not seen.
-  var COVERAGE_SKIP = { k: 1, signature: 1, signedBy: 1 };
-  var COVERAGE_NESTED = ['attribution', 'spend', 'appliedBound', 'attestation'];
-
-  function coverageOf(record) {
+  function coverageOf(record, shape) {
+    shape = shape || SHAPES.store;
     var baseline;
-    try { baseline = payloadOfRecord(record); } catch (e) { return null; }
+    try { baseline = payloadOfRecord(record, shape); } catch (e) { return null; }
     var covered = [], uncovered = [];
 
     var probe = function (label, mutate) {
@@ -695,17 +814,20 @@
       var got;
       // A removal the rebuild REFUSES is a field the payload cannot be built without,
       // which is coverage of the strongest kind.
-      try { got = payloadOfRecord(copy); } catch (e) { covered.push(label); return; }
+      try { got = payloadOfRecord(copy, shape); } catch (e) { covered.push(label); return; }
       (got === baseline ? uncovered : covered).push(label);
     };
 
+    // The field names reported are the ones on the document the READER pasted, not the ones
+    // the signable form uses. Someone holding a served row is told about `attempted.amountRaw`
+    // and `observedAt`, which is what they can see in front of them.
     Object.keys(record).forEach(function (key) {
-      if (COVERAGE_SKIP[key]) return;
-      if (COVERAGE_NESTED.indexOf(key) !== -1) return;
+      if (shape.skip[key]) return;
+      if (shape.nested.indexOf(key) !== -1) return;
       probe(key, function (c) { delete c[key]; });
     });
 
-    COVERAGE_NESTED.forEach(function (parent) {
+    shape.nested.forEach(function (parent) {
       var obj = record[parent];
       if (obj === null || typeof obj !== 'object' || Array.isArray(obj)) return;
       Object.keys(obj).forEach(function (sub) {
@@ -717,12 +839,19 @@
     return { covered: covered.sort(byName), uncovered: uncovered.sort(byName) };
   }
 
-  async function verifyRefusal(record) {
+  async function verifyRefusal(record, shape) {
+    shape = shape || SHAPES.store;
     var passed = [];
-    var signedBy = record.signedBy;
+    var signedBy = shape.signerOf(record);
 
+    if (shape.unsigned(record)) {
+      return {
+        state: 'unsigned', passed: passed,
+        reason: 'This refusal carries no signature, so there is nothing to check. That is a statement about the record rather than a finding against it: refusals written before a deployment signed them are not backfilled, because a signature applied afterwards would attest to a moment that did not happen.'
+      };
+    }
     if (typeof signedBy !== 'string' || signedBy === '') {
-      return { state: 'unrebuildable', passed: passed, reason: 'No signature check ran. The record names no signedBy, so nothing identifies the key that signed it.' };
+      return { state: 'unrebuildable', passed: passed, reason: 'No signature check ran. The record names no signing key, so nothing identifies who signed it.' };
     }
     if (signedBy.indexOf('did:key:z') !== 0) {
       // ─── A STATE OF ITS OWN, AND NOT unrebuildable ────────────────────────────────
@@ -757,7 +886,7 @@
     passed.push('the signing key was recovered from the record’s own did:key, and its two-byte multicodec prefix stripped so that 32 bytes reach the signature check');
 
     var payload;
-    try { payload = payloadOfRecord(record); }
+    try { payload = payloadOfRecord(record, shape); }
     catch (e) {
       return {
         state: 'unrebuildable', passed: passed,
@@ -766,12 +895,9 @@
           : 'The signed payload could not be rebuilt from this record: ' + String(e && e.message ? e.message : e)
       };
     }
-    var declaredType = record.payloadType !== undefined ? record.payloadType : REFUSAL_PAYLOAD_TYPE_V1;
+    var signable = shape.toSignable(record);
+    var declaredType = signable.payloadType !== undefined ? signable.payloadType : REFUSAL_PAYLOAD_TYPE_V1;
     passed.push('the payload was rebuilt under the construction the record itself states, ' + declaredType + ', rather than under whichever version this page happens to ship');
-
-    if (!nonEmpty(record.signature)) {
-      return { state: 'unrebuildable', passed: passed, reason: 'No signature check ran. The record carries no signature, so there is nothing to check the rebuilt payload against.' };
-    }
 
     if (!ed25519Available()) {
       return {
@@ -781,27 +907,29 @@
     }
 
     var ok;
-    try { ok = await ed25519Verify(publicKey, new TextEncoder().encode(payload), b64ToBytes(record.signature)); }
+    try { ok = await ed25519Verify(publicKey, new TextEncoder().encode(payload), b64ToBytes(shape.signatureOf(record))); }
     catch (e) {
       return { state: 'unrebuildable', passed: passed, reason: 'The signature could not be checked: ' + String(e && e.message ? e.message : e) };
     }
 
-    var coverage = coverageOf(record);
+    var coverage = coverageOf(record, shape);
 
     if (!ok) {
       return {
-        state: 'does-not-verify', passed: passed, coverage: coverage, payload: payload,
+        state: 'does-not-verify', passed: passed, coverage: coverage, payload: payload, shape: shape.name,
         reason: 'The signature does not verify over the payload this record states it was signed under. Either a field inside the signature has been altered since it was signed, or the signature has. This is not a missing record: it is a signed artifact failing its own check.'
       };
     }
     passed.push('the signature verifies against the key the record names, over the payload rebuilt from the record’s own fields');
 
+    // Displayed from the SIGNABLE form, so a served row and a store record of the same
+    // refusal render the same values under the same labels.
     return {
-      state: 'verifies', passed: passed, coverage: coverage, payload: payload,
-      refusalId: record.refusalId, code: record.code, authority: record.authority,
-      breachedConstraint: record.breachedConstraint, at: record.at,
+      state: 'verifies', passed: passed, coverage: coverage, payload: payload, shape: shape.name,
+      refusalId: signable.refusalId, code: signable.code, authority: signable.authority,
+      breachedConstraint: signable.breachedConstraint, at: signable.at,
       signedBy: signedBy, payloadType: declaredType,
-      attestationState: record.attestation && record.attestation.state
+      attestationState: signable.attestation && signable.attestation.state
     };
   }
 
@@ -953,16 +1081,27 @@
     }
     if (typeof parsed.k === 'string') {
       if (parsed.k === 'determination') return { kind: 'record' };
-      if (parsed.k === 'refused') return { kind: 'refusal' };
+      if (parsed.k === 'refused') return { kind: 'refusal', shape: 'store' };
       if (KNOWN_KINDS[parsed.k]) return { kind: 'other-record', label: KNOWN_KINDS[parsed.k], k: parsed.k };
       return { kind: 'unrecognised', why: 'The record states its kind as ' + JSON.stringify(parsed.k) + ', which this page does not recognise. It is not being guessed at.' };
     }
+    // ─── A SERVED REFUSAL ROW, RECOGNISED BY WHAT IT HAS ────────────────────────────
+    //
+    // POSITIVE, not "it has no k". Testing for the ABSENCE of a kind tag would funnel every
+    // unrecognised object into the refusal path and report a rebuild failure on something that
+    // was never a refusal, which is a worse answer than "not recognised". These three fields
+    // together are the served projection and nothing else this page reads carries them.
+    if (nonEmpty(parsed.refusalId) && nonEmpty(parsed.refusedBy) &&
+        parsed.attempted !== null && typeof parsed.attempted === 'object') {
+      return { kind: 'refusal', shape: 'served' };
+    }
+
     var types = Array.isArray(parsed.type) ? parsed.type : (parsed.type === undefined ? [] : [parsed.type]);
     if (types.indexOf('VerifiableCredential') !== -1) return { kind: 'other-record', label: 'a verifiable credential, most likely a delegation credential' };
     if (typeof parsed.decider === 'string' && typeof parsed.decisionId === 'string' && parsed.policyRef !== undefined) {
       return { kind: 'document' };
     }
-    return { kind: 'unrecognised', why: 'This is not a stored record, which would state its kind in a k field, and not an attestation document, which would carry a decider, a decisionId and a policyRef.' };
+    return { kind: 'unrecognised', why: 'This is not a stored record, which would state its kind in a k field; not a served refusal row, which would carry a refusalId, a refusedBy and an attempted; and not an attestation document, which would carry a decider, a decisionId and a policyRef.' };
   }
 
   // Takes the pasted text and an optional signature, returns one result object.
@@ -976,7 +1115,7 @@
     if (seen.kind === 'unrecognised') return { outcome: 'unrecognised', reason: seen.why };
 
     if (seen.kind === 'refusal') {
-      var refusalVerdict = await verifyRefusal(parsed);
+      var refusalVerdict = await verifyRefusal(parsed, SHAPES[seen.shape] || SHAPES.store);
       refusalVerdict.outcome = 'checked-refusal';
       return refusalVerdict;
     }
@@ -1038,6 +1177,7 @@
     // Exported for scripts/check-page-payload-parity.mjs, which asserts these produce bytes
     // identical to the published package's own signableFromRefusal and refusalPayload.
     signableFromRefusal: signableFromRefusal, refusalPayload: refusalPayload,
+    signableFromRefusalRow: signableFromRefusalRow, SHAPES: SHAPES,
     coverageOf: coverageOf
   };
 
@@ -1140,6 +1280,10 @@
   var MUTABLE = [
     ['the amount', function (r) { return r.spend && typeof r.spend.amountRaw === 'string' ? r.spend.amountRaw : null; },
       function (r, v) { r.spend.amountRaw = v; }],
+    // The served shape spells the same field `attempted.amountRaw`, so the control works on a
+    // record copied off a console as well as one read out of a store.
+    ['the amount', function (r) { return r.attempted && typeof r.attempted.amountRaw === 'string' ? r.attempted.amountRaw : null; },
+      function (r, v) { r.attempted.amountRaw = v; }],
     ['the refusal code', function (r) { return typeof r.code === 'string' ? r.code : null; },
       function (r, v) { r.code = v; }],
     ['the refusal identifier', function (r) { return typeof r.refusalId === 'string' ? r.refusalId : null; },
@@ -1194,6 +1338,7 @@
         return;
       }
       if (r.state === 'no-verdict') { show('info', 'No verdict', 'enforcement refusal', '<p>' + esc(r.reason) + '</p>' + checklistHtml(r.passed)); return; }
+      if (r.state === 'unsigned') { show('info', 'Nothing to check', 'enforcement refusal', '<p>' + esc(r.reason) + '</p>'); return; }
       // Neither of these is a verdict on the signature, and neither is rendered as one.
       // They are separated because they are answers to different questions: one is about
       // this page's reach, the other is about the record.

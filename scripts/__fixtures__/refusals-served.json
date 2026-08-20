@@ -1,0 +1,733 @@
+{
+  "$comment": [
+    "REAL SERVED OUTPUT, copied verbatim, not constructed here.",
+    "",
+    "Source: agenticterminal-dashboard/src/lib/dashboard/__fixtures__/refusals-served-citation-store.json,",
+    "which is the shape GET /v1/refusals sends and the shape a console's copy button puts on",
+    "the clipboard. Constructing these rows here would make the parity run circular: the",
+    "mapping under test would be checked against a document built by the same understanding",
+    "that produced the mapping.",
+    "",
+    "THE ORACLE IS THE SIGNATURE, not this file. Each row carries the signature the enforcement",
+    "point produced over the payload it built. If check.html's normalisation is wrong in any",
+    "field, the rebuilt bytes differ and the signature does not verify. That is why these rows",
+    "are useful even though nothing here re-derives them.",
+    "",
+    "Under scripts/, which netlify.toml 404s, so this is not published.",
+    "sha256 of the source file at copy time: bf4eb49604f2938747f1db594974484d05942849af3289914267de4d4642c4bc"
+  ],
+  "copiedOn": "2026-08-20",
+  "refusals": [
+    {
+      "refusalId": "refusal-1",
+      "at": "2026-08-12T00:52:23.231Z",
+      "observedAt": "2026-08-12T00:52:14.363Z",
+      "agentId": "did:web:observerprotocol.org:agents:custodian-recon",
+      "mandateId": "urn:uuid:citation-required-demo-2026-08-05",
+      "refusedBy": "mandate",
+      "code": "ATTESTATION_REQUIRED",
+      "constraint": "actionScope.requiresDecisionAttestation",
+      "attempted": {
+        "amountRaw": "2240000000",
+        "decimals": 6,
+        "asset": "USDC",
+        "rail": "eip155:8453",
+        "counterparty": "0x3f9a1c72e58b04d6a9c2f5b8e1d4a7c0b3e6f9a2"
+      },
+      "appliedBound": {
+        "state": "not-supplied",
+        "constraint": "actionScope.requiresDecisionAttestation",
+        "note": "The mandate required a decision attestation and this payment did not satisfy it. No spending bound was compared, because no mandate amount constraint was reached."
+      },
+      "credential": {
+        "state": "digest",
+        "value": "sha256:f6dd8d8f81b585d2a6041983b01b99b3cc24eb3c9dd490523c677eb6046c4af9"
+      },
+      "attestation": {
+        "state": "not-cited"
+      },
+      "network": "eip155:8453",
+      "signature": {
+        "state": "signed",
+        "value": "dlaYBhQyeotcx31lCaydjnzL9TJfLphrPeVOVnu1dGH/53SBkT7+39rvPSXdoG0JPsA/JNHBOh1/PXbMy11mDA==",
+        "signedBy": "did:key:z6MkgURiyuwxEi2GrcvhSGpqcuwuk2W38u51sAirJm7ZAoAH",
+        "payloadType": "op.enforcement.refusal.v2"
+      }
+    },
+    {
+      "refusalId": "refusal-2",
+      "at": "2026-08-12T00:52:24.231Z",
+      "observedAt": "2026-08-12T00:52:14.372Z",
+      "agentId": "did:web:observerprotocol.org:agents:intercompany-net",
+      "mandateId": "urn:uuid:citation-required-demo-2026-08-05",
+      "refusedBy": "mandate",
+      "code": "ATTESTATION_REQUIRED",
+      "constraint": "actionScope.requiresDecisionAttestation",
+      "attempted": {
+        "amountRaw": "880000000",
+        "decimals": 6,
+        "asset": "USDC",
+        "rail": "eip155:8453",
+        "counterparty": "0x7c4e1a95d2b8f036c1a4e7b0d3f6a9c2e5b8d1f4"
+      },
+      "appliedBound": {
+        "state": "not-supplied",
+        "constraint": "actionScope.requiresDecisionAttestation",
+        "note": "The mandate required a decision attestation and this payment did not satisfy it. No spending bound was compared, because no mandate amount constraint was reached."
+      },
+      "credential": {
+        "state": "not-supplied",
+        "note": "The evaluator supplied no credentialDigest with this verdict, so this service cannot say which credential document the bound came from."
+      },
+      "attestation": {
+        "state": "not-cited"
+      },
+      "network": "eip155:8453",
+      "signature": {
+        "state": "signed",
+        "value": "uC6nqD7HjUAW3g/MXl/TEsYyFFWr5R0vHoIKcgcOmRKIc7QlD3tum9uC8+3pBdXUmnPjWrcJ7NG/JEIpQCamBw==",
+        "signedBy": "did:key:z6MkgURiyuwxEi2GrcvhSGpqcuwuk2W38u51sAirJm7ZAoAH",
+        "payloadType": "op.enforcement.refusal.v2"
+      }
+    },
+    {
+      "refusalId": "refusal-3",
+      "at": "2026-08-12T00:52:25.231Z",
+      "observedAt": "2026-08-12T00:52:14.378Z",
+      "agentId": "did:web:observerprotocol.org:agents:custodian-recon",
+      "mandateId": "urn:uuid:citation-required-demo-2026-08-05",
+      "refusedBy": "mandate",
+      "code": "OUTCOME_NOT_AUTHORIZING",
+      "constraint": "actionScope.requiresDecisionAttestation",
+      "attempted": {
+        "amountRaw": "2400000000",
+        "decimals": 6,
+        "asset": "USDC",
+        "rail": "eip155:8453",
+        "counterparty": "0x3f9a1c72e58b04d6a9c2f5b8e1d4a7c0b3e6f9a2"
+      },
+      "appliedBound": {
+        "state": "not-supplied",
+        "constraint": "actionScope.requiresDecisionAttestation",
+        "note": "The mandate required a decision attestation and this payment did not satisfy it. No spending bound was compared, because no mandate amount constraint was reached."
+      },
+      "credential": {
+        "state": "not-supplied",
+        "note": "The evaluator supplied no credentialDigest with this verdict, so this service cannot say which credential document the bound came from."
+      },
+      "attestation": {
+        "state": "attested",
+        "decisionId": "DEC-EXC-1786495934231-denied-1",
+        "decider": "did:key:z6MkmSMykg7AMkZmKw1EFSSUrt2a7YvP7DVrNntSddbVahwR",
+        "outcome": "exception_denied",
+        "policyRef": {
+          "id": "https://citation-demo.op-fixtures.invalid/policy/settlement-exception-clearing/v1",
+          "hash": "sha256:6b03752da2ba8b5c4f92c53e5ec4a9654793d8576b24d146404ae9d6b24c1d23",
+          "hashMethod": "sha256"
+        },
+        "vocabularyRef": {
+          "id": "https://citation-demo.op-fixtures.invalid/vocab/settlement-exception/v1",
+          "version": "1.0.0",
+          "hash": "sha256:vocab-settlement-exception-v1",
+          "hashMethod": "sha256",
+          "source": "client-defined",
+          "values": [
+            "exception_cleared",
+            "exception_denied",
+            "exception_referred"
+          ]
+        },
+        "decidedAt": "2026-08-11T23:52:14.231Z",
+        "inputsDigest": "sha256:break-file-DEC-EXC-1786495934231-denied-1",
+        "deciderArtifactDigest": {
+          "state": "digest",
+          "value": "sha256:determination-DEC-EXC-1786495934231-denied-1"
+        },
+        "amount": {
+          "amountRaw": "2400000000",
+          "decimals": "6",
+          "asset": "USDC"
+        },
+        "counterparty": "0x3f9a1c72e58b04d6a9c2f5b8e1d4a7c0b3e6f9a2",
+        "rail": "eip155:8453"
+      },
+      "network": "eip155:8453",
+      "signature": {
+        "state": "signed",
+        "value": "6vLgSVmnPCOPCyzmouzJnJyMLWXFqewkdlG0jLxXGBBob1qfwBLnXUC9lIJGbo3VRgcpXqK+cDhLyCXGy99yDQ==",
+        "signedBy": "did:key:z6MkgURiyuwxEi2GrcvhSGpqcuwuk2W38u51sAirJm7ZAoAH",
+        "payloadType": "op.enforcement.refusal.v2"
+      }
+    },
+    {
+      "refusalId": "refusal-4",
+      "at": "2026-08-12T00:52:26.231Z",
+      "observedAt": "2026-08-12T00:52:14.385Z",
+      "agentId": "did:web:observerprotocol.org:agents:custodian-recon",
+      "mandateId": "urn:uuid:citation-required-demo-2026-08-05",
+      "refusedBy": "mandate",
+      "code": "OUTCOME_NOT_AUTHORIZING",
+      "constraint": "actionScope.requiresDecisionAttestation",
+      "attempted": {
+        "amountRaw": "1975000000",
+        "decimals": 6,
+        "asset": "USDC",
+        "rail": "eip155:8453",
+        "counterparty": "0xb28d5f01a9c3e7462b8d1f4a7c0e3b6d9f2a5c81"
+      },
+      "appliedBound": {
+        "state": "not-supplied",
+        "constraint": "actionScope.requiresDecisionAttestation",
+        "note": "The mandate required a decision attestation and this payment did not satisfy it. No spending bound was compared, because no mandate amount constraint was reached."
+      },
+      "credential": {
+        "state": "not-supplied",
+        "note": "The evaluator supplied no credentialDigest with this verdict, so this service cannot say which credential document the bound came from."
+      },
+      "attestation": {
+        "state": "attested",
+        "decisionId": "DEC-EXC-1786495934231-referred-1",
+        "decider": "did:key:z6MkmSMykg7AMkZmKw1EFSSUrt2a7YvP7DVrNntSddbVahwR",
+        "outcome": "exception_referred",
+        "policyRef": {
+          "id": "https://citation-demo.op-fixtures.invalid/policy/settlement-exception-clearing/v1",
+          "hash": "sha256:6b03752da2ba8b5c4f92c53e5ec4a9654793d8576b24d146404ae9d6b24c1d23",
+          "hashMethod": "sha256"
+        },
+        "vocabularyRef": {
+          "id": "https://citation-demo.op-fixtures.invalid/vocab/settlement-exception/v1",
+          "version": "1.0.0",
+          "hash": "sha256:vocab-settlement-exception-v1",
+          "hashMethod": "sha256",
+          "source": "client-defined",
+          "values": [
+            "exception_cleared",
+            "exception_denied",
+            "exception_referred"
+          ]
+        },
+        "decidedAt": "2026-08-11T23:52:14.231Z",
+        "inputsDigest": "sha256:break-file-DEC-EXC-1786495934231-referred-1",
+        "deciderArtifactDigest": {
+          "state": "digest",
+          "value": "sha256:determination-DEC-EXC-1786495934231-referred-1"
+        },
+        "amount": {
+          "amountRaw": "1975000000",
+          "decimals": "6",
+          "asset": "USDC"
+        },
+        "counterparty": "0xb28d5f01a9c3e7462b8d1f4a7c0e3b6d9f2a5c81",
+        "rail": "eip155:8453"
+      },
+      "network": "eip155:8453",
+      "signature": {
+        "state": "signed",
+        "value": "CyyZ9Bh6g7X3XtZWvvB/2CflOYe0exXcdI2RvuGGGDDrqjog/dDhN+jejeIBzHd483LpHXd1GsOo+YVin+veAg==",
+        "signedBy": "did:key:z6MkgURiyuwxEi2GrcvhSGpqcuwuk2W38u51sAirJm7ZAoAH",
+        "payloadType": "op.enforcement.refusal.v2"
+      }
+    },
+    {
+      "refusalId": "refusal-5",
+      "at": "2026-08-12T00:52:27.231Z",
+      "observedAt": "2026-08-12T00:52:14.392Z",
+      "agentId": "did:web:observerprotocol.org:agents:intercompany-net",
+      "mandateId": "urn:uuid:citation-required-demo-2026-08-05",
+      "refusedBy": "mandate",
+      "code": "DECIDER_NOT_ACCEPTABLE",
+      "constraint": "actionScope.requiresDecisionAttestation",
+      "attempted": {
+        "amountRaw": "1900000000",
+        "decimals": 6,
+        "asset": "USDC",
+        "rail": "eip155:8453",
+        "counterparty": "0x5d0f3a86b1c7e492d0a3f6b9c2e5d8a1b4c7f0e3"
+      },
+      "appliedBound": {
+        "state": "not-supplied",
+        "constraint": "actionScope.requiresDecisionAttestation",
+        "note": "The mandate required a decision attestation and this payment did not satisfy it. No spending bound was compared, because no mandate amount constraint was reached."
+      },
+      "credential": {
+        "state": "not-supplied",
+        "note": "The evaluator supplied no credentialDigest with this verdict, so this service cannot say which credential document the bound came from."
+      },
+      "attestation": {
+        "state": "attested",
+        "decisionId": "DEC-EXC-1786495934231-stranger-decider",
+        "decider": "did:key:z6MkoVWcbqF1YfvqiwvH1F2PdvzqnCjouT3hKPuD9LZtgNHv",
+        "outcome": "exception_cleared",
+        "policyRef": {
+          "id": "https://citation-demo.op-fixtures.invalid/policy/settlement-exception-clearing/v1",
+          "hash": "sha256:6b03752da2ba8b5c4f92c53e5ec4a9654793d8576b24d146404ae9d6b24c1d23",
+          "hashMethod": "sha256"
+        },
+        "vocabularyRef": {
+          "id": "https://citation-demo.op-fixtures.invalid/vocab/settlement-exception/v1",
+          "version": "1.0.0",
+          "hash": "sha256:vocab-settlement-exception-v1",
+          "hashMethod": "sha256",
+          "source": "client-defined",
+          "values": [
+            "exception_cleared",
+            "exception_denied",
+            "exception_referred"
+          ]
+        },
+        "decidedAt": "2026-08-11T23:52:14.231Z",
+        "inputsDigest": "sha256:break-file-DEC-EXC-1786495934231-stranger-decider",
+        "deciderArtifactDigest": {
+          "state": "digest",
+          "value": "sha256:determination-DEC-EXC-1786495934231-stranger-decider"
+        },
+        "amount": {
+          "amountRaw": "1900000000",
+          "decimals": "6",
+          "asset": "USDC"
+        },
+        "counterparty": "0x5d0f3a86b1c7e492d0a3f6b9c2e5d8a1b4c7f0e3",
+        "rail": "eip155:8453"
+      },
+      "network": "eip155:8453",
+      "signature": {
+        "state": "signed",
+        "value": "+uR2n6HmoFDoClLOs5j0k2KWikECKfeFCu8/XeNjkeuUGhGx9iNwj0QisaRCEyFyCFvJk6vfKlPyD/a0PyD0BQ==",
+        "signedBy": "did:key:z6MkgURiyuwxEi2GrcvhSGpqcuwuk2W38u51sAirJm7ZAoAH",
+        "payloadType": "op.enforcement.refusal.v2"
+      }
+    },
+    {
+      "refusalId": "refusal-6",
+      "at": "2026-08-12T00:52:28.231Z",
+      "observedAt": "2026-08-12T00:52:14.400Z",
+      "agentId": "did:web:observerprotocol.org:agents:intercompany-net",
+      "mandateId": "urn:uuid:citation-required-demo-2026-08-05",
+      "refusedBy": "mandate",
+      "code": "ATTESTATION_REPLAYED",
+      "constraint": "actionScope.requiresDecisionAttestation",
+      "attempted": {
+        "amountRaw": "250000000",
+        "decimals": 6,
+        "asset": "USDC",
+        "rail": "eip155:8453",
+        "counterparty": "0x7c4e1a95d2b8f036c1a4e7b0d3f6a9c2e5b8d1f4"
+      },
+      "appliedBound": {
+        "state": "not-supplied",
+        "constraint": "actionScope.requiresDecisionAttestation",
+        "note": "The mandate required a decision attestation and this payment did not satisfy it. No spending bound was compared, because no mandate amount constraint was reached."
+      },
+      "credential": {
+        "state": "not-supplied",
+        "note": "The evaluator supplied no credentialDigest with this verdict, so this service cannot say which credential document the bound came from."
+      },
+      "attestation": {
+        "state": "attested",
+        "decisionId": "DEC-EXC-1786495934231-cleared-1",
+        "decider": "did:key:z6MkmSMykg7AMkZmKw1EFSSUrt2a7YvP7DVrNntSddbVahwR",
+        "outcome": "exception_cleared",
+        "policyRef": {
+          "id": "https://citation-demo.op-fixtures.invalid/policy/settlement-exception-clearing/v1",
+          "hash": "sha256:6b03752da2ba8b5c4f92c53e5ec4a9654793d8576b24d146404ae9d6b24c1d23",
+          "hashMethod": "sha256"
+        },
+        "vocabularyRef": {
+          "id": "https://citation-demo.op-fixtures.invalid/vocab/settlement-exception/v1",
+          "version": "1.0.0",
+          "hash": "sha256:vocab-settlement-exception-v1",
+          "hashMethod": "sha256",
+          "source": "client-defined",
+          "values": [
+            "exception_cleared",
+            "exception_denied",
+            "exception_referred"
+          ]
+        },
+        "decidedAt": "2026-08-11T23:52:14.231Z",
+        "inputsDigest": "sha256:break-file-DEC-EXC-1786495934231-cleared-1",
+        "deciderArtifactDigest": {
+          "state": "digest",
+          "value": "sha256:determination-DEC-EXC-1786495934231-cleared-1"
+        },
+        "amount": {
+          "amountRaw": "250000000",
+          "decimals": "6",
+          "asset": "USDC"
+        },
+        "counterparty": "0x7c4e1a95d2b8f036c1a4e7b0d3f6a9c2e5b8d1f4",
+        "rail": "eip155:8453"
+      },
+      "network": "eip155:8453",
+      "signature": {
+        "state": "signed",
+        "value": "lu38US1TUG1AhHzc0f37XiZFP9ZrF3K+rzf+r6iqYCNMo2iAELhKe1TYe19tIVaUd3X205jafaqNXmjUI3DMAg==",
+        "signedBy": "did:key:z6MkgURiyuwxEi2GrcvhSGpqcuwuk2W38u51sAirJm7ZAoAH",
+        "payloadType": "op.enforcement.refusal.v2"
+      }
+    },
+    {
+      "refusalId": "refusal-7",
+      "at": "2026-08-12T00:52:29.231Z",
+      "observedAt": "2026-08-12T00:52:14.408Z",
+      "agentId": "did:web:observerprotocol.org:agents:custodian-recon",
+      "mandateId": "urn:uuid:citation-required-demo-2026-08-05",
+      "refusedBy": "mandate",
+      "code": "MANDATE_DENIED",
+      "constraint": "actionScope.per_transaction_ceiling",
+      "attempted": {
+        "amountRaw": "18400000000",
+        "decimals": 6,
+        "asset": "USDC",
+        "rail": "eip155:8453",
+        "counterparty": "0x2a6f9c14e7b3d580a1c4f7b0e3d6a9c2f5b8e1d4"
+      },
+      "appliedBound": {
+        "state": "recorded",
+        "limit": "5000",
+        "unit": "USDC",
+        "observed": "18400",
+        "headroom": "5000"
+      },
+      "credential": {
+        "state": "not-supplied",
+        "note": "The evaluator supplied no credentialDigest with this verdict, so this service cannot say which credential document the bound came from."
+      },
+      "attestation": {
+        "state": "not-evaluated",
+        "note": "This refusal was recorded before any attestation was verified, so there is no block to report. It is NOT a claim that the payment cited nothing \u2014 that is `not-cited`, which means the citation was looked for. Nothing here was looked at."
+      },
+      "network": "eip155:8453",
+      "signature": {
+        "state": "signed",
+        "value": "fu5/etbjanGVufLTFDymZ9wZ9VFVftKS/TjtVEyptx3aurvs7giwXKPQ/KjP1bxDJPJJPZcVHNphkG0DL3odBw==",
+        "signedBy": "did:key:z6MkgURiyuwxEi2GrcvhSGpqcuwuk2W38u51sAirJm7ZAoAH",
+        "payloadType": "op.enforcement.refusal.v2"
+      }
+    },
+    {
+      "refusalId": "refusal-8",
+      "at": "2026-08-12T00:52:38.231Z",
+      "observedAt": "2026-08-12T00:52:14.542Z",
+      "agentId": "did:web:observerprotocol.org:agents:intercompany-net",
+      "mandateId": "urn:uuid:citation-required-demo-2026-08-05",
+      "refusedBy": "mandate",
+      "code": "MANDATE_DENIED",
+      "constraint": "actionScope.per_transaction_ceiling",
+      "attempted": {
+        "amountRaw": "7900000000",
+        "decimals": 6,
+        "asset": "USDC",
+        "rail": "eip155:8453",
+        "counterparty": "0xb28d5f01a9c3e7462b8d1f4a7c0e3b6d9f2a5c81"
+      },
+      "appliedBound": {
+        "state": "recorded",
+        "limit": "5000",
+        "unit": "USDC",
+        "observed": "7900",
+        "headroom": "5000"
+      },
+      "credential": {
+        "state": "not-supplied",
+        "note": "The evaluator supplied no credentialDigest with this verdict, so this service cannot say which credential document the bound came from."
+      },
+      "attestation": {
+        "state": "not-evaluated",
+        "note": "This refusal was recorded before any attestation was verified, so there is no block to report. It is NOT a claim that the payment cited nothing \u2014 that is `not-cited`, which means the citation was looked for. Nothing here was looked at."
+      },
+      "network": "eip155:8453",
+      "signature": {
+        "state": "signed",
+        "value": "BzBmB1NXLKlJ4TzMNerqY6QtTcakQuq21qsA2jwq+KxA3fpEulifIN94RNMUDPPdsYOioWLQ388ceQVP1JOyCA==",
+        "signedBy": "did:key:z6MkgURiyuwxEi2GrcvhSGpqcuwuk2W38u51sAirJm7ZAoAH",
+        "payloadType": "op.enforcement.refusal.v2"
+      }
+    },
+    {
+      "refusalId": "refusal-9",
+      "at": "2026-08-12T00:52:39.231Z",
+      "observedAt": "2026-08-12T00:52:14.552Z",
+      "agentId": "did:web:observerprotocol.org:agents:exceptions-desk",
+      "mandateId": "urn:uuid:citation-required-demo-2026-08-05",
+      "refusedBy": "mandate",
+      "code": "MANDATE_DENIED",
+      "constraint": "actionScope.per_transaction_ceiling",
+      "attempted": {
+        "amountRaw": "12300000000",
+        "decimals": 6,
+        "asset": "USDC",
+        "rail": "eip155:8453",
+        "counterparty": "0x4c81e0a7f3b6d925c8e1a4b7f0d3c6a9e2b5d8f1"
+      },
+      "appliedBound": {
+        "state": "recorded",
+        "limit": "5000",
+        "unit": "USDC",
+        "observed": "12300",
+        "headroom": "5000"
+      },
+      "credential": {
+        "state": "not-supplied",
+        "note": "The evaluator supplied no credentialDigest with this verdict, so this service cannot say which credential document the bound came from."
+      },
+      "attestation": {
+        "state": "not-evaluated",
+        "note": "This refusal was recorded before any attestation was verified, so there is no block to report. It is NOT a claim that the payment cited nothing \u2014 that is `not-cited`, which means the citation was looked for. Nothing here was looked at."
+      },
+      "network": "eip155:8453",
+      "signature": {
+        "state": "signed",
+        "value": "IezDZ6soPhiMC47G4nuiZSgQkpfJQuAc8DG+jNCY2FORBFd3n5dgxrN4TdF3idlRT8z9NTuMu1lnbAknAwpxBg==",
+        "signedBy": "did:key:z6MkgURiyuwxEi2GrcvhSGpqcuwuk2W38u51sAirJm7ZAoAH",
+        "payloadType": "op.enforcement.refusal.v2"
+      }
+    },
+    {
+      "refusalId": "refusal-10",
+      "at": "2026-08-12T00:52:40.231Z",
+      "observedAt": "2026-08-12T00:52:14.561Z",
+      "agentId": "did:web:observerprotocol.org:agents:intercompany-net",
+      "mandateId": "urn:uuid:citation-required-demo-2026-08-05",
+      "refusedBy": "mandate",
+      "code": "ATTESTATION_REQUIRED",
+      "constraint": "actionScope.requiresDecisionAttestation",
+      "attempted": {
+        "amountRaw": "980000000",
+        "decimals": 6,
+        "asset": "USDC",
+        "rail": "eip155:8453",
+        "counterparty": "0x2a6f9c14e7b3d580a1c4f7b0e3d6a9c2f5b8e1d4"
+      },
+      "appliedBound": {
+        "state": "not-supplied",
+        "constraint": "actionScope.requiresDecisionAttestation",
+        "note": "The mandate required a decision attestation and this payment did not satisfy it. No spending bound was compared, because no mandate amount constraint was reached."
+      },
+      "credential": {
+        "state": "not-supplied",
+        "note": "The evaluator supplied no credentialDigest with this verdict, so this service cannot say which credential document the bound came from."
+      },
+      "attestation": {
+        "state": "not-cited"
+      },
+      "network": "eip155:8453",
+      "signature": {
+        "state": "signed",
+        "value": "Q58zg3B151DVEy1PkTWIB7P4ORJzorGT8dBoVaN7hRckCzarR2p15tMxMeWza85XqyrVyLOg7fChT4gKPHjABg==",
+        "signedBy": "did:key:z6MkgURiyuwxEi2GrcvhSGpqcuwuk2W38u51sAirJm7ZAoAH",
+        "payloadType": "op.enforcement.refusal.v2"
+      }
+    },
+    {
+      "refusalId": "refusal-11",
+      "at": "2026-08-12T00:52:41.231Z",
+      "observedAt": "2026-08-12T00:52:14.568Z",
+      "agentId": "did:web:observerprotocol.org:agents:intercompany-net",
+      "mandateId": "urn:uuid:citation-required-demo-2026-08-05",
+      "refusedBy": "mandate",
+      "code": "ATTESTATION_REQUIRED",
+      "constraint": "actionScope.requiresDecisionAttestation",
+      "attempted": {
+        "amountRaw": "1340000000",
+        "decimals": 6,
+        "asset": "USDC",
+        "rail": "eip155:8453",
+        "counterparty": "0x7c4e1a95d2b8f036c1a4e7b0d3f6a9c2e5b8d1f4"
+      },
+      "appliedBound": {
+        "state": "not-supplied",
+        "constraint": "actionScope.requiresDecisionAttestation",
+        "note": "The mandate required a decision attestation and this payment did not satisfy it. No spending bound was compared, because no mandate amount constraint was reached."
+      },
+      "credential": {
+        "state": "not-supplied",
+        "note": "The evaluator supplied no credentialDigest with this verdict, so this service cannot say which credential document the bound came from."
+      },
+      "attestation": {
+        "state": "not-cited"
+      },
+      "network": "eip155:8453",
+      "signature": {
+        "state": "signed",
+        "value": "VEexlPKO64+IXunuMZgpDdp6TA20K7D0ETYL7S8bwdcLAC8N/WtEnboli1OgoOZsVRNMNEZ1qRVKZW+8Q3orDQ==",
+        "signedBy": "did:key:z6MkgURiyuwxEi2GrcvhSGpqcuwuk2W38u51sAirJm7ZAoAH",
+        "payloadType": "op.enforcement.refusal.v2"
+      }
+    },
+    {
+      "refusalId": "refusal-12",
+      "at": "2026-08-12T00:52:42.231Z",
+      "observedAt": "2026-08-12T00:52:14.578Z",
+      "agentId": "did:web:observerprotocol.org:agents:custodian-recon",
+      "mandateId": "urn:uuid:citation-required-demo-2026-08-05",
+      "refusedBy": "mandate",
+      "code": "ATTESTATION_REQUIRED",
+      "constraint": "actionScope.requiresDecisionAttestation",
+      "attempted": {
+        "amountRaw": "760000000",
+        "decimals": 6,
+        "asset": "USDC",
+        "rail": "eip155:8453",
+        "counterparty": "0x3f9a1c72e58b04d6a9c2f5b8e1d4a7c0b3e6f9a2"
+      },
+      "appliedBound": {
+        "state": "not-supplied",
+        "constraint": "actionScope.requiresDecisionAttestation",
+        "note": "The mandate required a decision attestation and this payment did not satisfy it. No spending bound was compared, because no mandate amount constraint was reached."
+      },
+      "credential": {
+        "state": "not-supplied",
+        "note": "The evaluator supplied no credentialDigest with this verdict, so this service cannot say which credential document the bound came from."
+      },
+      "attestation": {
+        "state": "not-cited"
+      },
+      "network": "eip155:8453",
+      "signature": {
+        "state": "signed",
+        "value": "4Uo8NYkQ/ULisVrJ3ejOOREAhN9IDr7gQzbtt3kk92DEiemKs6jC6vwOswa1eppyPhTHmtECgXHxcA9o4DC5CA==",
+        "signedBy": "did:key:z6MkgURiyuwxEi2GrcvhSGpqcuwuk2W38u51sAirJm7ZAoAH",
+        "payloadType": "op.enforcement.refusal.v2"
+      }
+    },
+    {
+      "refusalId": "refusal-13",
+      "at": "2026-08-12T00:52:43.231Z",
+      "observedAt": "2026-08-12T00:52:14.587Z",
+      "agentId": "did:web:observerprotocol.org:agents:exceptions-desk",
+      "mandateId": "urn:uuid:citation-required-demo-2026-08-05",
+      "refusedBy": "mandate",
+      "code": "OUTCOME_NOT_AUTHORIZING",
+      "constraint": "actionScope.requiresDecisionAttestation",
+      "attempted": {
+        "amountRaw": "1520000000",
+        "decimals": 6,
+        "asset": "USDC",
+        "rail": "eip155:8453",
+        "counterparty": "0x5d0f3a86b1c7e492d0a3f6b9c2e5d8a1b4c7f0e3"
+      },
+      "appliedBound": {
+        "state": "not-supplied",
+        "constraint": "actionScope.requiresDecisionAttestation",
+        "note": "The mandate required a decision attestation and this payment did not satisfy it. No spending bound was compared, because no mandate amount constraint was reached."
+      },
+      "credential": {
+        "state": "not-supplied",
+        "note": "The evaluator supplied no credentialDigest with this verdict, so this service cannot say which credential document the bound came from."
+      },
+      "attestation": {
+        "state": "attested",
+        "decisionId": "DEC-EXC-1786495934231-denied-2",
+        "decider": "did:key:z6MkmSMykg7AMkZmKw1EFSSUrt2a7YvP7DVrNntSddbVahwR",
+        "outcome": "exception_denied",
+        "policyRef": {
+          "id": "https://citation-demo.op-fixtures.invalid/policy/settlement-exception-clearing/v1",
+          "hash": "sha256:6b03752da2ba8b5c4f92c53e5ec4a9654793d8576b24d146404ae9d6b24c1d23",
+          "hashMethod": "sha256"
+        },
+        "vocabularyRef": {
+          "id": "https://citation-demo.op-fixtures.invalid/vocab/settlement-exception/v1",
+          "version": "1.0.0",
+          "hash": "sha256:vocab-settlement-exception-v1",
+          "hashMethod": "sha256",
+          "source": "client-defined",
+          "values": [
+            "exception_cleared",
+            "exception_denied",
+            "exception_referred"
+          ]
+        },
+        "decidedAt": "2026-08-11T23:52:14.231Z",
+        "inputsDigest": "sha256:break-file-DEC-EXC-1786495934231-denied-2",
+        "deciderArtifactDigest": {
+          "state": "digest",
+          "value": "sha256:determination-DEC-EXC-1786495934231-denied-2"
+        },
+        "amount": {
+          "amountRaw": "1520000000",
+          "decimals": "6",
+          "asset": "USDC"
+        },
+        "counterparty": "0x5d0f3a86b1c7e492d0a3f6b9c2e5d8a1b4c7f0e3",
+        "rail": "eip155:8453"
+      },
+      "network": "eip155:8453",
+      "signature": {
+        "state": "signed",
+        "value": "E1Y6gaxAgDdLcnIq+iiFnFVZNPC+TUQ9CxcbvcoeObfWGInsr30LxObW6j7bT/coXyCXdorrhg0UN8spNd+2CA==",
+        "signedBy": "did:key:z6MkgURiyuwxEi2GrcvhSGpqcuwuk2W38u51sAirJm7ZAoAH",
+        "payloadType": "op.enforcement.refusal.v2"
+      }
+    },
+    {
+      "refusalId": "refusal-14",
+      "at": "2026-08-12T00:52:44.231Z",
+      "observedAt": "2026-08-12T00:52:14.597Z",
+      "agentId": "did:web:observerprotocol.org:agents:custodian-recon",
+      "mandateId": "urn:uuid:citation-required-demo-2026-08-05",
+      "refusedBy": "mandate",
+      "code": "OUTCOME_NOT_AUTHORIZING",
+      "constraint": "actionScope.requiresDecisionAttestation",
+      "attempted": {
+        "amountRaw": "2050000000",
+        "decimals": 6,
+        "asset": "USDC",
+        "rail": "eip155:8453",
+        "counterparty": "0x9e14b7c05a3f8d261e4b7a0c3f6d9b2e5a8c1f47"
+      },
+      "appliedBound": {
+        "state": "not-supplied",
+        "constraint": "actionScope.requiresDecisionAttestation",
+        "note": "The mandate required a decision attestation and this payment did not satisfy it. No spending bound was compared, because no mandate amount constraint was reached."
+      },
+      "credential": {
+        "state": "not-supplied",
+        "note": "The evaluator supplied no credentialDigest with this verdict, so this service cannot say which credential document the bound came from."
+      },
+      "attestation": {
+        "state": "attested",
+        "decisionId": "DEC-EXC-1786495934231-referred-2",
+        "decider": "did:key:z6MkmSMykg7AMkZmKw1EFSSUrt2a7YvP7DVrNntSddbVahwR",
+        "outcome": "exception_referred",
+        "policyRef": {
+          "id": "https://citation-demo.op-fixtures.invalid/policy/settlement-exception-clearing/v1",
+          "hash": "sha256:6b03752da2ba8b5c4f92c53e5ec4a9654793d8576b24d146404ae9d6b24c1d23",
+          "hashMethod": "sha256"
+        },
+        "vocabularyRef": {
+          "id": "https://citation-demo.op-fixtures.invalid/vocab/settlement-exception/v1",
+          "version": "1.0.0",
+          "hash": "sha256:vocab-settlement-exception-v1",
+          "hashMethod": "sha256",
+          "source": "client-defined",
+          "values": [
+            "exception_cleared",
+            "exception_denied",
+            "exception_referred"
+          ]
+        },
+        "decidedAt": "2026-08-11T23:52:14.231Z",
+        "inputsDigest": "sha256:break-file-DEC-EXC-1786495934231-referred-2",
+        "deciderArtifactDigest": {
+          "state": "digest",
+          "value": "sha256:determination-DEC-EXC-1786495934231-referred-2"
+        },
+        "amount": {
+          "amountRaw": "2050000000",
+          "decimals": "6",
+          "asset": "USDC"
+        },
+        "counterparty": "0x9e14b7c05a3f8d261e4b7a0c3f6d9b2e5a8c1f47",
+        "rail": "eip155:8453"
+      },
+      "network": "eip155:8453",
+      "signature": {
+        "state": "signed",
+        "value": "VLgn5B/Tytyb3e6FY1PATkzVHijoB8cmpuuHPUltMtMtZpCI2u5UCwgR+N7tWqMdq7sFtiMdMeJ7sYn5Z/VNBA==",
+        "signedBy": "did:key:z6MkgURiyuwxEi2GrcvhSGpqcuwuk2W38u51sAirJm7ZAoAH",
+        "payloadType": "op.enforcement.refusal.v2"
+      }
+    }
+  ]
+}

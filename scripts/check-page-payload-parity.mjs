@@ -18,10 +18,27 @@
  * A divergence of one character in one field name turns this red, which is the failure mode
  * that would otherwise show up as a verdict on somebody else's artifact being quietly wrong.
  *
- * WHAT THIS DOES NOT ESTABLISH. It compares the two builders over the records that exist
- * here. A record shape neither has met is not covered by it, and cannot be: that is what the
- * page's own coverage derivation is for, which reports what a signature reaches by rebuilding
- * the payload without each field rather than by consulting a list.
+ * ── TWO SHAPES ARE COVERED, AND A THIRD WOULD NEED ITS OWN RUN ──────────────────────────────
+ *
+ *   store shape   what a store file holds: `k`, `authority`, `spend`, `attribution`, signature
+ *                 inline. Compared builder-to-builder, byte for byte, against the package.
+ *   served shape  what GET /v1/refusals sends and what a console's copy button emits:
+ *                 `refusedBy`, `attempted`, `agentId`/`mandateId` at the top level, signature
+ *                 as an object. The package has no equivalent to compare against, because the
+ *                 normalisation lives in the payment server rather than in the package. THE
+ *                 ORACLE IS THE SIGNATURE: a wrong field mapping rebuilds different bytes and
+ *                 the signature stops verifying. A mapping cannot be wrong and pass.
+ *
+ * IF A THIRD SHAPE APPEARS, ADD FIXTURES OF IT AND LET THE ORACLE RUN OVER THEM. Do not assume
+ * this mapping generalises. The two here already differ in field names, in nesting, in where
+ * the signature lives, and in whether absence is spelled `null` or omitted. A third could
+ * differ again in a way that still rebuilds and still produces the wrong bytes, and the only
+ * thing that can tell you is a signature refusing.
+ *
+ * WHAT THIS DOES NOT ESTABLISH. It compares over the records that exist here. A record shape
+ * neither has met is not covered by it, and cannot be: that is what the page's own coverage
+ * derivation is for, which reports what a signature reaches by rebuilding the payload without
+ * each field rather than by consulting a list.
  *
  *   node scripts/check-page-payload-parity.mjs
  */
@@ -60,7 +77,7 @@ if (!verifier) {
 }
 new Function(verifier)();
 const OP = globalThis.OP_CHECK;
-for (const name of ['signableFromRefusal', 'refusalPayload', 'coverageOf']) {
+for (const name of ['signableFromRefusal', 'refusalPayload', 'coverageOf', 'signableFromRefusalRow', 'check']) {
   if (typeof OP?.[name] !== 'function') {
     console.error(`FAIL: check.html does not export ${name} on OP_CHECK, so it cannot be compared`);
     console.error('      against the package. Removing that export would silently end this check,');
@@ -150,7 +167,151 @@ if (forCoverage) {
   fail('no refusal record carries both a reason and a code, so the coverage derivation was not exercised in either direction.');
 }
 
-// ─── 5. Report ────────────────────────────────────────────────────────────────────
+// ─── 5. The served shape, against the signature ───────────────────────────────────
+//
+// Real served rows. The package cannot be asked what these should rebuild to, because the
+// normalisation lives in op-mcp-payment-server/src/http/reads.ts and is exported from no
+// package this repository depends on. So the check is not a comparison, it is a challenge:
+// rebuild the bytes through the page's own normalisation and require the record's OWN
+// signature to verify over them.
+//
+// That is a stronger oracle than a byte comparison against a second copy would be. A copy can
+// be wrong in the same way twice. A signature cannot.
+import { ed25519Verify, base58Decode } from '@observer-protocol/policy-engine';
+
+const servedPath = join(root, 'scripts/__fixtures__/refusals-served.json');
+let servedRows = [];
+try {
+  servedRows = JSON.parse(readFileSync(servedPath, 'utf8')).refusals ?? [];
+} catch (e) {
+  fail(`the served-shape fixture at scripts/__fixtures__/refusals-served.json could not be read (${e.message}). The served shape is what a console's copy button emits, and it is the loop this page exists to close.`);
+}
+
+const signable = servedRows.filter((r) => r?.signature && r.signature.state !== 'unsigned' && typeof r.signature.value === 'string');
+
+// SAME DISCIPLINE AS THE POPULATION CHECK ABOVE. An empty served population would report a
+// pass over nothing, which is the failure this whole file argues against.
+if (signable.length === 0) {
+  fail('no SIGNED served rows to check. A served-shape run over an empty population establishes nothing and must not report success.');
+}
+
+let servedVerified = 0;
+for (const row of signable) {
+  let ok;
+  try {
+    const bytes = OP.refusalPayload(OP.signableFromRefusal(OP.signableFromRefusalRow(row)));
+    const key = Buffer.from(base58Decode(row.signature.signedBy.slice('did:key:z'.length)).slice(2));
+    ok = ed25519Verify(key, Buffer.from(bytes, 'utf8'), Buffer.from(row.signature.value, 'base64'));
+  } catch (e) {
+    ok = `threw: ${e.message.slice(0, 100)}`;
+  }
+  if (ok === true) { servedVerified++; console.log(`ok    served row verifies    ${row.refusalId}  ${row.code}`); }
+  else fail(`served row ${row.refusalId} (${row.code}) does not verify after normalisation: ${ok}. The mapping from the served shape to the signed form is wrong in at least one field, and the signature is what caught it.`);
+}
+
+// AND THE PAGE ITSELF, not just the exported helpers. A normalisation that works when called
+// directly and is never reached because the classifier does not recognise the shape is the
+// defect this section was added for.
+let servedThroughPage = 0;
+for (const row of signable) {
+  const r = await OP.check(JSON.stringify(row), '');
+  if (r.outcome === 'checked-refusal' && r.state === 'verifies') servedThroughPage++;
+  else fail(`served row ${row.refusalId} does not reach a verifying verdict THROUGH THE PAGE: outcome=${r.outcome} state=${r.state}. The helpers can be right while the classifier never routes to them.`);
+}
+console.log(`ok    served rows reach a verdict through OP_CHECK.check  ${servedThroughPage}/${signable.length}`);
+
+// ─── NULL MEANS ABSENT, AND THE SIGNATURE ORACLE CANNOT REACH THIS RULE ────────────
+//
+// STATED AS A LIMIT RATHER THAN LEFT AS A GAP. A served row NULLS a field it does not have,
+// so `{constraint: null}` and an omitted `constraint` are the same document and must produce
+// the same bytes. The mutation that breaks this is the one most likely to arrive as a
+// simplification: dropping the null test from `stripNulls` and keeping only `undefined`.
+//
+// The oracle above cannot catch it. Every signed served row available carries EVERY optional
+// field, so no null ever reaches the normaliser in that population, and the null branch is
+// never taken. Measured, not assumed: 0 nulls across all 14 signed rows, and the one live
+// fixture that does carry nulls has 0 signed rows in it, so it cannot be an oracle.
+//
+// So this is a STRUCTURAL assertion and not a signature one, and the difference matters: it
+// establishes that null and absent normalise identically, and it does NOT establish that the
+// resulting bytes are the ones the enforcement point signed. If a signed served row carrying
+// a null ever exists, add it above and this section becomes redundant.
+const OPTIONAL = ['observedAt', 'agentId', 'mandateId', 'constraint', 'appliedBound', 'credential', 'network', 'attestation'];
+const sortedJson = (v) => JSON.stringify(v, (k, val) =>
+  val && typeof val === 'object' && !Array.isArray(val)
+    ? Object.fromEntries(Object.keys(val).sort().map((kk) => [kk, val[kk]]))
+    : val);
+
+let nullChecks = 0;
+if (signable.length > 0) {
+  const sample = signable[0];
+  for (const field of OPTIONAL) {
+    const asNull = JSON.parse(JSON.stringify(sample));
+    const asAbsent = JSON.parse(JSON.stringify(sample));
+    asNull[field] = null;
+    delete asAbsent[field];
+    let a, b;
+    try { a = sortedJson(OP.signableFromRefusalRow(asNull)); } catch (e) { a = `threw: ${e.message}`; }
+    try { b = sortedJson(OP.signableFromRefusalRow(asAbsent)); } catch (e) { b = `threw: ${e.message}`; }
+    nullChecks++;
+    if (a !== b) {
+      fail(`null is not being treated as absent for \`${field}\`. A served row spells an absent field null, so these two rows are the same document and must normalise identically.\n      with null:   ${String(a).slice(0, 150)}\n      with absent: ${String(b).slice(0, 150)}`);
+    }
+    if (typeof a === 'string' && a.includes(':null')) {
+      fail(`normalising a row whose \`${field}\` is null left a null in the signable form. The canonicaliser refuses null outright, so this does not produce different bytes, it produces NO bytes, and the reader is told their record cannot be rebuilt.`);
+    }
+  }
+  // The nested case, which is the one the payment server's own appliedBoundView got backwards.
+  if (sample.appliedBound && typeof sample.appliedBound === 'object') {
+    for (const sub of Object.keys(sample.appliedBound)) {
+      const asNull = JSON.parse(JSON.stringify(sample));
+      const asAbsent = JSON.parse(JSON.stringify(sample));
+      asNull.appliedBound[sub] = null;
+      delete asAbsent.appliedBound[sub];
+      nullChecks++;
+      let a, b;
+      try { a = sortedJson(OP.signableFromRefusalRow(asNull)); } catch (e) { a = `threw: ${e.message}`; }
+      try { b = sortedJson(OP.signableFromRefusalRow(asAbsent)); } catch (e) { b = `threw: ${e.message}`; }
+      if (a !== b) fail(`null is not being treated as absent for \`appliedBound.${sub}\`. This is the exact field where the payment server's own view turned absent into null, leaving the key PRESENT so every "is the field there" check passed while the bytes differed.`);
+    }
+  }
+  // And the spend sub-object.
+  if (sample.attempted && 'counterparty' in sample.attempted) {
+    const asNull = JSON.parse(JSON.stringify(sample));
+    const asAbsent = JSON.parse(JSON.stringify(sample));
+    asNull.attempted.counterparty = null;
+    delete asAbsent.attempted.counterparty;
+    nullChecks++;
+    const a = sortedJson(OP.signableFromRefusalRow(asNull));
+    const b = sortedJson(OP.signableFromRefusalRow(asAbsent));
+    if (a !== b) fail('null is not being treated as absent for `attempted.counterparty`.');
+  }
+}
+// THE credential GUARD, which no row in the population exercises. All 14 carry
+// `credential.state === 'digest'`, so a normaliser that ignored the state entirely and always
+// read `.value` would behave identically on every one of them. The state is what says whether
+// there IS a digest, and a `not-supplied` credential must contribute no credentialDigest at
+// all rather than an undefined one.
+if (signable.length > 0) {
+  const notSupplied = JSON.parse(JSON.stringify(signable[0]));
+  notSupplied.credential = { state: 'not-supplied', note: 'The evaluator supplied no credentialDigest with this verdict.' };
+  const out = OP.signableFromRefusalRow(notSupplied);
+  nullChecks++;
+  if (Object.prototype.hasOwnProperty.call(out, 'credentialDigest')) {
+    fail('a `not-supplied` credential still produced a credentialDigest. The state is what says whether a digest exists, and reading `.value` regardless would carry a placeholder into the signed form on any row where one is present alongside a non-digest state.');
+  }
+  const withValue = JSON.parse(JSON.stringify(signable[0]));
+  withValue.credential = { state: 'not-supplied', note: 'n/a', value: 'sha256:' + '0'.repeat(64) };
+  nullChecks++;
+  if (Object.prototype.hasOwnProperty.call(OP.signableFromRefusalRow(withValue), 'credentialDigest')) {
+    fail('a credential whose state is `not-supplied` but which carries a value still produced a credentialDigest. The state governs, not the presence of the field.');
+  }
+}
+
+if (nullChecks === 0) fail('the null-means-absent rule was not exercised at all, so the assertion is vacuous.');
+console.log(`ok    null normalises exactly as absent        ${nullChecks} field(s)`);
+
+// ─── 6. Report ────────────────────────────────────────────────────────────────────
 console.log('');
 if (failures.length) {
   console.error(`The page's copy of the refusal construction has diverged from the package (${engineVersion}) — ${failures.length} problem(s):\n`);
@@ -161,5 +322,5 @@ if (failures.length) {
   process.exit(1);
 }
 console.log(`The page builds byte-identical refusal payloads to @observer-protocol/policy-engine`);
-console.log(`${engineVersion}, over ${compared} record(s). The page's copy of the construction is`);
-console.log('not trusted here; it is compared.');
+console.log(`${engineVersion}, over ${compared} store-shape record(s), and ${servedVerified} served-shape row(s)`);
+console.log(`rebuild to bytes their own signatures verify. Two shapes covered; a third needs its own run.`);
