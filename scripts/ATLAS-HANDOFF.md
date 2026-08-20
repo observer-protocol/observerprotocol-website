@@ -29,9 +29,9 @@ deliberate and it is the same ruling that keeps the audit itself unserved.
 | | |
 |---|---|
 | **file** | `scripts/served-page-audit.mjs` |
-| **AUDIT_VERSION** | `3.4.1` |
-| **AUDIT_SHA256** (self-hash, recorded in the file) | `0617ef24806771c7a6ee3a44c946b8599ea79bbfdae2ab879c2a9f17a17ad3cf` |
-| **sha256 of the file on disk** | `7a4661965e7b1c39d4c44aa586b245709ad74d75d417b49ee3d75e3aa993fd9c` |
+| **AUDIT_VERSION** | `3.5.0` |
+| **AUDIT_SHA256** (self-hash, recorded in the file) | `97a97381f88c77ef9b33051ba8a45285e50e4eed0d7e45f5625d55a99a533a56` |
+| **sha256 of the file on disk** | `249aff0759783a2b7e9e4ec93126ea7c6cdca12641f8c535f5cac1744c4d5963` |
 | **size** | 20,007 bytes |
 | **confirmed under** | Node **v22.22.3** on darwin |
 | **needs** | a Node with global `fetch` (18+). No npm install, no dependencies, no checkout. |
@@ -51,10 +51,10 @@ subject is compromised.
 
 ```bash
 shasum -a 256 served-page-audit.mjs
-# expect 7a4661965e7b1c39d4c44aa586b245709ad74d75d417b49ee3d75e3aa993fd9c
+# expect 249aff0759783a2b7e9e4ec93126ea7c6cdca12641f8c535f5cac1744c4d5963
 
 node served-page-audit.mjs --version
-# expect version 3.4.1 and recorded == computed
+# expect version 3.5.0 and recorded == computed
 ```
 
 `recorded != computed` means the copy was edited and its header was not updated. Both

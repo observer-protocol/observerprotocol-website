@@ -527,6 +527,26 @@
 
   var REFUSAL_PAYLOAD_TYPE_V1 = 'op.enforcement.refusal.v1';
   var REFUSAL_PAYLOAD_TYPE_V2 = 'op.enforcement.refusal.v2';
+  var REFUSAL_PAYLOAD_TYPE_V3 = 'op.enforcement.refusal.v3';
+
+  // ─── SETS, NOT A FLOOR, AND THE REASON IS NOT STYLE ─────────────────────────────
+  //
+  // Mirrors the engine at 6f58fcb. These are OPAQUE TYPE TOKENS, not ordered versions: a lexical
+  // comparison ranks v10 BELOW v2, so the ordering is not total and quietly stops being one at the
+  // tenth version. And a floor would assert that every FUTURE version carries a citation, which is
+  // a claim about payloads nobody has designed. That is the same guess the old `=== V2` equality
+  // made, widened rather than removed.
+  //
+  // A SET MAKES THE NEXT VERSION A DECISION. Adding v4 means adding it here, which means somebody
+  // stating that v4 carries a citation.
+  var CITATION_BEARING = { 'op.enforcement.refusal.v2': 1, 'op.enforcement.refusal.v3': 1 };
+
+  // The versions whose appliedBound carries `reason`, and whose `recorded` arm signs its `note`.
+  var REASON_BEARING = { 'op.enforcement.refusal.v3': 1 };
+
+  // The reason vocabulary at run time. The closed union is a compiler fact and this page has no
+  // compiler, so the set is carried explicitly or it is a convention rather than a check.
+  var REASON_VALUES = { 'no-authority': 1, 'not-reached': 1, 'none-configured': 1 };
 
   function cannotRebuild(message) {
     var e = new Error(message);
@@ -552,19 +572,38 @@
     return out;
   }
 
-  function enumeratedBound(b) {
+  // ─── VERSION-GATED, BECAUSE THE ONLY SAFE ASSUMPTION IS ABOUT RECORDS NOBODY HERE CAN SEE ──
+  //
+  // `reason` and the `recorded` arm's `note` are emitted only for REASON_BEARING types. NOT because
+  // older records are known to lack them, but because they are NOT KNOWN TO. The engine is deployed
+  // beyond any store anyone here can inspect, and a v1 or v2 record somewhere carrying a `recorded`
+  // note would, under an ungated rebuild, gain a field its signature never covered and flip to DOES
+  // NOT VERIFY. Gating makes "older records rebuild byte-identically" a property of this code rather
+  // than a belief about somebody's deployment.
+  function enumeratedBound(b, type) {
     if (b && b.state === 'recorded') {
       if (!nonEmpty(b.limit)) throw cannotRebuild('appliedBound is recorded and names no limit. The arithmetic is the substance of the claim; a bound naming no limit asserts only that some bound existed.');
       var rec = { state: 'recorded', limit: b.limit };
       if (b.unit !== undefined) rec.unit = b.unit;
       if (b.observed !== undefined) rec.observed = b.observed;
       if (b.headroom !== undefined) rec.headroom = b.headroom;
+      // S10, RULED AT THE ENGINE: the note joins the signed set rather than leaving the type. The
+      // not-supplied arm signs its note and refuses without one; the same field on the same object,
+      // signed on one arm and discarded on the other, was the inconsistency. A ceiling may be the
+      // credential's figure or a deployment's tighter one, and a signed note is the only place to
+      // say which.
+      if (REASON_BEARING[type] === 1 && b.note !== undefined) rec.note = b.note;
       return rec;
     }
     if (b && b.state === 'not-supplied') {
       if (!nonEmpty(b.note)) throw cannotRebuild('appliedBound is not-supplied and carries no note. The note is what makes the absence a claim rather than a silence.');
+      if (REASON_BEARING[type] === 1 && REASON_VALUES[b.reason] !== 1) {
+        throw cannotRebuild('This is a ' + type + ' refusal whose appliedBound reason is ' + JSON.stringify(b.reason) +
+          '. The reasons are no-authority, not-reached, none-configured; an unrecognised one is refused rather than omitted, because a bound whose absence this service cannot explain must not carry a signature saying it can.');
+      }
       var ns = { state: 'not-supplied' };
       if (b.constraint !== undefined) ns.constraint = b.constraint;
+      if (REASON_BEARING[type] === 1) ns.reason = b.reason;
       ns.note = b.note;
       return ns;
     }
@@ -627,7 +666,7 @@
   function refusalPayloadObject(r) {
     requireRefusalFields(r, ['refusalId', 'at', 'code', 'agentId', 'mandateId']);
     var type = r.payloadType !== undefined ? r.payloadType : REFUSAL_PAYLOAD_TYPE_V1;
-    var citation = type === REFUSAL_PAYLOAD_TYPE_V2 ? citationOf(r.attestation) : undefined;
+    var citation = CITATION_BEARING[type] === 1 ? citationOf(r.attestation) : undefined;
     var base = {
       type: type,
       refusalId: r.refusalId,
@@ -649,7 +688,7 @@
       }
       base.authority = 'mandate';
       base.breachedConstraint = r.breachedConstraint;
-      base.appliedBound = enumeratedBound(r.appliedBound);
+      base.appliedBound = enumeratedBound(r.appliedBound, type);
       return base;
     }
     if (r.authority === 'deployment-guard') {
@@ -664,7 +703,7 @@
       }
       base.authority = 'deployment-guard';
       base.network = r.network;
-      if (r.appliedBound !== undefined) base.appliedBound = enumeratedBound(r.appliedBound);
+      if (r.appliedBound !== undefined) base.appliedBound = enumeratedBound(r.appliedBound, type);
       return base;
     }
     throw cannotRebuild('The refusal’s authority is ' + JSON.stringify(r.authority) + '. The two authorities are mandate and deployment-guard, and an unrecognised one is refused rather than rebuilt.');
