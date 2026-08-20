@@ -25,7 +25,7 @@
     ]
   },
   "offline-scope": {
-    "why": "ENUMERATION ENTRY, not a phrase check. Every place the site claims verification needs nothing from us is tagged data-shared-copy=\"offline-scope\", so there is one place that knows where the claim lives. The claim is currently unscoped on purpose: the gap it would be scoped for is refusalPayload not being exported, which has an owner and a date. If that slips, adding one phrase to `phrases` below scopes all of them and CI reports every instance that has not been updated.",
+    "why": "ENUMERATION ENTRY, not a phrase check. Every place the site claims verification needs nothing from us is tagged data-shared-copy=\"offline-scope\", so there is one place that knows where the claim lives. The claim is currently unscoped on purpose. CORRECTED 2026-08-20: this said the gap it would be scoped for is `refusalPayload` not being exported. THAT PREMISE WAS FALSE AND HAD BEEN FOR RELEASES. `refusalPayload`, `signableFromRefusal`, `REFUSAL_PAYLOAD_TYPE` and `REFUSAL_PAYLOAD_TYPE_V2` are all exported at the version npm's `latest` serves, and the refusal route on /check was built against them the day this was corrected. So the site documented an absence that had ended, and the route nobody wrote was never blocked by the thing this rationale said was blocking it. The failure is not the false sentence: it is that a rationale describing somebody else's package was written once and never re-checked against it, the same shape as a claim about a hosted deployment going stale with no commit here to trigger a review. If a real scope is ever needed, adding one phrase to `phrases` below scopes every instance at once and CI reports the ones not updated.",
     "mustAppearIn": [
       "index.html",
       "architecture.html",

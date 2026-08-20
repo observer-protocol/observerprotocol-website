@@ -218,7 +218,7 @@ console.log(<span class="k">await</span> verifyCredentialObject(credential, conf
       <p><strong>A determination is independently verifiable by a party who was not there.</strong> The record carries the document that was signed, as base64 of the bytes that were received, beside a <code>documentHash</code>. Sha256 over those stored bytes reproduces the hash, so you can rebuild the verifier's input from the record alone, and <code>verifyDecisionAttestation</code> is exported by the version the install line above gives you. <code>/verify-samples/ppp-determination-refused-outcome.json</code> is a real stored determination record and the run below is its output, not a description of it.</p>
       <p><strong>Read the state, not the absence of an error.</strong> <code>attested</code> means a key recovered from the decider's own <code>did:key</code> signed a canonicalisation of the whole document, that the decision identifier in the document is the one the payment cited, and that the outcome is a member of the vocabulary the document declares. It does not mean the policy, the vocabulary or the decider's artifact was fetched and compared: those references are confirmed present and resolved against nothing. <code>inputsDigest</code> is not even confirmed present, and the sample below carries none. <a href="/docs.html" style="color:var(--amber); text-decoration:none;">Field by field, including what a reader cannot establish ↗</a></p>
       <p><strong>A <code>PolicyEvaluationCredential</code> is a different artifact and the next box is about it.</strong> Both record a determination; only one of them has a verifier. Conflating them is the error this page keeps separate on purpose.</p>
-      <p data-shared-copy="offline-scope"><strong>Without installing anything:</strong> <a href="/check.html" style="color:var(--amber); text-decoration:none;">/check</a> runs this same sequence in your browser. Paste the record, get the verdict, and nothing you paste leaves your browser. It covers the decision attestation and nothing else, so the rest of this page is still the route for a delegation credential or a refusal record.</p>
+      <p data-shared-copy="offline-scope"><strong>Without installing anything:</strong> <a href="/check.html" style="color:var(--amber); text-decoration:none;">/check</a> runs this same sequence in your browser. Paste the record, get the verdict, and nothing you paste leaves your browser. It covers the decision attestation and the enforcement refusal record, so the only artifact on this page it does not reach is the delegation credential, which resolves a <code>did:web</code> issuer over the network.</p>
     </div>
 
     <div class="code">
@@ -261,6 +261,85 @@ console.log(verifyDecisionAttestation(
   ...
   inputsDigest: undefined
 }</span></pre>
+    </div>
+
+    <div class="callout">
+      <h4>An enforcement refusal record checks out with the same install, and two are published here</h4>
+      <p><strong>This is the artifact a refused party is holding</strong>, and until 20 August 2026 this page named it in its
+      opening sentence and then never came back to it. The two functions you need are
+      <code>signableFromRefusal</code> and <code>refusalPayload</code>, both exported by the version the install line above gives
+      you, and neither appeared anywhere on this site. That was a missing instruction rather than a missing capability: the
+      capability had been shipped for releases and nobody had written the route.</p>
+      <p><strong>The record's own construction is what gets rebuilt, not this build's.</strong> <code>signableFromRefusal</code>
+      reads <code>payloadType</code> off the record and rebuilds under the version <em>that record</em> was signed with, so a
+      refusal signed against an older engine still verifies against a newer one. The evaluation verdicts in the same directory
+      have no equivalent, and that is why four of them do not verify here. One design decision, applied to one signed class and
+      not the other.</p>
+      <p><strong>The key length is the part that will stop you, and nothing here used to say so.</strong> A
+      <code>did:key</code> decodes to <strong>34</strong> bytes: the two-byte multicodec prefix <code>0xed 0x01</code>, then the
+      32-byte Ed25519 key. <code>verifyDecisionAttestation</code> takes the 34-byte form and strips the prefix itself.
+      <code>ed25519Verify</code> takes the <strong>32</strong>. Hand it the 34-byte form and it fails with
+      <code>Ed25519 public key must be 32 bytes</code>, which reads like a damaged record and is a wrong call. The
+      <code>.slice(2)</code> in the sample below is that, and it is the whole of it.</p>
+      <p data-shared-copy="offline-scope"><strong>Without installing anything:</strong>
+      <a href="/check.html" style="color:var(--amber); text-decoration:none;">/check</a> now runs this same sequence in your
+      browser, on a refusal record, and nothing you paste leaves your browser. It also derives, from the record you paste, which
+      of its fields that signature actually reaches. Paste yours there before you install anything.</p>
+    </div>
+
+    <div class="code">
+      <div class="head"><span>refusal.mjs</span><span>measured 20 August 2026 · no network call</span></div>
+      <pre><code>$ npm install @observer-protocol/policy-engine
+$ curl -O https://observerprotocol.org/verify-samples/ppp-refusal-applied-bound.json
+
+import { signableFromRefusal, refusalPayload, ed25519Verify, base58Decode }
+  from '@observer-protocol/policy-engine';
+import fs from 'node:fs';
+
+const record = JSON.parse(fs.readFileSync('./ppp-refusal-applied-bound.json'));
+
+// The payload is rebuilt from the record's own fields, under the construction
+// the RECORD states in payloadType, not under whichever version you installed.
+const signable = signableFromRefusal(record);
+const bytes    = refusalPayload(signable);
+
+// did:key -&gt; 34 bytes: 0xed 0x01, then the 32-byte key. ed25519Verify wants
+// the 32. Without the slice this throws "Ed25519 public key must be 32 bytes",
+// which looks like a bad record and is a bad call.
+const key = Buffer.from(base58Decode(record.signedBy.slice('did:key:z'.length)).slice(2));
+
+console.log('construction:', signable.payloadType);
+console.log('verifies:', ed25519Verify(key, Buffer.from(bytes, 'utf8'),
+                                       Buffer.from(record.signature, 'base64')));</code></pre>
+      <div class="head"><span>what that prints</span><span>run against the published sample</span></div>
+      <pre><code>construction: op.enforcement.refusal.v2
+verifies: true</code></pre>
+    </div>
+
+    <div class="callout">
+      <h4>Four fields. Read what that signature reaches before you rely on it.</h4>
+      <p>Where a refusal cites a determination, <strong>the refusal's signature covers four fields of that citation</strong>:
+      <code>state</code>, <code>decisionId</code>, <code>decider</code> and <code>outcome</code>. The attestation block on the
+      record carries more than that, and the rest of it sits <strong>outside the refusal's signature</strong>:
+      <code>policyRef</code>, <code>vocabularyRef</code>, <code>inputsDigest</code>, <code>decidedAt</code>,
+      <code>deciderArtifactDigest</code>, and the amount, counterparty and rail it repeats. So do the record's
+      <code>reason</code> prose and its <code>observedAt</code>.</p>
+      <p><strong>Each of those can be altered and the signature still verifies.</strong> That is not a defect in the record and
+      it is not a check that failed. It is the edge of what one signature establishes, and the failure mode is a reader carrying
+      a green result across it: concluding from a verified refusal that the policy reference on it was checked, when nothing
+      dereferenced it and the signature did not cover the pin either.</p>
+      <p><strong>The policy pin is usually under a different signature, on a different artifact.</strong> A determination's own
+      attestation document does cover its <code>policyRef</code>, and that document verifies by the route two boxes above and on
+      <a href="/check.html" style="color:var(--amber); text-decoration:none;">/check</a>. Two artifacts, two signatures, two
+      different sets of claims, and joining them is the reader's work rather than something either signature does.</p>
+      <p><strong>Do not take this list from this page.</strong> It describes the records we have seen, and a description goes
+      stale against a record shape nobody here has met. <code>/check</code> derives the same boundary from the record you paste,
+      by rebuilding the payload without each field and reporting which removals the signature does not notice. Run yours through
+      it rather than reading ours.</p>
+      <p><strong>And the key is the one the record names.</strong> Verifying establishes that whoever holds the key in
+      <code>signedBy</code> signed those bytes. Nothing in the record binds that key to an enforcement point, an institution or a
+      person, and a refusal signed by an ephemeral per-run key verifies exactly as well as one signed by a key somebody stands
+      behind.</p>
     </div>
 
     <div class="callout" style="border-left-color:var(--red-dim);">

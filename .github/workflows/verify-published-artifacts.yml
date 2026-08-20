@@ -105,6 +105,18 @@ jobs:
         if: ${{ !cancelled() && steps.deps.outcome == 'success' }}
         run: node ./sync-engine-version.mjs --check
 
+      # /check.html loads nothing, so it cannot import the package and carries its own copy of
+      # signableFromRefusal and refusalPayload. This compares the BYTES the two produce over
+      # every refusal record here. It is gated on `steps.deps` because it is the one check that
+      # genuinely needs the package: without it there is nothing to compare the page against,
+      # and letting it run would report a missing module as a divergence.
+      #
+      # It sits BEFORE the Node 22 switch deliberately, so it runs on the same runtime as the
+      # package checks above it. It compares strings and needs no WebCrypto.
+      - name: The page's refusal payload is byte-identical to the package's
+        if: ${{ !cancelled() && steps.deps.outcome == 'success' }}
+        run: node ./check-page-payload-parity.mjs
+
       # LAST, AND ON ITS OWN NODE, for one reason: the public checker's signature cases run
       # on WebCrypto Ed25519, and this job otherwise pins Node 20, where that primitive is
       # still experimental. Putting the newer runtime on the final step leaves every step
@@ -159,9 +171,22 @@ jobs:
       # goes red without anybody having to remember what used to be there.
       #
       # No --observations: a runner is ephemeral, so nothing it writes survives to a next run
-      # and absence could never be corroborated from here. Corroboration is the scheduled
-      # copy's job, on a host that keeps its own file. What CI can say is "absent, and nobody
-      # has established that", which is exit 3, which blocks.
+      # and absence could never be corroborated from here. What CI can say is "absent, and
+      # nobody has established that", which is exit 3, which blocks.
+      #
+      # THE CORROBORATION LEG IS NOT BUILT, and this comment asserted it was. It read
+      # "Corroboration is the scheduled copy's job, on a host that keeps its own file."
+      # CHECKED 2026-08-20 on this machine and on op-vps: no copy of served-page-audit.mjs
+      # exists outside this repository, no crontab entry runs it, no systemd timer runs it.
+      # Scoped to those two hosts, which is what was searched.
+      #
+      # So exit 3 is a state nothing currently resolves. An absence observed here stays
+      # unresolved rather than being corroborated by a second observer, and a reader of this
+      # comment would have concluded otherwise. A guard reporting an absence it cannot tell
+      # apart from a missing check is the defect this estate keeps finding, and describing a
+      # leg that does not exist is how it survives review.
+      #
+      # The design is logged as its own item rather than built in the change that found this.
       - name: What a visitor receives at /check
         if: ${{ !cancelled() }}
         shell: bash

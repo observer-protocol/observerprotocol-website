@@ -1,5 +1,26 @@
 # Hand carriage to Atlas: the served-page audit
 
+> **STATUS 2026-08-20: NOT CARRIED. THE CORROBORATION LEG IS UNBUILT.**
+>
+> This document describes a scheduled second observer. It does not exist. Checked on this
+> machine and on op-vps: no copy of `served-page-audit.mjs` outside this repository, no
+> crontab entry running it, no systemd timer running it. Scoped to those two hosts, which
+> is what was searched.
+>
+> **What that costs, precisely.** The audit's exit code 3 means "something disclosed is
+> absent on a single observation", and it blocks rather than passing because one look
+> cannot tell a real removal from a transient. Resolving it is this scheduler's job:
+> a second observation, on a host that keeps its own file, is what turns a single sighting
+> into an established absence. With nothing scheduled, exit 3 has nothing that resolves
+> it, and the workflow comment in `.github/workflows/verify-published-artifacts.yml` used
+> to describe the leg as though it ran. That comment is corrected.
+>
+> **A guard that reports an absence it cannot distinguish from a missing check is the
+> defect this estate keeps finding.** Writing the design down is not building it, and a
+> design document reads as a deployment to anyone who finds it without this box.
+>
+> The figures below are re-derived and current. Carrying it is a decision nobody has taken.
+
 Under `scripts/`, which `netlify.toml` 404s, so this file is not published. That is
 deliberate and it is the same ruling that keeps the audit itself unserved.
 
@@ -8,10 +29,10 @@ deliberate and it is the same ruling that keeps the audit itself unserved.
 | | |
 |---|---|
 | **file** | `scripts/served-page-audit.mjs` |
-| **AUDIT_VERSION** | `3.2.0` |
-| **AUDIT_SHA256** (self-hash, recorded in the file) | `ff825730cfb924575c1000ebf28e80ae5546532cd87ef67e1ebc973095f2a937` |
-| **sha256 of the file on disk** | `2b2cc264d9585efaed20ef726fcc4c0dda574881aff94e89b12bc3ee325b8c0f` |
-| **size** | 19,624 bytes |
+| **AUDIT_VERSION** | `3.3.0` |
+| **AUDIT_SHA256** (self-hash, recorded in the file) | `b68a6abe68396e90375766f5784151cc94d8eb2643cfb4a50cb22b7b119ef1d9` |
+| **sha256 of the file on disk** | `54f0ab54a145c13c5212c85cdf1baaa1ad29ef836976ff03ff46fd59df985ee2` |
+| **size** | 20,007 bytes |
 | **confirmed under** | Node **v22.22.3** on darwin |
 | **needs** | a Node with global `fetch` (18+). No npm install, no dependencies, no checkout. |
 
@@ -30,10 +51,10 @@ subject is compromised.
 
 ```bash
 shasum -a 256 served-page-audit.mjs
-# expect 2b2cc264d9585efaed20ef726fcc4c0dda574881aff94e89b12bc3ee325b8c0f
+# expect 54f0ab54a145c13c5212c85cdf1baaa1ad29ef836976ff03ff46fd59df985ee2
 
 node served-page-audit.mjs --version
-# expect version 3.2.0 and recorded == computed
+# expect version 3.3.0 and recorded == computed
 ```
 
 `recorded != computed` means the copy was edited and its header was not updated. Both

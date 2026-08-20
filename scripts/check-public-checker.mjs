@@ -140,6 +140,21 @@ const flipChar = (s, i) => {
   return s.slice(0, i) + next + s.slice(i + 1);
 };
 
+// ─── the refusal route's inputs ───────────────────────────────────────────────────
+//
+// The embedded example is read out of the page rather than out of a file, because the page
+// is what a visitor loads. A file copy compared to itself would establish nothing.
+const embeddedRefusalRaw = html.match(/<script type="application\/json" id="op-refusal-sample">([\s\S]*?)<\/script>/);
+if (!embeddedRefusalRaw) {
+  console.error('FAIL: check.html carries no embedded refusal example, so the refusal route has no worked example');
+  process.exit(1);
+}
+const embeddedRefusal = JSON.parse(embeddedRefusalRaw[1]);
+
+// One character, in a field INSIDE the signed payload. Not the signature: altering the
+// signature shows base64 integrity, altering a signed field shows the binding.
+const flipLast = (s) => s.slice(0, -1) + (s.slice(-1) === '0' ? '1' : '0');
+
 const bareDoc = docOf(published);
 const bareSig = published.signature;
 
@@ -246,11 +261,84 @@ const cases = [
     describe: 'state=cited-invalid, on the key',
   },
   {
-    name: 'an enforcement refusal record',
-    why: 'a real artifact of a kind this page does not cover. One artifact type is a scope, not a failure.',
+    name: 'a published enforcement refusal record',
+    why: 'the artifact the refusal route exists for. This one is served from this domain and is checked by verify-published-credentials too, so a divergence between the page and the package shows up in two places.',
     input: () => JSON.stringify(refusal),
-    expect: (r) => r.outcome === 'not-covered' && /refusal/i.test(r.label || ''),
-    describe: 'outcome=not-covered, naming what it is',
+    expect: (r) => r.outcome === 'checked-refusal' && r.state === 'verifies',
+    describe: 'outcome=checked-refusal, state=verifies',
+  },
+  {
+    name: 'the embedded refusal example',
+    why: 'the record the page hands a visitor who arrives empty-handed. If this does not verify, the example is teaching the wrong lesson.',
+    input: () => JSON.stringify(embeddedRefusal),
+    expect: (r) => r.outcome === 'checked-refusal' && r.state === 'verifies',
+    describe: 'outcome=checked-refusal, state=verifies',
+  },
+  {
+    name: 'one character changed in the refusal amount',
+    why: 'THE NEGATIVE CONTROL, and the page offers this same mutation to the reader after a pass. A check nobody has seen fail is not evidence.',
+    input: () => {
+      const m = clone(embeddedRefusal);
+      m.spend.amountRaw = flipLast(m.spend.amountRaw);
+      return JSON.stringify(m);
+    },
+    expect: (r) => r.outcome === 'checked-refusal' && r.state === 'does-not-verify',
+    describe: 'state=does-not-verify',
+  },
+  {
+    name: 'one character changed in the refusal signature',
+    why: 'the other direction: the signature itself altered rather than what it covers.',
+    input: () => {
+      const m = clone(embeddedRefusal);
+      m.signature = flipChar(m.signature, 4);
+      return JSON.stringify(m);
+    },
+    expect: (r) => r.outcome === 'checked-refusal' && r.state === 'does-not-verify',
+    describe: 'state=does-not-verify',
+  },
+  {
+    name: 'the reason prose rewritten entirely',
+    why: 'THE BOUNDARY, ASSERTED AS BEHAVIOUR. The page tells a reader the reason text is outside the refusal signature. That sentence is only worth what this case is: rewrite the prose and the signature must STILL verify. If this ever goes red the page is either over-claiming or under-claiming, and both are defects.',
+    input: () => {
+      const m = clone(embeddedRefusal);
+      m.reason = 'Refused because the duty auditor was unavailable.';
+      return JSON.stringify(m);
+    },
+    expect: (r) => r.outcome === 'checked-refusal' && r.state === 'verifies',
+    describe: 'state=verifies, because reason is not inside the signed payload',
+  },
+  {
+    name: 'the cited policy hash replaced with zeroes',
+    why: 'the same boundary at its most uncomfortable. The refusal signature covers four fields of the citation and the policy pin is not one of them. A reader must not read a green refusal as a checked policy reference, so the page derives that and this proves the derivation is describing the artifact rather than describing itself.',
+    input: () => {
+      const m = clone(embeddedRefusal);
+      if (m.attestation?.policyRef) m.attestation.policyRef.hash = 'sha256:' + '0'.repeat(64);
+      return JSON.stringify(m);
+    },
+    expect: (r) => r.outcome === 'checked-refusal' && r.state === 'verifies',
+    describe: 'state=verifies, because policyRef is not inside the signed payload',
+  },
+  {
+    name: 'a refusal whose authority nobody recognises',
+    why: 'a payload that cannot be rebuilt is a third answer. It is not a failed signature and must not render as one.',
+    input: () => {
+      const m = clone(embeddedRefusal);
+      m.authority = 'something-else';
+      return JSON.stringify(m);
+    },
+    expect: (r) => r.outcome === 'checked-refusal' && r.state === 'unrebuildable',
+    describe: 'state=unrebuildable, refused rather than reported as a bad signature',
+  },
+  {
+    name: 'a refusal signed by a did:web',
+    why: 'resolving one needs the network, and this page makes no request. It has to say so rather than fail closed and look like a bad signature.',
+    input: () => {
+      const m = clone(embeddedRefusal);
+      m.signedBy = 'did:web:example.org';
+      return JSON.stringify(m);
+    },
+    expect: (r) => r.outcome === 'checked-refusal' && r.state === 'unrebuildable' && /network/i.test(r.reason || ''),
+    describe: 'state=unrebuildable, naming the network as the reason',
   },
   {
     name: 'a delegation credential',
@@ -309,5 +397,10 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`${results.length} cases: the published example verifies, ${results.filter((x) => x.r.state === 'cited-invalid').length} deliberate breaks are refused,`);
-console.log('artifacts of other kinds are named rather than errored, and the page loads nothing.');
+// COUNTED, not typed. The refusal route added a second refusal state for a break, and a
+// hard-coded 5 here would have gone quietly wrong on the same commit that added them.
+const broken = results.filter((x) => x.r.state === 'cited-invalid' || x.r.state === 'does-not-verify').length;
+const refusedToRebuild = results.filter((x) => x.r.state === 'unrebuildable').length;
+console.log(`${results.length} cases: the published examples verify, ${broken} deliberate breaks are refused,`);
+console.log(`${refusedToRebuild} records this page will not rebuild a payload for say so rather than reporting a bad`);
+console.log('signature, artifacts of other kinds are named rather than errored, and the page loads nothing.');
