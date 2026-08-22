@@ -183,7 +183,7 @@
 
     <p>AI infrastructure companies are about to have a chargeback liability problem at a scale no one is talking about yet. An agent purchases inference credits on its principal's behalf hundreds of times per day. The principal sees a charge they don't recognize, claims they didn't authorize it, and the AI infra company has no way to prove they did. Multiply this by millions of agents and the category has a P&amp;L event none of them have an architecture to defend against.</p>
 
-    <p>In TradFi, cryptographic attestations alone cannot defeat a chargeback -the card network's rules are the rules. But in crypto-native settlement, where the transaction settles on Lightning or USDT on TRON with no card network in between, the cryptographic attestation <em>is</em> the dispute resolution regime. The merchant holds a signed, independently verifiable record of an approval issued against this specific transaction. The authorization proof is the regime.</p>
+    <p>In TradFi, cryptographic attestations alone cannot defeat a chargeback -the card network's rules are the rules. But in crypto-native settlement, where the transaction settles on Lightning or USDT on TRON with no card network in between, the cryptographic attestation <em>is</em> the dispute resolution regime. The merchant holds a signed record of an approval issued against this specific transaction, verifiable from the file alone. The authorization proof is the regime.</p>
 
     <p>AI infrastructure companies are the right wedge. They already transact with agents. They already settle in crypto-native rails or are about to. They have no card-network exposure. They're sophisticated enough to integrate a verification layer in days, not quarters.</p>
   </section>
@@ -197,7 +197,7 @@
 
     <p>We call what we're building AI Infra&sup2;. Trust infrastructure for AI infrastructure.</p>
 
-    <p><strong>Observer Protocol (OP)</strong> is the open W3C-compliant protocol layer with four primitives: credential schemas for cryptographic delegation, verification primitives for counterparty checks, an independently verifiable authorization-proof format, and AIP (Agent Interaction Protocol) -the standard for how agents and counterparties exchange structured claims at runtime. AIP introduces the <em>soft-reject</em>: a structured, recoverable response with a remediation path the agent can act on, rather than a terminal error.</p>
+    <p><strong>Observer Protocol (OP)</strong> is the open W3C-compliant protocol layer with four primitives: credential schemas for cryptographic delegation, verification primitives for counterparty checks, an authorization-proof format that verifies from the file alone, and AIP (Agent Interaction Protocol) -the standard for how agents and counterparties exchange structured claims at runtime. AIP introduces the <em>soft-reject</em>: a structured, recoverable response with a remediation path the agent can act on, rather than a terminal error.</p>
 
     <p><strong>Agentic Terminal (AT)</strong> is the application layer. The relevant surface for individuals is <strong>Sovereign</strong> -self-custodied identity, agent registration, delegation policy configuration. Designed to feel like Phoenix or Strike. Cypherpunk values, mainstream UX. Free for individuals.</p>
   </section>
@@ -209,7 +209,7 @@
   <section>
     <h2>On openness, and what we charge for</h2>
 
-    <p>Observer Protocol is MIT-licensed and always will be. The schemas, verification primitives, AIP standards, authorization-proof format, and the published enforcement engines and rail adapters are genuinely open — on npm and on GitHub. Some build and deployment repositories behind them remain private. Any human, agent, AI infrastructure company, chain, or rail can implement OP independently of us. Identity infrastructure locked behind a single vendor cannot become a standard.</p>
+    <p>Observer Protocol is MIT-licensed and always will be. The schemas, verification primitives, AIP standards, authorization-proof format, and the published enforcement engines and rail adapters are genuinely open — on npm and on GitHub. Some build and deployment repositories behind them remain private. Any human, agent, AI infrastructure company, chain, or rail can implement OP without our cooperation or permission. Identity infrastructure locked behind a single vendor cannot become a standard.</p>
 
     <p>Commercially, <strong>Liability-as-a-Service</strong> is the direction we are shaping with design partners: the OP/AT API as the verification layer behind it. Design partners drop the SDK in at their API edge, route verification calls to us, and get cryptographic chargeback prevention as a service. They keep their own payment infrastructure. We add the trust layer. No licenses. No annual contracts.</p>
   </section>
@@ -281,7 +281,7 @@
 
     <p>NeuralBridge signs the authorization proof with <em>their own key</em>, under their own DID. We provide the SDK; they do the signing. The authorization proof carries transaction details, a reference to the delegation credential, the authorization level, my principal DID, and NeuralBridge's signature.</p>
 
-    <p>Crucially: <strong>independently verifiable</strong>. Any third party with the authorization-proof JSON and NeuralBridge's published public key (via standard <code>did:web</code> resolution) <span data-shared-copy="offline-scope">can verify without runtime dependency on AT's or NeuralBridge's backend at the moment of settlement. Resolving NeuralBridge's key by <code>did:web</code> does need their domain to answer; hold a copy of that DID document and the proof verifies with every party offline.</span></p>
+    <p>Crucially: <strong>verifiable from the file alone</strong>. Any third party with the authorization-proof JSON and NeuralBridge's published public key (via standard <code>did:web</code> resolution) <span data-shared-copy="offline-scope">can verify without runtime dependency on AT's or NeuralBridge's backend at the moment of settlement. Resolving NeuralBridge's key by <code>did:web</code> does need their domain to answer; hold a copy of that DID document and the proof verifies with every party offline.</span></p>
   </div>
 
   <!-- BEATS 7-8 -->

@@ -511,7 +511,7 @@
     <div style="border-left:2px solid #166534; background:var(--bg); padding:1.5rem 1.75rem; margin-top:1.5rem; max-width:760px;">
       <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--green); margin-bottom:0.75rem;">What is there, and it is the whole point of carrying the attestation</div>
       <p style="font-size:0.9rem; color:var(--text-dim); line-height:1.8; font-weight:300;" data-shared-copy="offline-scope">
-        <strong>A determination is independently verifiable by a party who was not there.</strong> The record keeps the
+        <strong>A determination is verifiable by a party who was not there, offline and against a published key.</strong> The record keeps the
         document that was signed, as base64 of the bytes that were received, beside a <code>documentHash</code> that is
         sha256 over them, so the input to the signature can be rebuilt from the record. <code>verifyDecisionAttestation</code>
         is exported by the version <code>npm install</code> serves, and a decision attestation published under

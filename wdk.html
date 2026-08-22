@@ -603,7 +603,8 @@
       <code class="inline">PolicyEvaluationCredential</code>, bound to that exact
       transaction and to that exact mandate, and it re-verifies against our live
       public endpoint. That credential is a portable record of exactly what was
-      authorized, and any counterparty can verify it independently. A wallet-local
+      authorized, and any counterparty can check its eddsa-jcs-2022 proof against our
+      published DID document with libraries that are not ours. A wallet-local
       engine cannot produce that.
     </p>
 
