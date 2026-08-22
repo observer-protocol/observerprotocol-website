@@ -22,6 +22,10 @@ on:
       - 'scripts/check-shared-copy.mjs'
       - 'scripts/shared-copy.json'
       - 'scripts/check-schema-index.mjs'
+      - 'sitemap.xml'
+      - 'tools/check-sitemap.py'
+      - 'tools/make-sitemap.py'
+      - 'netlify.toml'
       - 'scripts/check-measured-figures.mjs'
       - 'scripts/measured-figures.json'
       - 'scripts/measure-signed-record-coverage.mjs'
@@ -50,7 +54,14 @@ jobs:
       run:
         working-directory: scripts
     steps:
+      # fetch-depth: 0 because check-sitemap.py reads the committer date of the last
+      # commit touching each page. On the default depth-1 checkout `git log -1 -- <path>`
+      # returns HEAD for every file, so every page older than HEAD would read as a stale
+      # lastmod. The check detects a shallow clone and refuses rather than reporting that,
+      # but refusing is not running, so give it the history it needs.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -104,6 +115,17 @@ jobs:
       - name: The schema index still describes the schema directory
         if: ${{ !cancelled() }}
         run: node ./check-schema-index.mjs
+      # Ungated on `steps.deps` by the same rule as the two above: it imports nothing from
+      # the npm package -- only the standard library and tools/make-sitemap.py, both in this
+      # repository -- so a registry outage must not be the reason nobody noticed the sitemap
+      # had stopped describing the site.
+      #
+      # working-directory overrides the job default of `scripts`, because this one lives in
+      # tools/ and resolves the repo root from its own path.
+      - name: The sitemap describes the pages actually deployed
+        if: ${{ !cancelled() }}
+        working-directory: .
+        run: python3 tools/check-sitemap.py
       - name: Verify every published credential
         if: ${{ !cancelled() && steps.deps.outcome == 'success' }}
         run: node ./verify-published-credentials.mjs
