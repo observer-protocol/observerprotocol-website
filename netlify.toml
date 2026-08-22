@@ -258,6 +258,27 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
+# /schemas/delegation/ is a REDIRECT, not a page in that directory, and the header
+# rule below is the whole reason.
+#
+# `v2.2.json` tells its reader, in its own $comment, to "See /schemas/delegation/ for
+# published versions". That path 404d. The obvious fix was an index.html in that
+# directory, and it is the wrong fix: the rule below sets Content-Type application/json
+# for everything matching /schemas/*, and X-Content-Type-Options: nosniff is set site-
+# wide, so a browser would be told the page is JSON and refuse to render it as HTML.
+#
+# WHETHER A LATER, MORE SPECIFIC HEADER RULE WOULD OVERRIDE THAT WAS NOT ESTABLISHED.
+# `netlify dev` serves the HTML as text/html, but it also serves cache-control:
+# max-age=0 where the rule below says 3600, so it does not reproduce this file's header
+# handling faithfully enough to settle the question. Rather than ship a page whose
+# content type depends on an untested precedence rule, the page lives outside
+# /schemas/ where the ordinary HTML headers apply, and this redirect carries the
+# reader from the path the schema names to the page that answers it.
+[[redirects]]
+  from = "/schemas/delegation/"
+  to = "/delegation-schema-versions.html"
+  status = 301
+
 # JSON Schema files — dereferenceable $id URLs for W3C VC ecosystem
 [[headers]]
   for = "/schemas/*"

@@ -21,6 +21,7 @@ on:
       - 'scripts/sync-engine-version.mjs'
       - 'scripts/check-shared-copy.mjs'
       - 'scripts/shared-copy.json'
+      - 'scripts/check-schema-index.mjs'
       - 'scripts/check-measured-figures.mjs'
       - 'scripts/measured-figures.json'
       - 'scripts/measure-signed-record-coverage.mjs'
@@ -95,6 +96,14 @@ jobs:
       - name: Outbound links resolve
         if: ${{ !cancelled() }}
         run: node ./check-outbound-links.mjs
+      # Ungated on `steps.deps` for the same reason as the two above: it imports nothing
+      # from the package, it compares the schema index against the schema directory, and
+      # both are in this repository. The page it checks exists because `v2.2.json` tells
+      # readers to visit /schemas/delegation/, so a registry outage must not be the reason
+      # nothing noticed that path had gone back to 404ing.
+      - name: The schema index still describes the schema directory
+        if: ${{ !cancelled() }}
+        run: node ./check-schema-index.mjs
       - name: Verify every published credential
         if: ${{ !cancelled() && steps.deps.outcome == 'success' }}
         run: node ./verify-published-credentials.mjs

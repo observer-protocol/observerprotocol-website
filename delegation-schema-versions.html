@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delegation credential schemas · Observer Protocol</title>
+  <meta name="description" content="Every published version of the Observer Protocol delegation credential schema, and what each one is. Each version has its own permanent URL; a change is a new URL, never an edit." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,600;0,900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:#0a0a08; --bg2:#111110; --border:#2a2a26; --amber:#f5a623; --amber-dim:#b8791a;
+      --text:#e8e8e0; --text-dim:#888880; --text-faint:#444440; --teal:#5eead4; --green:#4ade80;
+    }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+    body {
+      background:var(--bg); color:var(--text); font-family:'IBM Plex Sans',sans-serif;
+      font-size:16px; line-height:1.6; min-height:100vh; padding:2.5rem 1.5rem;
+    }
+    .wrap { max-width:760px; margin:0 auto; }
+    code { font-family:'IBM Plex Mono',monospace; font-size:0.9em; color:var(--teal); }
+    .status {
+      font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--amber); border:1px solid var(--amber-dim);
+      background:#f5a62322; padding:0.3rem 0.8rem; display:inline-block; margin-bottom:1.75rem;
+    }
+    h1 {
+      font-family:'Fraunces',serif; font-size:clamp(1.8rem,4vw,2.4rem); font-weight:900;
+      line-height:1.12; letter-spacing:-0.02em; margin-bottom:1.25rem;
+    }
+    p { color:var(--text-dim); line-height:1.85; font-weight:300; margin-bottom:1.1rem; }
+    p strong { color:var(--text); font-weight:500; }
+    table { width:100%; border-collapse:collapse; margin:2rem 0 1.25rem; font-size:0.86rem; }
+    th, td {
+      text-align:left; padding:0.7rem 0.6rem; border-bottom:1px solid var(--border);
+      vertical-align:top;
+    }
+    th {
+      font-family:'IBM Plex Mono',monospace; font-size:0.64rem; letter-spacing:0.12em;
+      text-transform:uppercase; color:var(--text-faint); font-weight:500;
+    }
+    td a { color:var(--amber); text-decoration:none; font-family:'IBM Plex Mono',monospace; }
+    td a:hover { color:var(--text); }
+    td.note { color:var(--text-dim); font-weight:300; }
+    .tag {
+      font-family:'IBM Plex Mono',monospace; font-size:0.6rem; letter-spacing:0.1em;
+      text-transform:uppercase; padding:0.15rem 0.45rem; border:1px solid var(--border);
+      color:var(--text-faint); white-space:nowrap;
+    }
+    .tag.current { color:var(--green); border-color:#166534; }
+    .tag.reserved { color:var(--amber); border-color:var(--amber-dim); }
+    .links {
+      margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border);
+      display:flex; gap:1.75rem; flex-wrap:wrap;
+      font-family:'IBM Plex Mono',monospace; font-size:0.72rem;
+    }
+    .links a { color:var(--amber); text-decoration:none; }
+    .links a:hover { color:var(--text); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="status">Delegation credential schema</div>
+    <h1>Every published version, and what each one is.</h1>
+    <p>
+      <strong>Each version has its own permanent URL, and a change is a new URL rather than an edit.</strong>
+      A credential names the version it was issued against in <code>credentialSchema.id</code>, so an
+      older version stays served for as long as anything pins it. Nothing here is withdrawn when a
+      newer version ships.
+    </p>
+    <p>
+      The engine compares <code>credentialSchema.id</code> against a caller-supplied allowlist by
+      exact string equality and does not fetch the document. Which version a verifier accepts is a
+      decision made in its configuration, not one made here.
+    </p>
+
+    <table>
+      <thead>
+        <tr><th>Version</th><th>State</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="/schemas/delegation/v2.7.json">v2.7.json</a></td>
+          <td><span class="tag current">Current</span></td>
+          <td class="note">Highest published version. Requires <code>credentialStatus</code>.</td>
+        </tr>
+        <tr>
+          <td><a href="/schemas/delegation/v2.6.json">v2.6.json</a></td>
+          <td><span class="tag">Published</span></td>
+          <td class="note">Requires <code>credentialStatus</code>.</td>
+        </tr>
+        <tr>
+          <td><a href="/schemas/delegation/v2.5.json">v2.5.json</a></td>
+          <td><span class="tag">Published</span></td>
+          <td class="note">Requires <code>credentialStatus</code>.</td>
+        </tr>
+        <tr>
+          <td><a href="/schemas/delegation/v2.4.json">v2.4.json</a></td>
+          <td><span class="tag">Published</span></td>
+          <td class="note">Last version that does not require <code>credentialStatus</code>.</td>
+        </tr>
+        <tr>
+          <td><a href="/schemas/delegation/v2.3.json">v2.3.json</a></td>
+          <td><span class="tag">Published</span></td>
+          <td class="note">&mdash;</td>
+        </tr>
+        <tr>
+          <td><a href="/schemas/delegation/v2.2.json">v2.2.json</a></td>
+          <td><span class="tag reserved">Reserved</span></td>
+          <td class="note">
+            Never released. A parked draft whose number was reserved, kept permanently resolvable
+            because published credentials pin it. It imposes no constraints, so validating against
+            it succeeds vacuously. Validate substantive requirements against the version the
+            issuer references.
+          </td>
+        </tr>
+        <tr>
+          <td><a href="/schemas/delegation/v2.1.json">v2.1.json</a></td>
+          <td><span class="tag">Published</span></td>
+          <td class="note">&mdash;</td>
+        </tr>
+        <tr>
+          <td><a href="/schemas/delegation/v2.json">v2.json</a></td>
+          <td><span class="tag">Published</span></td>
+          <td class="note">&mdash;</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      This list is checked against the directory on every build by
+      <code>scripts/check-schema-index.mjs</code>, so a version that ships without appearing here
+      fails rather than going unlisted.
+    </p>
+
+    <div class="links">
+      <a href="/verify">Verify a record</a>
+      <a href="/docs">Docs</a>
+      <a href="/architecture">Architecture</a>
+      <a href="/">Observer Protocol</a>
+    </div>
+  </div>
+</body>
+</html>
