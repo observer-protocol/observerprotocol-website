@@ -511,6 +511,32 @@ if (engine) {
 // which one they are looking at.
 const PREDICATES = {
   // True when the version npm's `latest` tag serves does NOT export the named symbol.
+  // The affirmative of the same question. Both exist because BOTH SIDES OF A TAG MOVE NEED A
+  // PREDICATE: the page says one thing before `latest` moves past a withdrawal band and the
+  // opposite after, and a swap between two markers is mechanical where a hand edit on the day
+  // is not. Adding this one is safe BEFORE the move — it is unused until a marker names it.
+  //
+  // NOT THE NEGATION OF THE OTHER, deliberately. `latest-does-not-export` returns false when
+  // the version is unmeasured, and so does this: an unevaluable claim is not true, whichever
+  // direction it points, and a predicate defined as `!other` would turn one of those refusals
+  // into a pass.
+  'latest-exports': (res, arg, fresh) => {
+    const version = fresh ?? res.npmLatest;
+    const entry = (res.versions ?? []).find((v) => v.version === version);
+    if (!entry) {
+      return {
+        ok: false,
+        why: `npm serves ${version} at latest, and results/ carries no measurement for it. ` +
+             `The claim cannot be evaluated, which is not the same as it being true. ` +
+             `Re-run: node scripts/measure-engine-payload-exports.mjs`,
+      };
+    }
+    const exports_ = entry.exports ?? [];
+    return exports_.includes(arg)
+      ? { ok: true, why: `latest (${version}) exports \`${arg}\`.` }
+      : { ok: false, why: `the version at latest (${version}) does NOT export \`${arg}\`, so this sentence is false.` };
+  },
+
   'latest-does-not-export': (res, arg, fresh) => {
     const version = fresh ?? res.npmLatest;
     const entry = (res.versions ?? []).find((v) => v.version === version);
