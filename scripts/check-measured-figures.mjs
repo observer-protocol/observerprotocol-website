@@ -151,7 +151,7 @@ for (const r of manifest.required) {
 }
 
 // ─── COMPARISON 2: does results/engine-payload-exports still describe npm? ───────────────────────
-let registryChecked = false, registryErr = null;
+let registryChecked = false, registryErr = null, freshLatest = null;
 const engine = results['engine-payload-exports'];
 if (engine) {
   try {
@@ -163,6 +163,7 @@ if (engine) {
       encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 30000,
     })).length;
     registryChecked = true;
+    freshLatest = latest;
     if (latest !== engine.npmLatest) {
       failures.push(
         `results/engine-payload-exports.json records npmLatest ${engine.npmLatest}, npm now serves ${latest}.\n` +
@@ -243,11 +244,23 @@ if (hosted?.endpoint) {
 }
 
 // ─── REPORT ──────────────────────────────────────────────────────────────────────────────────────
-console.log(`${seen.size} distinct measured figure(s) across ${[...seen.values()].reduce((a, b) => a + b, 0)} marker(s) in ${htmlFiles.length} page(s).`);
+// THE VERDICT IS PRINTED BEFORE THE CONTEXT, DELIBERATELY. This block used to print
+// its RE-DERIVED lines as it went, so a FAILING run opened with
+//   "RE-DERIVED: engine-payload-exports still agrees with npm (latest ...)"
+// and only said what was wrong further down. That line echoes the STORED value, so on a
+// failing run the first thing the check said was that the thing agreed. A reader skimming
+// for "agrees" got the opposite of the finding, from a check that was working correctly.
+//
+// An affirmative ahead of the verdict is the estate's dominant defect class wearing the
+// output format, so the context is buffered and printed AFTER the verdict, under a heading
+// that says what it is.
+const notes = [];
+const note = (...xs) => notes.push(xs.join(' '));
+note(`${seen.size} distinct measured figure(s) across ${[...seen.values()].reduce((a, b) => a + b, 0)} marker(s) in ${htmlFiles.length} page(s).`);
 
 const coverage = results['signed-record-coverage'];
 if (coverage) {
-  console.log(
+  note(
     `\nNOT RE-DERIVED: signed-record-coverage. Measured ${coverage.measuredOn} over ` +
     `${coverage.storeFileCount} file(s) under ${coverage.storesRoot}, which are not in this\n` +
     `repository, so this run compared the pages to that record and did NOT check that the record\n` +
@@ -257,32 +270,126 @@ if (coverage) {
 }
 
 if (schemaClaims) {
-  console.log(`\nRE-DERIVED: ${schemasChecked} published schema(s) still digest-match the measurement.`);
+  note(`\nRE-DERIVED: ${schemasChecked} published schema(s) still digest-match the measurement.`);
 }
 
 if (hosted) {
   if (hostedChecked) {
-    console.log(`RE-DERIVED: the hosted verifier still reports engine ${hosted.engineRunning} at commit ${hosted.commitShort}.`);
+    note(`RE-DERIVED: the hosted verifier still reports engine ${hosted.engineRunning} at commit ${hosted.commitShort}.`);
   } else {
-    console.log(`NOT CHECKED: the hosted verifier at ${hosted.endpoint} (${hostedErr ?? 'no network'}).`);
-    console.log('Section 04 describes a deployment this run could not reach, so nothing here');
-    console.log('establishes that what it says about that service is still true.');
+    note(`NOT CHECKED: the hosted verifier at ${hosted.endpoint} (${hostedErr ?? 'no network'}).`);
+    note('Section 04 describes a deployment this run could not reach, so nothing here');
+    note('establishes that what it says about that service is still true.');
   }
 }
 
 if (engine) {
   if (registryChecked) {
-    console.log(`\nRE-DERIVED: engine-payload-exports still agrees with npm (latest ${engine.npmLatest}, ${engine.versionCount} versions).`);
+    note(`\nRE-DERIVED: engine-payload-exports still agrees with npm (latest ${engine.npmLatest}, ${engine.versionCount} versions).`);
   } else {
-    console.log(`\nNOT CHECKED: npm registry (${registryErr ?? 'no network'}). The comparison that establishes`);
-    console.log('currency did not run, so this pass proves internal consistency ONLY.');
+    note(`\nNOT CHECKED: npm registry (${registryErr ?? 'no network'}). The comparison that establishes`);
+    note('currency did not run, so this pass proves internal consistency ONLY.');
   }
 }
 
+// ─── COMPARISON 3: derived claims ────────────────────────────────────────────────────────────────
+// A `data-measured` marker protects a VALUE. A sentence built on several values is not
+// a value, so no `data-measured` marker can cover it — and the sentence is what a reader
+// takes away. Section 02 of /verify carried eight value markers and two unprotected
+// sentences, and the two sentences were the ones a tag move would falsify.
+//
+// A `data-derived-claim` marker names a PREDICATE instead. The predicate is written in
+// the marker, and it is evaluated against FRESHLY MEASURED values rather than against the
+// stored file, so a re-measurement that makes the sentence false turns this red instead of
+// green. That is the whole point: re-measuring must not be able to launder a false claim.
+//
+//   <p data-derived-claim="engine-payload-exports:latest-does-not-export(resolutionPayload)">
+//
+// Syntax: <result-file>:<predicate>(<arg>). Predicates are registered below, and an
+// unknown predicate FAILS. A marker naming a predicate nobody implemented is not a
+// weaker claim, it is an unchecked one, and it must not read as covered.
+const PREDICATES = {
+  // True when the version npm's `latest` tag serves does NOT export the named symbol.
+  'latest-does-not-export': (res, arg, fresh) => {
+    const version = fresh ?? res.npmLatest;
+    const entry = (res.versions ?? []).find((v) => v.version === version);
+    if (!entry) {
+      return {
+        ok: false,
+        why: `npm serves ${version} at latest, and results/ carries no measurement for it. ` +
+             `The claim cannot be evaluated, which is not the same as it being true. ` +
+             `Re-run: node scripts/measure-engine-payload-exports.mjs`,
+      };
+    }
+    const exports_ = entry.exports ?? [];
+    return exports_.includes(arg)
+      ? { ok: false, why: `the version at latest (${version}) DOES export \`${arg}\`, so this sentence is false.` }
+      : { ok: true, why: `latest (${version}) does not export \`${arg}\`.` };
+  },
+};
+
+const CLAIM_RE = /data-derived-claim="([^"]+)"/g;
+let claimsChecked = 0;
+for (const file of htmlFiles) {
+  const rel = file.slice(root.length + 1);
+  const html = readFileSync(file, 'utf8');
+  for (const m of html.matchAll(CLAIM_RE)) {
+    const spec = m[1];
+    const parsed = /^([a-z0-9-]+):([a-z0-9-]+)\(([^)]*)\)$/.exec(spec);
+    if (!parsed) {
+      failures.push(`${rel}: data-derived-claim="${spec}" is not <result>:<predicate>(<arg>).`);
+      continue;
+    }
+    const [, resultName, predName, arg] = parsed;
+    const res = results[resultName];
+    if (!res) {
+      failures.push(`${rel}: data-derived-claim names results/${resultName}.json, which is not loaded.`);
+      continue;
+    }
+    const pred = PREDICATES[predName];
+    if (!pred) {
+      failures.push(
+        `${rel}: data-derived-claim uses predicate "${predName}", which is not implemented.\n` +
+        `    An unimplemented predicate is an UNCHECKED claim, not a weaker one.`
+      );
+      continue;
+    }
+    const fresh = resultName === 'engine-payload-exports' ? freshLatest : null;
+    if (resultName === 'engine-payload-exports' && !registryChecked) {
+      failures.push(
+        `${rel}: data-derived-claim="${spec}" could not be evaluated against the registry\n` +
+        `    (${registryErr ?? 'no network'}). This claim is about what a reader receives TODAY, so a\n` +
+        `    run that could not ask the registry does not establish it. Not a pass.`
+      );
+      continue;
+    }
+    claimsChecked++;
+    const verdict = pred(res, arg, fresh);
+    if (!verdict.ok) {
+      failures.push(
+        `${rel}: a derived claim on the page is no longer true.\n` +
+        `    marker: ${spec}\n` +
+        `    ${verdict.why}\n` +
+        `    Fix the SENTENCE. Re-measuring will not make it true again.`
+      );
+    }
+  }
+}
+
+note(`\nDERIVED CLAIMS: ${claimsChecked} claim marker(s) evaluated against freshly measured values.`);
+
 if (failures.length) {
-  console.error(`\n${failures.length} measured figure(s) out of sync:\n`);
+  const figures = failures.filter((f) => !/derived claim/.test(f)).length;
+  const claims = failures.length - figures;
+  const parts = [];
+  if (figures) parts.push(`${figures} measured figure(s) out of sync`);
+  if (claims) parts.push(`${claims} derived claim(s) no longer true`);
+  console.error(`\nFAILED — ${parts.join(', ')}.\n`);
   for (const f of failures) console.error(`  ${f}\n`);
+  console.error('Context for the run above, which does NOT change the verdict:');
+  console.error(notes.join('\n'));
   process.exit(1);
 }
 
-console.log('\nEvery marked figure matches results/.');
+console.log('PASSED — every marked figure matches results/, and every derived claim still holds.');
+console.log(notes.join('\n'));
