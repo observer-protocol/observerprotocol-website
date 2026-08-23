@@ -2,9 +2,36 @@
   "$comment": [
     "MEASURED OUTPUT, read out of every published tarball. Do not hand-edit: regenerate with",
     "  node scripts/measure-engine-payload-exports.mjs",
-    "Presence of an export, not its behaviour. Nothing here was called."
+    "Presence of an export, not its behaviour. Nothing here was called.",
+    "",
+    "THIS FILE IS SERVED PUBLICLY. Read `provenance` below before quoting a figure from it.",
+    "The caveats used to live only in this script, which the site returns 404 for, and in CI",
+    "logs, which no reader sees."
   ],
   "measuredOn": "2026-08-23",
+  "provenance": {
+    "whatWasMeasured": "Which symbols each published tarball of @observer-protocol/policy-engine exports, read out of the tarballs themselves rather than out of a CHANGELOG.",
+    "registryDependent": {
+      "fields": [
+        "npmLatest",
+        "npmRc",
+        "npmLatestExports",
+        "versionCount"
+      ],
+      "computedAgainstRegistryState": {
+        "npmLatest": "1.0.0-rc.12",
+        "npmRc": "1.0.0-rc.20",
+        "versionCount": 25
+      },
+      "goesStaleWhen": "a dist-tag moves or a new version is published, without this file being touched."
+    },
+    "reDerivedBy": {
+      "script": "scripts/check-measured-figures.mjs",
+      "when": "every CI run",
+      "what": "npmLatest and versionCount are re-read from the registry and a disagreement FAILS the build. So this file cannot go stale silently, which is what distinguishes it from results/signed-record-coverage.json, whose corpus half nothing re-confirms.",
+      "notReDerived": "The per-version `exports` lists. Re-reading them means fetching every published tarball on every run, so they are trusted between measurements."
+    }
+  },
   "package": "@observer-protocol/policy-engine",
   "npmLatest": "1.0.0-rc.12",
   "npmRc": "1.0.0-rc.20",

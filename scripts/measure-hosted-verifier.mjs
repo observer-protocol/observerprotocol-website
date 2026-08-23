@@ -49,8 +49,39 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       'MEASURED OUTPUT. Regenerate with: node scripts/measure-hosted-verifier.mjs',
       'One GET against the service. Nothing was submitted to it and nothing here is a',
       'claim about whether it VERIFIES correctly, only about what it says it is.',
+      '',
+      'THIS FILE IS SERVED PUBLICLY. Read `provenance` below before quoting a figure from it.',
+      'The caveats used to live only in this script, which the site returns 404 for, and in CI',
+      'logs, which no reader sees.',
     ],
     measuredOn: new Date().toISOString().slice(0, 10),
+
+    // WHAT A READER OF THIS URL NEEDS AND COULD NOT PREVIOUSLY GET. These figures describe a
+    // DEPLOYMENT rather than a registry, so they move when someone redeploys that service and
+    // not when a dist-tag moves. Stated because the difference is invisible in the values.
+    provenance: {
+      whatWasMeasured: 'One GET against ' + VERSION_URL + '. What the service says it is, not ' +
+        'what it does.',
+      deploymentDependent: {
+        fields: ['engineRunning', 'engineBuiltAgainst', 'commit', 'branch', 'builtAt', 'allowlists'],
+        computedAgainstDeploymentState: {
+          commit: (v.build?.commit ?? '').slice(0, 12) || null,
+          engineRunning: engine.running ?? null,
+        },
+        goesStaleWhen: 'that service is redeployed, without this file being touched. It does NOT ' +
+          'move when npm dist-tags move: this is a running deployment, not a published package.',
+      },
+      reDerivedBy: {
+        script: 'scripts/check-measured-figures.mjs',
+        when: 'every CI run that can reach the endpoint',
+        what: 'The service is queried again and the reported engine version and commit are ' +
+              'compared to what is stored; a disagreement FAILS the build. So this file cannot ' +
+              'go stale silently, which is what distinguishes it from ' +
+              'results/signed-record-coverage.json, whose corpus half nothing re-confirms.',
+        whenItCannot: 'A run that cannot reach the endpoint reports NOT CHECKED and does not ' +
+              'treat unreachability as agreement.',
+      },
+    },
     endpoint: VERSION_URL,
     service: v.service ?? null,
     commit: v.build?.commit ?? null,

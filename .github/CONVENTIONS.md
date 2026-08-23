@@ -568,3 +568,92 @@ a perfectly valid branch.
 **And when a correction describes a mechanism in this repository, read the mechanism on the ref you
 are about to branch from, not on the ref you happen to have checked out.** The sentence above was
 measured carefully against a real file; the file was three days old.
+
+---
+
+## 15. A commit that changes a page is also a sitemap change, and nothing about making it says so
+
+`lastmod` is derived from the committer date of the last commit touching a page. So a commit
+that edits a paragraph also moves that page's date, which makes it a sitemap change too — and
+the person editing the paragraph has no reason to think so.
+
+**This refused a deploy three times in one week.** The gate was right every time; what recurs
+is upstream of it.
+
+### It cannot be surfaced at the edit, and that is not a gap to close
+
+The correct `lastmod` is derived from a commit that does not exist while the edit is being
+made. Anything that showed it earlier would have to predict it, which is stamping, and
+`tools/make-sitemap.py` rejects stamping in its own header: *"a property of deriving the date
+rather than stamping it, and it is the price of the date meaning something."* A stamped
+`lastmod` says when someone ran a script, not when the page changed.
+
+**So the two-commit shape stays**: commit the page, regenerate, commit the sitemap on its own.
+Committed alone, the second moves no page's date and stays true after it lands.
+
+### What moved is where the cost lands
+
+`tools/hooks/pre-push` runs `tools/check-sitemap.py --no-live` before a push, so the refusal
+arrives in seconds instead of after a CI round-trip. It asserts what the sitemap check asserts
+and **stamps nothing**.
+
+### The hook's own defect, which is the defect it is treating
+
+**Git does not share hooks.** `tools/hooks/pre-push` is tracked, but tracked is not installed.
+Until someone runs `tools/hooks/install`, `.git/hooks/pre-push` does not exist, the check never
+runs, **and nothing says so**. Installing the hook does not remove that class of defect; it
+moves it one step back, to whether the install ran.
+
+Handled the same way as the policy repository's staleness hook:
+
+- **Copied, not symlinked.** A symlink into `tools/` breaks in a worktree checked out before
+  the hook existed, and that worktree is one of the ones the hook is for.
+- **Installed into the common dir**, so one run covers every worktree of the clone.
+- **It does not go quiet when the script is missing.** A worktree without
+  `tools/check-sitemap.py` falls back to a git-only comparison that still asserts, and the
+  output says which of the two ran. A hook that skipped there would go silent in one of the
+  cases that matters.
+- **Re-run the installer after pulling a change to `tools/hooks/`.** The copy does not update
+  itself, which is the price of it surviving in an old worktree.
+
+### What it cannot reach
+
+- **A push that never happens.** Committing without pushing is never asked.
+- **`--no-verify`.** There is no override in the check; there is one in git.
+- **The live pass.** The reachability probe needs the network and is skipped, so the hook
+  asserts the sitemap describes the *repository*, not that the deployed site answers. CI still
+  does the second.
+- **In fallback mode, the enumeration.** A page missing from the sitemap entirely is invisible
+  to the git-only comparison, and it says so rather than reporting a pass it did not earn.
+
+### One defect found while building it, recorded because it is the more dangerous direction
+
+The first fallback was `… | while read …` under `set -e`. The loop ran in a subshell, so the
+variable it set was lost, and a final `[ test ] && echo` that evaluated false ended the loop
+non-zero and took the script with it. **A clean push was refused with no reason printed.** A
+false refusal is the same class as a silent pass and is harder to argue with, because the
+output looks like a finding and contains none. Caught by testing the passing path, not the
+failing one.
+
+---
+
+## 16. Keeping a parent's branch on merge protects a stacked child, and does not make it mergeable
+
+When a stacked PR's base is squash-merged, **two separate things happen and only one of them is
+solved by keeping the branch.**
+
+- **Deleting the parent's branch closes the child**, because the child's base ref disappears.
+  Keeping the branch prevents that.
+- **Squash-merge rewrites history either way.** The parent's content lands on the target as one
+  new commit; the parent's original commits do not. The child's branch still carries those
+  originals, so it now conflicts with a target that has the same content under different
+  commits. GitHub reports *"the merge commit cannot be cleanly created."*
+
+**A stacked child must be rebuilt on the target after the parent squashes.** Retargeting its
+base is not enough. What worked: `git diff <target> <child-branch>` to confirm the child's own
+change in isolation, reset the branch to the target, re-apply that diff, and force-push with
+`--force-with-lease`.
+
+Verify the diff **before and after** the rebuild. The number that matters is that the child's
+contribution is the same size on both sides; if it grew, the parent's content is being
+reapplied on top of itself.
