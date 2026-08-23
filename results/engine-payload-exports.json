@@ -4,11 +4,11 @@
     "  node scripts/measure-engine-payload-exports.mjs",
     "Presence of an export, not its behaviour. Nothing here was called."
   ],
-  "measuredOn": "2026-08-16",
+  "measuredOn": "2026-08-23",
   "package": "@observer-protocol/policy-engine",
   "npmLatest": "1.0.0-rc.12",
-  "npmRc": "1.0.0-rc.19",
-  "versionCount": 24,
+  "npmRc": "1.0.0-rc.20",
+  "versionCount": 25,
   "withdrawals": {
     "resolutionPayload": [
       {
@@ -314,6 +314,22 @@
     },
     {
       "version": "1.0.0-rc.19",
+      "exports": [
+        "evaluationVerdictPayload",
+        "lapsePayload",
+        "refusalPayload",
+        "resolutionPayload"
+      ],
+      "verifiers": [
+        "verifyDecisionAttestation",
+        "verifyCredentialObject",
+        "signableFromRefusal"
+      ],
+      "verdictPayloadType": "op.evaluation.verdict.v4",
+      "refusalPayloadType": "op.enforcement.refusal.v2"
+    },
+    {
+      "version": "1.0.0-rc.20",
       "exports": [
         "evaluationVerdictPayload",
         "lapsePayload",
