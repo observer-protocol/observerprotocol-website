@@ -156,11 +156,12 @@ So the correct description of these artifacts is **recoverable by trial across a
 not fragile. A record whose recovery required guessing an unbounded string, or a nonce, or a
 timestamp, would be fragile. This one requires counting.
 
-**What the pin does, and what it does not.** `scripts/package.json` still pins `1.0.0-rc.12`, so CI
-measures this corpus against rc.12 and `scripts/credential-expectations.json` still records the four
-`allow: false` outcomes. **That file and this page describe different versions on purpose until the
-pin is bumped**, and the expectation strings name both version tokens so the pin cannot move in
-either direction without turning the check red. Bumping it is a separate change from this one.
+**What the pin does.** `scripts/package.json` now pins `1.0.0-rc.21`, the version npm's `latest`
+serves, and `scripts/credential-expectations.json` records the four verdicts as `allow: true`.
+Both moved in the same commit as the pin, because rc.12 cannot verify these four and an
+expectation is a statement about the version being run. The expectation strings named both
+version tokens deliberately, so the pin could not move in either direction without turning the
+check red; it did, and that is what brought the two changes together.
 
 
 **Why it is not in the filenames.** A file called `must-not-verify-*` is making a permanent claim.
