@@ -38,10 +38,8 @@
       "verify.html",
       "integrate/index.html",
       "blog/op-crossrail/index.html",
-      "chargeback-prevention/index.html",
-      "hermes-agents.html",
-      "free-your-agent.html",
-      "agents.html",
+            "hermes-agents.html",
+            "agents.html",
       "check.html"
     ],
     "phrases": [],
