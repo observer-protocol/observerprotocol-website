@@ -243,6 +243,93 @@ if (hosted?.endpoint) {
   }
 }
 
+// ─── RUN PROVENANCE ──────────────────────────────────────────────────────────────────────────────
+// WAS THIS RUN MADE AGAINST THE REPOSITORY, OR AGAINST EDITED INPUTS?
+//
+// A check that can be driven to fail by injection produces, on an injected run, output
+// BYTE-IDENTICAL to a live failure. That happened here: the first demonstration of the
+// derived-claim marker was reported as a failure and was an injection, and the only thing
+// that distinguished them was that the person reporting it remembered doing it. Nothing in
+// the output said so.
+//
+// Two distinguishers are available to the check itself, and both are used:
+//
+//   1. IS THE INPUT THE COMMITTED ONE? Every file read here is tracked. `git diff HEAD`
+//      answers it exactly, and names the fields that moved.
+//   2. DID measuredOn MOVE? A measured value can only change legitimately by re-running the
+//      measure script, which rewrites measuredOn. A results file whose VALUES differ from
+//      HEAD while its measuredOn does NOT is the signature of a hand edit, because a
+//      re-measurement would have stamped it.
+//
+// THESE LABEL, THEY DO NOT REFUSE. Injection is how this check gets demonstrated, so a run
+// that refuses on modified inputs would forbid its own test. The verdict is unchanged; the
+// reader is told what the verdict was computed from.
+//
+// It is silent when every input matches HEAD. NOTE THE COST OF THAT SILENCE: a clean run and
+// a run where this labelling failed to execute look the same. Absence is carrying meaning
+// here without an instrument behind it, which is the shape this estate keeps flagging. Stated
+// rather than fixed, because "say nothing on a clean run" was the instruction.
+const provenance = [];
+let inputsChecked = 0;
+let provenanceUnavailable = false;
+{
+  const { execFileSync } = await import('node:child_process');
+  const git = (args) => {
+    try {
+      return execFileSync('git', args, { cwd: root, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+    } catch { return null; }
+  };
+  const tracked = [
+    ...readdirSync(resultsDir).filter((f) => f.endsWith('.json')).map((f) => `results/${f}`),
+    ...htmlFiles.map((f) => f.slice(root.length + 1)),
+  ];
+  inputsChecked = tracked.length;
+  const dirty = git(['diff', '--name-only', 'HEAD', '--', ...tracked]);
+  if (dirty === null) {
+    // NOT A MODIFICATION AND NOT A CLEAN RUN. Collapsing "could not establish" into
+    // either one is the estate's own named defect, so it gets its own state.
+    provenanceUnavailable = true;
+  } else {
+    for (const rel of dirty.split('\n').filter(Boolean)) {
+      if (rel.startsWith('results/')) {
+        let headMeasuredOn = null, nowMeasuredOn = null;
+        try { headMeasuredOn = JSON.parse(git(['show', `HEAD:${rel}`]) ?? '{}').measuredOn ?? null; } catch { /* unparseable at HEAD */ }
+        try { nowMeasuredOn = JSON.parse(readFileSync(join(root, rel), 'utf8')).measuredOn ?? null; } catch { /* unparseable now */ }
+        if (headMeasuredOn && nowMeasuredOn && headMeasuredOn === nowMeasuredOn) {
+          provenance.push(
+            `  ${rel}\n` +
+            `      differs from HEAD, and measuredOn did NOT move (still ${nowMeasuredOn}).\n` +
+            `      A measured value changed without the measure script running. That is a hand edit\n` +
+            `      or an injection, not a re-measurement.`
+          );
+        } else {
+          provenance.push(
+            `  ${rel}\n` +
+            `      differs from HEAD; measuredOn ${headMeasuredOn ?? '(none)'} -> ${nowMeasuredOn ?? '(none)'}.\n` +
+            `      Consistent with a re-measurement.`
+          );
+        }
+      } else {
+        provenance.push(`  ${rel}\n      differs from HEAD. A page this run read is not the committed one.`);
+      }
+    }
+  }
+}
+// IT SPEAKS ON A CLEAN RUN TOO, AND THAT IS THE POINT. Saying nothing when every input
+// matches HEAD makes a clean run and a run where this labelling never executed look
+// identical — a silent-failure mode inside the mechanism that exists to remove
+// silent-failure modes. With the line, absence becomes a positive statement with an
+// instrument behind it: no provenance line at all now means THE LABELLING DID NOT RUN,
+// rather than leaving a reader to guess that it ran and found nothing. It carries the
+// number of inputs compared, so "clean" is a measurement and not an assurance.
+const provenanceBanner = provenanceUnavailable
+  ? `RUN PROVENANCE — COULD NOT BE ESTABLISHED. git did not answer, so this run cannot say\n` +
+    `whether its inputs are the committed ones. That is not a clean run and not a modified one.`
+  : provenance.length
+    ? `RUN PROVENANCE — this run was made against MODIFIED INPUTS, so the findings below may\n` +
+      `follow from those modifications rather than from the world:\n\n${provenance.join('\n')}\n`
+    : `RUN PROVENANCE — ${inputsChecked} input(s) compared against HEAD; every one is the committed version.`;
+
 // ─── REPORT ──────────────────────────────────────────────────────────────────────────────────────
 // THE VERDICT IS PRINTED BEFORE THE CONTEXT, DELIBERATELY. This block used to print
 // its RE-DERIVED lines as it went, so a FAILING run opened with
@@ -308,6 +395,37 @@ if (engine) {
 // Syntax: <result-file>:<predicate>(<arg>). Predicates are registered below, and an
 // unknown predicate FAILS. A marker naming a predicate nobody implemented is not a
 // weaker claim, it is an unchecked one, and it must not read as covered.
+// WHAT A PREDICATE ESTABLISHES, AND WHAT IT TRUSTS
+// -----------------------------------------------------------------------------
+// A predicate is evaluated against a MEASUREMENT, and some fields of that
+// measurement are re-derived from the world on this run while others are not.
+// `npmLatest` and `versionCount` are re-read from the registry above and a
+// disagreement fails. The per-version `exports` lists are NOT re-read — that
+// would mean fetching every published tarball on every CI run — so
+// `latest-does-not-export` rests on a field this check takes on trust from
+// results/engine-payload-exports.json.
+//
+// That is the boundary, and it is not a reason to drop the marker. It is the
+// thing a reader of this file has to know: THE CLAIM IS CHECKED AGAINST A
+// MEASUREMENT, AND THAT FIELD OF THE MEASUREMENT IS TRUSTED BECAUSE NOTHING
+// HERE RE-DERIVES IT.
+//
+// THE GENERAL FORM, because it applies well beyond this file: a demonstration
+// that a check can fail is worth what the failing condition costs to produce.
+// A condition you can create by writing the value the check reads costs
+// nothing, so it evidences that the code path runs and almost nothing about
+// whether the check would catch the real thing. A condition you have to go and
+// make true in the world costs something, and buys proportionally more.
+//
+// THE CONTRAST IN THIS ESTATE. scripts/postflight-publish.mjs in op-policy-engine
+// fails on 1.0.0-rc.20, which is published to npm with no gitHead. Nobody wrote
+// that condition for the test; it is in the registry, it got there by accident,
+// and it cannot be edited away. That demonstration is worth more than this one,
+// and the difference is not the quality of either check.
+//
+// The run-provenance labelling below exists because of this: an injected run and
+// a live failure print the same findings, and the reader deserves to be told
+// which one they are looking at.
 const PREDICATES = {
   // True when the version npm's `latest` tag serves does NOT export the named symbol.
   'latest-does-not-export': (res, arg, fresh) => {
@@ -385,6 +503,7 @@ if (failures.length) {
   if (figures) parts.push(`${figures} measured figure(s) out of sync`);
   if (claims) parts.push(`${claims} derived claim(s) no longer true`);
   console.error(`\nFAILED — ${parts.join(', ')}.\n`);
+  if (provenanceBanner) console.error(provenanceBanner);
   for (const f of failures) console.error(`  ${f}\n`);
   console.error('Context for the run above, which does NOT change the verdict:');
   console.error(notes.join('\n'));
@@ -392,4 +511,5 @@ if (failures.length) {
 }
 
 console.log('PASSED — every marked figure matches results/, and every derived claim still holds.');
+if (provenanceBanner) console.log('\n' + provenanceBanner);
 console.log(notes.join('\n'));
