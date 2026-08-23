@@ -234,13 +234,18 @@ const out = {
     },
     reDerivedBy: {
       script: 'scripts/check-measured-figures.mjs',
-      when: 'every CI run that can reach the schema URLs',
-      what: 'Each published schema is fetched again and DIGEST-MATCHED against the measurement; ' +
-            'a mismatch FAILS the build. So this file cannot go stale silently, the same as ' +
+      when: 'every CI run, with no network required',
+      what: 'The schema file IN THIS REPOSITORY at schemas/delegation/<version>.json is ' +
+            'sha256-digested and compared to the digest recorded here; a mismatch FAILS the ' +
+            'build. So this file cannot go stale silently, the same as ' +
             'results/engine-payload-exports.json and unlike the corpus half of ' +
             'results/signed-record-coverage.json, which nothing re-confirms.',
-      whenItCannot: 'A run that cannot reach the URLs reports what it could not check rather ' +
-            'than treating unreachability as agreement.',
+      whatItDoesNotEstablish: 'IT DIGESTS THE REPOSITORY COPY, NOT THE SERVED ONE. The figures ' +
+            'here were measured by fetching ' + BASE + ', but the re-derivation compares the ' +
+            'local file. That establishes the repository has not changed since the measurement. ' +
+            'It does NOT establish that the URL still serves those bytes, so a deploy that ' +
+            'served something else would not be caught here. Stated because the two are easy to ' +
+            'read as one, and this block was first written claiming the fetch.',
     },
   },
   citedVersion: cited,
