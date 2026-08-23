@@ -591,6 +591,24 @@ if (failures.length) {
   process.exit(1);
 }
 
+// ─── SKIP HAS ITS OWN CODE ──────────────────────────────────────────────────────────────────
+// A gate reads the exit code. A run that could not perform one of its comparisons and exits 0
+// keeps the build green forever with that comparison never made, and the sentence naming the
+// skip is in output nobody's CI reads. 0 pass, 1 fail, 2 unreachable, 3 tool-absent are taken;
+// skip is 4. CI TREATS SKIP AS FAILURE until a per-check ruling says otherwise. No such ruling
+// is made here.
+const EXIT_SKIPPED = 4;
+const skipped = [];
+if (hosted && !hostedChecked) skipped.push(`the hosted verifier at ${hosted.endpoint} (${hostedErr ?? 'no network'})`);
+if (engine && !registryChecked) skipped.push(`npm's published latest (${registryErr ?? 'no network'})`);
+if (skipped.length) {
+  console.log(`SKIPPED — ${skipped.length} comparison(s) could not be made, so this run did not establish`);
+  console.log('what it exists to establish. Not a pass:');
+  for (const s of skipped) console.log(`  ${s}`);
+  console.log(notes.join('\n'));
+  process.exit(EXIT_SKIPPED);
+}
+
 console.log('PASSED — every marked figure matches results/, and every derived claim still holds.');
 if (provenanceBanner) console.log('\n' + provenanceBanner);
 console.log(notes.join('\n'));

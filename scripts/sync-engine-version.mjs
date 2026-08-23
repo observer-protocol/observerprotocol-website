@@ -162,10 +162,17 @@ if (check) {
     console.log('version string is unmarked. Both comparisons made: our documents agree with');
     console.log("each other, AND they agree with what a reader installing today receives.");
   } else {
+    // SKIP HAS ITS OWN CODE. This printed the three lines below and exited 0, so a gate reading
+    // the exit code saw a pass while the comparison that establishes CURRENCY had not been made.
+    // The currency comparison is the whole reason this check exists; internal consistency alone
+    // is satisfied by a site that agrees with a lockfile nobody has updated in a month. 4 is
+    // skip: 0 pass, 1 fail, 2 unreachable, 3 tool-absent are taken. CI treats skip as failure
+    // until a per-check ruling says otherwise, and no such ruling is made here.
     console.log('Every current marker matches the lockfile, and no version string is unmarked.');
-    console.log(`NOT CHECKED: npm's published latest (${publishedErr ? publishedErr.split('\n')[0] : 'no network'}).`);
+    console.log(`SKIPPED: npm's published latest (${publishedErr ? publishedErr.split('\n')[0] : 'no network'}).`);
     console.log('That second comparison is the one that establishes currency, so this run');
-    console.log('proves internal consistency ONLY.');
+    console.log('proves internal consistency ONLY. Exit 4 is skip, not pass.');
+    process.exit(4);
   }
 } else {
   if (unmarked.length) process.exit(1);

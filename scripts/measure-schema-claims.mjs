@@ -142,8 +142,19 @@ for (const f of readdirSync(root).filter((x) => x.endsWith('.html'))) {
 // one that decides which version the page should cite. Run with ajv when it is resolvable.
 //
 // AJV IS NOT A DEPENDENCY OF THIS REPOSITORY. Adding one is a decision with a maintainer, not a
-// side effect of a docs fix, so this degrades to `validationRun: false` and SAYS SO rather than
-// silently omitting the field. Resolve it with:
+// side effect of a docs fix.
+//
+// THIS USED TO DEGRADE TO `validationRun: false` AND SAY SO. That reasoning was wrong, and the
+// way it was wrong is now a rule: A GENERATOR WITH N DECLARED INPUTS THAT HAS N-1 EXITS NON-ZERO
+// AND WRITES NOTHING. Saying so inside the artifact is not enough, because the artifact is what
+// the next reader and every check consume, and a degraded one is not smaller — it is DIFFERENT.
+// Measured 2026-08-23: with ajv absent this wrote `citeInstead: null` where the previous run had
+// `v2.4`, and `conformingVersions: []` where it had `["v2.4"]`. A page citing v2.4 then disagreed
+// with results/, and check-measured-figures went red for a reason that had nothing to do with the
+// pages. The generator produced a plausible artifact from an incomplete run and the failure
+// surfaced three steps away.
+//
+// It now REFUSES and writes nothing. Resolve it with:
 //   node scripts/measure-schema-claims.mjs --ajv /path/to/node_modules
 // (ESM ignores NODE_PATH, so the path is passed explicitly rather than through the environment.)
 const FLAGSHIP = 'credentials/maxi-0001-trading-mandate-2026-08.json';
@@ -182,7 +193,17 @@ try {
   });
   validation = { validationRun: true, reason: null, ajvVersion, artifact: FLAGSHIP, results };
 } catch (e) {
-  validation.reason = `ajv is not resolvable from this repository (${e.message.split('\n')[0]}). No validation was run; the claimsDefined figures above are unaffected.`;
+  console.error('\nREFUSING: ajv is not resolvable from this repository.');
+  console.error(`  ${e.message.split('\n')[0]}`);
+  console.error('');
+  console.error('  This generator has two inputs: the published schemas, and a validator. One is');
+  console.error('  missing, so it writes NOTHING rather than a file that looks like a measurement');
+  console.error('  and is a measurement of less. A previous version degraded here and wrote');
+  console.error('  citeInstead: null, which read as "no version conforms" rather than "nobody asked".');
+  console.error('');
+  console.error('  Resolve with:  node scripts/measure-schema-claims.mjs --ajv /path/to/node_modules');
+  process.exit(1);
+  validation.reason = `unreachable`;
 }
 
 const cited = 'v2.2';
