@@ -86,6 +86,7 @@ const manifest = JSON.parse(readFileSync(join(root, 'scripts/measured-figures.js
 const declared = new Map(manifest.required.map((r) => [r.key, r]));
 
 const failures = [];
+const claimsSkipped = [];   // conditions that make a claim UNCHECKED, not false. Exit 4, not 1.
 const seen = new Map();
 /** key -> Set of page basenames it was actually found on. */
 const foundOn = new Map();
@@ -381,10 +382,11 @@ if (coverage) {
       `    Not a pass: the half of this figure that CAN be re-derived was not.`
     );
   } else if (!registryChecked) {
-    failures.push(
-      `signed-record-coverage's rebuildableAtNpmLatest claims are about the version a reader\n` +
-      `    receives TODAY, and this run could not reach the registry (${registryErr ?? 'no network'}).\n` +
-      `    Not a pass: a claim about the current latest is not established by a run that could not ask.`
+    // SKIP, NOT FAIL — same reconciliation as the derived-claim path above. Unreachable is not
+    // a finding that the stored booleans are wrong; it is the absence of the comparison.
+    claimsSkipped.push(
+      `signed-record-coverage's rebuildableAtNpmLatest claims, which are about the version a\n` +
+      `    reader receives TODAY (${registryErr ?? 'no network'})`
     );
   } else {
     const at = engine.versions?.find((v) => v.version === engine.npmLatest);
@@ -555,7 +557,12 @@ for (const file of htmlFiles) {
     }
     const fresh = resultName === 'engine-payload-exports' ? freshLatest : null;
     if (resultName === 'engine-payload-exports' && !registryChecked) {
-      failures.push(
+      // SKIP, NOT FAIL. This pushed a failure while the block below classified the same
+      // condition — registry unreachable — as a skip, so one script had two verdicts for one
+      // state and which one you got depended on whether a page carried a claim marker.
+      // Recorded rather than quietly reconciled: the failure text was written first and was
+      // right that this is not a pass; exit 4 says that without saying the claim is false.
+      claimsSkipped.push(
         `${rel}: data-derived-claim="${spec}" could not be evaluated against the registry\n` +
         `    (${registryErr ?? 'no network'}). This claim is about what a reader receives TODAY, so a\n` +
         `    run that could not ask the registry does not establish it. Not a pass.`
@@ -589,6 +596,25 @@ if (failures.length) {
   console.error('Context for the run above, which does NOT change the verdict:');
   console.error(notes.join('\n'));
   process.exit(1);
+}
+
+// ─── SKIP HAS ITS OWN CODE ──────────────────────────────────────────────────────────────────
+// A gate reads the exit code. A run that could not perform one of its comparisons and exits 0
+// keeps the build green forever with that comparison never made, and the sentence naming the
+// skip is in output nobody's CI reads. 0 pass, 1 fail, 2 unreachable, 3 tool-absent are taken;
+// skip is 4. CI TREATS SKIP AS FAILURE until a per-check ruling says otherwise. No such ruling
+// is made here.
+const EXIT_SKIPPED = 4;
+const skipped = [];
+for (const c of claimsSkipped) skipped.push(c);
+if (hosted && !hostedChecked) skipped.push(`the hosted verifier at ${hosted.endpoint} (${hostedErr ?? 'no network'})`);
+if (engine && !registryChecked) skipped.push(`npm's published latest (${registryErr ?? 'no network'})`);
+if (skipped.length) {
+  console.log(`SKIPPED — ${skipped.length} comparison(s) could not be made, so this run did not establish`);
+  console.log('what it exists to establish. Not a pass:');
+  for (const s of skipped) console.log(`  ${s}`);
+  console.log(notes.join('\n'));
+  process.exit(EXIT_SKIPPED);
 }
 
 console.log('PASSED — every marked figure matches results/, and every derived claim still holds.');

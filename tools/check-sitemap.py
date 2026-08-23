@@ -222,12 +222,19 @@ def main(argv):
         for p in problems:
             print(f"        {p}")
     print()
-    if unchecked:
-        print(f"  {unchecked} URL(s) could not be reached. That is not a finding about "
-              "the site and does not fail this run.")
     if bad:
         print(f"  {bad} URL(s) were reached and are excluded from indexing.")
         return 1
+    # SKIP HAS ITS OWN CODE. This printed "does not fail this run" and returned 0, so a run that
+    # reached NOTHING exited the same as a run that reached everything. The three fault classes
+    # above are about the repository and were still checked; the live pass is the part that was
+    # not, and a reader of the exit code could not tell. 4 is skip: 0 pass, 1 fail, 2 unreachable,
+    # 3 tool-absent are taken. CI treats skip as failure until a per-check ruling says otherwise.
+    if unchecked:
+        print(f"  SKIPPED: {unchecked} of {len(listed)} URL(s) could not be reached, so the live pass "
+              "did not run.")
+        print("  The repository-side checks above DID run and passed. Exit 4 is skip, not pass.")
+        return 4
     print(f"  {len(listed) - unchecked}/{len(listed)} reached and clean, to this client, just now.")
     return 0
 
