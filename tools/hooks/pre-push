@@ -41,7 +41,36 @@
 #     from netlify.toml, and a wrong answer there is wrong in both places identically.
 set -e
 
-ROOT=$(git rev-parse --show-toplevel)
+# ─── TOOL ABSENCE IS ITS OWN STATE ─────────────────────────────────────────────────────────
+# This began `ROOT=$(git rev-parse --show-toplevel)` under `set -e`. With git absent the
+# substitution exited 127 and `set -e` ended the script THERE: exit 127, NO OUTPUT AT ALL. A
+# refusal that asserts nothing, in the gate every push passes through. 127 is also the shell's
+# own "command not found", so the code carried no information a caller could act on.
+#
+# PRESENCE IS NOT AN ANSWER. `command -v git` finds a git that exists and cannot run. Absence
+# and failure are different states, so both are asked about separately below.
+EXIT_OK=0
+EXIT_REFUSED=1
+EXIT_TOOL_ABSENT=3
+
+need() { # need <tool> <why>
+  if ! command -v "$1" >/dev/null 2>&1; then
+    echo "pre-push: CANNOT RUN — $1 is not on PATH."
+    echo "  $2"
+    echo "  This is not a pass and not a sitemap finding. The check did not run."
+    echo "  Exit $EXIT_TOOL_ABSENT is tool-absent; exit $EXIT_REFUSED is a refusal."
+    exit $EXIT_TOOL_ABSENT
+  fi
+}
+
+need git "Every assertion here compares a sitemap date to a git committer date."
+
+ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || {
+  echo "pre-push: CANNOT RUN — git is on PATH but did not answer \`git rev-parse\`."
+  echo "  Present and failing is not the same as absent, and neither is a sitemap finding."
+  echo "  Exit $EXIT_TOOL_ABSENT is tool-absent; exit $EXIT_REFUSED is a refusal."
+  exit $EXIT_TOOL_ABSENT
+}
 cd "$ROOT"
 
 if [ -f tools/check-sitemap.py ] && command -v python3 >/dev/null 2>&1; then
