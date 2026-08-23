@@ -2,9 +2,37 @@
   "$comment": [
     "MEASURED OUTPUT. Regenerate with: node scripts/measure-hosted-verifier.mjs",
     "One GET against the service. Nothing was submitted to it and nothing here is a",
-    "claim about whether it VERIFIES correctly, only about what it says it is."
+    "claim about whether it VERIFIES correctly, only about what it says it is.",
+    "",
+    "THIS FILE IS SERVED PUBLICLY. Read `provenance` below before quoting a figure from it.",
+    "The caveats used to live only in this script, which the site returns 404 for, and in CI",
+    "logs, which no reader sees."
   ],
-  "measuredOn": "2026-08-16",
+  "measuredOn": "2026-08-23",
+  "provenance": {
+    "whatWasMeasured": "One GET against https://verify.observerprotocol.org/version. What the service says it is, not what it does.",
+    "deploymentDependent": {
+      "fields": [
+        "engineRunning",
+        "engineBuiltAgainst",
+        "commit",
+        "branch",
+        "builtAt",
+        "allowlists"
+      ],
+      "computedAgainstDeploymentState": {
+        "commit": "d3278efb3cb2",
+        "engineRunning": "1.0.0-rc.10"
+      },
+      "goesStaleWhen": "that service is redeployed, without this file being touched. It does NOT move when npm dist-tags move: this is a running deployment, not a published package."
+    },
+    "reDerivedBy": {
+      "script": "scripts/check-measured-figures.mjs",
+      "when": "every CI run that can reach the endpoint",
+      "what": "The service is queried again and the reported engine version and commit are compared to what is stored; a disagreement FAILS the build. So this file cannot go stale silently, which is what distinguishes it from results/signed-record-coverage.json, whose corpus half nothing re-confirms.",
+      "whenItCannot": "A run that cannot reach the endpoint reports NOT CHECKED and does not treat unreachability as agreement."
+    }
+  },
   "endpoint": "https://verify.observerprotocol.org/version",
   "service": "@observer-protocol/op-verify-service",
   "commit": "d3278efb3cb2b5dd3027fb9c40a82f624bdd0faa",

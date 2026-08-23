@@ -1,0 +1,113 @@
+#!/bin/sh
+# ─── pre-push: does the sitemap still describe what this push would deploy? ─────────────────
+#
+# WHY THIS RUNS AT PRE-PUSH AND NOT AT THE EDIT. `lastmod` is DERIVED from the committer
+# date of the last commit touching a page, so the correct value does not exist until the
+# commit exists. Anything that surfaced it earlier would have to predict it, which is
+# stamping, and stamping makes `lastmod` say when someone ran a script rather than when the
+# page changed. tools/make-sitemap.py rejects that explicitly and this hook does not
+# reopen it. NOTHING HERE STAMPS ANYTHING; it only compares.
+#
+# So the two-commit shape stays: commit the page, regenerate, commit the sitemap. What moves
+# is where the cost lands. Three times in one week that cost landed on a CI round-trip
+# because a change that touches a page's content also moves its git date, and nothing about
+# making the edit says so.
+#
+# ─── THIS HOOK'S OWN DEFECT, WHICH IS THE SAME ONE IT IS TREATING ──────────────────────────
+#
+# GIT DOES NOT SHARE HOOKS. This file is tracked, but tracked is not installed. Until
+# someone runs tools/hooks/install, .git/hooks/pre-push does not exist, this never executes,
+# AND NOTHING SAYS SO. A control that is absent by default and silent about its absence is
+# the defect class this estate keeps recording, and installing this hook does not remove it
+# — it moves it one step back, to whether the install ran.
+#
+# Handled the way the policy repository handled its staleness hook: the body is copied into
+# .git/hooks rather than symlinked, so a worktree checked out at an older commit still runs
+# the installed hook even though its tools/ predates it. `.git/hooks` is shared across
+# worktrees via --git-common-dir, so one install covers every worktree of this clone.
+#
+# AND IT DOES NOT GO QUIET WHEN THE SCRIPT IS MISSING. A worktree on an older commit may not
+# have tools/check-sitemap.py. Skipping there would go quiet in one of the cases that
+# matters, so there is a git-only fallback below that still asserts, and it says which of
+# the two ran.
+#
+# WHAT IT CANNOT REACH, recorded here because this is where the next person will read it:
+#   - A PUSH THAT NEVER HAPPENS. Committing without pushing is never asked.
+#   - --no-verify. There is no override in the check; there is one in git itself.
+#   - THE LIVE PASS. check-sitemap.py's reachability probe needs the network and is skipped
+#     here (--no-live), so this asserts the sitemap describes the REPOSITORY, not that the
+#     deployed site answers. CI still does the second.
+#   - WHETHER THE PAGE SHOULD BE IN THE SITEMAP AT ALL. That is make-sitemap.py's derivation
+#     from netlify.toml, and a wrong answer there is wrong in both places identically.
+set -e
+
+ROOT=$(git rev-parse --show-toplevel)
+cd "$ROOT"
+
+if [ -f tools/check-sitemap.py ] && command -v python3 >/dev/null 2>&1; then
+  echo "pre-push: sitemap check (tools/check-sitemap.py --no-live)"
+  if python3 tools/check-sitemap.py --no-live; then
+    exit 0
+  fi
+  echo ""
+  echo "PUSH REFUSED — the sitemap does not describe this repository."
+  echo "A commit that changes a page also moves that page's git date, so it is also a"
+  echo "sitemap change. Regenerate and commit the sitemap on its own:"
+  echo ""
+  echo "    python3 tools/make-sitemap.py"
+  echo "    git add sitemap.xml && git commit -m 'Regenerate the sitemap'"
+  echo ""
+  echo "Committed alone, so it moves no page's lastmod and stays true after it lands."
+  exit 1
+fi
+
+# ─── FALLBACK: git only, no file from this repository except the sitemap itself ────────────
+# Reached when tools/check-sitemap.py is not in this worktree. It asserts less — it compares
+# the dates already listed, and cannot tell whether a page is missing from the sitemap
+# entirely — and it says so rather than reporting a pass it did not earn.
+if [ ! -f sitemap.xml ]; then
+  echo "PUSH REFUSED — no tools/check-sitemap.py and no sitemap.xml in this worktree."
+  echo "This hook could not run its check. That is not a pass."
+  exit 1
+fi
+
+echo "pre-push: sitemap check (FALLBACK — tools/check-sitemap.py absent from this worktree)"
+
+# NO PIPELINE INTO `while`. A `cmd | while read` loop runs in a SUBSHELL, so a variable set
+# inside it is lost, and under `set -e` a final test that evaluates false ends the loop
+# non-zero and takes the script with it. The first version of this fallback did exactly that
+# and REFUSED A CLEAN PUSH with no reason printed — a false refusal, which is the same class
+# of defect as a silent pass and is harder to argue with. Redirected input and a plain file.
+tmp_blocks=$(mktemp)
+tr -d '\n' < sitemap.xml | sed 's|</url>|</url>\n|g' > "$tmp_blocks"
+
+stale=0
+while IFS= read -r block; do
+  loc=$(printf '%s' "$block" | sed -n 's|.*<loc>\(.*\)</loc>.*|\1|p')
+  lm=$(printf '%s' "$block" | sed -n 's|.*<lastmod>\(.*\)</lastmod>.*|\1|p')
+  [ -n "$loc" ] || continue
+  path=$(printf '%s' "$loc" | sed 's|https://observerprotocol.org||; s|^/||')
+  if [ -z "$path" ]; then file="index.html"
+  elif [ -f "$path" ]; then file="$path"
+  elif [ -f "$path.html" ]; then file="$path.html"
+  elif [ -f "$path/index.html" ]; then file="$path/index.html"
+  else continue
+  fi
+  git_date=$(git log -1 --format=%cs -- "$file" || true)
+  if [ -n "$git_date" ] && [ "$git_date" != "$lm" ]; then
+    echo "  LASTMOD DIVERGENT  $loc"
+    echo "      sitemap says $lm, git says $git_date  ($file)"
+    stale=1
+  fi
+done < "$tmp_blocks"
+rm -f "$tmp_blocks"
+
+if [ "$stale" = "1" ]; then
+  echo ""
+  echo "PUSH REFUSED — at least one lastmod disagrees with git."
+  echo "    python3 tools/make-sitemap.py     # in a worktree that has it"
+  exit 1
+fi
+echo "  every listed lastmod agrees with git. Enumeration NOT checked in this mode:"
+echo "  a page missing from the sitemap entirely is invisible here and CI still catches it."
+exit 0

@@ -1,0 +1,32 @@
+#!/bin/sh
+# Install this repository's git hooks into .git/hooks.
+#
+# COPIES, IT DOES NOT SYMLINK. A symlink into tools/ breaks in a worktree checked out at a
+# commit before the hook existed, and that worktree is one of the ones the hook is for. A
+# copy keeps running there.
+#
+# INSTALLS INTO THE COMMON DIR, so one run covers every worktree of this clone: git puts
+# .git/hooks in the common directory and every linked worktree shares it.
+#
+# RE-RUN AFTER PULLING A CHANGE TO tools/hooks/. The copy does not update itself, which is
+# the price of it surviving in an old worktree. That trade is deliberate and is the same one
+# the policy repository made.
+set -e
+ROOT=$(git rev-parse --show-toplevel)
+COMMON=$(git rev-parse --git-common-dir)
+case "$COMMON" in /*) ;; *) COMMON="$ROOT/$COMMON" ;; esac
+mkdir -p "$COMMON/hooks"
+n=0
+for h in "$ROOT"/tools/hooks/*; do
+  name=$(basename "$h")
+  [ "$name" = "install" ] && continue
+  cp "$h" "$COMMON/hooks/$name"
+  chmod +x "$COMMON/hooks/$name"
+  echo "  installed $name -> $COMMON/hooks/$name"
+  n=$((n+1))
+done
+echo "$n hook(s) installed."
+echo ""
+echo "THEY ARE NOT INSTALLED FOR ANYONE ELSE. git does not share hooks, so every clone needs"
+echo "this run, and a clone that has not had it is silent about the fact. That is the hook's"
+echo "own defect and it is recorded in tools/hooks/pre-push and in .github/CONVENTIONS.md."
