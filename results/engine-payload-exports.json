@@ -20,8 +20,8 @@
       ],
       "computedAgainstRegistryState": {
         "npmLatest": "1.0.0-rc.12",
-        "npmRc": "1.0.0-rc.20",
-        "versionCount": 25
+        "npmRc": "1.0.0-rc.21",
+        "versionCount": 26
       },
       "goesStaleWhen": "a dist-tag moves or a new version is published, without this file being touched."
     },
@@ -34,8 +34,8 @@
   },
   "package": "@observer-protocol/policy-engine",
   "npmLatest": "1.0.0-rc.12",
-  "npmRc": "1.0.0-rc.20",
-  "versionCount": 25,
+  "npmRc": "1.0.0-rc.21",
+  "versionCount": 26,
   "withdrawals": {
     "resolutionPayload": [
       {
@@ -357,6 +357,22 @@
     },
     {
       "version": "1.0.0-rc.20",
+      "exports": [
+        "evaluationVerdictPayload",
+        "lapsePayload",
+        "refusalPayload",
+        "resolutionPayload"
+      ],
+      "verifiers": [
+        "verifyDecisionAttestation",
+        "verifyCredentialObject",
+        "signableFromRefusal"
+      ],
+      "verdictPayloadType": "op.evaluation.verdict.v4",
+      "refusalPayloadType": "op.enforcement.refusal.v2"
+    },
+    {
+      "version": "1.0.0-rc.21",
       "exports": [
         "evaluationVerdictPayload",
         "lapsePayload",
