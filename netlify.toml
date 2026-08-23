@@ -173,6 +173,61 @@
 # was withdrawn", which is the true statement. No redirect, because no remaining page
 # covers the same rail and implying one would be a different inaccuracy.
 [[redirects]]
+  # THE SOVEREIGN RETIREMENT, 410'd 2026-08-23. One product, retired in one pass.
+  #
+  # Sovereign belonged to the previous product: it moved money on crypto rails, and the
+  # current product does not move money. It joins maxi-0001, vicky-0002, the genesis
+  # transaction and the mainnet refusal in SUPERSEDED.
+  #
+  # sovereign.html was the protocol site's page for it. It was reachable only from
+  # sitemap.xml -- no page on either property linked it -- and its one call to action
+  # opened sovereign.agenticterminal.io, which is retired with it.
+  from = "/sovereign.html"
+  to = "/gone.html"
+  status = 410
+  force = true
+
+[[redirects]]
+  # free-your-agent.html, 410'd 2026-08-23. A dated live demo (2026-05-27) of a spending
+  # cap on Liquid testnet: a wallet, a cap, a payment. Every load-bearing element is
+  # wallet-era.
+  #
+  # ITS ONE TRANSFERABLE IDEA HAD NO ARTIFACT BEHIND IT, and that is why it goes whole
+  # rather than being reframed. Beat 4 described "a small Python script with zero Observer
+  # Protocol dependencies" reproducing SHA-256 bindings and verifying Ed25519 against
+  # published #key-3. That script is named nowhere and served nowhere. It is the same shape
+  # as deciderArtifactDigest naming a ppp/engine.py that is published nowhere: a check a
+  # reader is invited to make and cannot.
+  from = "/free-your-agent.html"
+  to = "/gone.html"
+  status = 410
+  force = true
+
+[[redirects]]
+  # chargeback-prevention/, 410'd 2026-08-23. An investor narrative on a protocol site --
+  # "the thesis", "what the smart money is converging on", "the honest call to action" --
+  # built around a six-beat demo whose user-facing surface was Sovereign.
+  #
+  # ONE PARAGRAPH WAS KEPT AND MOVED FIRST. "On openness, and what we charge for" stated
+  # the licensing position, named what is NOT open, and existed in that form on no other
+  # page of either property. It now lives on /architecture, beside the design principles,
+  # with the wallet-era clause replaced and the encoding rule added.
+  #
+  # IT ALSO CARRIED A FALSE CLAIM, recorded here rather than left behind: "an SDK in
+  # production", when @observer-protocol/sdk, @observerprotocol/sdk and PyPI
+  # observer-protocol are all deprecated or unmaintained, last released April 2026.
+  from = "/chargeback-prevention"
+  to = "/gone.html"
+  status = 410
+  force = true
+
+[[redirects]]
+  from = "/chargeback-prevention/*"
+  to = "/gone.html"
+  status = 410
+  force = true
+
+[[redirects]]
   from = "/quickstart-stripe.html"
   to = "/gone.html"
   status = 410
