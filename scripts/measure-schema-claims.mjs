@@ -203,8 +203,46 @@ const out = {
     'MEASURED OUTPUT. Regenerate with: node scripts/measure-schema-claims.mjs',
     'Asks one question per field: does this schema version say ANYTHING about it.',
     'It is not a validation run. See results/schema-validation.json for that.',
+    '',
+    'THIS FILE IS SERVED PUBLICLY. Read `provenance` below before quoting a figure from it.',
+    'The caveats used to live only in this script, which the site returns 404 for, and in CI',
+    'logs, which no reader sees.',
   ],
   measuredOn: new Date().toISOString().slice(0, 10),
+
+  // WHAT A READER OF THIS URL NEEDS. Stated here even though this file has NO
+  // registry-dependent field, because the other three served results/ artifacts do and a
+  // reader comparing four of them should not have to infer why one is shaped differently.
+  // Omitting the block would make the difference invisible; saying "none" makes it a fact.
+  provenance: {
+    whatWasMeasured: 'For each published delegation schema at ' + BASE + ', whether it says ' +
+      'ANYTHING about each of the ' + CLAIMS.length + ' fields the page claims. One question ' +
+      'per field per version. Not a validation run.',
+    registryDependent: {
+      fields: [],
+      note: 'NONE. Nothing here depends on an npm dist-tag or a package version, which is what ' +
+            'makes this file different from results/engine-payload-exports.json and ' +
+            'results/signed-record-coverage.json. It does not go stale when `latest` moves.',
+    },
+    servedArtifactDependent: {
+      fields: ['versions[]', 'citedDefines', 'citedBytes', 'citedImposesNoConstraints',
+               'earliestFullVersion', 'citeInstead', 'conformingVersions'],
+      computedAgainstServedState: { base: BASE, versionsMeasured: rows.length, citedVersion: cited },
+      goesStaleWhen: 'a published schema at that base changes, or one is added or withdrawn, ' +
+        'without this file being touched. Schemas are meant to be immutable at their URL, so ' +
+        'this SHOULD never move; the check below exists because "should" is not a control.',
+    },
+    reDerivedBy: {
+      script: 'scripts/check-measured-figures.mjs',
+      when: 'every CI run that can reach the schema URLs',
+      what: 'Each published schema is fetched again and DIGEST-MATCHED against the measurement; ' +
+            'a mismatch FAILS the build. So this file cannot go stale silently, the same as ' +
+            'results/engine-payload-exports.json and unlike the corpus half of ' +
+            'results/signed-record-coverage.json, which nothing re-confirms.',
+      whenItCannot: 'A run that cannot reach the URLs reports what it could not check rather ' +
+            'than treating unreachability as agreement.',
+    },
+  },
   citedVersion: cited,
   citedDefines: citedRow?.claimsDefined ?? null,
   claimsTotal: CLAIMS.length,

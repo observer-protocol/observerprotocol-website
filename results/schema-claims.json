@@ -2,9 +2,43 @@
   "$comment": [
     "MEASURED OUTPUT. Regenerate with: node scripts/measure-schema-claims.mjs",
     "Asks one question per field: does this schema version say ANYTHING about it.",
-    "It is not a validation run. See results/schema-validation.json for that."
+    "It is not a validation run. See results/schema-validation.json for that.",
+    "",
+    "THIS FILE IS SERVED PUBLICLY. Read `provenance` below before quoting a figure from it.",
+    "The caveats used to live only in this script, which the site returns 404 for, and in CI",
+    "logs, which no reader sees."
   ],
-  "measuredOn": "2026-08-16",
+  "measuredOn": "2026-08-23",
+  "provenance": {
+    "whatWasMeasured": "For each published delegation schema at https://observerprotocol.org/schemas/delegation/, whether it says ANYTHING about each of the 9 fields the page claims. One question per field per version. Not a validation run.",
+    "registryDependent": {
+      "fields": [],
+      "note": "NONE. Nothing here depends on an npm dist-tag or a package version, which is what makes this file different from results/engine-payload-exports.json and results/signed-record-coverage.json. It does not go stale when `latest` moves."
+    },
+    "servedArtifactDependent": {
+      "fields": [
+        "versions[]",
+        "citedDefines",
+        "citedBytes",
+        "citedImposesNoConstraints",
+        "earliestFullVersion",
+        "citeInstead",
+        "conformingVersions"
+      ],
+      "computedAgainstServedState": {
+        "base": "https://observerprotocol.org/schemas/delegation/",
+        "versionsMeasured": 8,
+        "citedVersion": "v2.2"
+      },
+      "goesStaleWhen": "a published schema at that base changes, or one is added or withdrawn, without this file being touched. Schemas are meant to be immutable at their URL, so this SHOULD never move; the check below exists because \"should\" is not a control."
+    },
+    "reDerivedBy": {
+      "script": "scripts/check-measured-figures.mjs",
+      "when": "every CI run that can reach the schema URLs",
+      "what": "Each published schema is fetched again and DIGEST-MATCHED against the measurement; a mismatch FAILS the build. So this file cannot go stale silently, the same as results/engine-payload-exports.json and unlike the corpus half of results/signed-record-coverage.json, which nothing re-confirms.",
+      "whenItCannot": "A run that cannot reach the URLs reports what it could not check rather than treating unreachability as agreement."
+    }
+  },
   "citedVersion": "v2.2",
   "citedDefines": 0,
   "claimsTotal": 9,

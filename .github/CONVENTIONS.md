@@ -657,3 +657,54 @@ change in isolation, reset the branch to the target, re-apply that diff, and for
 Verify the diff **before and after** the rebuild. The number that matters is that the child's
 contribution is the same size on both sides; if it grew, the parent's content is being
 reapplied on top of itself.
+
+---
+
+## 17. A check can fail in a way that asserts nothing, and only the passing path finds it
+
+A refusal is normally the useful half of a check. It is not always. A check can exit non-zero
+while establishing nothing at all:
+
+- **refusing with no reason printed**, so the output is a verdict with no finding under it;
+- **refusing while naming a condition it could not establish**, so the output is a finding
+  about something the run never looked at.
+
+Both are distinct from a silent pass, and **both are harder to argue with**, because the
+output has the shape of a finding. A reader who trusts the check now believes something false
+and has a red build agreeing with them. A silent pass at least leaves the reader's own
+judgement intact.
+
+### Two this week, both mine, both caught
+
+**The pre-push fallback refused a clean push with no reason.** `… | while read` under `set -e`:
+the loop ran in a subshell, the variable it set was lost, and a trailing test evaluating false
+ended the loop non-zero. Exit 1, no divergent page named, nothing wrong.
+
+**The input-provenance labeller reported `MODIFIED INPUTS` when `git` was absent from `PATH`.**
+It could not read the tree at all, and rendered that as a substantive claim about the tree's
+contents. *Could not establish* had been collapsed into *established, and bad* — which is the
+estate's own named defect appearing inside a mechanism written to remove it.
+
+### The rule
+
+**Every instrument defect found this week was found by testing the failing path. This class is
+only found by testing the passing one.**
+
+Injecting a fault and watching a check go red proves the failure branch runs. It says nothing
+about whether the check is red for the reason it prints, and nothing about whether it is green
+when it should be. Both defects above sat in code that had been demonstrated failing correctly
+on the condition it was written for.
+
+**So a check demonstrated failing is half a demonstration.** The other half is:
+
+1. **Run it clean and confirm it passes** — and passes for a reason it states, not by falling
+   off the end of a loop.
+2. **Remove one of its inputs and confirm it says so** — the script, `git`, the network, an
+   unreadable file — rather than converting the absence into a claim about the subject.
+3. **Read the refusal text against what the run actually did.** A refusal naming a page, a
+   version or a count that the run never reached is a false refusal even when the exit code is
+   the one you wanted.
+
+A check with no third state is the usual cause. `pass` and `fail` cannot express *did not
+run*, so unavailability has to be spent on one of the two, and it is nearly always spent on
+`fail` because that feels safe. It is not safe; it is a fabricated finding.
