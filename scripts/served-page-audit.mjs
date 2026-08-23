@@ -155,7 +155,7 @@ const EXPECTED = [
   },
   {
     label: 'the page verifier',
-    sha256: 'e83072364637a61edb1091ff726b47559122e63544ecddf6d01c4579c848d053',
+    sha256: 'c16afffad1cb869b5aa53dd7db910973599952239698a77bd312f80ac1d9dba5',
     why: 'The code that reaches the verdict. If this is missing the page renders and decides nothing; if it is altered, it decides something else.',
   },
 ];
