@@ -708,3 +708,60 @@ on the condition it was written for.
 A check with no third state is the usual cause. `pass` and `fail` cannot express *did not
 run*, so unavailability has to be spent on one of the two, and it is nearly always spent on
 `fail` because that feels safe. It is not safe; it is a fabricated finding.
+
+---
+
+## 18. Verify the index, because the worktree is not what commits
+
+The rule this replaces was **"commit before testing, not after"**, written after
+`#91` merged a message describing a guard its diff did not contain. That rule is
+true and it is not strong enough. **It would not have caught the near-miss in
+`#97`.**
+
+### What happened in #97
+
+A script applied the two-token fix and then asserted the result:
+
+```python
+s = s.replace("if (!ok) {", COMMENT + "if (ok !== true) {")
+assert s.count('ok !== true') == 2
+open(p, 'w').write(s)
+```
+
+The comment text itself contains `ok !== true`, so the count was **4**, the
+assert fired, and **`open(...).write(...)` never ran**. The file was untouched.
+The same shell line then staged and committed — carrying the harness and no fix,
+under a message describing a two-token change.
+
+**"Commit before testing" was satisfied.** The commit came before any test of it.
+The commit was still empty of the thing its message described, because what was
+tested was a *variable in a dead script*, not the file, and certainly not the
+index.
+
+### The rule
+
+**Verify the index.** Not the variable, not the worktree — `git show :path`, the
+staged content, the bytes that will become the commit.
+
+```
+git show :check.html | grep -c 'if (!ok)'          # 0
+git show :check.html | grep -c 'if (ok !== true)'  # 2
+```
+
+Three things can diverge and each has burned this estate once:
+
+| what you check | how it lies |
+|---|---|
+| a variable in the script that writes the file | the write can not happen — #97 |
+| the worktree | `git add` may not have been run, or ran before the last edit |
+| the commit, after the fact | correct, but late: the message is already written and the claim already made |
+
+**The index is the only one that is both what commits and available before
+committing.**
+
+### Why the weaker form survived a block
+
+Because it described the *sequence* that failed in #91 rather than the *property*
+that failed. #91's sequence was: edit, test, `reset --hard`, commit. Reordering it
+fixes #91 and does nothing for #97, whose sequence was already correct. A rule
+drawn from one instance describes that instance; the property is what generalises.
