@@ -43,6 +43,7 @@ Run: python3 tools/check-sitemap.py [--no-live] [--sitemap PATH_OR_URL]
 
 import importlib.util
 import pathlib
+import shutil
 import subprocess
 import re
 import sys
@@ -81,6 +82,49 @@ def shallow_repository():
     except (OSError, subprocess.SubprocessError):
         return False
     return out.stdout.strip() == "true"
+
+
+EXIT_TOOL_ABSENT = 3
+
+
+def git_state():
+    """'ok', 'absent', or a string describing how git failed.
+
+    PRESENCE IS NOT AN ANSWER. `shutil.which` finds a git that exists and cannot run:
+    a broken shim, a wrapper that exits non-zero, a binary for the wrong architecture.
+    Absence and failure are different states and a presence test sees one of them, so
+    this asks git a question it cannot get wrong instead of asking whether it is there.
+
+    WHY THIS IS NOT A `try` AROUND EACH CALL. There were two git call sites and they
+    failed differently: `is_shallow()` caught OSError and returned False, turning "could
+    not ask" into the substantive answer "not shallow"; `tracked_html()` used check=True
+    and raised, so absence surfaced as a traceback at exit 1, indistinguishable from a
+    sitemap fault. One state, two wrong renderings. Asking once, up front, is the only
+    way the answer is the same wherever git is used.
+    """
+    if shutil.which("git") is None:
+        return "absent"
+    try:
+        out = subprocess.run(["git", "--version"], capture_output=True, text=True, timeout=10)
+    except OSError as e:
+        return f"present on PATH but could not be executed ({e.__class__.__name__}: {e})"
+    except subprocess.SubprocessError as e:
+        return f"present on PATH but did not answer ({e.__class__.__name__})"
+    if out.returncode != 0:
+        return f"present on PATH and exited {out.returncode} for `git --version`"
+    if not out.stdout.startswith("git version"):
+        return "present on PATH and answered `git --version` with something else"
+    return "ok"
+
+
+def refuse_tool_absent(detail):
+    print()
+    print(f"  CANNOT RUN - git is {detail}.")
+    print("  Every fault class below compares the sitemap to git: the deployed enumeration")
+    print("  comes from `git ls-files`, and each lastmod from a committer date.")
+    print("  This is NOT a pass and NOT a sitemap finding. The check did not run.")
+    print(f"  Exit {EXIT_TOOL_ABSENT} is tool-absent; exit 1 is a refusal; exit 4 is a skipped live pass.")
+    return EXIT_TOOL_ABSENT
 
 
 def deployed_pages(gen):
@@ -142,6 +186,10 @@ def live_problems(url):
 
 
 def main(argv):
+    state = git_state()
+    if state != "ok":
+        return refuse_tool_absent(state)
+
     source = str(ROOT / "sitemap.xml")
     if "--sitemap" in argv:
         source = argv[argv.index("--sitemap") + 1]
