@@ -71,7 +71,18 @@ if [ ! -f sitemap.xml ]; then
   exit 1
 fi
 
-echo "pre-push: sitemap check (FALLBACK — tools/check-sitemap.py absent from this worktree)"
+# NAME WHICH INPUT IS MISSING. This banner said the script was absent whatever the reason, so a
+# worktree that HAS the script but no python3 was told something false about itself. Two
+# different missing inputs were being reported as one.
+if [ ! -f tools/check-sitemap.py ]; then
+  why="tools/check-sitemap.py is not in this worktree"
+elif ! command -v python3 >/dev/null 2>&1; then
+  why="python3 is not on PATH, so tools/check-sitemap.py cannot run"
+else
+  why="the primary check could not be used"
+fi
+echo "pre-push: sitemap check (FALLBACK — $why)"
+echo "  This asserts LESS than the primary check. Stated rather than silently degraded."
 
 # NO PIPELINE INTO `while`. A `cmd | while read` loop runs in a SUBSHELL, so a variable set
 # inside it is lost, and under `set -e` a final test that evaluates false ends the loop
