@@ -177,8 +177,44 @@ const out = {
     '',
     'A signature is counted as PRESENT, never as valid. Nothing here verifies anything.',
     'The question asked is narrower and worse: can the bytes be rebuilt at all.',
+    '',
+    'THIS FILE IS SERVED PUBLICLY AND HAS TWO HALVES THAT AGE DIFFERENTLY.',
+    'Read `provenance` below before quoting any figure from it. The caveats used to',
+    'live only in this script, which the site returns 404 for, and in CI logs, which',
+    'no reader sees. A figure that announces it is unchecked where nobody reads the',
+    'announcement is a marker doing no work, so the announcement is now in the artifact.',
   ],
   measuredOn: new Date().toISOString().slice(0, 10),
+
+  // WHAT A READER OF THIS URL NEEDS AND COULD NOT PREVIOUSLY GET. What was measured,
+  // when, over what, which fields depend on a registry state, and which registry state
+  // they were computed against. The last of those was not recorded anywhere at all:
+  // `rebuildableAtNpmLatest` named a version only inside a prose note.
+  provenance: {
+    corpusHalf: {
+      fields: ['classes[].signed', 'classes[].total', 'signedRecordTotal', 'recordTotal',
+               'signedRange', 'headline.neverRebuildable'],
+      measuredOn: new Date().toISOString().slice(0, 10),
+      over: `${files.length} store file(s) under ${STORES.replace(process.env.HOME ?? '', '~')}`,
+      reDerivable: false,
+      why: 'The stores are working artifacts outside this repository. CI cannot reach them, ' +
+           'so these figures are a DATED MEASUREMENT and nothing re-confirms them. The per-file ' +
+           'sha256 list below exists so a later run can prove it measured the same population.',
+    },
+    predicateHalf: {
+      fields: ['classes[].rebuildableAtNpmLatest', 'headline.notRebuildableAtNpmLatest'],
+      computedAgainstRegistryState: {
+        npmLatest: engineExports.npmLatest,
+        source: 'results/engine-payload-exports.json',
+        thatFileMeasuredOn: engineExports.measuredOn,
+      },
+      reDerivable: true,
+      why: 'These depend on which symbols npm\'s `latest` exports, which is public and is ' +
+           're-read by check-measured-figures.mjs on every run. THEY GO FALSE WHEN THE ' +
+           '`latest` DIST-TAG MOVES, without this file being touched. If npm latest is not ' +
+           `${engineExports.npmLatest}, treat every field listed here as stale.`,
+    },
+  },
   storesRoot: STORES.replace(process.env.HOME ?? '', '~'),
   storeFileCount: files.length,
   unparsedLines: unparsed,

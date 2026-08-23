@@ -345,15 +345,96 @@ const notes = [];
 const note = (...xs) => notes.push(xs.join(' '));
 note(`${seen.size} distinct measured figure(s) across ${[...seen.values()].reduce((a, b) => a + b, 0)} marker(s) in ${htmlFiles.length} page(s).`);
 
+// ─── signed-record-coverage: TWO VERDICTS, BECAUSE IT IS TWO FIGURES ─────────────────────────────
+// This file used to carry one verdict, NOT RE-DERIVED, over a figure with two halves. That
+// was honest about the whole and overbroad about the part that matters, because it declared
+// unchecked something that costs one comparison to check.
+//
+//   THE CORPUS HALF   per-kind `signed` counts, and which rebuildRoute each kind needs.
+//                     Measured over stores outside this repository. NOT re-derivable here,
+//                     and that is a real limit rather than an omission: the stores are
+//                     working artifacts and were never in the repo.
+//
+//   THE PREDICATE HALF  whether npm's `latest` exports that route. Public, and already
+//                     fetched this run for engine-payload-exports. This is the half a tag
+//                     move bites: move `latest` past rc.12 and `resolution` becomes
+//                     rebuildable, which turns a kinds list, a count and a percentage false
+//                     at once.
+//
+// THE STORED VALUES ARE NOT REWRITTEN HERE. The predicate recomputing to what is stored is
+// the correct state today; this exists to notice when it stops being.
 const coverage = results['signed-record-coverage'];
 if (coverage) {
   note(
-    `\nNOT RE-DERIVED: signed-record-coverage. Measured ${coverage.measuredOn} over ` +
-    `${coverage.storeFileCount} file(s) under ${coverage.storesRoot}, which are not in this\n` +
-    `repository, so this run compared the pages to that record and did NOT check that the record\n` +
-    `still describes the stores. It is a dated measurement. Re-derive with:\n` +
+    `\nNOT RE-DERIVED — the corpus half of signed-record-coverage. Measured ${coverage.measuredOn} over ` +
+    `${coverage.storeFileCount} file(s) under ${coverage.storesRoot},\n` +
+    `which are not in this repository, so this run did NOT check that the per-kind counts still\n` +
+    `describe the stores. A dated measurement. Re-derive with:\n` +
     `  node scripts/measure-signed-record-coverage.mjs`
   );
+
+  // The predicate half, recomputed from a file this run already re-derived against npm.
+  if (!engine) {
+    failures.push(
+      `signed-record-coverage carries claims about what npm's latest rebuilds, and\n` +
+      `    results/engine-payload-exports.json is not loaded, so they could not be checked.\n` +
+      `    Not a pass: the half of this figure that CAN be re-derived was not.`
+    );
+  } else if (!registryChecked) {
+    failures.push(
+      `signed-record-coverage's rebuildableAtNpmLatest claims are about the version a reader\n` +
+      `    receives TODAY, and this run could not reach the registry (${registryErr ?? 'no network'}).\n` +
+      `    Not a pass: a claim about the current latest is not established by a run that could not ask.`
+    );
+  } else {
+    const at = engine.versions?.find((v) => v.version === engine.npmLatest);
+    if (!at) {
+      failures.push(
+        `signed-record-coverage's rebuildableAtNpmLatest claims are computed against npm latest\n` +
+        `    ${engine.npmLatest}, for which results/engine-payload-exports.json carries no measurement.\n` +
+        `    The claims cannot be evaluated, which is not the same as them being true.`
+      );
+    } else {
+      const available = new Set([...(at.exports ?? []), ...(at.verifiers ?? [])]);
+      const disagreed = [];
+      for (const c of coverage.classes ?? []) {
+        const derived = Boolean(c.rebuildRoute) && available.has(c.rebuildRoute);
+        if (derived !== c.rebuildableAtNpmLatest) disagreed.push({ c, derived });
+      }
+      const notRebuildable = (coverage.classes ?? []).filter((c) => c.rebuildRoute && !available.has(c.rebuildRoute));
+      const derivedKinds = notRebuildable.map((c) => c.kind);
+      const derivedCount = notRebuildable.reduce((a, c) => a + (c.signed ?? 0), 0);
+      const stored = coverage.headline?.notRebuildableAtNpmLatest ?? {};
+      const storedKinds = stored.kinds ?? [];
+      const sameKinds = derivedKinds.length === storedKinds.length &&
+        derivedKinds.every((k) => storedKinds.includes(k));
+
+      for (const { c, derived } of disagreed) {
+        failures.push(
+          `results/signed-record-coverage.json records ${c.kind}.rebuildableAtNpmLatest=${c.rebuildableAtNpmLatest},\n` +
+          `    but npm's latest (${engine.npmLatest}) ${derived ? 'DOES' : 'does NOT'} export ${c.rebuildRoute}.\n` +
+          `    Re-run: node scripts/measure-signed-record-coverage.mjs`
+        );
+      }
+      if (!sameKinds || derivedCount !== stored.count) {
+        failures.push(
+          `results/signed-record-coverage.json's headline.notRebuildableAtNpmLatest records\n` +
+          `    kinds ${JSON.stringify(storedKinds)} count ${stored.count}; recomputed against npm latest\n` +
+          `    ${engine.npmLatest} it is kinds ${JSON.stringify(derivedKinds)} count ${derivedCount}.\n` +
+          `    A count, a kinds list and a percentage are wrong together.\n` +
+          `    Re-run: node scripts/measure-signed-record-coverage.mjs`
+        );
+      }
+      if (!disagreed.length && sameKinds && derivedCount === stored.count) {
+        note(
+          `\nRE-DERIVED — the predicate half of signed-record-coverage. All ` +
+          `${(coverage.classes ?? []).length} kind(s) still agree with what\n` +
+          `npm's latest (${engine.npmLatest}) exports, and headline.notRebuildableAtNpmLatest ` +
+          `recomputes to kinds\n${JSON.stringify(derivedKinds)} count ${derivedCount}, which is what is stored.`
+        );
+      }
+    }
+  }
 }
 
 if (schemaClaims) {
