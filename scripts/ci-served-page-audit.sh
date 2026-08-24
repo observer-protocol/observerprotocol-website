@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# DECLARES-COMPARES: {"repositoryHolds":["served-page-audit.mjs EXPECTED script hashes"],"worldSource":"https://observerprotocol.org/check as served","goesStaleWhen":"check.html changes and the deploy has not landed, or production is altered"}
+# ^ Machine-readable. What this check holds against the world, and what makes it
+#   stale. worldSource null is a DECLARATION, not an absence: it says both sides are
+#   inside this repository. Read by scripts/check-declarations.mjs, which FAILS on any
+#   CI-invoked check that carries no declaration.
 #
 # Runs served-page-audit.mjs from CI and maps its four exit codes onto the two a workflow
 # step has. It exists because those are not the same shape, and collapsing them loses the

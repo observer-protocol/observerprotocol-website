@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+// DECLARES-COMPARES: {"repositoryHolds":["every outbound href in tracked HTML"],"worldSource":"the sites those links point at","goesStaleWhen":"a third-party URL moves or goes down"}
+// ^ Machine-readable. What this check holds against the world, and what makes it
+//   stale. worldSource null is a DECLARATION, not an absence: it says both sides are
+//   inside this repository. Read by scripts/check-declarations.mjs, which FAILS on any
+//   CI-invoked check that carries no declaration.
 /**
  * Every outbound link this site publishes, followed.
  *

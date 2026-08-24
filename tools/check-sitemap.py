@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+# DECLARES-COMPARES: {"repositoryHolds":["sitemap.xml lastmod and loc entries"],"worldSource":"https://observerprotocol.org/* reachability (the live pass only); the enumeration side is repository-only","goesStaleWhen":"a page's git date moves, or a deploy changes what is reachable"}
+# ^ Machine-readable. What this check holds against the world, and what makes it
+#   stale. worldSource null is a DECLARATION, not an absence: it says both sides are
+#   inside this repository. Read by scripts/check-declarations.mjs, which FAILS on any
+#   CI-invoked check that carries no declaration.
 """Check sitemap.xml against the pages this repository actually deploys.
 
 WHY THIS WAS REPLACED, 2026-08-22. The previous version read sitemap.xml, fetched

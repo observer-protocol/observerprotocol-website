@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+// DECLARES-COMPARES: {"repositoryHolds":["scripts/credential-expectations.json verdicts","credentials/*.json and verify-samples/*.json"],"worldSource":"the installed @observer-protocol/policy-engine, whose version the lockfile pins","goesStaleWhen":"the pinned engine version changes, or a published artifact changes"}
+// ^ Machine-readable. What this check holds against the world, and what makes it
+//   stale. worldSource null is a DECLARATION, not an absence: it says both sides are
+//   inside this repository. Read by scripts/check-declarations.mjs, which FAILS on any
+//   CI-invoked check that carries no declaration.
 /**
  * Verify every signed artifact this repository publishes, against the
  * expectations recorded in scripts/credential-expectations.json.

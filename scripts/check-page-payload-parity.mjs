@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+// DECLARES-COMPARES: {"repositoryHolds":["the refusal payload embedded in check.html"],"worldSource":"the installed @observer-protocol/policy-engine's payload builder","goesStaleWhen":"the pinned engine version changes its payload construction"}
+// ^ Machine-readable. What this check holds against the world, and what makes it
+//   stale. worldSource null is a DECLARATION, not an absence: it says both sides are
+//   inside this repository. Read by scripts/check-declarations.mjs, which FAILS on any
+//   CI-invoked check that carries no declaration.
 /**
  * The page's copy of a signing construction, held to the package's.
  *

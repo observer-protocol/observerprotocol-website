@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+// DECLARES-COMPARES: {"repositoryHolds":["the published sample and the page's own checker"],"worldSource":"the installed @observer-protocol/policy-engine","goesStaleWhen":"the pinned engine version changes verification behaviour"}
+// ^ Machine-readable. What this check holds against the world, and what makes it
+//   stale. worldSource null is a DECLARATION, not an absence: it says both sides are
+//   inside this repository. Read by scripts/check-declarations.mjs, which FAILS on any
+//   CI-invoked check that carries no declaration.
 /**
  * The public checker on /check.html, driven against real artifacts and against
  * deliberately broken ones.
