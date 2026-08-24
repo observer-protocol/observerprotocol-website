@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+// DECLARES-COMPARES: {"repositoryHolds":["scripts/shared-copy.json phrases","the pages that must carry them"],"worldSource":null,"goesStaleWhen":"never from outside: it compares pages to each other"}
+// ^ Machine-readable. What this check holds against the world, and what makes it
+//   stale. worldSource null is a DECLARATION, not an absence: it says both sides are
+//   inside this repository. Read by scripts/check-declarations.mjs, which FAILS on any
+//   CI-invoked check that carries no declaration.
 /**
  * Some sentences must read identically wherever they appear. This fails the build when
  * they stop doing so.

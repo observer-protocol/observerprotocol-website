@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# DECLARES-COMPARES: {"repositoryHolds":["schemas/ and .well-known/ artifacts authored in the aip repo"],"worldSource":"the aip repository's raw files over HTTPS","goesStaleWhen":"the aip repository changes an artifact served here"}
+# ^ Machine-readable. What this check holds against the world, and what makes it
+#   stale. worldSource null is a DECLARATION, not an absence: it says both sides are
+#   inside this repository. Read by scripts/check-declarations.mjs, which FAILS on any
+#   CI-invoked check that carries no declaration.
 # The website serves protocol artifacts. `aip` is where they are authored. This refuses when the
 # two disagree.
 #

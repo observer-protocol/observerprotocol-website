@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+// DECLARES-COMPARES: {"repositoryHolds":["schemas/delegation/*.json"],"worldSource":"https://observerprotocol.org/schemas/delegation/*.json as served","goesStaleWhen":"a deploy serves different bytes than the repository holds"}
+// ^ Machine-readable. What this check holds against the world, and what makes it
+//   stale. worldSource null is a DECLARATION, not an absence: it says both sides are
+//   inside this repository. Read by scripts/check-declarations.mjs, which FAILS on any
+//   CI-invoked check that carries no declaration.
 /**
  * DOES THE URL SERVE THE BYTES THIS REPOSITORY HOLDS?
  *

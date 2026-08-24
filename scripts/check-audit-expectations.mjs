@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+// DECLARES-COMPARES: {"repositoryHolds":["served-page-audit.mjs EXPECTED hashes and AUDIT_SHA256"],"worldSource":null,"goesStaleWhen":"never from outside: it compares the audit's baked-in values to files in this repository"}
+// ^ Machine-readable. What this check holds against the world, and what makes it
+//   stale. worldSource null is a DECLARATION, not an absence: it says both sides are
+//   inside this repository. Read by scripts/check-declarations.mjs, which FAILS on any
+//   CI-invoked check that carries no declaration.
 /**
  * served-page-audit.mjs carries two things it cannot derive at run time, because it runs
  * with no repository: the hashes of check.html's own inline scripts, and its own content

@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+// DECLARES-COMPARES: {"repositoryHolds":["results/*.json fields quoted in pages via data-measured","data-derived-claim predicates on pages"],"worldSource":"npmjs.org dist-tags and versions; the hosted verifier's /version; published schema files in this repo","goesStaleWhen":"a dist-tag moves, a version is published, or the hosted service is redeployed"}
+// ^ Machine-readable. What this check holds against the world, and what makes it
+//   stale. worldSource null is a DECLARATION, not an absence: it says both sides are
+//   inside this repository. Read by scripts/check-declarations.mjs, which FAILS on any
+//   CI-invoked check that carries no declaration.
 /**
  * No figure about our own evidence is typed into a page. Every one is marked, and
  * every marked figure is compared against results/ on every build.

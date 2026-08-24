@@ -1,4 +1,9 @@
 #!/usr/bin/env node
+// DECLARES-COMPARES: {"repositoryHolds":["the schema index page","schemas/delegation/ directory listing"],"worldSource":null,"goesStaleWhen":"never from outside: both sides are in this repository"}
+// ^ Machine-readable. What this check holds against the world, and what makes it
+//   stale. worldSource null is a DECLARATION, not an absence: it says both sides are
+//   inside this repository. Read by scripts/check-declarations.mjs, which FAILS on any
+//   CI-invoked check that carries no declaration.
 /**
  * The delegation schema directory has an index page. This fails the build when it
  * stops describing the directory, or when the path that points at it stops resolving.

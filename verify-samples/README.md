@@ -7,6 +7,16 @@ Three are delegation credentials. The other eight come from the **PPP corpus**, 
 determination, a verdict, a refusal and a payment instruction actually look like when a policy stack
 runs end to end.
 
+**This file states no current repository state, deliberately.** It carried a false claim
+about it three times: two schema-version pins, a worked example that reproduced only on a
+superseded release, and a sentence about what the pin and the expectations were. Each was
+restating something another file holds authoritatively, and duplicated state is what goes
+stale. Which version `npm install` serves is in the dist-tag; what this repository pins is
+in `scripts/package.json`; which schema is current is derivable from what is published.
+Versions appear below only as **dated statements about a past run**, which cannot go stale
+because they are about the past. The dated statements beside all three false claims stayed
+true throughout, which is the argument.
+
 ## The PPP corpus is synthetic in its cases and real in its policy
 
 **Real in its policy.** The rule applied is US Paycheck Protection Program loan forgiveness under two
@@ -40,8 +50,7 @@ applied. That is the same limit the site states about `policyRef.hash` generally
 
 ## What is here, and what the verifier returns for each
 
-**Measured with `@observer-protocol/policy-engine@1.0.0-rc.21` on 23 August 2026, which is the
-version `npm install` serves.** This page documents the version a reader actually installs, so the
+**Measured with `@observer-protocol/policy-engine@1.0.0-rc.21` on 23 August 2026.** This page documents the version a reader actually installs, so the
 Expected column is what *you* will see. Every reason string below is the checker's own output,
 copied from the run, not a paraphrase.
 
@@ -126,7 +135,7 @@ verify.
 | engine versions | rebuilds | the four verdicts |
 |---|---|---|
 | `rc.11` through `rc.17` (includes `rc.12`) | `op.evaluation.verdict.v3` | do not verify |
-| `rc.18` onward (includes `rc.21`, npm `latest`) | `op.evaluation.verdict.v4` | **verify** |
+| `rc.18` onward (includes `rc.21`) | `op.evaluation.verdict.v4` | **verify** |
 
 No published version emits `v1` or `v2`: `evaluationVerdictPayload` was first exported at `rc.11`,
 already at v3.
@@ -155,13 +164,6 @@ is what a holder of a v3 verdict needs today.
 So the correct description of these artifacts is **recoverable by trial across a contiguous band**,
 not fragile. A record whose recovery required guessing an unbounded string, or a nonce, or a
 timestamp, would be fragile. This one requires counting.
-
-**What the pin does.** `scripts/package.json` now pins `1.0.0-rc.21`, the version npm's `latest`
-serves, and `scripts/credential-expectations.json` records the four verdicts as `allow: true`.
-Both moved in the same commit as the pin, because rc.12 cannot verify these four and an
-expectation is a statement about the version being run. The expectation strings named both
-version tokens deliberately, so the pin could not move in either direction without turning the
-check red; it did, and that is what brought the two changes together.
 
 
 **Why it is not in the filenames.** A file called `must-not-verify-*` is making a permanent claim.
