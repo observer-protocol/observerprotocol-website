@@ -29,3 +29,8 @@ secure-keys/
 # live domain. A node_modules tree would be published in full.
 node_modules/
 **/node_modules/
+
+# Python bytecode. tools/make-sitemap.py and tools/check-sitemap.py write it on every run,
+# and a tracked .pyc showed as modified after every sitemap regeneration (2026-08-24).
+__pycache__/
+*.pyc
