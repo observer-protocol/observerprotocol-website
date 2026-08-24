@@ -963,7 +963,11 @@
 
     var coverage = coverageOf(record, shape);
 
-    if (!ok) {
+    // The affirmative branch below must be conditional on the signature check having RETURNED
+    // TRUE, not merely on it having returned something that is not falsy. A test for falsiness
+    // lets a verifier returning a truthy non-boolean through, and the page then prints a verdict
+    // the cryptography did not authorise. See #65 for the harness that measures this.
+    if (ok !== true) {
       return {
         state: 'does-not-verify', passed: passed, coverage: coverage, payload: payload, shape: shape.name,
         reason: 'The signature does not verify over the payload this record states it was signed under. Either a field inside the signature has been altered since it was signed, or the signature has. This is not a missing record: it is a signed artifact failing its own check.'
@@ -1097,7 +1101,11 @@
     catch (e) {
       return { state: 'cited-invalid', passed: passed, reason: 'The signature could not be checked: ' + String(e && e.message ? e.message : e) };
     }
-    if (!ok) {
+    // The affirmative branch below must be conditional on the signature check having RETURNED
+    // TRUE, not merely on it having returned something that is not falsy. A test for falsiness
+    // lets a verifier returning a truthy non-boolean through, and the page then prints a verdict
+    // the cryptography did not authorise. See #65 for the harness that measures this.
+    if (ok !== true) {
       return {
         state: 'cited-invalid', passed: passed,
         reason: 'The signature does not verify against the decider’s own key. This is not a missing record: it is a signed artifact failing its own check.'

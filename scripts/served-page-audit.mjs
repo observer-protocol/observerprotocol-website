@@ -128,7 +128,7 @@ import { fileURLToPath } from 'node:url';
 const AUDIT_VERSION = '3.6.0';
 // sha256 of this file with the literal on the line below normalised to an empty string.
 // Recompute with --version. Update it in the same commit as any edit to this file.
-const AUDIT_SHA256 = '624de5d4eec128c41bd68a17d686a233ae3eb99e181a40e12a4e3a09422f3ba6';
+const AUDIT_SHA256 = '159c894fc3dd359dfcf5de0b6ec6bd0966bde6582c0cfe43e95fa2788571a4da';
 
 const sha256 = (s) => createHash('sha256').update(s).digest('hex');
 
@@ -155,7 +155,7 @@ const EXPECTED = [
   },
   {
     label: 'the page verifier',
-    sha256: 'e83072364637a61edb1091ff726b47559122e63544ecddf6d01c4579c848d053',
+    sha256: 'c16afffad1cb869b5aa53dd7db910973599952239698a77bd312f80ac1d9dba5',
     why: 'The code that reaches the verdict. If this is missing the page renders and decides nothing; if it is altered, it decides something else.',
   },
 ];
