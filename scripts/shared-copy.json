@@ -13,14 +13,14 @@
     "key that no page claims at all."
   ],
   "completeness": {
-    "why": "The supervisor page and the homepage register row must state the completeness problem in the same words. They are read by the same person in one sitting, and two phrasings of one unsolved problem reads as two different problems.",
+    "why": "The supervisor page and the homepage register row must state the completeness problem in the same words. They are read by the same person in one sitting, and two phrasings of one unsolved problem reads as two different problems. NARROWED 24 August 2026, on a ruling: /supervisors section 04 is the canonical home and stays as it is; the homepage row is compressed to three sentences and links to it. The two sentences both pages still state stay pinned. \"The cryptography for transparency logs is solved.\" left the pin because the compressed row no longer carries it; it remains on /supervisors, unpinned. This narrows the control, and the narrowing is recorded here rather than in a commit message.",
+    "movedOn": "2026-08-24. The homepage row compressed; the pin narrowed from three phrases to the two both pages state.",
     "mustAppearIn": [
       "index.html",
       "supervisors.html"
     ],
     "phrases": [
       "A firm can hand over a hundred clean determinations and withhold the hundred-and-first, and all hundred verify.",
-      "The cryptography for transparency logs is solved.",
       "who runs the log, who is obliged to publish to it, what a gap in it legally means, and how a firm demonstrates completeness without exposing commercially sensitive volume."
     ]
   },
