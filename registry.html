@@ -205,9 +205,9 @@
         <strong style="color:var(--text-dim);">Scope.</strong> The mandate issuer was a demonstration <code>did:key</code>,
         not the production issuer. · One node, ours, so this is enforcement at a node rather than closure of the network.
         · The macaroon caveat is a sender-side trigger in the payer's own credential and is not visible to the payee.
-        · <strong style="color:var(--text-dim);">The signed record itself is not yet verifiable by you:</strong>
-        <code>refusalPayload</code> is not exported from the published engine.
-        <a href="/verify.html" style="color:var(--amber); text-decoration:none;">What that means →</a>
+        · <strong style="color:var(--text-dim);">The signed record of this entry is not published here, so there is nothing on this site for you to verify.</strong>
+        <span data-derived-claim="engine-payload-exports:latest-exports(refusalPayload)">Corrected 24 August 2026: this note said <code>refusalPayload</code> was not exported from the published engine. That stopped being true at rc.8, and every version from rc.8 to the one <code>npm install</code> serves exports it, measured on every build from <code>results/engine-payload-exports.json</code>.</span> Whether this record's bytes rebuild under it is not established, because the record is not in your hands.
+        <a href="/verify.html" style="color:var(--amber); text-decoration:none;">How a published refusal record is checked →</a>
       </div>
     </div>
   </div>
