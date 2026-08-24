@@ -27,6 +27,8 @@ on:
       - 'tools/make-sitemap.py'
       - 'netlify.toml'
       - 'scripts/check-measured-figures.mjs'
+      - 'scripts/check-section05-transcript.mjs'
+      - 'scripts/sweep-sentences.mjs'
       - 'scripts/measured-figures.json'
       - 'scripts/measure-signed-record-coverage.mjs'
       - 'scripts/measure-engine-payload-exports.mjs'
