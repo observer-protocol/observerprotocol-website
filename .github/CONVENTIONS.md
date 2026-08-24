@@ -765,3 +765,66 @@ Because it described the *sequence* that failed in #91 rather than the *property
 that failed. #91's sequence was: edit, test, `reset --hard`, commit. Reordering it
 fixes #91 and does nothing for #97, whose sequence was already correct. A rule
 drawn from one instance describes that instance; the property is what generalises.
+
+## 19. A `data-derived-claim` marker checks the figures a sentence rests on, not the sentence
+
+The marker mechanism evaluates a predicate over measured values. **It never reads
+the words it is attached to.** That is worth stating because the attachment makes
+it look otherwise: the attribute sits on the element containing the claim, so it
+reads as guarding that claim, and it guards the arithmetic underneath it.
+
+### What this means when a claim has two sides
+
+`/verify` section 02 says one thing while npm's `latest` sits inside the
+`resolutionPayload` withdrawal band and the opposite once it moves past. Swapping
+it is six parts: a heading, two consequence sentences, the marker, a dependent
+paragraph, and the version spans.
+
+**Neither half of a partial swap is caught while the tag has not moved:**
+
+| state | build | page |
+|---|---|---|
+| sentences swapped, marker not | **green** | **false** |
+| marker swapped, sentences not | red | false |
+| all six | red until the tag moves | true after it |
+
+Measured 2026-08-24 by running it: parts 1–3 landed and
+`check-measured-figures` returned 0.
+
+**So there is no ordering of the parts that is both green and true before the
+tag moves**, and an ordering chosen to make the intermediate state fail loudly
+does not do so. The first row is the dangerous one: **green and false is the
+state that gets merged by accident.**
+
+### The rule that follows
+
+**Move the tag first and let the page follow.** Then every part is true when it
+lands, the marker turns green rather than red, and the interval between the two
+is a page that is **stale** rather than **false** — a reader is told something
+that was true a moment ago instead of something that is not true at all.
+
+That interval has a size and it is measured rather than assumed.
+
+**Nothing triggers a build on a registry change** — there is no webhook, no
+`repository_dispatch`, and npm does not notify us. But
+`.github/workflows/verify-published-artifacts.yml` runs on an **ungated daily
+cron, `17 6 * * *`**, and that run invokes `check-measured-figures.mjs`. So the
+bound is **the next 06:17 UTC**, at most 24 hours, without anyone pushing
+anything. A push closes it sooner; nothing is required to.
+
+GitHub's scheduled runs are best-effort and can be delayed under load, so 24
+hours is the design bound and not a guarantee. Measured 2026-08-24: two of the
+three workflows carry a schedule, and the one carrying this check is ungated.
+
+### And the shape of the error that produced it
+
+The note specifying the wrong ordering **contained its own refutation two
+sections apart**. It said the intermediate state fails *"after the tag moves"*,
+and then claimed the ordering made it fail loudly — meaning now. Both sentences
+were in one file.
+
+**That is §18 one level up.** §18 says verify the index rather than the reasoning
+you intended about the file. This says the same of a document: a claim in a
+design note is not established by another sentence in the same note agreeing with
+it, and the sentence that disagrees is the one to find before reporting the
+claim.
