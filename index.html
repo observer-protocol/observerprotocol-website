@@ -796,7 +796,7 @@
     <div class="section-label">03 · Three primitives</div>
     <h2>What refuses, and what proves.</h2>
     <p class="section-intro">
-      Three artifacts. Each one is a signed object, each one is checkable by someone who does not trust us, and the second one is the product.
+      Three artifacts. Each one is a signed object, each one is checkable by someone who does not trust us, and the second one is the primitive nothing else publishes.
     </p>
     <div class="prim-grid">
       <div class="prim">
@@ -970,6 +970,7 @@ console.log(<span class="k">await</span> verifyCredentialObject(
 
 <span class="c">$</span> <span class="k">node</span> verify.mjs
 <span class="o">{ allow: true, reason: 'credential verified' }</span></pre>
+        <p style="margin:0; padding:0.9rem 1.25rem 1.1rem; border-top:1px solid var(--border); font-size:0.7rem; line-height:1.7; color:var(--text-dim); white-space:normal;">The credential fetched above was issued under <code>delegation/v2.2</code> and is checked against the version it was issued under, by <code>$id</code>, not against the newest published version; schema URLs are immutable once published, so every version stays served at its own URL.</p>
       </div>
       <div>
         <h3 style="font-family:'Fraunces',serif; font-size:1.3rem; font-weight:600; margin-bottom:1rem;">What it reads, and from where.</h3>
@@ -1042,9 +1043,9 @@ console.log(<span class="k">await</span> verifyCredentialObject(
 <section style="background: var(--bg); border-top: 1px solid var(--border);">
   <div class="section-inner">
     <div class="section-label">07 · Observer Protocol and Agentic Terminal</div>
-    <h2>Open primitives. Operated surface.</h2>
+    <h2>Open primitives. Your rules, in a form they can act on.</h2>
     <p class="section-intro">
-      OP is what refuses and what proves. <a href="https://agenticterminal.io/" style="color:var(--amber); text-decoration:none;">Agentic Terminal</a> is how an institution operates Observer Protocol: who may request authority, who may grant it, what they may grant, and what record that leaves. The line between them is not open-versus-paid; it is primitive-versus-operation.
+      Observer Protocol is what refuses and what proves, and it is open. <a href="https://agenticterminal.io/" style="color:var(--amber); text-decoration:none;">Agentic Terminal</a> is how an institution gets its own written rules into a form these primitives can act on, and how those agents are operated once they are. The line between them is not open-versus-paid.
     </p>
     <div class="at-cards">
       <div class="at-card" style="border-color: var(--amber-dim);">
@@ -1064,15 +1065,8 @@ console.log(<span class="k">await</span> verifyCredentialObject(
       </div>
       <a href="./agentic-terminal.html" class="at-card">
         <div class="at-card-tag">Agentic Terminal · commercial · in your perimeter</div>
-        <h3>The operating surface for an institution</h3>
-        <div class="at-card-pills">
-          <div class="pill">Request/approve separation</div>
-          <div class="pill">Approvals queue</div>
-          <div class="pill">Entitlement &amp; roles</div>
-          <div class="pill">Audit export</div>
-          <div class="pill">Evidence operations</div>
-        </div>
-        <p>The approver cannot set the terms of what they are approving. Deployed inside your infrastructure, operated by your team or ours. Never holds funds. Never takes custody of credentials &mdash; the enforcement point reads the mandate it enforces, and holds no key that could issue, alter or re-sign one.</p>
+        <h3>The turnkey product built on these primitives.</h3>
+        <p>It converts an institution's existing written policy into a versioned, machine-evaluable clause register, trains agents against that register, and runs the workflow end to end on historical or synthetic data before anything reaches production. Agents and engine then deploy inside the institution's own infrastructure, and the institution owns the determinations. Never holds funds. Never takes custody of credentials.</p>
         <div class="at-card-cta">Agentic Terminal →</div>
       </a>
     </div>
