@@ -129,6 +129,12 @@ jobs:
       - name: Verify every published credential
         if: ${{ !cancelled() && steps.deps.outcome == 'success' }}
         run: node ./verify-published-credentials.mjs
+      - name: The section 05 transcript is what the engine returns, notes and checks included
+        working-directory: scripts
+        run: node ./check-section05-transcript.mjs
+      - name: The sentence sweep reports true line numbers
+        working-directory: scripts
+        run: node ./sweep-sentences.mjs --self-test
       - name: Shared copy has not diverged between pages
         if: ${{ !cancelled() && steps.deps.outcome == 'success' }}
         run: node ./check-shared-copy.mjs
