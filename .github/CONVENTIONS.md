@@ -2,6 +2,12 @@
 
 Short, and every entry exists because something went wrong without it.
 
+**Entries record dated findings, and a finding's state may since have been superseded.** Each
+section describes what was true when it was bought. The lesson survives; the state it was drawn
+from often does not, and two entries in this file (§2a, §2c) were read as current by other sessions
+after the site had moved. Check the date before relying on the state, and when an entry's state has
+moved, correct it in place with the new date and the source rather than deleting the instance.
+
 Lives under `.github/` deliberately: `netlify.toml` sets `publish = "."`, so the publish directory
 **is** the repository and any file at the root is served on the live domain. Netlify withholds
 dot-directories — verified, `/.github/workflows/aip-sync.yml` returns 404 — so this file is not
@@ -181,15 +187,25 @@ arrives.
 When a claim needs a limit, the limit belongs in **the section a reader acts on**, stated in full, not
 referenced from elsewhere.
 
-Homepage §03 was narrowed to say the offline set is delegation credentials and excludes the refusal
-record. §05 — *Verify it yourself*, where a reader actually runs something — still said *"you do not
-need our cooperation to check our work"* with no limit at all. The conjunction survived the fix,
-because the fix was applied to the sentence that was wrong rather than to the claim the page makes.
+Homepage §03 was narrowed (2026-08-09) to say the offline set is delegation credentials and excludes
+the refusal record. §05 — *Verify it yourself*, where a reader actually runs something — still said
+*"you do not need our cooperation to check our work"* with no limit at all. The conjunction survived
+the fix, because the fix was applied to the sentence that was wrong rather than to the claim the
+page makes.
+
+**That state is superseded; the shape is not.** The set widened on 2026-08-17 (decision
+attestations, measured through `verifyDecisionAttestation`) and on 2026-08-20 (refusal records,
+which had been rebuildable since rc.8; the premise that they were not is corrected in §2a). Both
+pages now state the set as *delegation credentials, refusal records, lapse records and decision
+attestations*, pinned by `scripts/shared-copy.json` `verifiable-set` (its `movedOn` entry carries the
+measurement). The lesson stands as written: the limit belongs in the section a reader acts on.
 
 The same shape appears as **the promise preceding the exception**: `verify.html`'s H1 read *"You have
-a record. Here is how to check it"* while the page can only check delegation credentials, with the
-exception disclosed further down. Narrowed to *"You have a delegation credential"*, and the caveat
-moved above the instructions.
+a record. Here is how to check it"* while the page could then only check delegation credentials,
+with the exception disclosed further down. Narrowed to *"You have a delegation credential"*, and
+the caveat moved above the instructions. As of 2026-08-24 the H1 reads *"You have a delegation
+credential or a decision attestation"*, widened with the set; the caveat is still above the
+instructions, which is the part that was the point. (Corrected 2026-08-24.)
 
 **A cross-reference is not a limit.** A reader in the section that promises does not scroll to the
 section that qualifies.
