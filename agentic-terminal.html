@@ -374,10 +374,26 @@
         </div>
       </div>
       <div class="relation-arrow"><span class="arrow">→</span></div>
+      <!-- ==========================================================================
+           REVIEWER: DO NOT CUT THE SETTLEMENT SENTENCE FROM THIS CARD.
+
+           This page once said "Every verified transaction, credential issuance,
+           delegation event, and remediation action is logged with cryptographic
+           proof." That implied TWO things that are not true: that Agentic Terminal
+           observes settlements, and that those settlements are verified. It is the
+           page an institutional reader lands on, so both implications were load-
+           bearing in the wrong direction. The guard was removed with the tile it
+           sat on when the page was rebuilt (70fbbf8) and restored 24 August 2026;
+           .github/CONVENTIONS.md section 1 lists this sentence as protected.
+
+           If this card must be shortened, the sentence beginning "This is a record
+           of authority decisions" is the one that has to survive. Cut anything else
+           first.
+           ========================================================================== -->
       <div class="relation-card at-card">
         <div class="relation-card-tag">Agentic Terminal</div>
         <h3>Operated surface</h3>
-        <p>How an institution operates the protocol: who may request authority, who may grant it, and what record that leaves. Observer Protocol is the foundation. Agentic Terminal is the business.</p>
+        <p>How an institution operates the protocol: who may request authority, who may grant it, and what record that leaves. <strong>This is a record of authority decisions made in this surface. It is not a record of settlements.</strong> Agentic Terminal does not watch payment rails and cannot tell you what settled. Observer Protocol is the foundation. Agentic Terminal is the business.</p>
         <div class="relation-items">
           <div class="relation-item">Request and approve as separate acts</div>
           <div class="relation-item">The approvals queue</div>
