@@ -12,7 +12,12 @@
     "  - a key marked on a page and absent from here     -> FAIL, an undeclared figure",
     "",
     "Adding a row is a deliberate act. Deleting one is too, and it should be argued for",
-    "in the commit that does it rather than happening as a side effect of an edit."
+    "in the commit that does it rather than happening as a side effect of an edit.",
+    "REMOVED 2026-08-23: signed-record-coverage:headline.notRebuildableAtNpmLatest.kinds.",
+    "The kinds list is now empty because the count is 0, so there is no class name to show and",
+    "the declaration's own reason -- 'a count with no class name cannot be acted on' -- no longer",
+    "has a subject. Removed in the same commit as the copy change, per the check's instruction that",
+    "dropping a measured claim must not be something an edit does quietly."
   ],
   "required": [
     {
@@ -49,7 +54,7 @@
         "index.html",
         "verify.html"
       ],
-      "why": "The resolution records a reader on npm latest cannot check. On both pages because the register states the scale and /verify states the cause."
+      "why": "The resolution records a reader on npm latest cannot check. Now 0, and KEPT AT ZERO rather than dropped: a page that stops citing the figure when it clears cannot show a reader that it ever was not zero. On both pages because the register states the scale and /verify states the cause."
     },
     {
       "key": "signed-record-coverage:storeFileCount",
@@ -99,13 +104,6 @@
         "verify.html"
       ],
       "why": "The claim is that latest sits INSIDE the withdrawn band. Naming the band without naming latest leaves the reader to make the comparison the page is asserting."
-    },
-    {
-      "key": "signed-record-coverage:headline.notRebuildableAtNpmLatest.kinds",
-      "mustAppearIn": [
-        "index.html"
-      ],
-      "why": "Which class is affected by the withdrawn constructor. A count with no class name cannot be acted on."
     },
     {
       "key": "engine-payload-exports:withdrawals.resolutionPayload.0.lastPresentBefore",

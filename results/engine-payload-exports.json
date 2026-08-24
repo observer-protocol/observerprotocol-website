@@ -19,7 +19,7 @@
         "versionCount"
       ],
       "computedAgainstRegistryState": {
-        "npmLatest": "1.0.0-rc.12",
+        "npmLatest": "1.0.0-rc.21",
         "npmRc": "1.0.0-rc.21",
         "versionCount": 26
       },
@@ -33,7 +33,7 @@
     }
   },
   "package": "@observer-protocol/policy-engine",
-  "npmLatest": "1.0.0-rc.12",
+  "npmLatest": "1.0.0-rc.21",
   "npmRc": "1.0.0-rc.21",
   "versionCount": 26,
   "withdrawals": {
@@ -56,7 +56,8 @@
   "npmLatestExports": [
     "evaluationVerdictPayload",
     "lapsePayload",
-    "refusalPayload"
+    "refusalPayload",
+    "resolutionPayload"
   ],
   "versions": [
     {
