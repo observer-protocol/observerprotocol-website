@@ -105,7 +105,16 @@ All three known instances were found by **reading two sections together and reas
 reader concludes**, never by searching:
 
 - §03 said an attestation verifies offline with nothing from us; §04 showed a refusal. A reader
-  concludes refusals verify offline. They cannot — `refusalPayload` is not exported.
+  concludes refusals verify offline. On 2026-08-09 this was recorded as false on the premise that
+  `refusalPayload` was not exported. **That premise was itself false, and had been for releases.**
+  `refusalPayload`, `signableFromRefusal`, `REFUSAL_PAYLOAD_TYPE` and `REFUSAL_PAYLOAD_TYPE_V2` are
+  exported at every published version from rc.8 to npm's `latest`; `scripts/shared-copy.json`
+  `offline-scope.why` records the correction of 2026-08-20, and `results/engine-payload-exports.json`
+  re-measures it from npm on every CI run. The instance stays here as the shape of a family-3
+  finding. The premise does not stand, and it was quoted from this file into a brief for another
+  repository's session, which removed a true claim from a page on the strength of it. **A convention
+  that records a fact about a package is a claim that goes stale like any other, and this file is a
+  source other sessions cite.** (Corrected 2026-08-24.)
 - Crossrail's hero claimed one cross-rail budget with buyer-side enforcement at every rail's boundary;
   a reader concludes an adversarially binding cross-rail cap exists in production. It is a cooperative
   counter the agent can truncate, and it has never run in production.
