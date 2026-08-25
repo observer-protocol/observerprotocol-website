@@ -204,6 +204,12 @@
       checks on this page, which carries the construction from the engine commit that issues it; it does not check with
       <code>npm install</code>, whose <code>signableFromRefusal</code> rebuilds a v3 store record without v3's fields and does
       not read the served row at all. Measured 24 August 2026 against the version <code>npm install</code> serves.</p>
+      <p><strong>It is signed by a demonstration key that no party stands behind.</strong> The key the record names belongs to the
+      demonstration service that issued it, the same key that signs the five records CI holds this page's v3 construction to. A
+      green result here establishes the construction and the key: that these bytes, rebuilt under the construction the record
+      states, were signed by the key the record names. It does not establish who held that key, and for this example nobody
+      does. The same limit is stated on the Lightning entry in the registry, where the issuer was a demonstration
+      <code>did:key</code> rather than a production one, and it applies here for the same reason.</p>
       <p><strong>It cites a determination, which is what makes the panel below the verdict worth reading.</strong> The refusal's
       signature covers four fields of that citation and not the rest of it, and the page derives that boundary by rebuilding the
       payload without each field rather than by consulting a list.</p>
