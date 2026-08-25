@@ -5,7 +5,7 @@ Short, and every entry exists because something went wrong without it.
 **Entries record dated findings, and a finding's state may since have been superseded.** Each
 section describes what was true when it was bought. The lesson survives; the state it was drawn
 from often does not, and two entries in this file (§2a, §2c) were read as current by other sessions
-after the site had moved. Check the date before relying on the state, and when an entry's state has
+after the site had moved (Not establishable from this repository. Source: Boyd, relaying another session's brief, 2026-08-24. Recorded 2026-08-24.). Check the date before relying on the state, and when an entry's state has
 moved, correct it in place with the new date and the source rather than deleting the instance.
 
 Lives under `.github/` deliberately: `netlify.toml` sets `publish = "."`, so the publish directory
@@ -46,7 +46,7 @@ better.
 
 ### Current protected sentences
 
-| file | sentence | prevents |
+| file | sentence | prevents (an argument about the reading a reader would form, not a measured fact) |
 |---|---|---|
 | `agentic-terminal.html` | *"This is a record of authority decisions made in this surface. It is not a record of settlements"* | implying Agentic Terminal observes settlements and that they are verified |
 | `architecture.html` | *"A system that both made the determination and sold assurance over it would be attesting to its own work"* | the decider's separation reading as an implementation detail a customer could ask us to waive |
@@ -63,7 +63,7 @@ Add a row when you add a comment. A protected sentence nobody knows about is one
 **Standing rule.** Fixing the instance you found is not finishing.
 
 On 2026-08-09 a capability tile on `agentic-terminal.html` described configuring a response to *"an
-agent failing a trust threshold check"* — a mechanism that does not exist. It was fixed. A sitewide
+agent failing a trust threshold check"* — a mechanism that does not exist (Not establishable from this repository. Source: the product's mechanisms live in other repositories; this repository establishes only that the phrase is absent from every page, checked 2026-08-24. Recorded 2026-08-24.). It was fixed. A sitewide
 grep then found it **twice more on `architecture.html`**, in the technical reference, which is where
 an evaluator goes specifically to check whether a mechanism is real.
 
@@ -123,9 +123,9 @@ reader concludes**, never by searching:
   source other sessions cite.** (Corrected 2026-08-24.)
 - Crossrail's hero claimed one cross-rail budget with buyer-side enforcement at every rail's boundary;
   a reader concludes an adversarially binding cross-rail cap exists in production. It is a cooperative
-  counter the agent can truncate, and it has never run in production.
+  counter the agent can truncate, and it has never run in production (Not establishable from this repository. Source: the crossrail adapter code and the production record, both outside this repository, as read on 2026-08-09. Recorded 2026-08-24.).
 - The AT audit tile said "every verified transaction is logged", implying both that AT observes
-  settlements and that they are verified.
+  settlements and that they are verified (Verified 2026-08-24 by reading the REVIEWER comment on agentic-terminal.html, which records the prior wording.).
 
 **So "no family-3 instances found" means "not established", never "clean", and any sweep report must
 use those words.** The only method known to work is reading adjacent sections in the order a reader
@@ -139,7 +139,7 @@ having fixed them all, because each page ends up clean.
 
 This happened. Reputation was ruled off the site entirely; a sitewide grep produced the list; the work
 was then organised page by page, and reputation survived in five places including one page already
-audited, whose instance was in the original grep output.
+audited, whose instance was in the original grep output (Verified 2026-08-24 by running `check-shared-copy`, which enforces the stems today; the count of five is history and is not re-derived.).
 
 And key on **structure, not vocabulary**: `registry.html`'s six "Scope levels" were removed, while
 `agents.html`'s "Badge Levels" — the identical tier model under different words — survived a cut aimed
@@ -163,7 +163,7 @@ The fourth — *"the authority was granted before the action, not reconstructed 
 itself with an **argument**: *"a mandate backdated to cover an action would have to be re-signed,
 which changes the signature."* True, and it establishes nothing. Re-signing a backdated document
 produces a valid signature over a backdated document. **Nothing in these artifacts binds a signature
-to a wall-clock moment.** An issuer holding the key mints a mandate today with `validFrom` last March
+to a wall-clock moment.** (Verified 2026-08-24 by reading rc.21: the engine checks `validFrom`/`validUntil` against `nowMs` it is handed and resolves no timestamping authority.) An issuer holding the key mints a mandate today with `validFrom` last March
 and every check on the page goes green.
 
 It is now a NO that names the missing mechanism: an external timestamping authority, or an anchor
@@ -205,7 +205,7 @@ a record. Here is how to check it"* while the page could then only check delegat
 with the exception disclosed further down. Narrowed to *"You have a delegation credential"*, and
 the caveat moved above the instructions. As of 2026-08-24 the H1 reads *"You have a delegation
 credential or a decision attestation"*, widened with the set; the caveat is still above the
-instructions, which is the part that was the point. (Corrected 2026-08-24.)
+instructions, which is the part that was the point. (Corrected 2026-08-24; verified the same day by reading verify.html.)
 
 **A cross-reference is not a limit.** A reader in the section that promises does not scroll to the
 section that qualifies.
@@ -217,7 +217,7 @@ A qualification must sit before **every** claim it qualifies, in the order a rea
 `crossrail.html` was rewritten specifically because a caveat below a claim comes too late, and the
 correction — *"The budget is a design. The ceiling is a control."* — was placed above the transcript.
 It was above the transcript and **below the engine cards**, two of which still asserted *"the same
-shared budget as every other rail"* and *"one rolling budget"*. A reader met both, formed the
+shared budget as every other rail"* and *"one rolling budget"* (Verified 2026-08-24 by grep: neither phrase remains on crossrail.html and the correcting heading is at line 149.). A reader met both, formed the
 adversarially-binding reading, and only then reached the correction.
 
 **"Above the transcript" was a position relative to the artifact, not relative to the reader.** The
@@ -236,11 +236,11 @@ the edit.
 Three examples, all from one evening, all introduced by the person applying the rule:
 
 - Rebuilding `architecture.html` around the mandate spine — to remove marks nothing computes — added
-  three green `live` badges that nothing computes.
+  three green `live` badges that nothing computes. (Checked 2026-08-24: architecture.html today carries nine `layer-item live` marks reading "· live" with no script on the page. Whether those are the three, or successors, this entry does not establish; it is reported as an open family-1 instance.)
 - Rebuilding `agents.html` to state nothing it cannot establish left `<title>Verified Agents</title>`
-  and a description claiming *"cryptographically verified transaction history"*.
+  and a description claiming *"cryptographically verified transaction history"* (Verified 2026-08-24 by grep: neither the title nor the phrase is on any page.).
 - Correcting `trading.html`'s verification claim added a fresh untagged instance of the claim being
-  enumerated, caught minutes later by the check.
+  enumerated, caught minutes later by the check (Verified 2026-08-24 by running `check-shared-copy`, which is the check.).
 
 **So: after any pass, re-run the pass's own test against the pass's own output.** The check that found
 the third one had been written an hour earlier for exactly this and still had to be run to catch it.
@@ -262,8 +262,8 @@ capability asserted as a gerund, a bare noun, or a number with a label is invisi
 the noun phrase.**
 
 Reputation was ruled off this site and reported clear **three times**, wrong each time, because each
-search was shaped like the previous fix. The fourth check counted 22 references across 10 live pages,
-including two pages rebuilt that same evening expressly to remove it.
+search was shaped like the previous fix (Unestablished: no artifact records the three runs. Recorded 2026-08-24.). The fourth check counted 22 references across 10 live pages,
+including two pages rebuilt that same evening expressly to remove it (Unestablished: no artifact records that count; the stems are enforced today by `$forbidden`. Recorded 2026-08-24.).
 
 **Search the stem, anchored at a word boundary.** `scor` catches `score`, `scoring`, `scored`,
 `scores`; anchoring stops `discord` matching — a false positive worth fixing in the matcher rather
@@ -285,9 +285,9 @@ describing it.
 **A constraint's grammar chooses the search shape of whoever checks it.** Write constraints so the
 natural search is the right one.
 
-The API's field notes carried: *"no surface may claim revocation works end to end."* That is a
+The API's field notes carried: *"no surface may claim revocation works end to end."* (Not establishable from this repository. Source: the API repository's field notes. Recorded 2026-08-24.) That is a
 **prohibition**, phrased as a predicate, so it was checked by grepping `revocation works`,
-`revocation is live`, `revocation end to end`. All clean. The site claimed it in **seven** places and
+`revocation is live`, `revocation end to end`. All clean. The site claimed it in **seven** places (history; the seven is not re-derived, and the current state is not re-verified as of 2026-08-24) and
 six were **nouns in feature lists** — *"issuance, caps, revocation, audit"*, *"approval and
 revocation"*, *"Revocation + cascade"*, *"one-click revocation"*. A capability is almost never
 asserted with a verb. It is listed.
@@ -295,7 +295,7 @@ asserted with a verb. It is listed.
 Three sibling constraints in the same field notes were checked the same evening and were genuinely
 clean — but only because they were phrased as **field descriptions**: *"`total_transactions` is an
 UNFILTERED count … NOT a count of verified or attested transactions."* A keyword search on that lands
-on the subject by accident.
+on the subject by accident (Not establishable from this repository. Source: a claim about the API's behaviour, from the same field notes. Recorded 2026-08-24.).
 
 So:
 
@@ -332,7 +332,7 @@ The engine version is stated in HTML only inside markers:
 
 `node scripts/sync-engine-version.mjs` rewrites the current ones; `--check` runs in CI. **An unmarked
 version string in any HTML file fails the build.** This exists because the version was hand-typed in
-eight places and they disagreed within a single day.
+eight places and they disagreed within a single day (the commit: 08311e7, 2026-08-08, which replaced eight hand-typed `1.0.0-rc.6` strings across five files with markers).
 
 ---
 
@@ -359,7 +359,7 @@ body. Do not redirect a removed page to a replacement unless one genuinely cover
 
 Not before deciding to make one. On 2026-08-09 a stat block correction was about to publish a
 corrected value for `vacs_issued` — a field that had been **deleted upstream that same day** for
-counting nothing meaningful. The endpoint had been rewritten between two readings hours apart.
+counting nothing meaningful. The endpoint had been rewritten between two readings hours apart (Not establishable from this repository. Source: the deletion and the rewrite are the API's history; the site-side correction is e71911b, 2026-08-08. Recorded 2026-08-24.).
 
 The same applies to base branches: check whether the PR you are stacking on has merged before
 branching from `master`, or you will silently revert it.
@@ -371,9 +371,9 @@ branching from `master`, or you will silently revert it.
 Bought twice in one session, 2026-08-09, on the same claim.
 
 **Reading found what the check could not see.** `check-shared-copy.mjs` matched its `claimPatterns`
-with `indexOf` — case-sensitive literals. The heading "No call back to us" on `index.html` sat
+with `indexOf` — case-sensitive literals (verified 2026-08-24 by reading the script: `claimPatterns` are case-insensitive regexes now). The heading "No call back to us" on `index.html` sat
 outside any tag and the check stayed green, because the pattern was written lower-case. A literal
-list also cannot spell one claim two ways, and this site spells it at least five: *call back to us*,
+list also cannot spell one claim two ways, and this site spells it at least five (Verified 2026-08-24 by reading `claimPatterns` in scripts/shared-copy.json, which carries all five.): *call back to us*,
 *callback to Observer*, *network call to Observer*, *neither our permission nor our uptime*, *no
 runtime dependency on OP*. Each variant shares no wording with the others. Four assertions were
 invisible to the enumeration whose entire job is to know where the claim lives — on three pages it
@@ -381,7 +381,7 @@ already listed. Only reading the pages found them.
 
 **The check found what reading missed.** After widening the matcher for the fourth variant, it
 immediately reported two more instances — one of them on a line of `integrate/index.html` that had
-been read end to end minutes earlier. The other was on a page nobody had opened.
+been read end to end minutes earlier. The other was on a page nobody had opened (the commit: f7cfe90, 2026-08-09, which touches `integrate/index.html` and `institutional/index.html`).
 
 **So:** do not treat a passing check as coverage, and do not treat having read the page as
 enumeration. A page is covered when a human has read it in a reader's order *and* every claim it
@@ -402,14 +402,14 @@ Two corollaries, both bought the same way:
 
 `app.agenticterminal.io` is behind a site-level Netlify password. The Netlify API **echoes
 `password: false` back even on a successful write**, so a caller who confirms the lock by reading the
-response it got is reading its own request back, not the state.
+response it got is reading its own request back, not the state (Not establishable from this repository. Source: app.agenticterminal.io and Netlify's API, observed 2026-08-09; neither is in this repository. Recorded 2026-08-24.).
 
 The general form: **a write's response is a claim about the request, not a measurement of the
 result.** Where the state is externally observable, observe it — fetch the site, resolve the DID,
 query the row. This is the same shape as [§7](#7-re-measure-immediately-before-writing-a-correction),
 one layer down: re-measuring is useless if the instrument is the thing that just wrote.
 
-Also true of a covered/uncovered list. On 2026-08-09 the audit handover's two lists held 33 pages and
+Also true of a covered/uncovered list. On 2026-08-09 the audit handover's two lists held 33 pages (Not establishable from this repository. Source: `op-at-specs/HANDOVER-2026-08-08-rc9-wiring-and-control-repairs.md`, outside this repository. Recorded 2026-08-24.) and
 `find . -name '*.html'` returned 38 — five pages on neither list, one of them edited by the branch
 under review. **Derive the population with a command and diff it against the list.** A partition that
 does not cover its domain fails by omission, so nothing ever looks wrong.
@@ -421,7 +421,7 @@ does not cover its domain fails by omission, so nothing ever looks wrong.
 string disagreed within one day, and deriving the string is what stopped it.
 
 **But a marker that updates itself carries every sentence around it forward with it, whether or not
-those sentences are still true.** On 2026-08-09 two of them sat inside claims about a *measurement*:
+those sentences are still true.** On 2026-08-09 two of them sat inside claims about a *measurement* (Verified 2026-08-24 by grep: "agreed on every artifact tested" is on no page today.):
 
 > The hosted service reports `engine.running: "0.3.3"`; the package above is
 > `<span data-engine-version="current">1.0.0-rc.6</span>`. **They agreed on every artifact tested.**
@@ -529,7 +529,7 @@ grades, tiers, badges, scores, sorts or gates by accumulated history:
   a verdict — worse than a wrong number, because there is nothing to correct.
 
 The same page also stated criteria nothing evaluated: the "98%+ success rate" half of each tier was
-never computed anywhere, and the tier turned on the count alone. **A criterion published beside a
+never computed anywhere, and the tier turned on the count alone (Not establishable from this repository. Source: the computation would have lived in the API; what this repository establishes is that the ladder is gone from agents.html, checked 2026-08-24. Recorded 2026-08-24.). **A criterion published beside a
 mark, which the mark does not depend on, is a mark never derived from anything** wearing the costume
 of one that is.
 
@@ -542,7 +542,7 @@ reviewer:
 |---|---|
 | the CI step named "Engine version on the site matches the lockfile" | exactly accurate about the only comparison it made |
 | `technical-paper.html`'s editor's note | a note existed, exactly where the allowlist said one did — it just covered a different retired claim than the stem it exempts |
-| `check-shared-copy`'s `claimPatterns` | real patterns, matching real instances, in the wrong case and the wrong vocabulary |
+| `check-shared-copy`'s `claimPatterns` | real patterns, matching real instances, in the wrong case and the wrong vocabulary (verified 2026-08-24: regexes, case-insensitive, five spellings) |
 
 An **absent** control announces itself: the file is missing, the step does not exist, the list is
 empty. A **partial** one answers the question you asked and stops you asking the next. Its correctness
@@ -574,7 +574,7 @@ returns false: the branch point was never `master`.
 `#49` is the PR that replaced `tools/pec-verify`'s hardcoded single-credential `verify:local` with
 `verify:local:all`. The pass added a sentence to `architecture.html` reading *"We run that check in
 CI over one of the two"*, drafted deliberately against "master's tool" — the right instinct, applied
-to a ref that was not master. It shipped, and it **understated the control by half**.
+to a ref that was not master. It shipped, and it **understated the control by half** (Verified 2026-08-24 by grep: the sentence is no longer on architecture.html.).
 
 **Why nothing caught it.** Every control in this repository reads the working tree:
 `check-shared-copy`, `verify-published-credentials`, `check-aip-sync` and `sync-engine-version` all
@@ -611,7 +611,7 @@ measured carefully against a real file; the file was three days old.
 that edits a paragraph also moves that page's date, which makes it a sitemap change too — and
 the person editing the paragraph has no reason to think so.
 
-**This refused a deploy three times in one week.** The gate was right every time; what recurs
+**This refused a deploy three times in one week.** (Hand-checkable in the Actions history; not re-counted 2026-08-24.) The gate was right every time; what recurs
 is upstream of it.
 
 ### It cannot be surfaced at the edit, and that is not a gap to close
@@ -633,7 +633,7 @@ and **stamps nothing**.
 
 ### The hook's own defect, which is the defect it is treating
 
-**Git does not share hooks.** `tools/hooks/pre-push` is tracked, but tracked is not installed.
+**Git does not share hooks.** (A property of git, not of this repository; checkable by hand in any clone. Recorded 2026-08-24.) `tools/hooks/pre-push` is tracked, but tracked is not installed.
 Until someone runs `tools/hooks/install`, `.git/hooks/pre-push` does not exist, the check never
 runs, **and nothing says so**. Installing the hook does not remove that class of defect; it
 moves it one step back, to whether the install ran.
@@ -677,8 +677,8 @@ When a stacked PR's base is squash-merged, **two separate things happen and only
 solved by keeping the branch.**
 
 - **Deleting the parent's branch closes the child**, because the child's base ref disappears.
-  Keeping the branch prevents that.
-- **Squash-merge rewrites history either way.** The parent's content lands on the target as one
+  Keeping the branch prevents that (Not establishable from this repository. Source: GitHub's behaviour, observed on a stacked PR in this repository; not a fact in the tree. Recorded 2026-08-24.).
+- **Squash-merge rewrites history either way.** (A property of the merge method, not of this repository. Recorded 2026-08-24.) The parent's content lands on the target as one
   new commit; the parent's original commits do not. The child's branch still carries those
   originals, so it now conflicts with a target that has the same content under different
   commits. GitHub reports *"the merge commit cannot be cleanly created."*
@@ -710,11 +710,11 @@ judgement intact.
 
 ### Two this week, both mine, both caught
 
-**The pre-push fallback refused a clean push with no reason.** `… | while read` under `set -e`:
+**The pre-push fallback refused a clean push with no reason.** (Verified 2026-08-24 by reading tools/hooks/pre-push: the piped `while read` survives only in the comment explaining its removal.) `… | while read` under `set -e`:
 the loop ran in a subshell, the variable it set was lost, and a trailing test evaluating false
 ended the loop non-zero. Exit 1, no divergent page named, nothing wrong.
 
-**The input-provenance labeller reported `MODIFIED INPUTS` when `git` was absent from `PATH`.**
+**The input-provenance labeller reported `MODIFIED INPUTS` when `git` was absent from `PATH`.** (Not establishable from this repository. Source: the labeller is in the policy repository. Recorded 2026-08-24.)
 It could not read the tree at all, and rendered that as a substantive claim about the tree's
 contents. *Could not establish* had been collapsed into *established, and bad* — which is the
 estate's own named defect appearing inside a mechanism written to remove it.
@@ -763,7 +763,7 @@ open(p, 'w').write(s)
 ```
 
 The comment text itself contains `ok !== true`, so the count was **4**, the
-assert fired, and **`open(...).write(...)` never ran**. The file was untouched.
+assert fired, and **`open(...).write(...)` never ran**. The file was untouched. (Hand-checkable from #97's commit history on GitHub; not re-read 2026-08-24.)
 The same shell line then staged and committed — carrying the harness and no fix,
 under a message describing a two-token change.
 
@@ -812,7 +812,7 @@ reads as guarding that claim, and it guards the arithmetic underneath it.
 `/verify` section 02 says one thing while npm's `latest` sits inside the
 `resolutionPayload` withdrawal band and the opposite once it moves past. Swapping
 it is six parts: a heading, two consequence sentences, the marker, a dependent
-paragraph, and the version spans.
+paragraph, and the version spans (Verified 2026-08-24 by reading verify.html section 02 and its data-derived-claim markers.).
 
 **Neither half of a partial swap is caught while the tag has not moved:**
 
@@ -823,7 +823,7 @@ paragraph, and the version spans.
 | all six | red until the tag moves | true after it |
 
 Measured 2026-08-24 by running it: parts 1–3 landed and
-`check-measured-figures` returned 0.
+`check-measured-figures` returned 0 (Unestablished: run on a branch and recorded only in #100. Recorded 2026-08-24.).
 
 **So there is no ordering of the parts that is both green and true before the
 tag moves**, and an ordering chosen to make the intermediate state fail loudly
@@ -846,7 +846,7 @@ cron, `17 6 * * *`**, and that run invokes `check-measured-figures.mjs`. So the
 bound is **the next 06:17 UTC**, at most 24 hours, without anyone pushing
 anything. A push closes it sooner; nothing is required to.
 
-GitHub's scheduled runs are best-effort and can be delayed under load, so 24
+GitHub's scheduled runs are best-effort and can be delayed under load (Not establishable from this repository. Source: GitHub's documented behaviour. Recorded 2026-08-24.), so 24
 hours is the design bound and not a guarantee. Measured 2026-08-24: two of the
 three workflows carry a schedule, and the one carrying this check is ungated.
 
