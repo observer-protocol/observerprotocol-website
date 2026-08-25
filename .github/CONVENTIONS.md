@@ -8,6 +8,12 @@ from often does not, and two entries in this file (§2a, §2c) were read as curr
 after the site had moved (Not establishable from this repository. Source: Boyd, relaying another session's brief, 2026-08-24. Recorded 2026-08-24.). Check the date before relying on the state, and when an entry's state has
 moved, correct it in place with the new date and the source rather than deleting the instance.
 
+**The labels below come from a census of one hand reading** (2026-08-24, master at 887f3bc: 100
+claims about the world, 55 checkable by an instrument, 19 by hand, 26 not establishable from this
+repository). The labelling pass found a 27th beside the 26. A census that under-counted once is an
+estimate, and these numbers are one; a claim in this file with no label is not thereby checkable, it
+is unlabelled. No re-census was run; recording the limit was the deliverable.
+
 Lives under `.github/` deliberately: `netlify.toml` sets `publish = "."`, so the publish directory
 **is** the repository and any file at the root is served on the live domain. Netlify withholds
 dot-directories — verified, `/.github/workflows/aip-sync.yml` returns 404 — so this file is not
