@@ -52,7 +52,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { signableFromRefusal, refusalPayload } from '@observer-protocol/policy-engine';
+import { signableFromRefusal, refusalPayload, signableFromRefusalRow } from '@observer-protocol/policy-engine';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const html = readFileSync(join(root, 'check.html'), 'utf8');
@@ -175,14 +175,12 @@ if (forCoverage) {
 
 // ─── 5. The served shape, against the signature ───────────────────────────────────
 //
-// Real served rows. The package cannot be asked what these should rebuild to, because the
-// normalisation lives in op-mcp-payment-server/src/http/reads.ts and is exported from no
-// package this repository depends on. So the check is not a comparison, it is a challenge:
-// rebuild the bytes through the page's own normalisation and require the record's OWN
-// signature to verify over them.
-//
-// That is a stronger oracle than a byte comparison against a second copy would be. A copy can
-// be wrong in the same way twice. A signature cannot.
+// Real served rows. Since rc.22 the package exports signableFromRefusalRow, so these ARE held to
+// the package byte-for-byte in the "held to the published package" block below. Here the record's
+// OWN signature is also required to verify over the page's rebuild. Two oracles, not one: a byte
+// comparison catches a construction that drifts from the package; a signature catches one that
+// drifts from what the enforcement point actually signed. A copy can be wrong the same way twice;
+// a signature cannot.
 import { ed25519Verify, base58Decode } from '@observer-protocol/policy-engine';
 
 const servedPath = join(root, 'scripts/__fixtures__/refusals-served.json');
@@ -226,21 +224,17 @@ for (const row of signable) {
 }
 console.log(`ok    served rows reach a verdict through OP_CHECK.check  ${servedThroughPage}/${signable.length}`);
 
-// ─── v3, AGAINST THE ENGINE'S OWN BYTES ───────────────────────────────────────────
+// ─── v3 ────────────────────────────────────────────────────────────────────────────
 //
-// The pinned package has no v3: rc.12 is what npm serves and the v3 construction is unpublished,
-// living on op-policy-engine at 6f58fcb. So there is nothing here to compare the page against
-// field by field, exactly as with the served shape, and the answer is the same one: the
-// signature.
-//
-// These fixtures were signed over bytes THE ENGINE produced. A page whose rebuild differs from
-// the engine's in any field cannot verify them. That makes them an oracle for the v3
-// construction without waiting on a publish, and it is why they are worth committing rather
-// than deriving here: a fixture this file generated from this file's own understanding would
-// agree with it by construction and establish nothing.
+// rc.22 publishes the v3 construction (REFUSAL_PAYLOAD_TYPE_V3, and signableFromRefusalRow for the
+// served shape), so v3 is now held to the package byte-for-byte, exactly as v1 and v2 are, in the
+// "held to the published package" block below. These five fixtures are DEMOTED to regression
+// vectors: they were signed over bytes the enforcement point produced, and requiring their own
+// signatures to verify over the page's rebuild catches a drift from what was actually signed,
+// which a byte comparison against the package cannot.
 //
 // WHAT THEY DO NOT ESTABLISH: anything about a production record. The keys are throwaway and
-// the records are engine-derived. A production v3 record spanning both arms is asked for.
+// the records are engine-derived. A production v3 record spanning both arms is still asked for.
 const v3Path = join(root, 'scripts/__fixtures__/refusals-v3.json');
 let v3Rows = [];
 try {
@@ -328,6 +322,36 @@ for (const row of v3Rows) {
     fail(`v3 vector ${row.$vector} does not reach a verifying verdict through the page: outcome=${through.outcome} state=${through.state}.`);
   }
 }
+
+// ─── HELD TO THE PUBLISHED PACKAGE (rc.22): the served and v3 shapes ────────────────
+//
+// v1 and v2 store records are compared to the package above. Since rc.22 the package also ships
+// the v3 construction and signableFromRefusalRow, so the served rows and the v3 vectors are held
+// to it the same way: the page's rebuild bytes must EQUAL the package's, or a page whose
+// construction has drifted from the one npm serves goes red here rather than at a reader. The
+// signature checks above remain as regression vectors against what the enforcement point signed.
+const pkgBytesOf = (row) => {
+  const store = shapeOf(row) === 'served' ? signableFromRefusalRow(row) : row;
+  return refusalPayload(signableFromRefusal(store));
+};
+const pageBytesOf = (row) => OP.refusalPayload(OP.SHAPES[shapeOf(row)].toSignable(row));
+let heldToPackage = 0;
+for (const row of [...signable, ...v3Rows]) {
+  const id = row.$vector ?? `${row.refusalId} (${row.code})`;
+  let pkg, page, pkgErr, pageErr;
+  try { pkg = pkgBytesOf(row); } catch (e) { pkgErr = e; }
+  try { page = pageBytesOf(row); } catch (e) { pageErr = e; }
+  if (pkgErr && pageErr) { heldToPackage++; continue; }
+  if (pkgErr) { fail(`${id}: the package refuses to rebuild this ${shapeOf(row)} row (${pkgErr.message.slice(0, 110)}) and the page builds it. The page is more permissive than the construction npm serves.`); continue; }
+  if (pageErr) { fail(`${id}: the page refuses to rebuild a ${shapeOf(row)} row the package builds (${pageErr.message.slice(0, 110)}).`); continue; }
+  if (pkg !== page) {
+    const at = firstDifference(pkg, page);
+    fail(`${id} (${cell(row)}): the page and the PACKAGE build different payloads.\n      first difference at byte ${at}\n      package: ${JSON.stringify(pkg.slice(Math.max(0, at - 40), at + 60))}\n      page:    ${JSON.stringify(page.slice(Math.max(0, at - 40), at + 60))}`);
+    continue;
+  }
+  heldToPackage++;
+}
+console.log(`ok    v3 and served held byte-identical to the package  ${heldToPackage}/${signable.length + v3Rows.length}`);
 
 // THE EMPTY CELL: served x recorded x note. The live service emits no such row, because the
 // ceiling refusal builds {state, limit, unit, observed} and sets no note. Held by projecting the
@@ -520,4 +544,4 @@ if (failures.length) {
 }
 console.log(`The page builds byte-identical refusal payloads to @observer-protocol/policy-engine`);
 console.log(`${engineVersion}, over ${compared} store-shape record(s), and ${servedVerified} served-shape row(s)`);
-console.log(`rebuild to bytes their own signatures verify, and ${v3Verified} v3 record(s) rebuild to the\nengine's own bytes at 6f58fcb. Two shapes covered; a third needs its own run.`);
+console.log(`rebuild to bytes their own signatures verify. All ${heldToPackage} served and v3 record(s) also\nrebuild byte-identically to the published package; the five v3 fixtures are regression vectors\nagainst the enforcement point's own signatures.`);
