@@ -468,6 +468,15 @@ sentence above, the careful one below.**
 | `hermes-agents.html` | "The only path to a signed payment is through the gate" | "it trusts the agent to route payments through the gate in the first place" |
 | `free-your-agent.html` | "It is shipped, running, and open" | a caption saying the hook is not in shipped Aqua |
 
+**State of those three rows, checked 2026-08-24.** The `crossrail.html` row is corrected and the
+correction is in place: neither shared-budget phrase remains and "The budget is a design. The
+ceiling is a control." sits above the engine cards (§2d records the move). The `hermes-agents.html`
+sentence **left the page the same day it was found**, in d08196c (2026-08-09, "the gate is not the
+only path to a signed payment"); the careful sentence remains. `free-your-agent.html` **was 410'd on
+2026-08-23** (`netlify.toml`, the redirect block names why: its one transferable idea had no artifact
+behind it). The rows stay as the shape of the finding; none of the three describes a page as it is
+today. (Corrected 2026-08-24.)
+
 In each case both sentences were on the page and neither was hidden. The defect is **ordering**, and
 it is invisible to any check, because every individual sentence passes.
 
@@ -495,7 +504,7 @@ in the audit taxonomy, and ordering is its most common form.
 was to forbid the **stem** — `scor` catches score/scoring/scored/scores, `reputat` catches the rest.
 That check works and it has held.
 
-On 2026-08-09 the model turned up again anyway, on `agent.html`, wearing none of those words:
+On 2026-08-09 the model turned up again anyway, on `agents.html` (the file this entry first named as `agent.html`, corrected 2026-08-24; the ladder below has since been removed from it), wearing none of those words:
 
     Platinum   1000+ txns · 98%+ success rate
     Gold        100+ txns · 95%+ success rate
