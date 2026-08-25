@@ -463,6 +463,31 @@ that describes a subset closes the question.
 **Name a check by what it establishes, and if it establishes less than its subject needs, say so in
 the name.** The step is now "Engine version matches the lockfile AND what npm serves a reader".
 
+### The reading this section prescribes missed one, and a derivation caught it
+
+The rule above is a reading: grep the marker, re-read its sentence, watch for a past-tense verb.
+Every reading has the limit a reading has. On 2026-08-24 a pin bump moved the lockfile and eight
+`data-engine-version` spans, touched no `results/` file, and every re-read passed while a sentence in
+`verify-samples/README.md` went false. The value updated correctly and the sentence around it
+inverted. **The version marker and every measured figure were green, and the page was false.** Three
+readings did not catch it; a derivation did.
+
+This is a distinct family from the four in [2a](#2a-the-four-defect-families-and-what-a-grep-can-and-cannot-find),
+and distinct from the forward-dated past-tense claim above it. There the tell is a past-tense verb
+next to a marker. Here the verb is present tense and the value is correct, and the sentence is false
+**because** the value moved as it should. There is no tell to grep for, and it is the family this
+site is most exposed to, because self-updating spans are how most of its figures stay true.
+
+**The control is the derivation, not the re-read.** `scripts/sentences-at-risk.mjs` enumerates every
+sentence containing a span whose value a pending change moves. Since 2026-08-24 it draws that
+population from the checks own `DECLARES-COMPARES` holdings rather than only from `data-measured`
+spans, so a value moving in any file a check holds against the world is in scope, not only a measured
+figure. That repoint is what closed the miss above: the results-only version printed "0 measured
+value(s) moved" while the README sentence was already false. Run it with the pre-change ref as the
+baseline, before the change lands, and read each sentence it prints beside its old and new value. It
+does not decide whether a sentence survives its value changing; a person does. It guarantees the
+sentence is looked at, which is the step three readings skipped. (Recorded 2026-08-24.)
+
 ## 11. Position decides what a claim means, and the summary is where a reader stops
 
 Found three times on 2026-08-09, on three unrelated pages, always the same way round: **the confident
