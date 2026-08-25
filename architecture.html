@@ -257,7 +257,6 @@
       font-size: 0.6rem; padding: 0.2rem 0.5rem;
       border: 1px solid var(--border); color: var(--text-faint);
     }
-    .layer-item.live { border-color: #166534; color: var(--green); }
     .layer-item.new  { border-color: #1e3a5f; color: var(--blue); }
 
     /* AIP SECTION */
@@ -571,6 +570,23 @@
     <div class="section-label">Layer by Layer</div>
     <h2>How the stack fits together.</h2>
     <p class="section-intro">Each layer is independently valuable. Together they form a complete trust infrastructure for autonomous agent economies.</p>
+    <!-- ==========================================================================
+         SOURCE: the layer items below carry NO live state, and the reason is dated.
+
+         Until 24 August 2026 nine of them read "... · live" in green. Nothing on this
+         page computes a state (the page has no script), no results/ field or
+         data-measured marker covers any of them, and the marks had stood since the
+         April 2026 rebuild (9a6406d). Measured by hand that day: the org DID document
+         served 200 and byte-identical to the tree; the agent DID
+         did:web:observerprotocol.org:agents:maxi-0001 resolved 200 through the API
+         proxy. The other seven were not measured, and "Universal resolver" names
+         nothing this estate defines. A mark that is true today and computes nothing
+         is the same defect with a correct value (CONVENTIONS 2a, family 1), so the
+         state was removed from all nine and the labels kept.
+
+         A state returns here ONLY inside a marker that a check re-derives on every
+         run, the way results/hosted-verifier.json is re-queried. Do not type "live".
+         ========================================================================== -->
     <div class="layers-grid">
       <div class="layer-card">
         <div class="layer-num">LAYER 01</div>
@@ -578,9 +594,9 @@
         <div class="layer-tag">W3C did:web · Ed25519 · Domain-anchored</div>
         <p>Every agent and organization on Observer Protocol receives a W3C Decentralized Identifier. Agent DIDs resolve to DID Documents at standard URLs. No central registry required. The domain is the trust anchor: an agent whose DID domain doesn't match its organization's DID domain is a fraud signal.</p>
         <div class="layer-items">
-          <div class="layer-item live">did:web agent DID · live</div>
-          <div class="layer-item live">did:web org DID · live</div>
-          <div class="layer-item live">Universal resolver · live</div>
+          <div class="layer-item">did:web agent DID</div>
+          <div class="layer-item">did:web org DID</div>
+          <div class="layer-item">Universal resolver</div>
           <div class="layer-item">Domain mismatch rule</div>
         </div>
       </div>
@@ -588,12 +604,12 @@
         <div class="layer-num">LAYER 02</div>
         <h3>Payment Rails</h3>
         <div class="layer-tag">Rail-agnostic · Verification is the constant</div>
-        <p>Four payment rails are live today. Two more are listed below and are not live. The verification logic is identical regardless of settlement layer: a Lightning preimage, an ECDSA signature over a transaction hash, or a verifiedSend() call all produce the same output: a cryptographically verified economic event that cannot be faked at scale.</p>
+        <p>Six rails are listed below. What has been published or demonstrated on each is stated in the homepage register, which is measured; this page has nothing that measures it. The verification logic is identical regardless of settlement layer: a Lightning preimage, an ECDSA signature over a transaction hash, or a verifiedSend() call all produce the same output: a cryptographically verified economic event that cannot be faked at scale.</p>
         <div class="layer-items">
-          <div class="layer-item live">Lightning / L402 · live</div>
-          <div class="layer-item live">x402 / Solana · live</div>
-          <div class="layer-item live">x402 / EVM · live</div>
-          <div class="layer-item live">Stripe MPP · live</div>
+          <div class="layer-item">Lightning / L402</div>
+          <div class="layer-item">x402 / Solana</div>
+          <div class="layer-item">x402 / EVM</div>
+          <div class="layer-item">Stripe MPP</div>
           <div class="layer-item">Tether WDK</div>
           <div class="layer-item">OWS / MoonPay</div>
         </div>
@@ -604,8 +620,8 @@
         <div class="layer-tag">W3C VC · VAC · KYB · Open infrastructure</div>
         <p>The core protocol layer. OP issues Verifiable Agent Credentials: W3C-compliant, cryptographically signed, portable across any platform. VACs attest to verified facts: economic activity, payment history, counterparty network, and KYB linkage. OP is open infrastructure: free to use, self-hostable, MIT licensed.</p>
         <div class="layer-items">
-          <div class="layer-item live">VAC issuance · live</div>
-          <div class="layer-item live">W3C DID resolver · live</div>
+          <div class="layer-item">VAC issuance</div>
+          <div class="layer-item">W3C DID resolver</div>
           <div class="layer-item new">KYB VC · new</div>
           <div class="layer-item new">ERC-8004 / TRC-8004 · new</div>
           <div class="layer-item">Challenge-response</div>
