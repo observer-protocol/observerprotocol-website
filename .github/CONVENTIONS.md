@@ -899,3 +899,33 @@ a cache of an artifact, and the same discipline applies. And it is why the pream
 here record dated findings: **this file is itself a relay** between sessions, and a sentence in it is
 a claim about the day it was written.
 
+## 21. `$forbidden` establishes that a stem is absent, not that a claim is
+
+**A green `$forbidden` is evidence about vocabulary.** It says no page contains `scor`, `reputat`,
+`at-ars` or `at_ars` at a word boundary outside the allowlist. It says nothing about whether the
+claim those words used to carry is still being made.
+
+**The instance.** On 2026-08-24 `architecture.html`'s Layer 03 paragraph read: *"VACs attest to
+verified facts: economic activity, payment history, counterparty network, and KYB linkage."* That is
+the reputation and verified-transactions model, ruled off this site on 2026-08-09 (§2f-pre, §12), in
+words that trip no stem. It had passed every build since the stems were installed, and every session
+in this estate, this file's authors included, had been reading that green as evidence the prohibition
+held. §12 already records the same shape one level down (a tier ladder with none of the words); this
+entry records that the check's green was being read as the claim's absence.
+
+**The sweep that sized it**, run with `scripts/sweep-sentences.mjs` over every page the same day,
+subject-first on paraphrases rather than stems (standing, track record, tier, badge, payment history,
+economic activity, counterparty network; verified transaction / payment / settlement; revocation as a
+noun in a list; trust threshold; shared budget): nine live restatements on six served pages, one
+qualified on its own page, and the dated papers and the v0.1 spec carrying the model under their
+2026-08-09 editor's notes. Two of the families it found, *verified transactions* and *revocation as a
+capability*, have **no stem in `$forbidden` at all**: they are prohibited in this file (§2, §2f) and
+policed by nothing. Only the Layer 03 paragraph was corrected in that pass; the rest is reported and
+open.
+
+**The rule.** When a concept is ruled off, the stem check is the floor, not the control. The control
+is the sweep in §12's fourth step, phrase → subject → stem → **mechanism**, and it has to be re-run
+by reading, because a paraphrase is by definition what the stem does not match. Report a green
+`$forbidden` as *"the stems are absent"*, never as *"the claim is gone"*. `DO-NOT-CLAIM.md` (untracked,
+at the root) carries the same limitation beside its entries.
+
