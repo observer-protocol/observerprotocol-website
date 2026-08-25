@@ -8,7 +8,7 @@
     "The caveats used to live only in this script, which the site returns 404 for, and in CI",
     "logs, which no reader sees."
   ],
-  "measuredOn": "2026-08-23",
+  "measuredOn": "2026-08-25",
   "provenance": {
     "whatWasMeasured": "Which symbols each published tarball of @observer-protocol/policy-engine exports, read out of the tarballs themselves rather than out of a CHANGELOG.",
     "registryDependent": {
@@ -19,9 +19,9 @@
         "versionCount"
       ],
       "computedAgainstRegistryState": {
-        "npmLatest": "1.0.0-rc.21",
-        "npmRc": "1.0.0-rc.21",
-        "versionCount": 26
+        "npmLatest": "1.0.0-rc.22",
+        "npmRc": "1.0.0-rc.22",
+        "versionCount": 27
       },
       "goesStaleWhen": "a dist-tag moves or a new version is published, without this file being touched."
     },
@@ -33,9 +33,9 @@
     }
   },
   "package": "@observer-protocol/policy-engine",
-  "npmLatest": "1.0.0-rc.21",
-  "npmRc": "1.0.0-rc.21",
-  "versionCount": 26,
+  "npmLatest": "1.0.0-rc.22",
+  "npmRc": "1.0.0-rc.22",
+  "versionCount": 27,
   "withdrawals": {
     "resolutionPayload": [
       {
@@ -387,6 +387,22 @@
       ],
       "verdictPayloadType": "op.evaluation.verdict.v4",
       "refusalPayloadType": "op.enforcement.refusal.v2"
+    },
+    {
+      "version": "1.0.0-rc.22",
+      "exports": [
+        "evaluationVerdictPayload",
+        "lapsePayload",
+        "refusalPayload",
+        "resolutionPayload"
+      ],
+      "verifiers": [
+        "verifyDecisionAttestation",
+        "verifyCredentialObject",
+        "signableFromRefusal"
+      ],
+      "verdictPayloadType": "op.evaluation.verdict.v4",
+      "refusalPayloadType": "op.enforcement.refusal.v3"
     }
   ]
 }

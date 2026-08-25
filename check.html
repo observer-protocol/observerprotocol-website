@@ -200,12 +200,14 @@
       a <code>GET /v1/refusals</code> response, which is the shape a console's copy button puts on your clipboard, and it is
       signed under <code>op.enforcement.refusal.v3</code>. So the example here is the same thing you would be holding, in the
       same shape, under the construction the enforcement point issues today.</p>
-      <p><strong>The published engine reads v2 records. The v3 construction is in no published release.</strong> A v3 record
-      checks on this page, which carries the construction from the engine commit that issues it; it does not check with
-      <code>npm install</code>, whose <code>signableFromRefusal</code> rebuilds a v3 store record without v3's fields and does
-      not read the served row at all. Measured 24 August 2026 against the version <code>npm install</code> serves.</p>
+      <p><strong>The published engine reads v2 and v3 records.</strong> A v3 record
+      checks on this page and with <code>npm install</code>: <code>@observer-protocol/policy-engine</code> rebuilds a v3
+      store record with v3's fields, and reads the served row through <code>signableFromRefusalRow</code>.
+      <strong>Corrected 24 August 2026:</strong> this said the v3 construction was in no published release and did not check
+      with <code>npm install</code>. That held through 24 August 2026, until rc.22 was published; the publish makes it false.
+      Measured 24 August 2026 against the version <code>npm install</code> serves.</p>
       <p><strong>It is signed by a demonstration key that no party stands behind.</strong> The key the record names belongs to the
-      demonstration service that issued it, the same key that signs the five records CI holds this page's v3 construction to. A
+      demonstration service that issued it, the same key that signs the five v3 records this page carries as regression vectors. A
       green result here establishes the construction and the key: that these bytes, rebuilt under the construction the record
       states, were signed by the key the record names. It does not establish who held that key, and for this example nobody
       does. The same limit is stated on the Lightning entry in the registry, where the issuer was a demonstration
@@ -223,13 +225,14 @@
       <p><strong>A refusal record</strong> runs the same sequence as <code>signableFromRefusal</code> and <code>refusalPayload</code>: the
       signed payload is rebuilt from the record's own fields, under the construction <em>the record itself states</em> rather than
       whichever version this page ships, and the signature is checked against the key the record names.</p>
-      <p>The attestation sequence and the v1 and v2 refusal constructions are what <code>@observer-protocol/policy-engine</code> exports at
-      <span data-engine-version="current">1.0.0-rc.21</span>, the version npm's <code>latest</code> tag serves a reader today.
-      The v3 refusal construction is in no published release; this page carries it from the unpublished engine commit that
-      issues it. <strong>Corrected 24 August 2026:</strong> this paragraph said both constructions were the package's, and for v3
-      that was false. This page loads nothing, so it cannot import the package; it carries its own copy of those constructions and CI asserts,
-      on every build, that the v1 and v2 bytes it produces are identical to the package's own over every such refusal this repository publishes,
-      and that its v3 bytes match five records the enforcement point signed, because there is no package to hold them to.
+      <p>The attestation sequence and the v1, v2 and v3 refusal constructions are what <code>@observer-protocol/policy-engine</code> exports at
+      <span data-engine-version="current">1.0.0-rc.22</span>, the version npm's <code>latest</code> tag serves a reader today.
+      <strong>Corrected 24 August 2026:</strong> until rc.22 was published this paragraph said the v3 construction was in no
+      published release and this page carried it from an unpublished engine commit; the publish makes v3 the package's like v1 and
+      v2, and moved the version above from rc.21 to rc.22. This page loads nothing, so it cannot import the package; it carries its
+      own copy of those constructions and CI asserts, on every build, that the v1, v2 and v3 bytes it produces are identical to the
+      package's own over every such refusal this repository publishes, with the five v3 records the enforcement point signed kept as
+      regression vectors their own signatures verify.
       A divergence turns the build red rather than turning a verdict here wrong.
       <a href="/verify.html" style="color:var(--amber); text-decoration:none;">The same checks, run from npm on your own machine ↗</a></p>
     </div>
