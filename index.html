@@ -975,11 +975,25 @@ maxi-0001-trading-mandate-2026-08.json
   rails: {}, allowContractCalls: <span class="k">false</span>,
 };
 
-console.log(<span class="k">await</span> verifyCredentialObject(
-  credential, config, Date.now()));
+<span class="k">const</span> { allow, reason, notes, checks } =
+  <span class="k">await</span> verifyCredentialObject(credential, config, Date.now());
+console.log({ allow, reason, notes, checks });
 
 <span class="c">$</span> <span class="k">node</span> verify.mjs
-<span class="o">{ allow: true, reason: 'credential verified' }</span></pre>
+<span class="o">{
+  allow: true,
+  reason: 'credential verified',
+  notes: [
+    'credential carries no credentialStatus entry — revocation not checkable for this credential'
+  ],
+  checks: {
+    validityWindow: 'passed',
+    issuerResolution: 'network',
+    issuerProof: 'eddsa-jcs-2022-verified',
+    signerBoundary: 'not-configured',
+    revocation: 'status-absent'
+  }
+}</span></pre>
         <p style="margin:0; padding:0.9rem 1.25rem 1.1rem; border-top:1px solid var(--border); font-size:0.7rem; line-height:1.7; color:var(--text-dim); white-space:normal;">The credential fetched above was issued under <code>delegation/v2.2</code> and is checked against the version it was issued under, by <code>$id</code>, not against the newest published version; schema URLs are immutable once published, so every version stays served at its own URL.</p>
       </div>
       <div>
