@@ -853,3 +853,34 @@ you intended about the file. This says the same of a document: a claim in a
 design note is not established by another sentence in the same note agreeing with
 it, and the sentence that disagrees is the one to find before reporting the
 claim.
+
+## 20. A claim relayed through a person or another session carries no provenance, and is a prompt to verify
+
+Two instances in one week, in opposite directions, both through this file.
+
+**A stale entry here was relayed out.** §2a recorded, from 2026-08-09, that `refusalPayload` was
+not exported. That stopped being true at rc.8 and `scripts/shared-copy.json` recorded the
+correction on 2026-08-20; this file was not updated. The sentence was quoted from here into a
+brief for another repository's session, which **removed a true claim from a live page** on the
+strength of it. The relay carried the sentence and not its date, so the receiving session could
+not have checked it even in principle.
+
+**A wrong summary was relayed in.** §1's row for `agentic-terminal.html` was relayed as "asserts a
+guard that was never there". Measured against git: the sentence and its `REVIEWER` comment entered
+in 2b2eb80 (2026-08-08), left with the tile they sat on in 70fbbf8 (2026-08-16), and were restored
+in 1f87013 (2026-08-24). True for eight days, false for eight. "Never" made a dated defect sound
+structural, and a session that accepted the relay would have gone looking for a design flaw
+instead of a commit.
+
+**The rule.** A claim arriving through Boyd, through another session, or through a summary of
+either is a **prompt to verify against the artifact it describes**, never a fact to act on. It has
+no date, no source, and no way to carry either. Before acting: name the artifact (a file, a commit,
+a package version, a served page), read it on the ref you are about to change, and report what was
+found **with the ref**. If the relay and the artifact disagree, the artifact wins and the
+disagreement is the first line of the report, because the relayer is usually the one who needs it.
+
+This is §14 one layer up: §14 says a local ref is a cache of the remote; this says a relayed claim is
+a cache of an artifact, and the same discipline applies. And it is why the preamble now says entries
+here record dated findings: **this file is itself a relay** between sessions, and a sentence in it is
+a claim about the day it was written.
+
