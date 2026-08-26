@@ -129,7 +129,7 @@ for (const f of readdirSync(resultsDir).filter((n) => n.endsWith('.json'))) {
 const pages = [];
 (function walkDir(d) {
   for (const e of readdirSync(d)) {
-    if (e === 'dist' || e === 'node_modules' || e.startsWith('.')) continue;
+    if (e === '_site' || e === 'dist' || e === 'node_modules' || e.startsWith('.')) continue;
     const p = join(d, e);
     try { if (readdirSync(p).length >= 0) { walkDir(p); continue; } } catch { /* a file */ }
     if (e.endsWith('.html')) pages.push(p);
@@ -187,7 +187,7 @@ const scalars = (txt, path) => {
 const servedDocs = [];
 (function walkDocs(d) {
   for (const e of readdirSync(d, { withFileTypes: true })) {
-    if (e.name === 'dist' || e.name === 'node_modules' || e.name.startsWith('.')) continue;
+    if (e.name === '_site' || e.name === 'dist' || e.name === 'node_modules' || e.name.startsWith('.')) continue;
     const p2 = join(d, e.name);
     if (e.isDirectory()) walkDocs(p2);
     else if (e.name.endsWith('.html') || e.name.endsWith('.md')) servedDocs.push(p2);

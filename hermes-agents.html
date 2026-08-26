@@ -547,17 +547,7 @@
 
       <p class="prose"><strong>hermes-gate</strong> sits between your agent and its wallet. Your agent asks to spend; the gate checks the request against a spend mandate <em>you</em> signed, and allows or denies, fail-closed, meaning anything it can't verify is denied, not waved through.</p>
 
-      <div class="install-block">
-        <div class="install-block-header">
-          <span class="install-block-label">Install</span>
-          <button class="install-block-copy" onclick="copyInstall(this)" aria-label="Copy install command">copy</button>
-        </div>
-        <code style="display:flex; flex-direction:column; gap:0.6rem; padding:1.25rem 1.5rem;">
-          <span><span class="prompt">$</span><span class="cmd">npx</span> <span class="arg">@observer-protocol/hermes-gate</span> <span class="arg">bootstrap generate</span></span>
-          <span><span class="prompt">$</span><span class="cmd">npx</span> <span class="arg">@observer-protocol/hermes-gate</span> <span class="arg">bootstrap provision</span></span>
-          <span><span class="prompt">$</span><span class="cmd">npx</span> <span class="arg">@observer-protocol/hermes-gate</span> <span class="arg">bootstrap verify</span></span>
-        </code>
-      </div>
+      <p class="prose"><strong><code>@observer-protocol/hermes-gate</code> is deprecated.</strong> The npm package carries a deprecation notice dated 2026-08-04 and no successor release is planned: it is superseded by <code>@observer-protocol/policy-engine</code> and the per-rail Observer Protocol adapters. Nothing has been unpublished, so every released version still installs, and the repository below stays public and archived. Nothing on this page is maintained. See <a href="/sdk.html">the SDK page</a> for what replaces which part.</p>
 
       <div class="pillars">
         <div class="pillar">
@@ -716,19 +706,6 @@
 
 </div>
 
-<script>
-  function copyInstall(btn) {
-    const cmd = 'npx @observer-protocol/hermes-gate bootstrap generate';
-    navigator.clipboard.writeText(cmd).then(() => {
-      btn.textContent = 'copied';
-      btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = 'copy';
-        btn.classList.remove('copied');
-      }, 2000);
-    });
-  }
-</script>
 
 </body>
 </html>

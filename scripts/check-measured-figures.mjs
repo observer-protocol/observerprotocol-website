@@ -74,7 +74,7 @@ for (const f of readdirSync(resultsDir)) {
 const htmlFiles = [];
 (function walk(dir) {
   for (const e of readdirSync(dir)) {
-    if (e === 'node_modules' || e === '.git' || e === 'results') continue;
+    if (e === '_site' || e === 'node_modules' || e === '.git' || e === 'results') continue;
     const p = join(dir, e);
     if (statSync(p).isDirectory()) walk(p);
     else if (e.endsWith('.html')) htmlFiles.push(p);
