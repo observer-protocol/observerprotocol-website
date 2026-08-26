@@ -34,3 +34,6 @@ node_modules/
 # and a tracked .pyc showed as modified after every sitemap regeneration (2026-08-24).
 __pycache__/
 *.pyc
+
+# The built publish directory (tools/build-site.sh). Netlify builds it; never commit it.
+_site/

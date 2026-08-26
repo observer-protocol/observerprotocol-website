@@ -229,7 +229,7 @@ console.log(`Shared copy is consistent across ${checked} block(s).`);
 // Every HTML file in the repo, so a new page cannot carry the claim unnoticed.
 function allHtml(dir = root, acc = []) {
   for (const e of readdirSync(dir)) {
-    if (e === 'node_modules' || e === '.git') continue;
+    if (e === '_site' || e === 'node_modules' || e === '.git') continue;
     const full = join(dir, e);
     if (statSync(full).isDirectory()) allHtml(full, acc);
     else if (e.endsWith('.html')) acc.push(full);

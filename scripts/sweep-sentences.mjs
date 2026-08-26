@@ -52,7 +52,7 @@ export function sweepSource(src, subject, verbs, strip = keepNewlines) {
 
 function htmlFiles(dir, out = []) {
   for (const e of readdirSync(dir)) {
-    if (e === 'node_modules' || e === '.git') continue;
+    if (e === '_site' || e === 'node_modules' || e === '.git') continue;
     const p = join(dir, e);
     if (statSync(p).isDirectory()) htmlFiles(p, out);
     else if (e.endsWith('.html')) out.push(p);

@@ -316,14 +316,22 @@ someone might write. The second phrasing survives being checked carelessly; the 
 And when reading a constraint someone else wrote, notice which shape it is. If it is a prohibition,
 convert it before searching: what is the subject, and where would that subject appear?
 
-## 3. Adding a non-web file makes it public
+## 3. Shipping a file is a decision, made in `tools/build-site.sh`
 
-`publish = "."`. A new `.md`, `.sh`, `.csv` or `.py` at the root is served the moment it merges, and
-nothing looks broken when it happens. `netlify.toml` carries a **denylist**, which does not close the
-class.
+`publish = "_site"`, and `_site/` is built by `tools/build-site.sh` from an allowlist: web files
+at the repository root by extension, plus the directories the script names. A new root file of
+any other kind, or a new directory, is **not served** until the script names it, in a commit.
+The build refuses if a non-web kind (csv, py, sh, mjs, toml, lockfile, key material) reaches the
+output, and it prints every tracked file it withheld, so the build log says what did not ship.
 
-If you add a non-web file: put it under `.github/`, `scripts/` or `tools/` (the last two are
-404'd by rule), or add a `netlify.toml` rule **in the same commit**.
+What that does not decide: a file placed inside an allowlisted directory ships, whatever it is.
+`verify-samples/README.md` ships on purpose; a notes file dropped into `credentials/` would ship
+by the same rule. The directory list is the boundary, not the file.
+
+Until 2026-08-25 this section said the opposite, and it was true: `publish = "."` served the
+whole repository and `netlify.toml` carried a denylist that could not close the class. Anything
+you add outside the allowlist now stays in the repository, which is public, so it is still
+readable there. That is a different exposure and the OPEN-CLOSED-RULE governs it.
 
 ---
 
