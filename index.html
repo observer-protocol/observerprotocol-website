@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Observer Protocol · Authority granted once, held to on every action</title>
-  <meta name="description" content="Observer Protocol is the open layer that refuses and proves: signed mandates, fail-closed refusal, and portable attestation of what was decided." />
+  <title>Observer Protocol · Check a determination without trusting whoever gave it to you</title>
+  <meta name="description" content="Observer Protocol is the open layer that makes a determination checkable by someone who was not there. Paste a record, read the schema, or run the engine yourself. MIT, self-hostable, no account." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Fraunces:ital,wght@0,300;0,600;0,900;1,300;1,600&display=swap" rel="stylesheet" />
   <style>
@@ -721,12 +721,11 @@
 <nav>
   <a class="nav-logo" href="/">Observer Protocol</a>
   <ul class="nav-links">
-    <li><a href="/verify.html">Verify</a></li>
-    <li><a href="/check.html">Check</a></li>
-    <li><a href="/supervisors.html">Supervisors</a></li>
-    <li><a href="/architecture.html">Architecture</a></li>
+    <li><a href="/check.html">Check a record</a></li>
+    <li><a href="/delegation-schema-versions.html">Schemas</a></li>
+    <li><a href="https://github.com/observer-protocol/op-policy-engine">Engine</a></li>
     <li><a href="/docs.html">Docs</a></li>
-    <li><a href="/registry.html">Registry</a></li>
+    <li><a href="#boundary">What can and cannot be verified</a></li>
     <li><a href="/agentic-terminal.html">Agentic Terminal</a></li>
   </ul>
   <div class="nav-status">
@@ -735,7 +734,49 @@
   </div>
 </nav>
 
-<!-- 01 · HERO -->
+<!-- 01 · HERO
+     REALIGNED 2026-09-16 to Boyd's website-realignment brief of the same date.
+     The copy here is the brief's section 4, used as written.
+
+     THIS PAGE STOPS ARGUING A POSITION. It became half an argument and half a
+     verifier in the last iteration; this finishes it. Agentic Terminal carries
+     the story; Observer Protocol carries the evidence. A reader arrives here
+     holding a determination somebody handed them, and the page's only job is to
+     let them check it.
+
+     WHAT LEFT, AND IT IS NOT COMING BACK AS A TWEAK:
+       "A person grants authority once. A machine is held to it on every action."
+       the rail strip (ACH, Faster Payments, SEPA Instant, PayNow, Lightning,
+         Base/USDC, Solana, TRON)
+       section 02, the gap: two systems record two things and neither can stop
+         the other. That is an argument for a product, not evidence for a reader.
+       section 04, the refusal register and its Lightning mainnet entry
+       section 06, one control both rails, and the
+         ClearingSystemCode:PaymentProduct grammar
+       the genesis section: the first agent-to-agent payment
+     All of it is preserved verbatim in
+     internal/RETIRED-2026-09-16-PAYMENT-RAILS.txt.
+
+     THE DIRECTORY IS THE POINT, AND THIS COMMENT GOT IT WRONG ONCE. The archive
+     was written to the repository ROOT first, with a comment here asserting that
+     a .txt at the root is withheld because tools/build-site.sh "ships root files
+     by web extension only". Building the site showed it shipped: `txt` IS in
+     ROOT_EXT, because robots.txt and llms.txt have to ship. The allowlist is a
+     DIRECTORY list plus a root extension list, so the boundary is the directory,
+     never the extension. internal/ is not in DIRS, the build now prints it under
+     "tracked and NOT shipped", and /internal/ answers 404 on the live domain.
+
+     Anything internal added to this repository goes in a directory that is not
+     in DIRS, and the build output is the thing that confirms it, not this
+     comment. Four .txt drafts are sitting untracked at the root of the main
+     checkout right now; committing any of them publishes it.
+
+     THE LIGHTNING ENTRY IS THE ONE TO UNDERSTAND BEFORE RESTORING IT. It is
+     accurate and it was our only live-money artifact. It left because it is
+     evidence for a claim the product no longer makes: it demonstrated enforcement
+     at a node's own signing boundary, and what we now sell decides and does not
+     enforce. Restoring the entry without restoring that claim would put our
+     strongest proof behind a sentence it does not support. -->
 <section class="hero">
   <div class="hero-grid"></div>
   <div class="hero-inner">
@@ -744,160 +785,86 @@
       AIP v0.9 · Ratified 25 July 2026 · Open, MIT
     </div>
     <h1 class="fade-up delay-1">
-      A person grants authority <em>once</em>.<br/>A machine is held to it<br/>on every action.
+      Check a determination<br/>without trusting the party<br/>who gave it to you.
     </h1>
-    <p class="hero-sub fade-up delay-2">
-      Observer Protocol is the open layer that refuses and proves. A mandate signed by the principal and out of the agent's reach. A request outside it that produces no instruction at all. A signed record of what was decided, verifiable by anyone without asking us. On any rail.
+    <p class="hero-sub fade-up delay-2" data-shared-copy="offline-scope">
+      Observer Protocol is the open layer that makes a determination checkable by someone who was not there. A record names the rule version it was decided under, the inputs it ran over, and who decided. Anyone holding that record can re-derive the same result offline, against a published key, with nothing from us.
     </p>
     <div class="hero-ctas fade-up delay-3">
-      <a href="#refusal" class="btn-primary">See the refusal register →</a>
-      <a href="#verify" class="btn-secondary">Verify it yourself</a>
+      <a href="/check.html" class="btn-primary">Paste a record →</a>
+      <a href="#verify" class="btn-secondary">Run the engine yourself</a>
     </div>
-    <div class="rail-strip fade-up delay-4">
-      RAILS &nbsp;·&nbsp;
-      <span>ACH</span> &nbsp;·&nbsp;
-      <span>Faster Payments</span> &nbsp;·&nbsp;
-      <span>SEPA Instant</span> &nbsp;·&nbsp;
-      <span>PayNow</span> &nbsp;·&nbsp;
-      <span>Lightning</span> &nbsp;·&nbsp;
-      <span>Base / USDC</span> &nbsp;·&nbsp;
-      <span>Solana</span> &nbsp;·&nbsp;
-      <span>TRON</span>
-    </div>
-    <p style="font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:var(--text-faint); letter-spacing:0.04em; margin-top:0.9rem; max-width:640px;">
-      The control is designed to be the same on every one of them, and it has been demonstrated on Lightning. It has never run on a fiat rail. The register below says exactly where each one stands.
-    </p>
   </div>
 </section>
 
-<!-- 02 · THE GAP -->
+<!-- 02 · THE THREE THINGS YOU CAN DO HERE
+     NEW 2026-09-16. Replaces "03 · Three primitives", which described what the
+     protocol IS. This says what a reader can DO, in the brief's own three
+     headings and its own words.
+
+     THE PRIMITIVES TILES CARRIED THE data-shared-copy PINS for verifiable-set and
+     verifiable-set-excluded. Those pins did not leave with the tiles: the verify
+     section below carries both, which is where scripts/check-shared-copy.mjs
+     finds them, and dropping the last one on this page would fail the build with
+     "a key that no page claims at all". -->
 <section style="background: var(--bg2); border-top: 1px solid var(--border);">
   <div class="section-inner">
-    <div class="section-label">02 · The gap</div>
-    <h2>Your systems record what was decided.<br/>Nothing records what was authorised.</h2>
+    <div class="section-label">02 · What you can do here</div>
+    <h2>Three things, none of which need an account.</h2>
     <p class="section-intro">
-      Every institution deploying agents already has two systems that look like they cover this. Neither one does, and neither can stop the other.
-    </p>
-    <div class="gap-pair">
-      <div class="gap-cell">
-        <h3>What you have · the decision log</h3>
-        <p>Your application writes down what the agent did and when. It is a record produced after the fact, by the same system that took the action, and it can be reconstructed, backfilled, or simply be wrong. It answers <em>what happened</em>. It cannot answer whether the thing that happened was permitted.</p>
-      </div>
-      <div class="gap-cell">
-        <h3>What you have · the payment record</h3>
-        <p>Your rail writes down that value moved. It is authoritative about settlement and silent about everything before it. By the time the instruction reaches the rail the decision is already made, and on the instant rails there is no state left in which it can be recalled.</p>
-      </div>
-    </div>
-    <div class="gap-pair" style="margin-top:1px;">
-      <div class="gap-cell absent" style="grid-column: 1 / -1;">
-        <h3>What nothing records · the authority</h3>
-        <p>Which human granted this machine the right to act, bounded how, for how long, and against which counterparties. That fact exists at the moment of delegation and nowhere afterwards. It is not in the decision log, because the log is written by the thing being constrained. It is not in the payment record, because the rail never saw it. When a supervisor asks whether an agent acted inside its authority, there is no artifact to hand them.</p>
-      </div>
-    </div>
-    <p class="gap-punch">
-      Two systems record two things, and neither one can stop the other. Observer Protocol records the third, and refuses before either of the other two is reached.
-    </p>
-  </div>
-</section>
-
-<!-- 03 · THREE PRIMITIVES -->
-<section style="background: var(--bg); border-top: 1px solid var(--border);">
-  <div class="section-inner">
-    <div class="section-label">03 · Three primitives</div>
-    <h2>What refuses, and what proves.</h2>
-    <p class="section-intro">
-      Three artifacts. Each one is a signed object, each one is checkable by someone who does not trust us, and the second one is the primitive nothing else publishes.
+      Each one runs without telling us you did it. That is the property, and it is the only property this site is about.
     </p>
     <div class="prim-grid">
       <div class="prim">
-        <div class="prim-num">01 · THE MANDATE</div>
-        <h3>Signed by the principal, out of the agent's reach.</h3>
-        <p>A credential the human signs, not the machine. It states a ceiling, a counterparty set, a window, and whether a decision must be cited before the action is permitted. The agent holds a key that can spend inside it and no key that can widen it. Rewriting the mandate is not a permission the agent has to escalate to; it is a signature it cannot produce.</p>
+        <div class="prim-num">01 · PASTE A RECORD</div>
+        <h3>Check it in your own browser.</h3>
+        <p>A determination record or a refusal record can be checked at <a href="/check.html" style="color:var(--amber); text-decoration:none;">/check</a>. No account, nothing reaches us. The check runs in the visitor's own browser against a key recovered from the decider's own identifier.</p>
       </div>
       <div class="prim">
-        <div class="prim-num">02 · THE REFUSAL</div>
-        <h3>A request outside mandate produces no instruction.</h3>
-        <p>Not a warning. Not a flag on a dashboard for someone to review on Monday. No instruction is emitted, so there is nothing downstream to recall, reverse, or dispute. The check fails closed: if the mandate cannot be read, or the revocation status cannot be established, the answer is no. And the refusal is itself a signed record, which is the part nobody else publishes.</p>
+        <div class="prim-num">02 · READ THE SCHEMA</div>
+        <h3>Every version stays at its own permanent URL.</h3>
+        <p>A change is a new URL, never an edit to an old one. A record is checked against the version it was issued under, by <code>$id</code>, not against the newest published version. <a href="/delegation-schema-versions.html" style="color:var(--amber); text-decoration:none;">The schema index</a> lists them. <!-- NOT /schemas/, which 404s: netlify.toml serves everything under /schemas/* as application/json, so a directory index there cannot render. check-schema-index.mjs reads delegation-schema-versions.html and says so in its own header. --></p>
       </div>
-      <!-- ==========================================================================
-           REVIEWER: DO NOT ATTACH A QUALIFIER TO "A determination is independently
-           verifiable by a party who was not there."
-
-           It is flat on purpose. The two limits a reader thinks of next are both
-           real and both are in the register in section 08, as separate rows:
-           determination records written before the document bytes were kept are
-           not reconstructible, and no public surface exists for an outsider to
-           run the check.
-
-           Neither narrows this sentence. The first is about which records exist,
-           the second is about who has been handed a tool, and this sentence is
-           about what a determination in your hands is worth. Hedging it here
-           would trade a measured property for the appearance of caution: the
-           artifact is verify-samples/ppp-determination-refused-outcome.json, the
-           call is verifyDecisionAttestation, and verify-published-credentials.mjs
-           runs it in CI on every build.
-
-           If this tile has to be shortened, cut the opening sentence listing what
-           the attestation carries. Keep this one, and keep the set that follows it.
-           ========================================================================== -->
       <div class="prim">
-        <div class="prim-num">03 · THE ATTESTATION</div>
-        <h3>What was decided, under which policy, over which inputs.</h3>
-        <p data-shared-copy="offline-scope">A signed statement naming the decision, the policy version and its content hash, a digest of the inputs it ran over, the outcome, and the party that decided, kept separate from the party that issued the mandate. It verifies offline, against public keys, with nothing from us. <strong>A determination is verifiable by a party who was not there, offline and against a published key.</strong> <strong data-shared-copy="verifiable-set">The set the published engine reads is delegation credentials, refusal records, lapse records and decision attestations. <span data-shared-copy="verifiable-set-excluded">It does not include policy evaluation credentials, resolutions, instructions or releases.</span></strong> It travels with the counterparty rather than living in our database.</p>
+        <div class="prim-num">03 · RUN THE ENGINE</div>
+        <h3>MIT licensed, installable, self-hostable.</h3>
+        <p data-shared-copy="offline-scope">No API key, no call back to us at verification time. <code>npm install @observer-protocol/policy-engine</code>, and the section below is a transcript of it running against a credential served from this domain.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 04 · THE REFUSAL -->
-<section id="refusal" style="background: var(--bg2); border-top: 1px solid var(--border);">
+<!-- 03 · THE HONEST BOUNDARY
+     THE BRIEF SAYS KEEP THIS PROMINENT, so it is a section of its own above the
+     verify transcript rather than a caveat under it. Used as written.
+
+     THE COMPLETENESS PIN LIVES IN THE REGISTER ROW, NOT HERE. scripts/shared-copy.json
+     keys "completeness" to two phrases that /supervisors and the homepage register
+     row must both state, and /supervisors is the canonical home of that copy. This
+     section states the same problem in the brief's words, which are shorter, and
+     deliberately carries no data-shared-copy attribute: adding one here would
+     oblige /supervisors to adopt the brief's phrasing too, which is a decision
+     about that page and not this one. -->
+<section id="boundary" style="background: var(--bg); border-top: 1px solid var(--border);">
   <div class="section-inner">
-    <div class="section-label">04 · The refusal register</div>
-    <h2>Everyone shows you the payments that succeeded.</h2>
+    <div class="section-label">03 · What can and cannot be verified</div>
+    <h2>A signature proves less than people assume.</h2>
     <p class="section-intro">
-      A successful payment demonstrates that a system can move money. It says nothing about whether the system could have stopped. So here is the other record: a payment that was requested, was fully fundable, had a route, and did not happen. One entry, on a live rail, with the money there.
+      A signature establishes that a named key signed those exact bytes and that nobody has altered them since. It does not establish that you have been shown every record.
     </p>
-
-    <div class="refusal-wrap">
-      <div class="refusal-head">
-        <span>Entry 001 · Bitcoin mainnet · Lightning</span>
-        <span>27 July 2026</span>
-      </div>
-      <div class="refusal-body">
-        <div class="refusal-rows">
-          <div class="refusal-row"><span class="k">Enforcement point</span><span class="v">LND RPC middleware · lnd v0.20.1-beta</span></div>
-          <div class="refusal-row"><span class="k">Trigger</span><span class="v">macaroon caveat<br/><code>lnd-custom op-mandate maxi-l402-v1</code></span></div>
-          <div class="refusal-row"><span class="k">Requested</span><span class="v">200,000 sat</span></div>
-          <div class="refusal-row"><span class="k">Mandate ceiling</span><span class="v">100,000 sat per transaction</span></div>
-          <div class="refusal-row"><span class="k">Local balance at the time</span><span class="v">481,500 sat</span></div>
-          <div class="refusal-row"><span class="k">Route</span><span class="v">live ACINQ channel, available</span></div>
-          <div class="refusal-row"><span class="k">Outcome</span><span class="v deny">REFUSED · ceiling</span></div>
-          <div class="refusal-row"><span class="k">Control · same destination, same channel, same RPC method</span><span class="v allow">10 sat → SETTLED</span></div>
-        </div>
-        <div class="refusal-note">
-          <p><strong style="color:var(--text);">The payment could have succeeded.</strong> There was more than four times the balance required, a live channel to a well-connected peer, and a working node. Nothing about the network prevented it. The mandate did.</p>
-          <p>The control matters as much as the refusal. Ten sats to the same destination, over the same channel, by the same RPC method, settled. So the denial is the mandate acting on the amount, not a broken node, a closed channel, or a route that was never there. A refusal you cannot distinguish from a failure is not evidence of anything.</p>
-          <p>Stripping the caveat does not help: it dies on the macaroon HMAC chain. A hand-rolled gRPC client running as a different user with a sanctioned macaroon was refused by the node the same way, and the middleware defaults to deny across all 70 RPC methods and fails closed if it dies.</p>
-        </div>
-      </div>
-      <div class="scope-limits">
-        <strong>What this entry does not show.</strong>
-        The mandate issuer was a demonstration <code>did:key</code>, not Observer Protocol's production issuer.
-        · One node, ours, so this is enforcement at a node and not closure of the Lightning network.
-        · The macaroon caveat is a sender-side trigger in the payer's own credential; it is not visible to the payee, who sees an HTLC and a preimage like any other payment.
-      </div>
-    </div>
-
-    <p style="margin-top:1.5rem; font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-faint); letter-spacing:0.04em; max-width:720px; line-height:1.9;">
-      This register has one entry because one refusal has happened on a live rail with funds present. It will grow as more do. We would rather show you one you can check than a list you have to sort.
+    <p class="gap-punch">
+      A firm can hand over a hundred clean determinations and withhold the hundred-and-first, and all hundred verify. That is a governance problem, not a cryptographic one, and we have not solved it.
+    </p>
+    <p style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-faint); letter-spacing:0.04em; max-width:760px; line-height:1.9; margin-top:1.5rem;">
+      The register in section 06 carries this as a row, alongside every other thing this protocol does not yet do. <a href="/supervisors.html" style="color:var(--amber); text-decoration:none;">The supervisors page</a> states what solving it would actually require.
     </p>
   </div>
 </section>
 
-<!-- 05 · VERIFY IT YOURSELF -->
+<!-- 04 · VERIFY IT YOURSELF -->
 <section id="verify" style="background: var(--bg); border-top: 1px solid var(--border);">
   <div class="section-inner">
-    <div class="section-label">05 · Verify it yourself</div>
+    <div class="section-label">04 · Verify it yourself</div>
     <h2 data-shared-copy="offline-scope">No API key. No bearer token. No account.<br/>No call back to us at verification time.</h2>
     <!-- ==========================================================================
          SOURCE: what is verifiable without us, and the measurement behind it.
@@ -1020,99 +987,43 @@ console.log({ allow, reason, notes, checks });
   </div>
 </section>
 
-<!-- 06 · ONE CONTROL, BOTH RAILS -->
-<section style="background: var(--bg2); border-top: 1px solid var(--border);">
-  <div class="section-inner">
-    <div class="section-label">06 · One control, both rails</div>
-    <h2>Enforcement before the instruction is the only kind that survives instant settlement.</h2>
-    <p class="section-intro">
-      This is not a design preference. It falls out of the message specifications for the real-time rails, and it is the reason the control sits where it does.
-    </p>
+<!-- 05 · RELATIONSHIP TO AGENTIC TERMINAL
+     REWRITTEN 2026-09-16 from the brief's section 4, used as written. The
+     previous version was a two-card comparison with a pill grid on each side
+     (mandate issuance, policy evaluation, fail-closed refusal, signed
+     attestations, offline verification, rail adapters, schemas and engine). Two
+     of those pills named things the product no longer leads with and one named
+     rails, and the section as a whole argued that the line between the two
+     companies is not open-versus-paid, which is an argument about us rather than
+     a fact a reader needs.
 
-    <div class="gap-pair" style="margin-top:0;">
-      <div class="gap-cell">
-        <h3>What the specifications say</h3>
-        <p>Faster Payments, SEPA Instant, FAST and PayNow carry no state in which a submitted instruction can still be stopped. There is no pending window, no recall leg that a supervisor can reach, no status the receiving institution is obliged to honour a reversal from. Settlement is the first and last state.</p>
-      </div>
-      <div class="gap-cell">
-        <h3>Where a hold actually lives</h3>
-        <p>Where an institution does offer a hold, it sits in that bank's own API, above the clearing rail and inside one perimeter. It is a product feature of a single participant, not a property of the rail, and it does not travel to a counterparty at another institution.</p>
-      </div>
-    </div>
-
-    <p class="gap-punch" style="font-size:1.15rem;">
-      If the only stoppable moment is before the instruction exists, then that is where the control has to be. Everything after it is reporting.
-    </p>
-
-    <h3 style="font-family:'Fraunces',serif; font-size:1.4rem; font-weight:600; margin:3.5rem 0 0.75rem;">One field, one parser, fiat and chain.</h3>
-    <p style="font-size:0.95rem; color:var(--text-dim); line-height:1.8; font-weight:300; max-width:680px;">
-      A rail identifier that needs a branch for fiat is a rail identifier that will grow a parallel schema. <code>ClearingSystemCode:PaymentProduct</code> mirrors CAIP-2's <code>namespace:reference</code>, so one field carries both and <code>eip155:8453</code> already parses under it unchanged. The left half resolves against the ISO 20022 external clearing system code set, which appears in every <code>pain.001</code>, so it is not a vocabulary we invent or maintain.
-    </p>
-    <table class="rail-table">
-      <thead><tr><th>Identifier</th><th>Rail</th><th>Why the right half exists</th></tr></thead>
-      <tbody>
-        <tr><td class="id">USABA:ACH.CCD</td><td>ACH credit, United States</td><td>ACH and Fedwire share a clearing system and are different products</td></tr>
-        <tr><td class="id">GBDSC:FPS</td><td>Faster Payments, United Kingdom</td><td>Distinguishes FPS from Bacs and CHAPS on the same code</td></tr>
-        <tr><td class="id">SGIBG:PAYNOW</td><td>PayNow, Singapore</td><td>Distinguishes PayNow from GIRO and FAST</td></tr>
-        <tr><td class="id">eip155:8453</td><td>Base</td><td>CAIP-2 already; no change, no branch</td></tr>
-      </tbody>
-    </table>
-    <p style="margin-top:1rem; font-family:'IBM Plex Mono',monospace; font-size:0.66rem; color:var(--text-faint); letter-spacing:0.04em; line-height:1.9; max-width:720px;">
-      <strong style="color:var(--amber);">Status: proposed.</strong> This grammar is a design decision, not yet a published schema. Credentials issued today carry <code>rail</code> as a free-text string, and the shipped <code>delegation/v2.6</code> schema documents it that way. Published schema URLs are immutable, so adopting this convention means a new schema version rather than an edit to an existing one. Until that version ships, this is what the field is becoming, not what it currently contains.
-    </p>
-  </div>
-</section>
-
-<!-- 07 · OP AND AT -->
+     THREE SENTENCES NOW, and the order is the brief's: what this is, what they
+     do, what this is for. Do not reintroduce the cards. -->
 <section style="background: var(--bg); border-top: 1px solid var(--border);">
   <div class="section-inner">
-    <div class="section-label">07 · Observer Protocol and Agentic Terminal</div>
-    <h2>The open layer, and what is built on it.</h2>
+    <div class="section-label">05 · Relationship to Agentic Terminal</div>
+    <h2>The open layer, and the product that is not it.</h2>
     <p class="section-intro">
-      Observer Protocol is what refuses and what proves, and it is open. <a href="https://agenticterminal.io/" style="color:var(--amber); text-decoration:none;">Agentic Terminal</a> is how an institution gets its own written rules into a form these primitives can act on, and how those agents are operated once they are. The line between them is not open-versus-paid.
+      Observer Protocol is open, MIT, self-hostable, and it is not the product we sell. <a href="https://agenticterminal.io/" style="color:var(--amber); text-decoration:none;">Agentic Terminal</a> converts an institution's written rules and produces the determinations. Observer Protocol is how anyone else checks them.
     </p>
-    <div class="at-cards">
-      <div class="at-card" style="border-color: var(--amber-dim);">
-        <div class="at-card-tag">Observer Protocol · MIT · self-hostable</div>
-        <h3>The primitives that refuse and prove</h3>
-        <div class="at-card-pills">
-          <div class="pill">Mandate issuance</div>
-          <div class="pill">Policy evaluation</div>
-          <div class="pill">Fail-closed refusal</div>
-          <div class="pill">Signed attestations</div>
-          <div class="pill" data-shared-copy="offline-scope">Offline verification</div>
-          <div class="pill">Rail adapters</div>
-          <div class="pill">Schemas &amp; engine</div>
-        </div>
-        <p data-shared-copy="offline-scope">Signed attestations for decisions, refusals and approvals. Decisions and refusals verify with nothing from us. An approval does not, at the version <code>npm install</code> serves, and section 08 carries the band. Spec-governed, and what verifies you can run yourself without telling us you have.</p>
-        <div class="at-card-cta"><a href="./architecture.html" style="color:var(--amber); text-decoration:none;">Architecture →</a></div>
-      </div>
-      <a href="./agentic-terminal.html" class="at-card">
-        <div class="at-card-tag">Agentic Terminal · commercial · in your perimeter</div>
-        <h3>The turnkey product built on these primitives.</h3>
-        <p>It converts an institution's existing written policy into a versioned, machine-evaluable clause register, trains agents against that register, and runs the workflow end to end on historical or synthetic data before anything reaches production. Agents and engine then deploy inside the institution's own infrastructure, and the institution owns the determinations. Never holds funds. Never takes custody of credentials.</p>
-        <div class="at-card-cta">Agentic Terminal →</div>
-      </a>
-    </div>
+    <p style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-faint); letter-spacing:0.04em; max-width:760px; line-height:1.9; margin-top:1.5rem;">
+      Which means the two sites answer two different questions. If you are deciding whether to buy something, <a href="https://agenticterminal.io/" style="color:var(--amber); text-decoration:none;">agenticterminal.io</a> is the page. If you have been handed a determination and want to know whether it holds up, you are on the right one.
+    </p>
   </div>
 </section>
 
-<!-- 08 · WHERE WE ARE -->
+<!-- 06 · WHERE WE ARE -->
 <section style="background: var(--bg2); border-top: 1px solid var(--border);">
   <div class="section-inner">
-    <div class="section-label">08 · Where we are</div>
+    <div class="section-label">06 · Where we are</div>
     <h2>The register, stated plainly.</h2>
     <p class="section-intro">
       Written so that a reader who checks it finds it accurate rather than generous. Where a claim is weaker than we would like it to be, the claim moves toward the evidence.
     </p>
     <div class="reg-glance-label">At a glance · each cell anchors to its row</div>
     <div class="reg-glance">
-        <a class="reg-glance-cell" href="#reg-refusal-enforced-on-a-live-rail-funds"><span class="reg-glance-what">Refusal enforced on a live rail, funds present</span><span class="reg-state live">Demonstrated</span></a>
-        <a class="reg-glance-cell" href="#reg-enforcement-at-a-wallet-signing-boundary"><span class="reg-glance-what">Enforcement at a wallet signing boundary</span><span class="reg-state demo">Published</span></a>
         <a class="reg-glance-cell" href="#reg-offline-verification-with-nothing-from-us"><span class="reg-glance-what" data-shared-copy="offline-scope">Offline verification with nothing from us</span><span class="reg-state live">Live</span></a>
         <a class="reg-glance-cell" href="#reg-credentials-published-here-that-verify"><span class="reg-glance-what">Credentials published here that verify against that engine</span><span class="reg-state demo">2 of 5</span></a>
-        <a class="reg-glance-cell" href="#reg-settlement-attested-by-the-protocol"><span class="reg-glance-what">Settlement attested by the protocol</span><span class="reg-state demo">1</span></a>
-        <a class="reg-glance-cell" href="#reg-enforcement-demonstrated-on-a-fiat-rail"><span class="reg-glance-what">Enforcement demonstrated on a fiat rail</span><span class="reg-state no">Not yet</span></a>
         <a class="reg-glance-cell" href="#reg-a-reader-can-tell-they-have-been-shown"><span class="reg-glance-what">A reader can tell they have been shown every artifact</span><span class="reg-state no">Not established</span></a>
         <a class="reg-glance-cell" href="#reg-the-decider-is-independent-of-the"><span class="reg-glance-what">The decider is independent of the enforcement point</span><span class="reg-state demo">Fixture</span></a>
         <a class="reg-glance-cell" href="#reg-signed-records-an-outside-party-can-rebuild"><span class="reg-glance-what">Signed records an outside party can rebuild</span><span class="reg-state no"><span data-measured="signed-record-coverage:headline.neverRebuildable.percentOfSigned">27.0%</span> unverifiable</span></a>
@@ -1125,24 +1036,10 @@ console.log({ allow, reason, notes, checks });
         <a class="reg-glance-cell" href="#reg-decision-attestation-in-a-published-schema"><span class="reg-glance-what">Decision attestation in a published schema</span><span class="reg-state live">Published</span></a>
     </div>
     <div class="register">
-      <div class="reg-row" id="reg-refusal-enforced-on-a-live-rail-funds">
-        <div>
-          <div class="reg-what">Refusal enforced on a live rail, funds present</div>
-          <div class="reg-detail">Bitcoin mainnet Lightning, 27 July 2026. Our node, demonstration issuer, one profile. Not closure of the rail. Section 04 above carries the full scope.</div>
-        </div>
-        <div class="reg-state live">Demonstrated</div>
-      </div>
-      <div class="reg-row" id="reg-enforcement-at-a-wallet-signing-boundary">
-        <div>
-          <div class="reg-what">Enforcement at a wallet signing boundary</div>
-          <div class="reg-detail">Engines published for Tether WDK (<code>wdk-op-policy</code>), MPP/Tempo (<code>mppx-op-account</code>) and OWS (<code>ows-op-policy</code>), from a shared core. The Aqua demonstration runs in an instrumented build on Liquid; the hook is not in shipped Aqua.</div>
-        </div>
-        <div class="reg-state demo">Published</div>
-      </div>
       <div class="reg-row" id="reg-offline-verification-with-nothing-from-us">
         <div>
           <div class="reg-what" data-shared-copy="offline-scope">Offline verification with nothing from us</div>
-          <div class="reg-detail" data-shared-copy="offline-scope"><code>@observer-protocol/policy-engine</code> <span data-engine-version="current">1.0.0-rc.22</span> on npm, MIT. Section 05 is a transcript of it running against a credential served from this domain.</div>
+          <div class="reg-detail" data-shared-copy="offline-scope"><code>@observer-protocol/policy-engine</code> <span data-engine-version="current">1.0.0-rc.22</span> on npm, MIT. Section 04 is a transcript of it running against a credential served from this domain.</div>
         </div>
         <div class="reg-state live">Live</div>
       </div>
@@ -1152,20 +1049,6 @@ console.log({ allow, reason, notes, checks });
           <div class="reg-detail">Two of the five. The two <code>PolicyEvaluationCredential</code> artifacts carry no <code>credentialSchema</code> and are refused by our own verifier on structure; one older trading mandate is missing <code>authorizationConfig.policy</code>. Re-issuing them is a signing operation, not an edit, and it has not happened yet.</div>
         </div>
         <div class="reg-state demo">2 of 5</div>
-      </div>
-      <div class="reg-row" id="reg-settlement-attested-by-the-protocol">
-        <div>
-          <div class="reg-what">Settlement attested by the protocol</div>
-          <div class="reg-detail">One. The <code>verified_events</code> table holds 56 rows; 55 of them predate the current cutover and carry <code>proof_strength = 'unverified'</code>, which is what that column exists to record. We do not count them as verifications and neither should you.</div>
-        </div>
-        <div class="reg-state demo">1</div>
-      </div>
-      <div class="reg-row" id="reg-enforcement-demonstrated-on-a-fiat-rail">
-        <div>
-          <div class="reg-what">Enforcement demonstrated on a fiat rail</div>
-          <div class="reg-detail">None. The rail grammar in section 06 is a design decision; no fiat instruction has been refused or settled under a mandate. The argument for why the control belongs before the instruction is drawn from the message specifications, not from our own traffic.</div>
-        </div>
-        <div class="reg-state no">Not yet</div>
       </div>
       <div class="reg-row" id="reg-a-reader-can-tell-they-have-been-shown">
         <div>
@@ -1177,7 +1060,7 @@ console.log({ allow, reason, notes, checks });
       <div class="reg-row" id="reg-the-decider-is-independent-of-the">
         <div>
           <div class="reg-what">The decider is independent of the enforcement point</div>
-          <div class="reg-detail">Section 03 says the decider is kept separate from the issuer, and that is true: the decider in our demonstrations is a <strong>separately-keyed <code>did:key</code></strong>, <strong>cryptographically distinct from the enforcement point</strong>, and you can <strong data-shared-copy="offline-scope">verify that separation offline from its own DID</strong>. <strong>What it is not is a second party.</strong> It is a fixture we generated and control &mdash; <strong>not a published organisation</strong> and <strong>not an independent third party</strong> with its own interests. The separation is real as cryptography and currently means nothing as governance. <strong>Proving a decider is genuinely independent needs a real second party</strong>, and until one exists this row says fixture rather than independent.</div>
+          <div class="reg-detail">A record names who decided, kept separate from who issued the authority, and that separation is real: the decider in our demonstrations is a <strong>separately-keyed <code>did:key</code></strong>, <strong>cryptographically distinct from the enforcement point</strong>, and you can <strong data-shared-copy="offline-scope">verify that separation offline from its own DID</strong>. <strong>What it is not is a second party.</strong> It is a fixture we generated and control, <strong>not a published organisation</strong> and <strong>not an independent third party</strong> with its own interests. The separation is real as cryptography and currently means nothing as governance. <strong>Proving a decider is genuinely independent needs a real second party</strong>, and until one exists this row says fixture rather than independent.</div>
         </div>
         <div class="reg-state demo">Fixture</div>
       </div>
@@ -1244,10 +1127,10 @@ console.log({ allow, reason, notes, checks });
   </div>
 </section>
 
-<!-- 09 · PRINCIPLES -->
+<!-- 07 · PRINCIPLES -->
 <section class="principles-section" style="border-top: 1px solid var(--border);">
   <div class="section-inner">
-    <div class="section-label">09 · Principles</div>
+    <div class="section-label">07 · Principles</div>
     <h2>Don't trust. Verify.</h2>
     <p class="section-intro">
       Four commitments that do not bend to convenience, including when the convenience would be ours.
@@ -1260,8 +1143,8 @@ console.log({ allow, reason, notes, checks });
       </div>
       <div class="principle">
         <div class="principle-num">02</div>
-        <h4>Authority is granted, never assumed.</h4>
-        <p>A machine holds no authority it was not explicitly given by a human who signed for it. Absence of a mandate is not permission to proceed carefully; it is refusal. The default is no.</p>
+        <h4>What the text does not settle is not assumed.</h4>
+        <p>A published rule sometimes sets a standard and gives no test a system can apply to a case without further facts or judgment. Where that happens the clause is recorded as unsettled. Silence in the text is not permission to pick a number carefully; it is a hold.</p>
       </div>
       <div class="principle">
         <div class="principle-num">03</div>
@@ -1277,28 +1160,12 @@ console.log({ allow, reason, notes, checks });
   </div>
 </section>
 
-<!-- GENESIS -->
-<section style="background: var(--bg); border-top: 1px solid var(--border); padding: 4rem 2.5rem;">
-  <div class="section-inner">
-    <div class="section-label">Origin</div>
-    <h2 style="font-size: clamp(1.4rem, 2.2vw, 1.9rem);">The first one, and what it actually proved.</h2>
-    <p style="font-size:0.95rem; color:var(--text-dim); line-height:1.8; font-weight:300; max-width:760px; margin-top:1rem;">
-      On 22 February 2026 two agents built by different developers, running on different stacks, settled a payment on Bitcoin mainnet against authority that had been granted in advance. The point was never that no human was in the loop. The point is that the human was in the loop <em>first</em>, at the moment the authority was granted, and that what happened afterwards can be checked by anyone against the payment hash.
-    </p>
-    <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-faint); margin-top:1.5rem; line-height:2; word-break:break-all;">
-      <div>date · 22 February 2026 · Lightning · Bitcoin mainnet</div>
-      <div>payment hash · <span style="color:var(--amber);">6a30ba7fff332c4eb8f368da804b663a20bf59ae1362d76ac1d10c298d4cd875</span></div>
-      <div><a href="/genesis" style="color:var(--amber); text-decoration:none;">The genesis record →</a></div>
-    </div>
-  </div>
-</section>
-
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div>
       <div class="footer-brand">Observer Protocol</div>
-      <div class="footer-tagline">Authority granted once. Held to on every action.</div>
+      <div class="footer-tagline">Check a determination without trusting the party who gave it to you.</div>
       <div class="footer-note">
         Observer Protocol is open infrastructure: MIT, self-hostable, CC BY 4.0 for the specification.<br/>
         The protocol is not the product we sell. <a href="https://agenticterminal.io/" style="color:inherit;">Agentic Terminal</a> is.
