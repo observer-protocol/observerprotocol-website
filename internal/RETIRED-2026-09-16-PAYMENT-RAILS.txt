@@ -1,0 +1,371 @@
+RETIRED FROM observerprotocol.org index.html ON 2026-09-16
+
+Under Boyd's website-realignment brief of 16 September 2026. The brief's two
+decisions: Agentic Terminal carries the story and Observer Protocol carries the
+evidence, so this page stops arguing a position; and the payment-rails layer
+comes out of both sites.
+
+THE STATED REASON FOR THE SECOND IS NOT FOCUS. The Lightning demonstration
+proved enforcement at a signing boundary, and the current product does not
+enforce: the client's own system posts, refuses or holds. It is evidence for a
+claim we no longer make. It was our only live-money artifact and the brief
+records that cost as known and accepted.
+
+THIS FILE IS NOT SERVED. tools/build-site.sh builds _site/ from an allowlist of
+root files by web extension plus fourteen named directories. A .txt at the root
+is withheld and the build prints it as withheld. Confirm that before adding any
+other non-web file here.
+
+ARCHIVED, NOT DELETED. If a buyer needs any of it later it comes back as a
+section, not as the headline.
+
+========================================================================
+
+------------------------------------------------------------------------
+NAV and 01 HERO: 'A person grants authority once' and the rail strip
+------------------------------------------------------------------------
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="/">Observer Protocol</a>
+  <ul class="nav-links">
+    <li><a href="/verify.html">Verify</a></li>
+    <li><a href="/check.html">Check</a></li>
+    <li><a href="/supervisors.html">Supervisors</a></li>
+    <li><a href="/architecture.html">Architecture</a></li>
+    <li><a href="/docs.html">Docs</a></li>
+    <li><a href="/registry.html">Registry</a></li>
+    <li><a href="/agentic-terminal.html">Agentic Terminal</a></li>
+  </ul>
+  <div class="nav-status">
+    <div class="pulse"></div>
+    AIP v0.9 · RATIFIED
+  </div>
+</nav>
+
+<!-- 01 · HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="hero-tag fade-up">
+      <div class="pulse"></div>
+      AIP v0.9 · Ratified 25 July 2026 · Open, MIT
+    </div>
+    <h1 class="fade-up delay-1">
+      A person grants authority <em>once</em>.<br/>A machine is held to it<br/>on every action.
+    </h1>
+    <p class="hero-sub fade-up delay-2">
+      Observer Protocol is the open layer that refuses and proves. A mandate signed by the principal and out of the agent's reach. A request outside it that produces no instruction at all. A signed record of what was decided, verifiable by anyone without asking us. On any rail.
+    </p>
+    <div class="hero-ctas fade-up delay-3">
+      <a href="#refusal" class="btn-primary">See the refusal register →</a>
+      <a href="#verify" class="btn-secondary">Verify it yourself</a>
+    </div>
+    <div class="rail-strip fade-up delay-4">
+      RAILS &nbsp;·&nbsp;
+      <span>ACH</span> &nbsp;·&nbsp;
+      <span>Faster Payments</span> &nbsp;·&nbsp;
+      <span>SEPA Instant</span> &nbsp;·&nbsp;
+      <span>PayNow</span> &nbsp;·&nbsp;
+      <span>Lightning</span> &nbsp;·&nbsp;
+      <span>Base / USDC</span> &nbsp;·&nbsp;
+      <span>Solana</span> &nbsp;·&nbsp;
+      <span>TRON</span>
+    </div>
+    <p style="font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:var(--text-faint); letter-spacing:0.04em; margin-top:0.9rem; max-width:640px;">
+      The control is designed to be the same on every one of them, and it has been demonstrated on Lightning. It has never run on a fiat rail. The register below says exactly where each one stands.
+    </p>
+  </div>
+</section>
+
+
+------------------------------------------------------------------------
+02 THE GAP: two systems record two things and neither can stop the other
+------------------------------------------------------------------------
+<!-- 02 · THE GAP -->
+<section style="background: var(--bg2); border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">02 · The gap</div>
+    <h2>Your systems record what was decided.<br/>Nothing records what was authorised.</h2>
+    <p class="section-intro">
+      Every institution deploying agents already has two systems that look like they cover this. Neither one does, and neither can stop the other.
+    </p>
+    <div class="gap-pair">
+      <div class="gap-cell">
+        <h3>What you have · the decision log</h3>
+        <p>Your application writes down what the agent did and when. It is a record produced after the fact, by the same system that took the action, and it can be reconstructed, backfilled, or simply be wrong. It answers <em>what happened</em>. It cannot answer whether the thing that happened was permitted.</p>
+      </div>
+      <div class="gap-cell">
+        <h3>What you have · the payment record</h3>
+        <p>Your rail writes down that value moved. It is authoritative about settlement and silent about everything before it. By the time the instruction reaches the rail the decision is already made, and on the instant rails there is no state left in which it can be recalled.</p>
+      </div>
+    </div>
+    <div class="gap-pair" style="margin-top:1px;">
+      <div class="gap-cell absent" style="grid-column: 1 / -1;">
+        <h3>What nothing records · the authority</h3>
+        <p>Which human granted this machine the right to act, bounded how, for how long, and against which counterparties. That fact exists at the moment of delegation and nowhere afterwards. It is not in the decision log, because the log is written by the thing being constrained. It is not in the payment record, because the rail never saw it. When a supervisor asks whether an agent acted inside its authority, there is no artifact to hand them.</p>
+      </div>
+    </div>
+    <p class="gap-punch">
+      Two systems record two things, and neither one can stop the other. Observer Protocol records the third, and refuses before either of the other two is reached.
+    </p>
+  </div>
+</section>
+
+
+------------------------------------------------------------------------
+03 THREE PRIMITIVES: the mandate, the refusal, the attestation
+------------------------------------------------------------------------
+<!-- 03 · THREE PRIMITIVES -->
+<section style="background: var(--bg); border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">03 · Three primitives</div>
+    <h2>What refuses, and what proves.</h2>
+    <p class="section-intro">
+      Three artifacts. Each one is a signed object, each one is checkable by someone who does not trust us, and the second one is the primitive nothing else publishes.
+    </p>
+    <div class="prim-grid">
+      <div class="prim">
+        <div class="prim-num">01 · THE MANDATE</div>
+        <h3>Signed by the principal, out of the agent's reach.</h3>
+        <p>A credential the human signs, not the machine. It states a ceiling, a counterparty set, a window, and whether a decision must be cited before the action is permitted. The agent holds a key that can spend inside it and no key that can widen it. Rewriting the mandate is not a permission the agent has to escalate to; it is a signature it cannot produce.</p>
+      </div>
+      <div class="prim">
+        <div class="prim-num">02 · THE REFUSAL</div>
+        <h3>A request outside mandate produces no instruction.</h3>
+        <p>Not a warning. Not a flag on a dashboard for someone to review on Monday. No instruction is emitted, so there is nothing downstream to recall, reverse, or dispute. The check fails closed: if the mandate cannot be read, or the revocation status cannot be established, the answer is no. And the refusal is itself a signed record, which is the part nobody else publishes.</p>
+      </div>
+      <!-- ==========================================================================
+           REVIEWER: DO NOT ATTACH A QUALIFIER TO "A determination is independently
+           verifiable by a party who was not there."
+
+           It is flat on purpose. The two limits a reader thinks of next are both
+           real and both are in the register in section 08, as separate rows:
+           determination records written before the document bytes were kept are
+           not reconstructible, and no public surface exists for an outsider to
+           run the check.
+
+           Neither narrows this sentence. The first is about which records exist,
+           the second is about who has been handed a tool, and this sentence is
+           about what a determination in your hands is worth. Hedging it here
+           would trade a measured property for the appearance of caution: the
+           artifact is verify-samples/ppp-determination-refused-outcome.json, the
+           call is verifyDecisionAttestation, and verify-published-credentials.mjs
+           runs it in CI on every build.
+
+           If this tile has to be shortened, cut the opening sentence listing what
+           the attestation carries. Keep this one, and keep the set that follows it.
+           ========================================================================== -->
+      <div class="prim">
+        <div class="prim-num">03 · THE ATTESTATION</div>
+        <h3>What was decided, under which policy, over which inputs.</h3>
+        <p data-shared-copy="offline-scope">A signed statement naming the decision, the policy version and its content hash, a digest of the inputs it ran over, the outcome, and the party that decided, kept separate from the party that issued the mandate. It verifies offline, against public keys, with nothing from us. <strong>A determination is verifiable by a party who was not there, offline and against a published key.</strong> <strong data-shared-copy="verifiable-set">The set the published engine reads is delegation credentials, refusal records, lapse records and decision attestations. <span data-shared-copy="verifiable-set-excluded">It does not include policy evaluation credentials, resolutions, instructions or releases.</span></strong> It travels with the counterparty rather than living in our database.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+------------------------------------------------------------------------
+04 THE REFUSAL REGISTER: entry 001, Bitcoin mainnet Lightning
+------------------------------------------------------------------------
+<!-- 04 · THE REFUSAL -->
+<section id="refusal" style="background: var(--bg2); border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">04 · The refusal register</div>
+    <h2>Everyone shows you the payments that succeeded.</h2>
+    <p class="section-intro">
+      A successful payment demonstrates that a system can move money. It says nothing about whether the system could have stopped. So here is the other record: a payment that was requested, was fully fundable, had a route, and did not happen. One entry, on a live rail, with the money there.
+    </p>
+
+    <div class="refusal-wrap">
+      <div class="refusal-head">
+        <span>Entry 001 · Bitcoin mainnet · Lightning</span>
+        <span>27 July 2026</span>
+      </div>
+      <div class="refusal-body">
+        <div class="refusal-rows">
+          <div class="refusal-row"><span class="k">Enforcement point</span><span class="v">LND RPC middleware · lnd v0.20.1-beta</span></div>
+          <div class="refusal-row"><span class="k">Trigger</span><span class="v">macaroon caveat<br/><code>lnd-custom op-mandate maxi-l402-v1</code></span></div>
+          <div class="refusal-row"><span class="k">Requested</span><span class="v">200,000 sat</span></div>
+          <div class="refusal-row"><span class="k">Mandate ceiling</span><span class="v">100,000 sat per transaction</span></div>
+          <div class="refusal-row"><span class="k">Local balance at the time</span><span class="v">481,500 sat</span></div>
+          <div class="refusal-row"><span class="k">Route</span><span class="v">live ACINQ channel, available</span></div>
+          <div class="refusal-row"><span class="k">Outcome</span><span class="v deny">REFUSED · ceiling</span></div>
+          <div class="refusal-row"><span class="k">Control · same destination, same channel, same RPC method</span><span class="v allow">10 sat → SETTLED</span></div>
+        </div>
+        <div class="refusal-note">
+          <p><strong style="color:var(--text);">The payment could have succeeded.</strong> There was more than four times the balance required, a live channel to a well-connected peer, and a working node. Nothing about the network prevented it. The mandate did.</p>
+          <p>The control matters as much as the refusal. Ten sats to the same destination, over the same channel, by the same RPC method, settled. So the denial is the mandate acting on the amount, not a broken node, a closed channel, or a route that was never there. A refusal you cannot distinguish from a failure is not evidence of anything.</p>
+          <p>Stripping the caveat does not help: it dies on the macaroon HMAC chain. A hand-rolled gRPC client running as a different user with a sanctioned macaroon was refused by the node the same way, and the middleware defaults to deny across all 70 RPC methods and fails closed if it dies.</p>
+        </div>
+      </div>
+      <div class="scope-limits">
+        <strong>What this entry does not show.</strong>
+        The mandate issuer was a demonstration <code>did:key</code>, not Observer Protocol's production issuer.
+        · One node, ours, so this is enforcement at a node and not closure of the Lightning network.
+        · The macaroon caveat is a sender-side trigger in the payer's own credential; it is not visible to the payee, who sees an HTLC and a preimage like any other payment.
+      </div>
+    </div>
+
+    <p style="margin-top:1.5rem; font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-faint); letter-spacing:0.04em; max-width:720px; line-height:1.9;">
+      This register has one entry because one refusal has happened on a live rail with funds present. It will grow as more do. We would rather show you one you can check than a list you have to sort.
+    </p>
+  </div>
+</section>
+
+------------------------------------------------------------------------
+06 ONE CONTROL BOTH RAILS: the ClearingSystemCode:PaymentProduct grammar
+------------------------------------------------------------------------
+<!-- 06 · ONE CONTROL, BOTH RAILS -->
+<section style="background: var(--bg2); border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">06 · One control, both rails</div>
+    <h2>Enforcement before the instruction is the only kind that survives instant settlement.</h2>
+    <p class="section-intro">
+      This is not a design preference. It falls out of the message specifications for the real-time rails, and it is the reason the control sits where it does.
+    </p>
+
+    <div class="gap-pair" style="margin-top:0;">
+      <div class="gap-cell">
+        <h3>What the specifications say</h3>
+        <p>Faster Payments, SEPA Instant, FAST and PayNow carry no state in which a submitted instruction can still be stopped. There is no pending window, no recall leg that a supervisor can reach, no status the receiving institution is obliged to honour a reversal from. Settlement is the first and last state.</p>
+      </div>
+      <div class="gap-cell">
+        <h3>Where a hold actually lives</h3>
+        <p>Where an institution does offer a hold, it sits in that bank's own API, above the clearing rail and inside one perimeter. It is a product feature of a single participant, not a property of the rail, and it does not travel to a counterparty at another institution.</p>
+      </div>
+    </div>
+
+    <p class="gap-punch" style="font-size:1.15rem;">
+      If the only stoppable moment is before the instruction exists, then that is where the control has to be. Everything after it is reporting.
+    </p>
+
+    <h3 style="font-family:'Fraunces',serif; font-size:1.4rem; font-weight:600; margin:3.5rem 0 0.75rem;">One field, one parser, fiat and chain.</h3>
+    <p style="font-size:0.95rem; color:var(--text-dim); line-height:1.8; font-weight:300; max-width:680px;">
+      A rail identifier that needs a branch for fiat is a rail identifier that will grow a parallel schema. <code>ClearingSystemCode:PaymentProduct</code> mirrors CAIP-2's <code>namespace:reference</code>, so one field carries both and <code>eip155:8453</code> already parses under it unchanged. The left half resolves against the ISO 20022 external clearing system code set, which appears in every <code>pain.001</code>, so it is not a vocabulary we invent or maintain.
+    </p>
+    <table class="rail-table">
+      <thead><tr><th>Identifier</th><th>Rail</th><th>Why the right half exists</th></tr></thead>
+      <tbody>
+        <tr><td class="id">USABA:ACH.CCD</td><td>ACH credit, United States</td><td>ACH and Fedwire share a clearing system and are different products</td></tr>
+        <tr><td class="id">GBDSC:FPS</td><td>Faster Payments, United Kingdom</td><td>Distinguishes FPS from Bacs and CHAPS on the same code</td></tr>
+        <tr><td class="id">SGIBG:PAYNOW</td><td>PayNow, Singapore</td><td>Distinguishes PayNow from GIRO and FAST</td></tr>
+        <tr><td class="id">eip155:8453</td><td>Base</td><td>CAIP-2 already; no change, no branch</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:1rem; font-family:'IBM Plex Mono',monospace; font-size:0.66rem; color:var(--text-faint); letter-spacing:0.04em; line-height:1.9; max-width:720px;">
+      <strong style="color:var(--amber);">Status: proposed.</strong> This grammar is a design decision, not yet a published schema. Credentials issued today carry <code>rail</code> as a free-text string, and the shipped <code>delegation/v2.6</code> schema documents it that way. Published schema URLs are immutable, so adopting this convention means a new schema version rather than an edit to an existing one. Until that version ships, this is what the field is becoming, not what it currently contains.
+    </p>
+  </div>
+</section>
+
+------------------------------------------------------------------------
+07 OP AND AT: the two-card comparison
+------------------------------------------------------------------------
+<!-- 07 · OP AND AT -->
+<section style="background: var(--bg); border-top: 1px solid var(--border);">
+  <div class="section-inner">
+    <div class="section-label">07 · Observer Protocol and Agentic Terminal</div>
+    <h2>The open layer, and what is built on it.</h2>
+    <p class="section-intro">
+      Observer Protocol is what refuses and what proves, and it is open. <a href="https://agenticterminal.io/" style="color:var(--amber); text-decoration:none;">Agentic Terminal</a> is how an institution gets its own written rules into a form these primitives can act on, and how those agents are operated once they are. The line between them is not open-versus-paid.
+    </p>
+    <div class="at-cards">
+      <div class="at-card" style="border-color: var(--amber-dim);">
+        <div class="at-card-tag">Observer Protocol · MIT · self-hostable</div>
+        <h3>The primitives that refuse and prove</h3>
+        <div class="at-card-pills">
+          <div class="pill">Mandate issuance</div>
+          <div class="pill">Policy evaluation</div>
+          <div class="pill">Fail-closed refusal</div>
+          <div class="pill">Signed attestations</div>
+          <div class="pill" data-shared-copy="offline-scope">Offline verification</div>
+          <div class="pill">Rail adapters</div>
+          <div class="pill">Schemas &amp; engine</div>
+        </div>
+        <p data-shared-copy="offline-scope">Signed attestations for decisions, refusals and approvals. Decisions and refusals verify with nothing from us. An approval does not, at the version <code>npm install</code> serves, and section 08 carries the band. Spec-governed, and what verifies you can run yourself without telling us you have.</p>
+        <div class="at-card-cta"><a href="./architecture.html" style="color:var(--amber); text-decoration:none;">Architecture →</a></div>
+      </div>
+      <a href="./agentic-terminal.html" class="at-card">
+        <div class="at-card-tag">Agentic Terminal · commercial · in your perimeter</div>
+        <h3>The turnkey product built on these primitives.</h3>
+        <p>It converts an institution's existing written policy into a versioned, machine-evaluable clause register, trains agents against that register, and runs the workflow end to end on historical or synthetic data before anything reaches production. Agents and engine then deploy inside the institution's own infrastructure, and the institution owns the determinations. Never holds funds. Never takes custody of credentials.</p>
+        <div class="at-card-cta">Agentic Terminal →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+------------------------------------------------------------------------
+GENESIS: the first agent-to-agent payment
+------------------------------------------------------------------------
+<!-- GENESIS -->
+<section style="background: var(--bg); border-top: 1px solid var(--border); padding: 4rem 2.5rem;">
+  <div class="section-inner">
+    <div class="section-label">Origin</div>
+    <h2 style="font-size: clamp(1.4rem, 2.2vw, 1.9rem);">The first one, and what it actually proved.</h2>
+    <p style="font-size:0.95rem; color:var(--text-dim); line-height:1.8; font-weight:300; max-width:760px; margin-top:1rem;">
+      On 22 February 2026 two agents built by different developers, running on different stacks, settled a payment on Bitcoin mainnet against authority that had been granted in advance. The point was never that no human was in the loop. The point is that the human was in the loop <em>first</em>, at the moment the authority was granted, and that what happened afterwards can be checked by anyone against the payment hash.
+    </p>
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--text-faint); margin-top:1.5rem; line-height:2; word-break:break-all;">
+      <div>date · 22 February 2026 · Lightning · Bitcoin mainnet</div>
+      <div>payment hash · <span style="color:var(--amber);">6a30ba7fff332c4eb8f368da804b663a20bf59ae1362d76ac1d10c298d4cd875</span></div>
+      <div><a href="/genesis" style="color:var(--amber); text-decoration:none;">The genesis record →</a></div>
+    </div>
+  </div>
+</section>
+
+
+========================================================================
+06 WHERE WE ARE: the four register rows cut with the payment-rails layer
+========================================================================
+
+Refusal enforced on a live rail, funds present. Enforcement at a wallet
+signing boundary. Settlement attested by the protocol. Enforcement
+demonstrated on a fiat rail.
+
+THE BRIEF'S RULE FOR THIS TABLE: re-scope each row to the claims we now
+make, cut rows about claims we have withdrawn, and do not soften the
+survivors. Every survivor is carried word for word. These four are not
+softened either; they are removed whole, with their glance cells, and they
+are here if the claim comes back.
+
+<a class="reg-glance-cell" href="#reg-refusal-enforced-on-a-live-rail-funds"><span class="reg-glance-what">Refusal enforced on a live rail, funds present</span><span class="reg-state live">Demonstrated</span></a>
+
+<a class="reg-glance-cell" href="#reg-enforcement-at-a-wallet-signing-boundary"><span class="reg-glance-what">Enforcement at a wallet signing boundary</span><span class="reg-state demo">Published</span></a>
+
+<a class="reg-glance-cell" href="#reg-settlement-attested-by-the-protocol"><span class="reg-glance-what">Settlement attested by the protocol</span><span class="reg-state demo">1</span></a>
+
+<a class="reg-glance-cell" href="#reg-enforcement-demonstrated-on-a-fiat-rail"><span class="reg-glance-what">Enforcement demonstrated on a fiat rail</span><span class="reg-state no">Not yet</span></a>
+
+<div class="reg-row" id="reg-refusal-enforced-on-a-live-rail-funds">
+        <div>
+          <div class="reg-what">Refusal enforced on a live rail, funds present</div>
+          <div class="reg-detail">Bitcoin mainnet Lightning, 27 July 2026. Our node, demonstration issuer, one profile. Not closure of the rail. Section 04 above carries the full scope.</div>
+        </div>
+        <div class="reg-state live">Demonstrated</div>
+      </div>
+
+<div class="reg-row" id="reg-enforcement-at-a-wallet-signing-boundary">
+        <div>
+          <div class="reg-what">Enforcement at a wallet signing boundary</div>
+          <div class="reg-detail">Engines published for Tether WDK (<code>wdk-op-policy</code>), MPP/Tempo (<code>mppx-op-account</code>) and OWS (<code>ows-op-policy</code>), from a shared core. The Aqua demonstration runs in an instrumented build on Liquid; the hook is not in shipped Aqua.</div>
+        </div>
+        <div class="reg-state demo">Published</div>
+      </div>
+
+<div class="reg-row" id="reg-settlement-attested-by-the-protocol">
+        <div>
+          <div class="reg-what">Settlement attested by the protocol</div>
+          <div class="reg-detail">One. The <code>verified_events</code> table holds 56 rows; 55 of them predate the current cutover and carry <code>proof_strength = 'unverified'</code>, which is what that column exists to record. We do not count them as verifications and neither should you.</div>
+        </div>
+        <div class="reg-state demo">1</div>
+      </div>
+
+<div class="reg-row" id="reg-enforcement-demonstrated-on-a-fiat-rail">
+        <div>
+          <div class="reg-what">Enforcement demonstrated on a fiat rail</div>
+          <div class="reg-detail">None. The rail grammar in section 06 is a design decision; no fiat instruction has been refused or settled under a mandate. The argument for why the control belongs before the instruction is drawn from the message specifications, not from our own traffic.</div>
+        </div>
+        <div class="reg-state no">Not yet</div>
+      </div>
